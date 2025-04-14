@@ -75,7 +75,7 @@ def plt_error(bm=False, make_reference=False, show=False):
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, error_bars=True, ymin=0, ymax=35,
-            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False, sort=False, color_by_bar=True)
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False, sort=False, color_by='bar')
 
     if bm:
         return

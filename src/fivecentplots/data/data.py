@@ -4,6 +4,7 @@ import scipy.stats as ss
 import pandas as pd
 import numpy as np
 import numpy.typing as npt
+import datetime
 from typing import Union
 from .. import utilities
 utl = utilities
@@ -73,6 +74,7 @@ class Data:
         self.fit_range_y = utl.kwget(kwargs, self.fcpp, 'fit_range_y', None)
         self.imgs = utl.kwget(kwargs, self.fcpp, 'imgs', None)  # used only for image based plotting
         self.interval = utl.validate_list(kwargs.get('perc_int', kwargs.get('nq_int', kwargs.get('conf_int', False))))
+        self.ignore_dates = kwargs.get('ignore_dates', False)
         self.legend = None
         self.legend_vals = None
         self.pivot = False
@@ -447,13 +449,9 @@ class Data:
             except ValueError:
                 pass
             try:
-                if self.imgs is None:
+                if self.imgs is None and not self.ignore_dates:
                     self.df_all[val] = self.df_all[val].astype('datetime64[ns]')
-                    # if all are 00:00:00 time, leave only date
-                    if len(self.df_all.loc[self.df_all[val].dt.hour != 0, val]) == 0 and \
-                            len(self.df_all.loc[self.df_all[val].dt.minute != 0, val]) == 0 and \
-                            len(self.df_all.loc[self.df_all[val].dt.second != 0, val]) == 0:
-                        self.df_all[val] = pd.DatetimeIndex(self.df_all[val]).date
+                    self._strip_timestamp(val)
                     continue
             except:  # noqa
                 continue
@@ -545,6 +543,8 @@ class Data:
         Returns:
             updated df with potentially reduced range of data
         """
+        data_set = data_set.copy()
+
         # Get the max/min autoscale values
         for ax in self.axs_on:
             for mm in ['min', 'max']:
@@ -561,16 +561,35 @@ class Data:
                         continue
 
                     for col in getattr(self, ax):
-                        if col not in data_set.columns:
+                        if col not in data_set.columns or len(data_set) == 0:
                             continue
+
+                        if isinstance(user_limit, datetime.date) or isinstance(user_limit, datetime.datetime):
+                            # Ensure dtypes are aligned for the filtering
+                            try:
+                                data_set[col] = data_set[col].astype('datetime64[ns]')
+                            except:  # noqa
+                                raise DataError(f'Column "{col}" could not be cast to datetime dtype')
+                            try:
+                                user_limit = pd.to_datetime(user_limit)
+                            except:  # noqa
+                                raise DataError(f'User limit "{user_limit}" could not be cast to datetime dtype')
+
                         if mm == 'min':
                             data_set = data_set[data_set[col] >= user_limit]
                         else:
-                            data_set = data_set[data_set[col] <= user_limit]
+                            if data_set[col].dtype == 'datetime64[ns]' and \
+                                    len(data_set[data_set[col] <= user_limit]) == 0:
+                                data_set[col] = user_limit
+                            else:
+                                data_set = data_set[data_set[col] <= user_limit]
 
             vmin, vmax = getattr(self, f'{ax}min')[plot_num], getattr(self, f'{ax}max')[plot_num]
             if vmin is not None and vmax is not None and vmin >= vmax:
                 raise DataError(f'{ax}min must be less than {ax}max [{vmin} >= {vmax}]')
+
+            if len(data_set) == 0:
+                raise DataError('No data found after applying user-specfied min/max values')
 
         return data_set
 
@@ -585,6 +604,9 @@ class Data:
         Returns:
             min, max tuple
         """
+        if len(data_set) == 0:
+            return None, None
+
         # Case: data is a pd.DataFrame - separate out values of interest and address special dtype issues
         if isinstance(data_set, pd.DataFrame):
             if len([f for f in getattr(self, ax) if f not in data_set.columns]) > 0:
@@ -593,10 +615,19 @@ class Data:
             dtypes = data_set[getattr(self, ax)].dtypes.unique()
 
             # Check dtypes
-            if 'str' in dtypes or 'object' in dtypes:
-                return None, None
-            elif 'datetime64[ns]' in dtypes:
-                # Auto-range this
+            if 'datetime64[ns]' in dtypes or all([isinstance(f, datetime.date) for f in vals]):
+                vmin, vmax = None, None
+                if getattr(self, f'{ax}min')[plot_num] is not None:
+                    vmin = getattr(self, f'{ax}min')[plot_num]
+                else:
+                    vmin = np.min(vals)
+                if getattr(self, f'{ax}max')[plot_num] is not None:
+                    vmax = getattr(self, f'{ax}max')[plot_num]
+                else:
+                    vmax = np.max(vals)
+                return np.datetime64(vmin), np.datetime64(vmax)
+
+            elif 'str' in dtypes or 'object' in dtypes:
                 return None, None
 
         # Case: data_set is np.array
@@ -1075,11 +1106,10 @@ class Data:
                 # Subset by legend value
                 if row['Leg'] is not None:
                     df2 = df[df[self.legend] == row['Leg']].copy()
-
-                # Filter out all nan data
-                if row['x'] and row['x'] in df2.columns and len(df2[row['x']].dropna()) == 0 \
-                        or row['y'] and row['y'] in df2.columns and len(df2[row['y']].dropna()) == 0:
-                    continue
+                    # Filter out all nan data
+                    if row['x'] and row['x'] in df2.columns and len(df2[row['x']].dropna()) == 0 \
+                            or row['y'] and row['y'] in df2.columns and len(df2[row['y']].dropna()) == 0:
+                        continue
 
                 # Set twin ax status
                 twin = False
@@ -1168,7 +1198,7 @@ class Data:
 
                 # Find data ranges for this subset
                 else:
-                    df_rc = self._get_auto_scale(self.df_rc, plot_num)
+                    df_rc = self._get_auto_scale(self.df_rc, plot_num)  # is this copy ok??
 
                     for ax in self.axs_on:
                         if getattr(self, ax) is None:
@@ -1244,6 +1274,18 @@ class Data:
             for mm in ['min', 'max']:
                 ranges[f'{ax}{mm}'] = np.array([[None] * self.ncol] * self.nrow)
         return ranges
+
+    def _strip_timestamp(self, val: str):
+        """
+        If all are 00:00:00 time, leave only date
+
+        Args:
+            val: column name
+        """
+        if len(self.df_all.loc[self.df_all[val].dt.hour != 0, val]) == 0 and \
+                len(self.df_all.loc[self.df_all[val].dt.minute != 0, val]) == 0 and \
+                len(self.df_all.loc[self.df_all[val].dt.second != 0, val]) == 0:
+            self.df_all[val] = pd.DatetimeIndex(self.df_all[val]).date
 
     def _subset(self, ir: int, ic: int) -> pd.DataFrame:
         """Handles creation of a new data subset based on the type of plot selected.

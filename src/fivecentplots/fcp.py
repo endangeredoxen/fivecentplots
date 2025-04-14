@@ -84,8 +84,9 @@ def bar(df, **kwargs):
         y (str): y-axis column name [REQUIRED]
         bar_align (str): If ‘center’ aligns center of bar to x-axis value; if ‘edge’ aligns the left edge of the bar to
           the x-axis value. Defaults to ‘center’ .
-        bar_color_by_bar|color_by_bar (bool): Color each bar differently. Defaults to False. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/barplot.html#Color-by-bar
+        bar_color_by|color_by (None, str): Color each bar differently based on a grouping criterion.
+          Defaults to 'bar'. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/barplot.html#Color-by
         bar_edge_color (str): Hex color string for the edge of the bar. Defaults to fcp.DEFAULT_COLORS.
         bar_edge_width (float): Width of the edge of the bar in pixels. Defaults to 0.
         bar_error_bars|error_bars (bool): Display error bars on each bar. Defaults to False. Example:
@@ -313,7 +314,7 @@ def gantt(df, **kwargs):
             - 1) the start time for each item in the Gantt chart
             - 2) the stop time for each item in the Gantt chart
         y (str): y-axis column name [REQUIRED]
-        gantt_color_by_bar|color_by_bar (bool): Color each Gantt bar differently. Defaults to False. Example:
+        gantt_color_by|color_by (None, str): Color grouping column. Defaults to 'bar'. Example:
           https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Styling
         gantt_edge_color (str): Hex color string for the edge of the Gantt bars. Defaults to fcp.DEFAULT_COLORS.
           Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Styling
@@ -1170,9 +1171,7 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
             leg_name = 'Fit'
     else:
         leg_name = None
-    layout.plot_xy(ir, ic, iline, df, f'{x} Fit', f'{y} Fit',
-                   leg_name, twin, line_type='fit',
-                   marker_disable=True)
+    layout.plot_xy(ir, ic, iline, df, f'{x} Fit', f'{y} Fit', leg_name, twin, line_type='fit', marker_disable=True)
 
     if layout.fit.eqn:
         eqn = 'y='
@@ -1208,22 +1207,163 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
         kwargs (dict): keyword args
 
     """
+    # Check if workstream column is in data
+    if layout.gantt.workstreams.column not in df_rc.columns:
+        layout.gantt.workstreams.on = False
+        layout.gantt.workstreams_title.on = False
 
     # Sort the values
-    ascending = False if layout.gantt.sort.lower() == 'descending' else True
-    df_rc = df_rc.sort_values(data.x[0], ascending=ascending)
-    if layout.gantt.order_by_legend:
-        df_rc = df_rc.sort_values(data.legend, ascending=ascending)
+    ascending = False if str(layout.gantt.sort).lower() == 'descending' else True
+    if layout.gantt.order_by_legend and data.legend is not None and not layout.gantt.workstreams.on:
+        df_rc = df_rc.sort_values([data.legend, data.x[0]], ascending=ascending)
+    elif layout.gantt.order_by_legend and data.legend is not None and \
+            layout.gantt.workstreams.on and \
+            layout.gantt.workstreams.location == 'inline':
+        df_rc = df_rc.sort_values([layout.gantt.workstreams.column, '_is_workstream', data.x[0]],
+                                  ascending=ascending)
+    elif layout.gantt.order_by_legend and data.legend is not None and layout.gantt.workstreams.on:
+        df_rc = df_rc.sort_values([layout.gantt.workstreams.column, data.x[0]], ascending=ascending)
+    else:
+        df_rc = df_rc.sort_values(data.x[0], ascending=ascending)
 
+    # Update df and legend_vals with a custom order for workstreams
+    if layout.gantt.workstreams.on:
+        temp = [df_rc.loc[~df_rc[layout.gantt.workstreams.column].isin(layout.gantt.workstreams.order)]]
+        for order in list(reversed(layout.gantt.workstreams.order)):
+            temp += [df_rc.loc[df_rc[layout.gantt.workstreams.column] == order]]
+        temp += []
+        df_rc = pd.concat(temp)
+
+        if layout.legend is not None and layout.legend.column == layout.gantt.workstreams.column:
+            temp = data.legend_vals.set_index('names')
+            index = list(reversed(df_rc[layout.gantt.workstreams.column].unique()))
+            data.legend_vals = temp.loc[index].reset_index()
+
+    # Prepare data for plotting
     cols = data.y
-    if data.legend is not None:
-        cols += [f for f in utl.validate_list(data.legend)
+    if layout.gantt.workstreams.on and layout.gantt.workstreams.column != layout.legend.column:
+        cols += [f for f in utl.validate_list(layout.gantt.workstreams.column)
                  if f is not None and f not in cols]
+    elif data.legend not in [None, False]:
+        cols += [f for f in utl.validate_list(data.legend) if f is not None and f not in cols]
+    yvals = utl.remove_duplicates_list_preserve_order([tuple(f) for f in df_rc[cols].values])
 
-    yvals = [tuple(f) for f in df_rc[cols].values]
+    # note: values gives list of np.datetime64 which can't be directly compared to datetimes
+    if layout.gantt.milestone in df_rc.columns:
+        xvals = df_rc.loc[df_rc[layout.gantt.milestone].isna(), data.x].values
+    else:
+        xvals = df_rc[data.x].values
 
+    bar_labels = None
+    if layout.gantt.bar_labels is not None:
+        # Bar labels can have data from multiple columns; store as tuple with text string and boolean for
+        # whether or not the entry has a dependency
+        if layout.gantt.milestone in df_rc.columns:
+            vals = df_rc.loc[df_rc[layout.gantt.milestone].isna(), layout.gantt.bar_labels.columns].values
+            bar_labels = [' | '. join(f) for f in vals]
+        else:
+            bar_labels = [' | '. join(f) for f in df_rc[layout.gantt.bar_labels.columns].values]
+
+    # Update the x-axis ranges (preserve user-defined xmax even if it cuts off labels)
+    user_xmax = True if data.xmax[utl.plot_num(ir, ic, layout.ncol)] is not None else False
+    layout.set_axes_ranges(ir, ic, {k: data.ranges[k] for k in ['xmin' 'xmax'] if k in data.ranges})
+
+    # Plot the bars
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
-        layout.plot_gantt(ir, ic, iline, df, data.x, y, leg_name, yvals, ngroups)
+        new_xmax = layout.plot_gantt(ir, ic, iline, df, data.x, y, leg_name, xvals, yvals, bar_labels, ngroups, data)
+
+        # If xmax not explicitly set by user, update the xmax range to accomodate size of long labels
+        if not user_xmax and np.datetime64(new_xmax) > np.datetime64(data.ranges['xmax'][ir, ic]):
+            data.ranges['xmax'][ir, ic] = np.datetime64(new_xmax)
+            layout.set_axes_ranges(ir, ic, {k: data.ranges[k] for k in ['xmin' 'xmax'] if k in data.ranges})
+
+    # Connect dependencies with arrows
+    if layout.gantt.dependencies in df_rc.columns:
+        processed_deps = []
+        for irow, row in df_rc.iterrows():
+            if str(row[layout.gantt.dependencies]) == 'nan':
+                continue
+            if not isinstance(row[layout.gantt.dependencies], list):
+                continue
+            for dep in row[layout.gantt.dependencies]:
+                # Try dependency column first, then milestone column
+                sub = df_rc.loc[(df_rc[data.y[0]] == dep)]
+                if len(sub) == 0:
+                    sub = df_rc.loc[(df_rc[data.milestone] == dep)]
+                if len(sub) == 0:
+                    continue
+                if data.ranges['xmin'][ir, ic] is not None:
+                    sub = sub.loc[sub[data.x[0]] >= data.ranges['xmin'][ir, ic]]
+                    layout.set_axes_ranges(ir, ic, {k: data.ranges[k] for k in ['xmin'] if k in data.ranges})
+                if data.ranges['xmax'][ir, ic] is not None:
+                    sub = sub.loc[sub[data.x[1]] <= data.ranges['xmax'][ir, ic]]
+                    layout.set_axes_ranges(ir, ic, {k: data.ranges[k] for k in ['xmax'] if k in data.ranges})
+                for ii, val in sub.iterrows():
+                    start_idx = utl.tuple_list_index(yvals, val[data.y[0]])
+                    end_idx = utl.tuple_list_index(yvals, row[data.y[0]])
+                    min_collision = row[data.x[0]]
+                    max_collision = val[data.x[1]]
+                    for idx in range(min(start_idx, end_idx), max(start_idx, end_idx)):
+                        item = yvals[idx][0]
+                        min_collision = min(min_collision, df_rc.loc[df_rc[data.y[0]] == item, data.x[0]].iloc[0])
+                        if df_rc.loc[df_rc[data.y[0]] == item, data.x[0]].iloc[0] < val[data.x[1]]:
+                            # Skip workstream rows
+                            if layout.gantt.workstreams.on and \
+                                    layout.gantt.workstreams.location == 'inline' and \
+                                    df_rc.loc[df_rc[data.y[0]] == item, '_is_workstream'].iloc[0] == 1:
+                                continue
+                            # Update max_collision
+                            max_collision = max(max_collision, df_rc.loc[df_rc[data.y[0]] == item, data.x[1]].iloc[0])
+                    is_milestone_start = False
+                    if val[data.x[0]] == val[data.x[1]]:
+                        is_milestone_start = True
+                    is_milestone_end = False
+                    if row[data.x[0]] == row[data.x[1]]:
+                        is_milestone_end = True
+                    layout.plot_gantt_dependencies(ir, ic, (val[data.x[1]], start_idx), (row[data.x[0]], end_idx),
+                                                   min_collision, max_collision,
+                                                   is_milestone_start=is_milestone_start,
+                                                   is_milestone_end=is_milestone_end,
+                                                   repeat_dep=True if dep in processed_deps else False)
+                processed_deps += [dep]
+
+    # Add workstream labels
+    if layout.gantt.workstreams.on and layout.gantt.workstreams.location != 'inline':
+        layout.gantt.workstreams.obj[ir, ic] = []
+        layout.gantt.workstreams.obj_bg[ir, ic]
+
+        # Labels
+        layout.gantt.workstreams.rows[ir, ic] = []
+        layout.gantt.workstreams.edge_width = layout.grid_major_y.width[0]
+        unique_workstreams = df_rc[layout.gantt.workstreams.column].unique()
+        for icol, col in enumerate(unique_workstreams):
+            rows = len(df_rc.loc[df_rc[layout.gantt.workstreams.column] == col, data.y[0]].unique())
+            if layout.gantt.workstreams.match_bar_color:
+                layout.gantt.workstreams.fill_color.values[0] = \
+                    layout.gantt.fill_color[len(unique_workstreams) - icol - 1]
+            obj, obj_bg = layout.add_label(
+                ir, ic, layout.gantt.workstreams, col, layout.axes.size[1] / len(df_rc) * rows)
+            if icol == 0:
+                layout.gantt.workstreams.obj[ir, ic] = [obj]
+                layout.gantt.workstreams.obj_bg[ir, ic] = [obj_bg]
+            else:
+                layout.gantt.workstreams.obj[ir, ic] += [obj]
+                layout.gantt.workstreams.obj_bg[ir, ic] += [obj_bg]
+            layout.gantt.workstreams.rows[ir, ic] += [rows]
+
+        # Title
+        layout.gantt.workstreams_title.edge_width = layout.grid_major_y.width[0]
+        layout.gantt.workstreams_title.obj[ir, ic], layout.gantt.workstreams_title.obj_bg[ir, ic] = \
+            layout.add_label(ir, ic, layout.gantt.workstreams_title, layout.gantt.workstreams_title.text)
+
+    elif layout.gantt.workstreams.on and layout.gantt.workstreams.location == 'inline':
+        pass
+    else:
+        layout.gantt.workstreams.on = False
+
+    # Add today line
+    if layout.gantt.today.on:
+        layout.plot_gantt_today(ir, ic)
 
     return data
 

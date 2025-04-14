@@ -15,8 +15,9 @@ import ast
 import operator
 import imageio.v3 as imageio
 from matplotlib.font_manager import FontProperties, findfont
+import matplotlib.dates as mdates
 from pathlib import Path
-from typing import Union, Tuple, Dict
+from typing import Any, Union, Tuple, Dict, List
 from . import data
 import numpy.typing as npt
 try:
@@ -173,6 +174,10 @@ class Timer:
         self.init = None
 
 
+class CustomWarning(Warning):
+    pass
+
+
 def arithmetic_eval(s):
     s = s.replace(' ', '')
     s = s.replace('--', '+')
@@ -254,6 +259,41 @@ def close_preview_windows_macos(filenames: Union[str, list]):
                  end tell
                  """ % ff
         osascript.run(script)
+
+
+def date_to_pixels(date: Union[datetime.datetime, float], vmin: float, vmax: float,
+                   pxmin: float, pxmax: float) -> float:
+    """Convert a matplotlib date to pixels.
+
+    Args:
+        date: datetime or matplotlib date float to convert to pixels
+        vmin: minimum date or matplotlib date float
+        vmax: maximum date or matplotlib date float
+        pxmin: minimum pixel value of the axes range
+        pxmax: maximum pixel value of the axes range
+
+    Returns:
+        date value in pixels
+    """
+    if isinstance(date, datetime.datetime):
+        date = mdates.date2num(date)
+
+    return (date - vmin) * (pxmax - pxmin) / (vmax - vmin) + pxmin
+
+
+def date_vals(date_num: Union[datetime.datetime, float]) -> Tuple[int, int, int]:
+    """Convert a date number to a datetime object.
+
+    Args:
+        date_num: matplotlib date number
+
+    Returns:
+        day, month, year as integers
+    """
+    if isinstance(date_num, datetime.datetime):
+        return date_num.day, date_num.month, date_num.year
+    else:
+        return mdates.num2date(date_num).day, mdates.num2date(date_num).month, mdates.num2date(date_num).year
 
 
 def dfkwarg(args: tuple, kwargs: dict, plotter: object) -> dict:
@@ -623,7 +663,8 @@ def get_nested_files(path: Union[Path, str], pattern: Union[str, None] = None, e
     return files
 
 
-def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, font_weight: str, **kwargs) -> tuple:
+def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, font_weight: str,
+                        dpi: int = 100, **kwargs) -> tuple:
     """Use pillow to try and figure out actual dimensions of text.
 
     Args:
@@ -632,6 +673,7 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
         font_size: font size
         font_style: normal vs italic
         font_weight: normal vs bold
+        dpi: dots per inch, mpl uses px for font and pillow uses pt so need to convert
         kwargs: in place to
 
     Returns:
@@ -645,14 +687,14 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
         return False
 
     fp = FontProperties()
-    fp.set_family(font)
+    fp.set_name(font)
     fp.set_style(font_style)
     fp.set_weight(font_weight)
     fontfile = findfont(fp, fallback_to_default=True)
-    font = ImageFont.truetype(fontfile, font_size)
+    font = ImageFont.truetype(fontfile, int(np.ceil(font_size * dpi / 72)))
     size = font.getbbox(text)[2:]
 
-    return size[0] * 1.125, size[1] * 1.125  # no idea why it is off
+    return size
 
 
 def kwget(dict1: dict, dict2: dict, vals: [str, list], default: [list, dict]):
@@ -1273,6 +1315,21 @@ def reload_defaults(theme: [str, None] = None, verbose: bool = False):
     return fcp_params, colors, markers, rcParams  # could convert to dict in future
 
 
+def remove_duplicates_list_preserve_order(seq: List[Any]) -> List[Any]:
+    """
+    Remove duplicates from a list while preserving original order
+
+    Args:
+        seq: original list
+
+    Returns:
+        updated list
+    """
+    seen = set()
+    seen_add = seen.add
+    return [x for x in seq if not (x in seen or seen_add(x))]
+
+
 def see(obj) -> pd.DataFrame:
     """Prints a readable list of class attributes.
 
@@ -1541,6 +1598,21 @@ def test_checker(module) -> list:
     plts = [f[0].replace('plt_', '') for f in funcs if 'plt_' in f[0]]
 
     return [f for f in plts if f not in tests]
+
+
+def tuple_list_index(tuple_list: List[Tuple[Any]], search_value: Any, idx: int = 0) -> int:
+    """
+    Find the index of a search value that matches the value of a tuple at a specific tuple index in a list of tuples.
+
+    Args:
+        tuple_list: list of tuples; tuples can have any len
+        search_value:  the value to find
+        idx: the index within a specific tuple to search
+
+    Return:
+        index or -1 if not found
+    """
+    return next((i for i, t in enumerate(tuple_list) if t[0] == search_value), -1)
 
 
 def unit_test_get_img_name(name: str, make_reference: bool, reference_path: pathlib.Path) -> pathlib.Path:
@@ -1857,7 +1929,7 @@ def unit_test_show_all(only_fails: bool, reference: pathlib.Path, name: str, sta
             db()
 
         # macos only convenience - close last opened files
-        if len(paths) > 0:
+        if paths is not None and len(paths) > 0:
             close_preview_windows_macos([f.name for f in paths] + ['difference.png'])
 
 

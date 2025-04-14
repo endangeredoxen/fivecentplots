@@ -7,7 +7,7 @@ fcp_params = {'ax_edge_color': '#555555',
               'ax_fill_color': '#ffffff',
               'ax_size': [400, 400],  # [width, height]
               'bar_align': 'center',
-              'bar_color_by_bar': False,
+              'bar_color_by': None,
               'bar_edge_width': 0,
               'bar_error_bars': None,
               'bar_error_color': '#555555',

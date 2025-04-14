@@ -102,7 +102,7 @@ def test_get_decimals():
 
 
 def test_get_text_dimensions():
-    dim = (208.125, 16.875)
+    dim = (259, 20)
     assert utl.get_text_dimensions('no alarms and no surprises', 'Deja Vu Sans', 12, 'normal', 'bold') == dim
 
 

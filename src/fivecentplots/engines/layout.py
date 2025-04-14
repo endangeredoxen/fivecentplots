@@ -2,6 +2,7 @@ import pandas as pd
 import pdb
 import numpy as np
 import copy
+import datetime
 from .. colors import DEFAULT_COLORS
 from .. utilities import RepeatedList
 from .. import utilities as utl
@@ -118,6 +119,7 @@ class BaseLayout:
         self.fills = None  # Element object for rectangular fills
         self.fit = None  # Element object for fit line
         self.gantt = None  # Element object for gannt chart
+        self.gantt_scale = False  # auto-scale axes width for gantt plot
         self.grid_major = None  # Element object with default values for major grids not explicitly defined
         self.grid_major_x = None  # Element object for x major grid (defaults to self.grid_major)
         self.grid_major_x2 = None  # Element object for x2 major grid (defaults to self.grid_major)
@@ -333,9 +335,10 @@ class BaseLayout:
         # Set default axes visibility
         self.axes.visible = np.array([[True] * self.ncol] * self.nrow)
 
-        # auto-boxplot size option
+        # auto-boxplot / auto-gantt size option
         if self.axes.size == ['auto']:
             self.box_scale = 'auto'
+            self.gantt_scale = 'auto'
             self.axes.size = [400, 400]
 
         # twinned axes
@@ -379,7 +382,7 @@ class BaseLayout:
                         fill_alpha=utl.kwget(kwargs, self.fcpp, 'label_fill_alpha', 1),
                         fill_color=utl.kwget(kwargs, self.fcpp, 'label_fill_color', '#ffffff'),
                         font_color=utl.kwget(kwargs, self.fcpp, 'label_font_color', '#000000'),
-                        font_size=utl.kwget(kwargs, self.fcpp, 'label_font_size', 'italic'),
+                        font_size=utl.kwget(kwargs, self.fcpp, 'label_font_size', 14),
                         font_style=utl.kwget(kwargs, self.fcpp, 'label_font_style', 'italic'),
                         font_weight=utl.kwget(kwargs, self.fcpp, 'label_font_weight', 'bold'),
                         padding=utl.kwget(kwargs, self.fcpp, ['label_padding'], 0.3),
@@ -448,6 +451,7 @@ class BaseLayout:
         """
         # Axhlines/axvlines
         axlines = ['ax_hlines', 'ax_vlines', 'ax2_hlines', 'ax2_vlines']
+
         # Todo: list
         for axline in axlines:
             val = kwargs.get(axline, False)
@@ -539,11 +543,11 @@ class BaseLayout:
                                                 kwargs.get('error_bars', False)),
                            error_color=utl.kwget(kwargs, self.fcpp, ['bar_error_color', 'error_color'],
                                                  kwargs.get('error_color', '#555555')),
-                           color_by_bar=utl.kwget(kwargs, self.fcpp, ['bar_color_by_bar', 'color_by_bar'],
-                                                  kwargs.get('color_by_bar', False)),
+                           color_by=utl.kwget(kwargs, self.fcpp, ['bar_color_by', 'color_by'],
+                                              kwargs.get('color_by', None)),
                            )
         if 'colors' in kwargs.keys():
-            self.bar.color_by_bar = True
+            self.bar.color_by = 'bar'
 
         # rolling mean options
         rolling = utl.kwget(kwargs, self.fcpp, ['bar_rolling_mean', 'rolling_mean',
@@ -1068,45 +1072,346 @@ class BaseLayout:
         """
         # If this plot type is disabled, create minimal set of element parameters
         if self.name != 'gantt':
-            self.gantt = Element('gantt', self.fcpp, kwargs, on=False)
+            self.gantt = Element('gantt', self.fcpp, kwargs, on=False, label_boxes=False)
             return kwargs
 
-        self.gantt = Element('gantt', self.fcpp, kwargs,
-                             on=True,
-                             height=utl.kwget(kwargs, self.fcpp, 'gantt_height', kwargs.get('height', 0.9)),
-                             sort=utl.kwget(kwargs, self.fcpp, 'sort', 'descending'),
-                             edge_color=utl.kwget(kwargs, self.fcpp, 'gantt_edge_color', copy.copy(self.color_list)),
-                             edge_width=utl.kwget(kwargs, self.fcpp, 'gantt_edge_width', 0),
-                             fill_alpha=utl.kwget(kwargs, self.fcpp, 'gantt_fill_alpha', 0.75),
-                             fill_color=utl.kwget(kwargs, self.fcpp, 'gantt_fill_color', copy.copy(self.color_list)),
-                             color_by_bar=utl.kwget(kwargs, self.fcpp, ['gantt_color_by_bar', 'color_by_bar'],
-                                                    kwargs.get('color_by_bar', False)),
-                             order_by_legend=utl.kwget(kwargs, self.fcpp, ['gantt_order_by_legend', 'order_by_legend'],
-                                                       kwargs.get('order_by_legend', False)),
-                             label_x=utl.kwget(kwargs, self.fcpp, 'gantt_label_x', kwargs.get('gantt_label_x', '')),
-                             tick_labels_x_rotation=utl.kwget(kwargs, self.fcpp, 'gantt_tick_labels_x_rotation',
-                                                              kwargs.get('gantt_tick_labels_x_rotation', 90)),
-                             )
-        if self.gantt.on and \
-                ('tick_labels_major_rotation' not in kwargs.keys()
-                 or 'tick_labels_major_x_rotation' not in kwargs.keys()
-                 or 'tick_labels_x_rotation' not in kwargs.keys()):
+        gantt_labels = \
+            Element('gantt_labels', self.fcpp, kwargs, on=True,
+                    obj=self.obj_array,
+                    columns=None,
+                    edge_color=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'gantt_label_edge_color', 'none'), 'gantt_label_edge_color'),
+                    edge_width=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'gantt_label_edge_width', 1), 'gantt_label_edge_width'),
+                    fill_color=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'gantt_label_fill_color', 'none'), 'gantt_label_fill_color'),
+                    font=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'gantt_label_font', 'Times'), 'gantt_label_font'),
+                    font_color=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'gantt_label_font_color', '#777777'), 'gantt_label_font_color'),
+                    font_size=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'gantt_label_font_size', 12), 'gantt_label_font_size'),
+                    font_style=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'gantt_label_font_style', 'normal'), 'gantt_label_font_style'),
+                    font_weight=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'gantt_label_font_weight', 'normal'), 'gantt_label_font_weight'),
+                    position=[0.01, 0],
+                    coordinate=utl.kwget(kwargs, self.fcpp, ['gantt_label_coordinate', 'gantt_label_coord'], 'data'),
+                    rotation=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'gantt_label_rotation', 0), 'gantt_label_rotation'),
+                    units=utl.kwget(kwargs, self.fcpp, 'gantt_label_units', 'pixel'),
+                    text=[],
+                    )
+
+        gantt_milestone_text = \
+            Element('gantt_milestone_text', self.fcpp, kwargs,
+                    on=utl.kwget(kwargs, self.fcpp, ['gantt_milestone_text', 'milestone_text'], True),
+                    obj=self.obj_array,
+                    coordinate='data',
+                    columns=None,
+                    edge_color=utl.kwget(kwargs, self.fcpp,
+                                         ['gantt_milestone_text_edge_color', 'milestone_text_edge_color'], 'none'),
+                    edge_width=utl.kwget(kwargs, self.fcpp,
+                                         ['gantt_milestone_text_edge_width', 'milestone_text_edge_width'], 0),
+                    fill_color=utl.kwget(kwargs, self.fcpp,
+                                         ['gantt_milestone_text_fill_color', 'milestone_text_fill_color'], 'none'),
+                    font=utl.kwget(kwargs, self.fcpp,
+                                   ['gantt_milestone_text_font', 'milestone_text_font'], 'Arial'),
+                    font_color=utl.kwget(kwargs, self.fcpp,
+                                         ['gantt_milestone_text_font_color', 'milestone_text_font_color'], '#333333'),
+                    font_size=utl.kwget(kwargs, self.fcpp,
+                                        ['gantt_milestone_text_font_size', 'milestone_text_font_size'], 10),
+                    font_style=utl.kwget(kwargs, self.fcpp,
+                                         ['gantt_milestone_text_font_style', 'milestone_text_font_style'], 'normal'),
+                    font_weight=utl.kwget(kwargs, self.fcpp,
+                                          ['gantt_milestone_text_font_weight', 'milestone_text_font_weight'], 'bold'),
+                    location=utl.kwget(kwargs, self.fcpp,  # top, right
+                                       ['gantt_milestone_text_location', 'milestone_text_location'], 'top'),
+                    position=[],
+                    rotation=utl.kwget(kwargs, self.fcpp,
+                                       ['gantt_milestone_text_rotation', 'milestone_text_rotation'], 0),
+                    units=utl.kwget(kwargs, self.fcpp,
+                                    ['gantt_milestone_text_units', 'milestone_text_units'], 'pixel'),
+                    text=[],
+                    )
+
+        gantt_workstreams = \
+            Element('gantt.workstreams', self.fcpp, kwargs,
+                    on=True if utl.kwget(kwargs, self.fcpp,
+                                         ['gantt_workstreams', 'workstreams'], False) is not False else False,
+                    obj=copy.copy(self.obj_array),
+                    align=utl.kwget(kwargs, self.fcpp, 'gantt_workstreams_label_align', 'center'),
+                    brackets=utl.kwget(kwargs, self.fcpp, ['gantt_workstreams_brackets', 'workstream_brackets'], True),
+                    column=utl.kwget(kwargs, self.fcpp, ['gantt_workstreams', 'workstreams'], None),
+                    edge_color=utl.kwget(kwargs, self.fcpp,
+                                         ['gantt_workstreams_label_edge_color', 'workstreams_label_edge_color'],
+                                         self.axes.edge_color),
+                    edge_style=utl.kwget(kwargs, self.fcpp,
+                                         ['gantt_workstreams_label_edge_style', 'workstreams_label_edge_style'], None),
+                    fill_color=utl.kwget(kwargs, self.fcpp,
+                                         ['gantt_workstreams_label_fill_color', 'workstreams_label_fill_color'],
+                                         '#8c8c8c'),
+                    font_color=utl.kwget(kwargs, self.fcpp,
+                                         ['gantt_workstreams_label_font_color', 'workstreams_label_font_color'],
+                                         '#ffffff'),
+                    font_size=utl.kwget(kwargs, self.fcpp,
+                                        ['gantt_workstreams_label_font_size', 'workstreams_label_font_size'], 16),
+                    font_style=utl.kwget(kwargs, self.fcpp,
+                                         ['gantt_workstreams_label_font_style', 'workstreams_label_font_style'],
+                                         'normal'),
+                    font_weight=utl.kwget(kwargs, self.fcpp,
+                                          ['gantt_workstreams_label_font_weight', 'workstreams_label_font_weight'],
+                                          'bold'),
+                    highlight_row=utl.kwget(kwargs, self.fcpp,
+                                            ['gantt_workstreams_highlight_row', 'workstreams_highlight_row'],
+                                            True),
+                    location=utl.kwget(kwargs, self.fcpp,  # left, right, inline
+                                       ['gantt_workstreams_location', 'workstreams_location'], 'left'),
+                    match_bar_color=utl.kwget(kwargs, self.fcpp,
+                                              ['gantt_workstreams_match_bar_color',
+                                               'workstreams_match_bar_color',
+                                               'match_bar_color'], False),
+                    order=utl.kwget(kwargs, self.fcpp, ['gantt_workstreams_order', 'workstreams_order'], []),
+                    padding=utl.kwget(kwargs, self.fcpp,
+                                      ['gantt_workstreams_label_padding', 'workstreams_label_padding'], 0.3),
+                    rotation=utl.kwget(kwargs, self.fcpp,
+                                       ['gantt_workstreams_rotation', 'workstreams_label_rotation'], 90),
+                    rows=self.obj_array,
+                    size=utl.kwget(kwargs, self.fcpp,
+                                   ['gantt_workstreams_label_size', 'workstreams_label_size'], 30),
+                    )
+        if not isinstance(gantt_workstreams.size, list):
+            gantt_workstreams._size = [gantt_workstreams.size, 0]  # use size_orig b/c on = False
+
+        gantt_workstreams_title = \
+            Element('gantt.workstreams', self.fcpp, kwargs,
+                    on=True if (utl.kwget(kwargs, self.fcpp,
+                                ['gantt_workstreams_title', 'workstreams_title'], None) is None
+                                and gantt_workstreams.on) else False,
+                    obj=self.obj_array,
+                    align=utl.kwget(kwargs, self.fcpp, ['gantt_workstreams_title_align', 'workstreams_title_'],
+                                    'center'),  # doesn't work
+                    edge_color=utl.kwget(kwargs, self.fcpp,
+                                         ['gantt_workstreams_title_edge_color', 'workstreams_title_edge_color'],
+                                         'none' if gantt_workstreams.location == 'inline' else self.axes.edge_color),
+                    edge_style=utl.kwget(kwargs, self.fcpp,
+                                         ['gantt_workstreams_title_edge_style', 'workstreams_title_edge_style'], None),
+                    edge_width=utl.kwget(kwargs, self.fcpp,
+                                         ['gantt_workstreams_title_edge_width', 'workstreams_title_edge_width'], 1),
+                    fill_alpha=utl.kwget(kwargs, self.fcpp,
+                                         ['gantt_workstreams_title_fill_alpha', 'workstreams_title_fill_alpha'],
+                                         0.2 if gantt_workstreams.location == 'inline' else 1),
+                    fill_color=utl.kwget(kwargs, self.fcpp,
+                                         ['gantt_workstreams_title_fill_color', 'workstreams_title_fill_color'],
+                                         '#888888' if gantt_workstreams.location == 'inline' else '#5f5f5f'),
+                    font_color=utl.kwget(kwargs, self.fcpp,
+                                         ['gantt_workstreams_title_font_color', 'workstreams_title_font_color'],
+                                         '#ffffff'),
+                    font_size=utl.kwget(kwargs, self.fcpp,
+                                        ['gantt_workstreams_title_font_size', 'workstreams_title_font_size'], 16),
+                    font_style=utl.kwget(kwargs, self.fcpp,
+                                         ['gantt_workstreams_title_font_style', 'workstreams_title_font_style'],
+                                         'normal'),
+                    font_weight=utl.kwget(kwargs, self.fcpp,
+                                          ['gantt_workstreams_title_font_weight', 'workstreams_title_font_weight'],
+                                          'bold'),
+                    padding=utl.kwget(kwargs, self.fcpp,
+                                      ['gantt_workstreams_title_padding', 'workstreams_title_padding'], 0.3),
+                    rotation=utl.kwget(kwargs, self.fcpp,
+                                       ['gantt_workstreams_title_rotation', 'workstreams_title_rotation'], 90),
+                    rows=[],
+                    size=utl.kwget(kwargs, self.fcpp, ['gantt_workstreams_title_size', 'workstreams_title_size'], 30),
+                    text=utl.kwget(kwargs, self.fcpp, ['gantt_workstreams_title', 'workstreams_title'], 'Workstreams'),
+                    )
+        if not isinstance(gantt_workstreams_title.size, list):
+            gantt_workstreams_title._size = [gantt_workstreams_title.size, self.axes.size[1]]
+
+        self.gantt = \
+            Element('gantt', self.fcpp, kwargs,
+                    on=True,
+                    auto_expand=utl.kwget(kwargs, self.fcpp, ['gantt_auto_expand', 'auto_expand'], True),
+                    bar_labels=utl.kwget(kwargs, self.fcpp, ['gantt_bar_labels', 'bar_labels'], None),
+                    box_padding_x=utl.kwget(kwargs, self.fcpp, ['gantt_label_box_padding_x', 'label_box_padding_x'], 8),
+                    box_padding_y=utl.kwget(kwargs, self.fcpp, ['gantt_label_box_padding_x', 'label_box_padding_y'], 6),
+                    color_by=utl.kwget(kwargs, self.fcpp, ['gantt_color_by', 'color_by'], None),
+                    date_location=utl.kwget(kwargs, self.fcpp, ['gantt_date_location', 'date_location'], 'top'),
+                    date_type=utl.kwget(kwargs, self.fcpp, ['gantt_date_type', 'date_type'], []),
+                    dependencies=utl.kwget(kwargs, self.fcpp, ['gantt_dependencies', 'dependencies'], 'Dependency'),
+                    edge_color=utl.kwget(
+                       kwargs, self.fcpp, ['gantt_edge_color', 'bar_edge_color'], copy.copy(self.color_list)),
+                    edge_width=utl.kwget(kwargs, self.fcpp, ['gantt_edge_width', 'bar_edge_width'], 0),
+                    fill_alpha=utl.kwget(kwargs, self.fcpp, ['gantt_fill_alpha', 'bar_fill_alpha'], 0.75),
+                    fill_color=utl.kwget(
+                       kwargs, self.fcpp, ['gantt_fill_color', 'bar_fill_color'], copy.copy(self.color_list)),
+                    height=utl.kwget(kwargs, self.fcpp, ['gantt_height', 'bar_height'], 0.8),
+                    label_x=utl.kwget(kwargs, self.fcpp, 'gantt_label_x', kwargs.get('gantt_label_x', '')),
+                    labels_as_yticks=utl.kwget(
+                       kwargs, self.fcpp, ['gantt_labels_as_yticks', 'labels_as_yticks'], True),
+                    label_boxes=utl.kwget(kwargs, self.fcpp, ['gantt_label_boxes', 'label_boxes'], False),
+                    milestone=utl.kwget(kwargs, self.fcpp, ['gantt_milestones', 'milestones'], 'Milestone'),
+                    milestone_marker=utl.kwget(kwargs, self.fcpp, ['gantt_milestone_marker', 'milestone_marker'],
+                                               'D'),
+                    milestone_text=gantt_milestone_text,
+                    months=copy.copy(self.obj_array),
+                    order_by_legend=utl.kwget(kwargs, self.fcpp, ['gantt_order_by_legend', 'order_by_legend'],
+                                              kwargs.get('order_by_legend', False)),
+                    quarters=copy.copy(self.obj_array),
+                    show_all=utl.kwget(kwargs, self.fcpp, ['gantt_show_all', 'show_all'], False),
+                    sort=utl.kwget(kwargs, self.fcpp, 'sort', 'descending'),
+                    tick_labels_x_rotation=utl.kwget(kwargs, self.fcpp, 'gantt_tick_labels_x_rotation',
+                                                     kwargs.get('gantt_tick_labels_x_rotation', 90)),
+                    today=utl.kwget(kwargs, self.fcpp, ['gantt_today', 'today'], True),
+                    workstreams=gantt_workstreams,
+                    workstreams_title=gantt_workstreams_title,
+                    years=copy.copy(self.obj_array)
+                    )
+        self.gantt.DATE_TYPES = ['year', 'quarter', 'month', 'week', 'quarter-year', 'month-year']  # not linked to data
+        self.gantt.date_type = utl.validate_list(self.gantt.date_type)
+
+        # Bar labels
+        if self.gantt.bar_labels is not None or not self.gantt.labels_as_yticks:
+            # Set the bar label columns
+            if self.gantt.bar_labels is None:
+                self.gantt.bar_labels = copy.copy(kwargs['y'])
+            columns = utl.validate_list(self.gantt.bar_labels)
+            self.gantt.bar_labels = copy.deepcopy(gantt_labels)
+            self.gantt.bar_labels.columns = columns
+
+            # If y column in bar_labels, disable labels_as_yticks unless user forces it
+            common = [f for f in kwargs['y'] if f in self.gantt.bar_labels.columns]
+            if len(common) > 0 \
+                    and not utl.kwget(kwargs, self.fcpp, ['gantt_labels_as_yticks', 'labels_as_yticks'], False):
+                self.gantt.labels_as_yticks = False
+
+            if not self.gantt.labels_as_yticks:
+                self.tick_labels_major_y.on = False
+                self.tick_labels_minor_y.on = False
+                self.gantt.box_padding_x = 0
+
+        # Today text
+        now = datetime.datetime.now()
+        self.gantt.today = \
+            Element('gantt_today', self.fcpp, kwargs,
+                    on=False if utl.kwget(kwargs, self.fcpp, ['gantt_today', 'today'], False) is False else True,
+                    obj=self.obj_array,
+                    color=utl.kwget(kwargs, self.fcpp, ['gantt_today_color', 'today_color'], '#555555'),
+                    coordinate=utl.kwget(kwargs, self.fcpp, ['gantt_today_coordinate', 'today_coordinate'], 'data'),
+                    date=utl.kwget(kwargs, self.fcpp, ['gantt_today', 'today'], now),
+                    edge_color=utl.kwget(kwargs, self.fcpp, ['gantt_today_edge_color', 'today_edge_color'],
+                                         '#555555'),
+                    edge_width=utl.kwget(kwargs, self.fcpp, ['gantt_today_edge_width', 'today_edge_width'], 0),
+                    fill_color=utl.kwget(kwargs, self.fcpp, ['gantt_today_fill_color', 'today_fill_color'],
+                                         '#555555'),
+                    font=utl.kwget(kwargs, self.fcpp, ['gantt_today_font', 'today_font'], 'sans-serif'),
+                    font_color=utl.kwget(kwargs, self.fcpp, ['gantt_today_font_color', 'today_font_color'], '#ffffff'),
+                    font_size=utl.kwget(kwargs, self.fcpp, ['gantt_today_font_size', 'today_font_size'], 13),
+                    font_style=utl.kwget(kwargs, self.fcpp,
+                                         ['gantt_today_font_style', 'today_font_style'], 'normal'),
+                    font_weight=utl.kwget(kwargs, self.fcpp,
+                                          ['gantt_today_font_weight', 'today_font_weight'], 'bold'),
+                    padding=utl.kwget(kwargs, self.fcpp, ['gantt_today_padding', 'today_padding'], 3),
+                    position=[0, 1],
+                    rotation=utl.kwget(kwargs, self.fcpp, ['gantt_today_rotation', 'today_rotation'], 0),
+                    style=utl.kwget(kwargs, self.fcpp, ['gantt_today_style', 'today_style'], '-'),
+                    text=utl.kwget(kwargs, self.fcpp, ['gantt_today_text', 'today_text'], 'Today'),
+                    units=utl.kwget(kwargs, self.fcpp, ['gantt_today_units', 'today_units'], 'pixel'),
+                    width=utl.kwget(kwargs, self.fcpp, ['gantt_today_width', 'today_width'], 1.5),
+                    )
+        if self.gantt.today.date is True:
+            self.gantt.today.date = now
+        self.gantt.today.position[0] = self.gantt.today.date
+
+        # Legend defaults
+        if self.gantt.workstreams.on and not self.legend._on:
+            self.legend.column = self.gantt.workstreams.column
+            self.legend._on = True
+        if self.legend.column is not None:
+            if not utl.kwget(kwargs, self.fcpp, ['gantt_color_by', 'color_by'], False):
+                self.gantt.color_by = 'legend'
+            if utl.kwget(kwargs, self.fcpp, ['gantt_order_by_legend', 'order_by_legend'],
+                         kwargs.get('order_by_legend', True)):
+                self.gantt.order_by_legend = True
+
+        # Workstreams
+        if self.gantt.workstreams.location == 'right':
+            self.gantt.workstreams.rotation = 270
+            self.gantt.workstreams_title.rotation = 270
+        elif self.gantt.workstreams.location == 'inline':
+            self.gantt.workstreams.rotation = 0
+            self.gantt.workstreams_title.rotation = 0
+        if self.gantt.workstreams.on and not utl.kwget(kwargs, self.fcpp, ['gantt_label_boxes', 'label_boxes'], False):
+            self.gantt.label_boxes = True
+
+        ### Adjust some style parameters based on user inputs  # noqa
+        # x-ticks default to bottom unless a date_type is specified
+        if not any(f in self.gantt.date_type for f in self.gantt.DATE_TYPES) \
+                and 'date_location' not in kwargs \
+                and 'gantt_date_location' not in kwargs:
+            self.gantt.date_location = 'bottom'
+        else:
+            self.gantt.date_location = 'top'
+
+        # x-grid uses major for no date type or else minor
+        if any(f in self.gantt.date_type for f in self.gantt.DATE_TYPES):
+            if 'ticks_minor_number' not in kwargs and 'ticks_minor_x_number' not in kwargs:
+                self.ticks_minor_x.number = 1
+                kwargs['grid_minor_x'] = kwargs.get('grid_minor_x', True)
+                kwargs['grid_major_x'] = kwargs.get('grid_major_x', False)
+                kwargs['grid_minor_x_width'] = kwargs.get('grid_minor_x_width', 1.3)
+                kwargs['grid_minor_color'] = kwargs.get('grid_minor_color', '#ffffff')
+                self.ticks_major_x.width = 0
+                self.ticks_major_y.width = 0
+
+            if 'gantt_tick_labels_x_rotation' not in kwargs \
+                    and any(f in self.gantt.date_type for f in self.gantt.DATE_TYPES):
+                self.gantt.tick_labels_x_rotation = 0
+
+            if 'ticks_minor_width' not in kwargs and 'ticks_minor_x_width' not in kwargs:
+                self.ticks_minor_x.width = 0
+
+        if 'tick_labels_major_rotation' not in kwargs \
+                or 'tick_labels_major_x_rotation' not in kwargs \
+                or 'tick_labels_x_rotation' not in kwargs:
             self.tick_labels_major_x.rotation = self.gantt.tick_labels_x_rotation
-        if self.gantt.on and \
-                ('grid_major' not in kwargs.keys()
-                 or 'grid_major_y' not in kwargs.keys()):
+
+        if 'grid_major' not in kwargs and 'grid_major_y' not in kwargs:
+            kwargs['grid_minor_y'] = True
             kwargs['grid_major_y'] = False
-        if self.gantt.on and \
-                'grid_minor_y' not in kwargs.keys():
-            kwargs['grid_minor_y'] = False
-        if self.gantt.on and \
-                ('ticks_major' not in kwargs.keys()
-                 or 'ticks_major_y' not in kwargs.keys()):
+            if 'ticks_minor_number' not in kwargs and 'ticks_minor_y_number' not in kwargs:
+                self.ticks_minor_y.number = 1
+            if 'ticks_minor_width' not in kwargs and 'ticks_minor_y_width' not in kwargs:
+                self.ticks_minor_y.width = 0
+            if 'grid_minor_color' not in kwargs and 'grid_minor_y_color' not in kwargs:
+                kwargs['grid_minor_y_color'] = '#ffffff'
+            if 'grid_minor_width' not in kwargs and 'grid_minor_y_width' not in kwargs:
+                kwargs['grid_minor_y_width'] = 1.3
+            if 'ticks_minor_length' not in kwargs and 'ticks_minor_y_length' not in kwargs:
+                self.ticks_minor_y._size[0] = 0
+                self.ticks_minor_y._size[1] = 0
+
+        if 'ticks_major' not in kwargs or 'ticks_major_y' not in kwargs:
             self.ticks_major_y.on = False
-        if self.gantt.on and 'label_x' not in kwargs.keys():
+
+        if 'label_x' not in kwargs:
             self.label_x.text = self.gantt.label_x
             kwargs['label_x'] = self.gantt.label_x
             self.label_x.on = False  # disable unless explicitly added
+
+        if 'label_y' not in kwargs:
+            self.label_y.on = False  # disable unless explicitly added
+
+        if self.gantt.workstreams.on and self.legend.column == self.gantt.workstreams.column:
+            self.legend._on = False
+
+        # Option warnings
+        msgs = []
+        date_types = [None] + self.gantt.DATE_TYPES
+        invalid = [f for f in self.gantt.date_type if f not in date_types]
+        if len(invalid) > 0:
+            valid = ', '.join([f'"{f}"' if isinstance(f, str) else str(f) for f in date_types])
+            msgs += [f'Invalid Gantt date type(s) {invalid}.  Supported options: [{valid}]']
+        for msg in msgs:
+            warnings.warn(msg, utl.CustomWarning)
 
         return kwargs
 
@@ -1843,6 +2148,7 @@ class BaseLayout:
                             font_weight=RepeatedList(utl.kwget(kwargs, self.fcpp,
                                                                'text_font_weight', 'normal'),
                                                      'text_font_weight'),
+                            padding=utl.kwget(kwargs, self.fcpp, 'text_padding', 4),
                             position=RepeatedList(position, 'text_position'),
                             coordinate=utl.kwget(kwargs, self.fcpp, ['text_coordinate', 'text_coord'], 'axis'),
                             rotation=RepeatedList(utl.kwget(kwargs, self.fcpp,
@@ -1893,7 +2199,8 @@ class BaseLayout:
                             increment=utl.kwget(kwargs, self.fcpp,
                                                 f'ticks_major_{ax}_increment',
                                                 self.ticks_major.increment),
-                            size=self.ticks_major.size,
+                            size=[utl.kwget(kwargs, self.fcpp, f'ticks_major_{ax}_length', self.ticks_major.size[0]),
+                                  utl.kwget(kwargs, self.fcpp, f'ticks_major_{ax}_width', self.ticks_major.size[1])],
                             ))
         if 'tick_labels' in kwargs.keys() and 'tick_labels_major' not in kwargs.keys():
             kwargs['tick_labels_major'] = kwargs['tick_labels']
@@ -2014,7 +2321,8 @@ class BaseLayout:
                                                 f'ticks_minor_{ax}_direction',
                                                 self.ticks_minor.direction),
                             number=utl.kwget(kwargs, self.fcpp, f'ticks_minor_{ax}_number', self.ticks_minor.number),
-                            size=self.ticks_minor._size,
+                            size=[utl.kwget(kwargs, self.fcpp, f'ticks_minor_{ax}_length', ticks_length * 0.67),
+                                  utl.kwget(kwargs, self.fcpp, f'ticks_minor_{ax}_width', ticks_width * 0.6)],
                             ))
             if f'ticks_minor_{ax}_number' in kwargs.keys():
                 getattr(self, f'ticks_minor_{ax}').on = True
@@ -2241,7 +2549,7 @@ class BaseLayout:
                 continue
 
             # Get label override name if in kwargs
-            if f'label_{lab}' in kwargs.keys():
+            if f'label_{lab}' in kwargs.keys() and kwargs[f'label_{lab}'] not in [True, False]:
                 lab_text = str(kwargs.get(f'label_{lab}'))
                 lab_text2 = str(kwargs.get(f'label_{lab}2'))
             elif f'label_{lab}_text' in kwargs.keys():
@@ -2855,6 +3163,8 @@ class Element:
             self.edge_color = kwargs['edge_color']
         if not isinstance(self.edge_color, RepeatedList) or self.edge_alpha != 1:
             self.color_alpha('edge_color', 'edge_alpha')
+        if 'padding' not in kwargs:
+            self.padding = 2
 
         # fonts
         if 'font' not in kwargs:
