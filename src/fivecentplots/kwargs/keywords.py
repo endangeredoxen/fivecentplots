@@ -48,7 +48,7 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
     exclude = ['prop', 'on', 'kwargs', 'axline', 'self', 'fcpp', 'utl.kwargs']
 
     # Get files
-    py_files = utl.get_nested_files(path, '.py', ['.pyc'])
+    py_files = utl.get_nested_files(path, '.py', ['.pyc', '.png'])
 
     # regex to find method calls in python files
     func_regex = r'(\w+)\(((?:[^()]*\([^()]*\))*[^()]*)\)'
