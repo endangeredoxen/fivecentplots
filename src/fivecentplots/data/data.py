@@ -625,7 +625,7 @@ class Data:
                     vmax = getattr(self, f'{ax}max')[plot_num]
                 else:
                     vmax = np.max(vals)
-                return vmin, vmax
+                return np.datetime64(vmin), np.datetime64(vmax)
 
             elif 'str' in dtypes or 'object' in dtypes:
                 return None, None

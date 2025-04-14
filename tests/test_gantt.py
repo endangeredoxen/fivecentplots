@@ -8,6 +8,7 @@ from pathlib import Path
 import fivecentplots.utilities as utl
 import matplotlib as mpl
 import pytest
+import time
 import fivecentplots.data.data as data
 osjoin = os.path.join
 db = pdb.set_trace
@@ -63,12 +64,11 @@ def plt_col(bm=False, make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('col', make_reference, REFERENCE)
 
-    if bm:
-        return
-
     # Make the plot
     fcp.gantt(df, x=['Start', 'Stop'], y='Task', col='Category', share_x=False, share_y=False,
               filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
+    if bm:
+        return
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
@@ -159,28 +159,69 @@ def plt_wrap(bm=False, make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('wrap', make_reference, REFERENCE)
 
-    if bm:
-        return
-
     # Make the plot
     fcp.gantt(df, x=['Start', 'Stop'], y='Task', wrap='Category',
               filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
+
+    if bm:
+        return
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_bar_labels(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('bar_labels', make_reference, REFERENCE)
-
-    # Make the plot
+    # Make the plots
+    name = utl.unit_test_get_img_name('bar_labels_user_xmax', make_reference, REFERENCE)
     fcp.gantt(df2, x=['Start date', 'End date'], y='Description', bar_labels='Description',
               xmax=datetime.datetime(2025, 6, 15),
               workstreams='Workstream', workstreams_label_font_size=12,
               filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
-
     if bm:
         return
+
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+    name = utl.unit_test_get_img_name('bar_labels_auto_expand', make_reference, REFERENCE)
+    fcp.gantt(df2, x=['Start date', 'End date'], y='Description', bar_labels='Description',
+              workstreams='Workstream', workstreams_label_font_size=12,
+              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+    name = utl.unit_test_get_img_name('bar_labels_no_expand_no_xmax', make_reference, REFERENCE)
+    fcp.gantt(df2, x=['Start date', 'End date'], y='Description', bar_labels='Description',
+              auto_expand=False, workstreams='Workstream', workstreams_label_font_size=12,
+              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_milestones_location(bm=False, make_reference=False, show=False):
+
+    locs = [
+            'top',
+            'right'
+            ]
+
+    # Make the plot
+    for loc in locs:
+        name = utl.unit_test_get_img_name(f'milestones_location_{loc}_no_expand', make_reference, REFERENCE)
+        fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
+                  milestone_text_location=loc, auto_expand=False,
+                  workstreams='Workstream', workstreams_label_font_size=10,
+                  workstreams_title_font_size=13, filename=name.with_suffix('.png'), save=not bm, inline=False,
+                  ax_size=[900, 400])
+
+        if bm:
+            return
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+        name = utl.unit_test_get_img_name(f'milestones_location_{loc}_expand', make_reference, REFERENCE)
+        fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
+                  milestone_text_location=loc, auto_expand=True,
+                  workstreams='Workstream', workstreams_label_font_size=10,
+                  workstreams_title_font_size=13, filename=name.with_suffix('.png'), save=not bm, inline=False,
+                  ax_size=[900, 400])
+
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_today(bm=False, make_reference=False, show=False):
@@ -191,6 +232,7 @@ def plt_today(bm=False, make_reference=False, show=False):
     fcp.gantt(df2, x=['Start date', 'End date'], y='Description', today=datetime.datetime(2026, 3, 6),
               today_text='Giddie up', today_color='#ff0000', today_style='--', today_fill_color='#00ff00',
               workstreams='Workstream', workstreams_label_font_size=12, dependencies=False,
+              milestone_text=False,
               filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
 
     if bm:
@@ -230,9 +272,9 @@ def plt_workstreams_date_type(bm=False, make_reference=False, show=False):
     for plot in plots:
         for k, v in kw.items():
             name = utl.unit_test_get_img_name(f'workstreams_date_type_{"_".join(plot)}_{k}', make_reference, REFERENCE)
-            fcp.gantt(df2, x=['Start date', 'End date'], y='Description', workstreams_location='inline',
-                    date_type=plot, workstreams='Workstream', workstreams_label_font_size=12,
-                    filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[1200, 400], **v)
+            fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
+                      date_type=plot, workstreams='Workstream', workstreams_label_font_size=12,
+                      filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[1200, 400], **v)
             if bm:
                 return
             utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -259,9 +301,9 @@ def plt_workstreams_location(bm=False, make_reference=False, show=False):
 
     locs = [
             'left',
-            #'right',
+            'right',
             'inline'
-           ]
+            ]
 
     # Make the plot
     for loc in locs:
@@ -269,7 +311,7 @@ def plt_workstreams_location(bm=False, make_reference=False, show=False):
         fcp.gantt(df2, x=['Start date', 'End date'], y='Description', gantt_date_type=['quarter-year', 'month'],
                   workstreams='Workstream', workstreams_location=loc, workstreams_label_font_size=10,
                   workstreams_title_font_size=13, filename=name.with_suffix('.png'), save=not bm, inline=False,
-                  ax_size=[900, 400])
+                  ax_size=[900, 400], match_bar_color=True if loc == 'right' else False)
 
         if bm:
             return
@@ -329,6 +371,11 @@ def test_bar_labels(benchmark):
     benchmark(plt_bar_labels, True)
 
 
+def test_milestones_location(benchmark):
+    plt_milestones_location()
+    benchmark(plt_milestones_location, True)
+
+
 def test_today(benchmark):
     plt_today()
     benchmark(plt_today, True)
@@ -340,8 +387,8 @@ def test_workstreams_date_type(benchmark):
 
 
 def test_workstreams_location(benchmark):
-    plt_workstreams_quarter()
-    benchmark(plt_workstreams_quarter, True)
+    plt_workstreams_location()
+    benchmark(plt_workstreams_location, True)
 
 
 if __name__ == '__main__':
