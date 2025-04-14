@@ -47,6 +47,7 @@ with open(Path(__file__).parent / 'version.txt', 'r') as fid:
 
 # Convenience kwargs
 HIST = {'ax_scale': 'logy', 'markers': False, 'line_width': 2, 'preset': 'HIST'}
+NQ = {'markers': False, 'line_width': 2, 'preset': 'NQ'}
 
 
 class RepeatedList:
