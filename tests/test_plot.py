@@ -152,7 +152,7 @@ def plt_multiple_xy_y(bm=False, make_reference=False, show=False):
     fcp.plot(df, x='Voltage', y=['Boost Level', 'I [A]'], legend='Die', show=SHOW,
              legend_edge_width=4, legend_edge_color='#000000',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name.with_suffix('.png'), save=not bm, inline=False, ymin=0.1)
+             filename=name.with_suffix('.png'), save=not bm, inline=False, xmin=1.3)
     if bm:
         return
 

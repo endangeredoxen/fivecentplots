@@ -57,7 +57,7 @@ def test_figure(make_reference=False, remove=True, show=False):
             new_name = name.parent / (name.stem.replace('_reference', tag + '_reference') + '.png')
             os.rename(name.parent / (name.stem + tag + '.png'), new_name)
 
-        return utl.unit_test_options(make_reference, show, name.parent / (name.stem + tag + '.png'), REFERENCE)
+        utl.unit_test_options(make_reference, show, name.parent / (name.stem + tag + '.png'), REFERENCE)
 
 
 def test_figure2(make_reference=False, remove=True, show=False):
@@ -76,7 +76,7 @@ def test_figure2(make_reference=False, remove=True, show=False):
             new_name = name.parent / (name.stem.replace('_reference', tag + '_reference') + '.png')
             os.rename(name.parent / (name.stem + tag + '.png'), new_name)
 
-        return utl.unit_test_options(make_reference, show, name.parent / (name.stem + tag + '.png'), REFERENCE)
+        utl.unit_test_options(make_reference, show, name.parent / (name.stem + tag + '.png'), REFERENCE)
 
 
 def test_groups_boxplot(make_reference=False, remove=True, show=False):

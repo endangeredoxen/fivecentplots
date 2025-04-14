@@ -2159,9 +2159,9 @@ class BaseLayout:
                                                         'text', ''), 'text'),
                             )
 
-        for ir, ic in np.ndindex(self.axes.obj.shape):
-            self.text.obj[ir, ic] = np.zeros(len(self.text.text.values), dtype=object)
-
+        # for ir, ic in np.ndindex(self.axes.obj.shape):
+        #     self.text.obj[ir, ic] = np.zeros(len(self.text.text.values), dtype=object)
+        # db()
         return kwargs
 
     def _init_ticks(self, kwargs: dict) -> dict:

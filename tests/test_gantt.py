@@ -8,7 +8,6 @@ from pathlib import Path
 import fivecentplots.utilities as utl
 import matplotlib as mpl
 import pytest
-import time
 import fivecentplots.data.data as data
 osjoin = os.path.join
 db = pdb.set_trace
@@ -205,7 +204,7 @@ def plt_milestones_location(bm=False, make_reference=False, show=False):
     for loc in locs:
         name = utl.unit_test_get_img_name(f'milestones_location_{loc}_no_expand', make_reference, REFERENCE)
         fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
-                  milestone_text_location=loc, auto_expand=False,
+                  xmax=datetime.datetime(2025, 6, 15), milestone_text_location=loc, auto_expand=False,
                   workstreams='Workstream', workstreams_label_font_size=10,
                   workstreams_title_font_size=13, filename=name.with_suffix('.png'), save=not bm, inline=False,
                   ax_size=[900, 400])

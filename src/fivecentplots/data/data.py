@@ -99,6 +99,17 @@ class Data:
         if kwargs.get('wrap', None) == 'y' or kwargs.get('wrap', None) == 'x':
             self.share_x = kwargs.get('share_x', True)
             self.share_y = kwargs.get('share_y', True)
+        if self.imgs is not None:
+            # Quantile zmin/zmax should be independent
+            for mm in ['zmin', 'zmax']:
+                if kwargs.get(mm) is None:
+                    continue
+                zmms = utl.validate_list(kwargs.get(mm))
+                for zmm in zmms:
+                    if 'q' in str(zmm):
+                        kwargs[mm] = zmms * int((len(self.imgs) / len(zmms)))
+                        self.share_z = False
+                        break
         self.sort = utl.kwget(kwargs, self.fcpp, 'sort', True)
         self.stacked = False
         self.swap = utl.kwget(kwargs, self.fcpp, 'swap', False)
@@ -575,14 +586,19 @@ class Data:
                             except:  # noqa
                                 raise DataError(f'User limit "{user_limit}" could not be cast to datetime dtype')
 
+                        cols = getattr(self, ax)
                         if mm == 'min':
-                            data_set = data_set[data_set[col] >= user_limit]
+                            mask = (data_set[cols] >= user_limit)
+                            idx = data_set.loc[mask.sum(axis=1) > 0].index
+                            data_set = data_set.loc[idx]
                         else:
                             if data_set[col].dtype == 'datetime64[ns]' and \
                                     len(data_set[data_set[col] <= user_limit]) == 0:
                                 data_set[col] = user_limit
                             else:
-                                data_set = data_set[data_set[col] <= user_limit]
+                                mask = (data_set[cols] <= user_limit)
+                                idx = data_set.loc[mask.sum(axis=1) > 0].index
+                                data_set = data_set.loc[idx]
 
             vmin, vmax = getattr(self, f'{ax}min')[plot_num], getattr(self, f'{ax}max')[plot_num]
             if vmin is not None and vmax is not None and vmin >= vmax:
@@ -1132,7 +1148,7 @@ class Data:
                 if self.sort:
                     self.wrap_vals = natsorted(list(df.groupby(self.wrap).groups.keys()))
                 else:
-                    self.wrap_vals = list(df.groupby(self.wrap, sort=False).groups.keys())
+                    self.wrap_vals = [f[0] for f in df.groupby(self.wrap, sort=False)]
             if self.ncols == 0:
                 rcnum = int(np.ceil(np.sqrt(len(self.wrap_vals))))
             else:

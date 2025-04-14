@@ -40,6 +40,7 @@ __version__ = utilities.__version__
 utl = utilities
 COLORS = DEFAULT_COLORS
 HIST = utl.HIST
+NQ = utl.NQ
 db = pdb.set_trace
 osjoin = os.path.join
 cur_dir = Path(__file__).parent
