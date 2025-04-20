@@ -168,6 +168,13 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
     # excludes
     kwargs_list = [f for f in kwargs_list if f not in exclude]
 
+    # special case: reversible named kwargs
+    names = ['title_wrap', 'label_wrap', 'label_row', 'label_row']
+    for name in names:
+        inverted = name.split('_')
+        vals = [f.replace(name, f'{inverted[1]}_{inverted[0]}') for f in kwargs_list if name.startswith(f)]
+        kwargs_list += vals
+
     # delete duplicates and sort
     kwargs_list = sorted(list(set(kwargs_list)))
 

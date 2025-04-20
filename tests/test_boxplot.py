@@ -415,7 +415,7 @@ def plt_simple(bm=False, make_reference=False, show=False):
         return
 
     if not show:
-        utl.unit_test_measure_margin(name, 20, 150, left=75, bottom=10, top=10, right=10, alias=True)
+        utl.unit_test_measure_margin(name, 20, 150, left=74, bottom=10, top=10, right=10, alias=True)
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 

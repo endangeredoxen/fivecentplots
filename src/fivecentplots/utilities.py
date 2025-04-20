@@ -611,26 +611,53 @@ def get_current_values(df: pd.DataFrame, text: str, key: str = '@') -> str:
     return text
 
 
-def get_decimals(value: [int, float], max_places: int = 4):
+def get_decimals(value: [int, float], max_places: int = 4, exponential: bool = False) -> int:
     """Get the number of decimal places of a float number excluding rounding errors.
 
     Args:
         value: value to check
-        max_places (optional): maximum number of decimal places to check. Defaults to 4
-
+        max_places (optional): maximum number of decimal places to check. Defaults to 4 which is equal to 3 decimals
+        exponential (optional): if True, assume exponential notation. Defaults to False.
     Returns:
         number of decimal places
     """
-    last = np.nan
+    if value == 0:
+        return 0
+
+    # Ignore negative values and track the original value
     value = abs(value)
+    original = value
+
+    # Store the previous loop value
+    previous = np.nan
+
+    # Scale up small values < 1 to the 1E-1 range to avoid rounding errors
+    if value < 0.1:
+        power = -int(np.log10(value))
+        value *= 10 ** power
+
+    # Round with an increasing number of decimal places until the value is stable
     for i in range(0, max_places + 1):
         current = round(value, i)
-        if current == last and current > 0:
+        if (current == previous and current > 0):
             break
         else:
-            last = current
+            previous = current
 
-    return i - 1
+    # Check for repeating decimals
+    if '.' in str(current):
+        repeats, repeat_pattern = get_repeating_decimal_end(current)
+        if repeats > 0:
+            i = int(str(current).split('.')[1].index(repeat_pattern)) + 2
+        elif i > 0:
+            i -= 1
+
+    # Return the number of decimal places
+    if original < 0.1 and exponential is not True:
+        # For non-exponential values, add back the leading decimal places
+        return min(i + power, max_places)
+    else:
+        return min(i, max_places)
 
 
 def get_nested_files(path: Union[Path, str], pattern: Union[str, None] = None, exclude: list = []) -> list:
@@ -662,6 +689,67 @@ def get_nested_files(path: Union[Path, str], pattern: Union[str, None] = None, e
             files += get_nested_files(entry, pattern, exclude)
 
     return files
+
+
+def get_repeating_decimal_end(value: float) -> int:
+    """
+    Counts the number of repeated digits at the end of a decimal string,
+    accounting for potential rounding up of the last digit.
+
+    Args:
+        number_str: The string representation of the decimal number.
+
+    Returns:
+        The number of repeated digits at the end, or 0 if no repetition is found.
+    """
+    number_str = str(value)
+
+    if '.' not in number_str:
+        return 0, ''
+
+    integer_part, fractional_part = number_str.split('.')
+    n = len(fractional_part)
+    if n < 3:
+        return 0, ''
+
+    last_digit = fractional_part[-1]
+    pattern = fractional_part[-1]
+    repeated_count = 0
+
+    # Check for exact repetition
+    for i in range(n - 2, -1, -1):
+        if fractional_part[i] == last_digit:
+            repeated_count += 1
+            pattern += fractional_part[i]
+        else:
+            break
+
+    if repeated_count > 0:
+        return repeated_count + 1, pattern   # Include the last digit itself
+
+    # Check for potential rounding up (last digit is one greater than the preceding)
+    pattern = []
+    if last_digit.isdigit():
+        rounded_down_digit = str(int(last_digit) - 1)
+        if rounded_down_digit >= '0':
+            rounded_up_count = 0
+            for i in range(n - 2, -1, -1):
+                if fractional_part[i] == rounded_down_digit:
+                    rounded_up_count += 1
+                    if len(pattern) == 0:
+                        pattern = [last_digit]
+                    else:
+                        pattern = [fractional_part[i]] + pattern
+                else:
+                    break
+            if rounded_up_count > 0:
+                pattern = ''.join([fractional_part[i]] + pattern)
+                if pattern not in number_str:
+                    return 0, ''
+                else:
+                    return rounded_up_count + 1, pattern
+
+    return 0, ''
 
 
 def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, font_weight: str,

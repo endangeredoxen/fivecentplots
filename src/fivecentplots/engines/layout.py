@@ -2004,6 +2004,16 @@ class BaseLayout:
                               padding=utl.kwget(kwargs, self.fcpp, 'label_rc_padding', 0.3),
                               values_only=utl.kwget(kwargs, self.fcpp, 'label_rc_values_only', False),
                               )
+
+        # Allow inversion of some kwargs names for convenience but map back to standardized names
+        names = ['wrap_title', 'wrap_label', 'row_label', 'col_label']
+        for name in names:
+            for k, v in kwargs.items():
+                if name in k:
+                    inverted = k.split('_')
+                    kwargs[k.replace(name, f'{inverted[1]}_{inverted[0]}')] = v
+
+        # Row and column labels
         self.label_row = copy.deepcopy(label_rc)
         self.label_row.on = utl.kwget(kwargs, self.fcpp, 'label_row_on', True) \
             if kwargs.get('row') not in [None, 'y'] else False
@@ -2069,15 +2079,11 @@ class BaseLayout:
                                      values_only=utl.kwget(kwargs, self.fcpp, 'label_wrap_values_only',
                                                            label_rc.values_only),
                                      )
-        # If no label edge width specified, match axes edge width for better alias matching
-        # if self.label_wrap.edge_width == 0 \
-        #         and not any(f in ['label_rc_edge_width', 'label_wrap_edge_width'] for f in kwargs.keys()):
-        #     self.label_wrap.edge_width = self.axes.edge_width
-        #     self.label_wrap._size[1] -= self.axes.edge_width
         # Unless specified, edge color matches fill color
         if not any(f in ['label_rc_edge_color', 'label_wrap_edge_color'] for f in kwargs.keys()):
             self.label_wrap.edge_color = self.label_wrap.fill_color
 
+        # Wrap title
         self.title_wrap = Element('title_wrap', self.fcpp, kwargs,
                                   on=utl.kwget(kwargs, self.fcpp, 'title_wrap_on', True)
                                   if kwargs.get('wrap') else False,
@@ -2101,11 +2107,7 @@ class BaseLayout:
 
         if not isinstance(self.title_wrap.size, list):
             self.title_wrap.size = [self.axes.size[0], self.title_wrap.size]
-        # # If no title edge width specified, match axes edge width for better alias matching
-        # if self.title_wrap.edge_width == 0 \
-        #         and not any(f in ['label_rc_edge_width', 'title_wrap_edge_width'] for f in kwargs.keys()):
-        #     self.title_wrap.edge_width = self.axes.edge_width
-        #     self.title_wrap._size[1] -= 2 * np.ceil(self.axes.edge_width / 2)
+
         # Unless specified, edge color matches fill color
         if not any(f in ['title_rc_edge_color', 'title_wrap_edge_color'] for f in kwargs.keys()):
             self.title_wrap.edge_color = self.title_wrap.fill_color
@@ -2158,10 +2160,6 @@ class BaseLayout:
                             text=RepeatedList(utl.kwget(kwargs, self.fcpp,
                                                         'text', ''), 'text'),
                             )
-
-        # for ir, ic in np.ndindex(self.axes.obj.shape):
-        #     self.text.obj[ir, ic] = np.zeros(len(self.text.text.values), dtype=object)
-        # db()
         return kwargs
 
     def _init_ticks(self, kwargs: dict) -> dict:
