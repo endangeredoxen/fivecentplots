@@ -13,17 +13,13 @@ import shlex
 import inspect
 import ast
 import operator
-import imageio.v3 as imageio
 from matplotlib.font_manager import FontProperties, findfont
 import matplotlib.dates as mdates
 from pathlib import Path
 from typing import Any, Union, Tuple, Dict, List
 from . import data
 import numpy.typing as npt
-try:
-    from PIL import ImageFont  # used only for bokeh font size calculations
-except ImportError:
-    pass
+from PIL import ImageFont
 try:
     import cv2  # required for testing
 except (ImportError, ModuleNotFoundError):
@@ -1774,7 +1770,7 @@ def unit_test_measure_axes(img_path: pathlib.Path, row: Union[int, str, None], c
         skip: skip some number of pixels
         alias: skip up to 1 pixel due to axes edge aliasing
     """
-    img = imageio.imread(img_path)
+    img = cv2.imread(img_path)
     if len(img.shape) == 3:
         img = img[:, :, channel]
 
@@ -1814,7 +1810,7 @@ def unit_test_measure_axes_cols(img_path: pathlib.Path, row: Union[int, str, Non
         Note: for np.diff statements, need to subtract 1
     """
     # Test width of all column images
-    img = imageio.imread(img_path)
+    img = cv2.imread(img_path)
     if row == 'c':
         row = int(img.shape[0] / 2)
     dd = np.diff(np.concatenate(([False], np.all(img[row] == target_pixel_value, axis=-1), [False])).astype(int))
@@ -1850,7 +1846,7 @@ def unit_test_measure_axes_rows(img_path: pathlib.Path, col: Union[int, str, Non
         Note: for np.diff statements, need to subtract 1
     """
     # Test width of all row images
-    img = imageio.imread(img_path)
+    img = cv2.imread(img_path)
     if col == 'c':
         col = int(img.shape[1] / 2)
     dd = np.diff(np.concatenate(([False], np.all(img[:, col] == target_pixel_value, axis=-1), [False])).astype(int))
@@ -1863,7 +1859,7 @@ def unit_test_measure_axes_rows(img_path: pathlib.Path, col: Union[int, str, Non
 
 def unit_test_debug_margins(img_path: pathlib.Path):
     """Try to measure all the margins."""
-    img = imageio.imread(img_path)[:, :, 1]
+    img = cv2.imread(img_path)[:, :, 1]
     if not (img[0, 0] == img[-1, -1] == img[0, -1] == img[-1, 0]):
         print('could not determine border color and detect margins')
 
@@ -1912,7 +1908,7 @@ def unit_test_measure_margin(img_path: pathlib.Path, row: Union[int, str, None],
 
         Note: for np.diff statements, need to subtract 1
     """
-    img = imageio.imread(img_path)
+    img = cv2.imread(img_path)
 
     if row:
         if row == 'c':
