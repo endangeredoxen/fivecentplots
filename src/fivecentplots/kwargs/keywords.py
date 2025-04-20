@@ -7,6 +7,7 @@ import pdb
 import textwrap
 import re
 import warnings
+from itertools import product
 from pathlib import Path
 with open(Path(__file__).parents[1] / r'version.txt', 'r') as fid:
     __version__ = fid.readlines()[0].replace('\n', '')
@@ -18,6 +19,61 @@ try:
     from colors import DEFAULT_COLORS
 except ModuleNotFoundError:
     from .colors import DEFAULT_COLORS
+
+
+def check_undefined_kwargs():
+    """
+    Check for missing kwargs in the docstring csv files
+    """
+    # Read the csv docstring files
+    files = []
+    csv_files = os.listdir(cur_dir.parents[1] / 'kwargs/csv')
+    for ff in csv_files:
+        files += [pd.read_csv(cur_dir.parents[1] / 'kwargs/csv' / ff)]
+    df = pd.concat(files, ignore_index=True)
+    _defined = list(df['Keyword'].values)
+    defined = []
+    for dd in _defined:
+        if 'conf_int_|perc_int_|nq_int_' in dd:
+            # Special case
+            suffix = '_'.join(dd.split('_')[-2:])
+            defined += [f'{x.replace(suffix, "")}{suffix}' for x in dd.split('|')]
+        elif '[' in dd and ']' in dd:
+            # Find the substrings enclosed in square brackets
+            brackets = re.findall(r"\[(.*?)\]", dd)
+
+            # Find the options separated by '|'
+            options_list = [section.split('|') for section in brackets]
+
+            # Generate all combinations of the options
+            combinations = list(product(*options_list))
+
+            # Replace bracket sections with their combinations
+            results = []
+            for combo in combinations:
+                result = dd
+                for i, option in enumerate(combo):
+                    # Replace the i-th bracket section with the selected option
+                    result = result.replace(f'[{brackets[i]}]', option, 1)
+                results += [result]
+            defined += results
+        elif '|' in dd:
+            defined += [f for f in dd.split('|')]
+        else:
+            defined += [dd]
+
+    # Read the list of allowed kwargs
+    with open(cur_dir.parents[0] / 'kwargs_all.txt', 'r') as input:
+        kwargs = [line.rstrip('\n') for line in input.readlines()]
+
+    # Ignore
+    ignore = ['alpha', 'ax', 'box', 'bar', ]
+
+    # Find undefined kwargs
+    undefined = [f for f in kwargs if f not in defined]
+    undefined = [f for f in undefined if f not in ignore]
+
+    return undefined
 
 
 def get_all_allowed_kwargs() -> list:
@@ -168,12 +224,58 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
     # excludes
     kwargs_list = [f for f in kwargs_list if f not in exclude]
 
+    # unused element defaults (although all elements support certain kwargs, some are never used)
+    no_alphas = ['ax', 'bar', ]
+    no_fonts = ['line', 'ax', 'bar', 'box_divider', 'box_grand_mean', 'box_grand_median',
+                'box_group_means', 'box_mean_diamonds', 'cbar', 'contour', 'fig', 'fills_', 'grid',
+                'imshow', 'rolling_mean', ]
+    no_labels = ['line', 'ax', 'bar', ]
+    no_edges = ['line', 'box_divider', 'box_grand_mean', 'box_grand_median', 'box_group_means',]
+    no_fills = ['line', 'whisker', 'median', 'box_divider', 'box_grand_mean', 'box_grand_median',
+                'box_group_means',]
+    no_styles = ['ax', 'bar_labels', 'gantt_bar_labels', ]
+    no_widths = ['pie', 'contour', 'fig', 'ax', 'fit', 'today', 'grid', 'ticks', 'tick_labels', 'imshow',
+                 'hist', 'plot', 'kde',]
+    no_std_color = ['label', 'ax', 'ticks', 'imshow', 'hist', 'fig', 'ax', 'fig', 'violin_color', 'box_color', 'bar',
+                    ]
+    no_rotations = ['heatmap', 'box', 'grid', 'ax', 'line', 'cbar', 'violin', 'contour', 'rolling_mean', 'fig', 'fills',
+                    'imshow', 'hist', 'pie', 'bar_labels', 'gantt_bar_labels']
+    new_kwargs = []
+    for kw in kwargs_list:
+        if any(f in kw for f in no_alphas) and '_alpha' in kw:
+            pass
+        elif any(f in kw for f in no_fonts) and '_font' in kw:
+            pass
+        elif any(f in kw for f in no_labels) and '_label' in kw:
+            pass
+        elif any(f in kw for f in no_edges) and '_edge_' in kw:
+            pass
+        elif any(f in kw for f in no_fills) and '_fill_' in kw:
+            pass
+        elif any(f in kw for f in no_styles) and '_style' in kw:
+            pass
+        elif any(f in kw for f in no_widths) and '_edge' not in kw and '_width' in kw:
+            pass
+        elif any(f in kw for f in no_std_color) and '_color' in kw:
+            pass
+        elif any(f in kw for f in no_rotations) and '_rotation' in kw:
+            pass
+        else:
+            new_kwargs += [kw]
+    kwargs_list = new_kwargs
+
     # special case: reversible named kwargs
     names = ['title_wrap', 'label_wrap', 'label_row', 'label_row']
     for name in names:
         inverted = name.split('_')
         vals = [f.replace(name, f'{inverted[1]}_{inverted[0]}') for f in kwargs_list if name.startswith(f)]
         kwargs_list += vals
+
+    # comment lines
+    kwargs_list = [f for f in kwargs_list if not f.startswith('#')]
+
+    # dots
+    kwargs_list = [f.replace('.', '_') for f in kwargs_list]
 
     # delete duplicates and sort
     kwargs_list = sorted(list(set(kwargs_list)))

@@ -1,6 +1,8 @@
 Keyword,Data Type,Description,Default,Example
+auto_expand,bool,Auto-expand the horizontal axes size to fit the Gantt bar labels,True,gantt.html#Bar-labels
+gantt_bar_labels|bar_labels,bool,Display data column labels to the right of Gantt bars,False,gantt.#Bar-labels
 gantt_color_by|color_by,str|None,Color each bar differently based on a grouping criterion,'bar',gantt.html#Styling
-gantt_height|height,float,Set the fractional height of the Gantt bars between 0-1,0.9,gantt.html#Styling
+gantt_height|bar_height,float,Set the fractional height of the Gantt bars between 0-1,0.9,gantt.html#Styling
 gantt_edge_color,str,Hex color string for the edge of the Gantt bars,fcp.DEFAULT_COLORS,gantt.html#Styling
 gantt_edge_width,float,Width of the edge of the Gantt bars in pixels,0,gantt.html#Styling
 gantt_order_by_legend|order by legend,bool,Order the y-axis values based on the sort order of the legend values [requires legend],False,gantt.html#Legends
