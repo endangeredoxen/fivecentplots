@@ -1,4 +1,20 @@
 Keyword,Data Type,Description,Default,Example
-ax_hlines|ax2_hlines,float|list of tuples and floats,Add horizontal lines to the plot; if only float value is provided add a solid black line with width=1 pixel at that value; if tuple add any one or more of the following in order: [1] float value or DataFrame column name [required]; [2] hex string for line color; [3] line style str; [4] line width in pixels; [5] line alpha transparency value from 0-1; [6] legend text  [added automatically if using a column name for value],None,"plot.html#Horizontal-&-vertical-lines"
-ax_vlines|ax2_vlines,float|list of tuples and floats,Add vertical lines to the plot [same parameters as ax_hlines],None,"plot.html#Horizontal-&-vertical-lines"
-ax_[h|v]lines_by_plot,list of values,Add a line with a different value to each subplot when using row/col/wrap grouping,None,"plot.html#Horizontal-&-vertical-lines"
+[ax|ax2]_[h|v]lines,float|list of tuples and floats,Add horizontal / vertical lines to the plot; if only float value is provided add a solid black line with width=1 pixel at that value; if tuple add any one or more of the following in order: [1] float value or DataFrame column name [required]; [2] hex string for line color; [3] line style str; [4] line width in pixels; [5] line alpha transparency value from 0-1; [6] legend text  [added automatically if using a column name for value],None,"plot.html#Horizontal-&-vertical-lines"
+[ax|ax2]_[h|v]lines_alpha,float|list of floats,Transparency value for the lines between 0-1; use a list to use different values for each subplot,1,None
+[ax|ax2]_[h|v]lines_by_plot,bool,Add a line with a different value to each subplot when using row/col/wrap grouping,None,"plot.html#Horizontal-&-vertical-lines"
+[ax|ax2]_[h|v]lines_color,str|list of str,Transparency value for the lines between 0-1; use a list to use different values for each subplot,1,None
+[ax|ax2]_[h|v]lines_style,
+[ax|ax2]_[h|v]lines_width,
+[ax|ax2]_[h|v]lines_zorder,
+
+
+_names_list = ["f'{name}_zorder'", "f'{name}_fill_alpha'", "f'{name}_fill_color'",
+"f'{name}_edge_width'", "f'{name}_edge_alpha'", "f'{name}_edge_color'",
+"f'{name}_alpha'", "f'{name}_color'", "f'{name}_width'", "f'{name}_style'"]
+
+db()
+    no_fonts = []
+    no_edges = []
+    no_fills = []
+
+

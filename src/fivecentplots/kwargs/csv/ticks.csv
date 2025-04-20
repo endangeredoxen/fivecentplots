@@ -1,4 +1,5 @@
 Keyword,Data Type,Description,Default,Example
+
 ticks_major,boolean,Enable/disable major x-axis and y-axis tick marks,True,ticks.html#Tick-marks
 ticks_major_direction,str,Point tick marks 'in' or 'out' from the axes area,'in',ticks.html#Tick-style
 ticks_major_increment,float,Specify the spacing of major tick marks,None,ticks.html#Tick-increment
@@ -47,3 +48,4 @@ ticks_minor_x_width,float,minor x-axis tickline width in pixels (float ok),0.5,t
 ticks_minor_x2_width,float,minor secondary x-axis tickline width in pixels (float ok),0.5,ticks.html#Tick-marks
 ticks_minor_y_width,float,minor y-axis tickline width in pixels (float ok),0.5,ticks.html#Tick-marks
 ticks_minor_y2_width,float,minor secondary y-axis tickline width in pixels (float ok),0.5,ticks.html#Tick-marks
+auto_tick_threshold,list[float],Threshold levels to determine if ticks should use scientific notation,"[1e-6,1e6]",None

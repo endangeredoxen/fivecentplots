@@ -3365,6 +3365,7 @@ class Layout(BaseLayout):
             else:
                 axes[-1].obj[ir, ic].spines[f].set_color(self.fig.fill_color[0])
             axes[-1].obj[ir, ic].spines[f].set_linewidth(self.axes.edge_width_adj)
+            # TODO:  spine style?
 
     def set_axes_grid_lines(self, ir: int, ic: int):
         """Style the grid lines and toggle visibility.

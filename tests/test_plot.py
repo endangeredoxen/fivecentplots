@@ -365,8 +365,8 @@ def plt_other_lines(bm=False, make_reference=False, show=False):
         return
 
     if not show:
-        utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
-        utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=118,
+        utl.unit_test_measure_axes(name, 110, 365, 402, 402, 2, alias=True)
+        utl.unit_test_measure_margin(name, 110, 365, left=84, top=43, bottom=76, right=118,
                                      alias=True)
 
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -386,8 +386,8 @@ def plt_other_lines_df(bm=False, make_reference=False, show=False):
         return
 
     if not show:
-        utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
-        utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=118,
+        utl.unit_test_measure_axes(name, 110, 365, 402, 402, 2, alias=True)
+        utl.unit_test_measure_margin(name, 110, 365, left=84, top=43, bottom=76, right=118,
                                      alias=True)
 
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -470,8 +470,8 @@ def plt_other_ref_line_leg(bm=False, make_reference=False, show=False):
         return
 
     if not show:
-        utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
-        utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76)
+        # utl.unit_test_measure_axes(name, 110, 365, 402, 402, 2, alias=True)
+        utl.unit_test_measure_margin(name, 110, 365, left=84, top=43, bottom=76)
 
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
