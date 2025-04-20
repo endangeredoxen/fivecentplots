@@ -99,9 +99,8 @@ def cbar_ticks(cbar: 'Colorbar_Object', zmin: float, zmax: float):  # noqa: F821
     num_ticks = len(cbar.get_ticks())
     new_ticks = np.linspace(zmin, zmax, num_ticks)
     decimals = [utl.get_decimals(f) for f in new_ticks]
-    decimals = [f - 1 if f > 0 else f for f in decimals]
     for it, nt in enumerate(new_ticks[0:-1]):
-        new_ticks[it] = '{num:.{width}f}'.format(num=nt, width=decimals[it])
+        new_ticks[it] = '{num:.{width}f}'.format(num=nt, width=max(decimals))
     return new_ticks
 
 
@@ -153,6 +152,85 @@ def df_tick_update(tt: pd.DataFrame) -> pd.DataFrame:
     return tt
 
 
+def get_non_overlapping_rectangles(df):
+    """
+    Select maximum number of non-overlapping rectangles from a DataFrame
+    using dynamic programming. When multiple options exist with the same count,
+    select the set with rectangles closest to the center of the overall range.
+
+    Parameters:
+    df (pd.DataFrame): DataFrame with 'start' and 'stop' columns
+
+    Returns:
+    pd.DataFrame: Subset of original DataFrame with non-overlapping rectangles
+    """
+    if len(df) <= 1:
+        return df
+
+    # Calculate overall center for prioritization
+    min_x = df['start'].min()
+    max_x = df['stop'].max()
+    overall_center = (min_x + max_x) / 2
+
+    # Add center and distance to center for each rectangle
+    df_work = df.copy()
+    df_work['center'] = (df['start'] + df['stop']) / 2
+    df_work['distance'] = np.abs(df_work['center'] - overall_center)
+
+    # Sort intervals by end time (crucial for the dynamic programming approach)
+    df_sorted = df_work.sort_values('stop')
+    n = len(df_sorted)
+
+    # dp[i] = max number of non-overlapping intervals up to i
+    dp = [1] * n
+    # prev[i] = previous interval in optimal solution ending at i
+    prev = [-1] * n
+    # result[i] = list of indexes in optimal solution ending at i
+    result = [[i] for i in range(n)]
+
+    for i in range(1, n):
+        # Find all compatible previous intervals
+        compatible_solutions = []
+        for j in range(i):
+            if df_sorted.iloc[j]['stop'] <= df_sorted.iloc[i]['start']:
+                compatible_solutions.append((dp[j] + 1, j))
+
+        # If we found any compatible solutions, use the best one
+        if compatible_solutions:
+            best_count, best_j = max(compatible_solutions)
+            if best_count > dp[i]:
+                dp[i] = best_count
+                prev[i] = best_j
+                result[i] = result[best_j] + [i]
+
+    # Find solutions with maximum count
+    max_count = max(dp)
+    candidates = [i for i, count in enumerate(dp) if count == max_count]
+
+    # If multiple solutions exist with the same count, find the one closest to center
+    if len(candidates) > 1:
+        best_distance = float('inf')
+        best_candidate = None
+
+        for idx in candidates:
+            # Calculate average distance for this solution
+            solution_indices = result[idx]
+            solution_df = df_sorted.iloc[solution_indices]
+            avg_distance = solution_df['distance'].mean()
+
+            if avg_distance < best_distance:
+                best_distance = avg_distance
+                best_candidate = idx
+
+        best_solution = result[best_candidate]
+    else:
+        best_solution = result[candidates[0]]
+
+    # Map back to original indices
+    original_indices = df_sorted.index.values[best_solution]
+    return df.loc[original_indices]
+
+
 def hide_overlaps(ticks: 'Element', tt: pd.DataFrame, ir: int, ic: int) -> pd.DataFrame:
     """Find and hide any overlapping tick marks on the same axis.
 
@@ -185,72 +263,6 @@ def hide_overlaps(ticks: 'Element', tt: pd.DataFrame, ir: int, ic: int) -> pd.Da
         tt = df_tick_update(tt)
 
     return tt_orig
-
-
-def hide_overlaps_major_minor(ticks, ticksm, bbox, bboxm, ir, ic) -> pd.DataFrame:
-    """Find and hide any overlapping tick marks on the same axis.  Three cases to address:
-    1) the starting position of the minor tick falls within the span of the major tick label
-    2) the ending position of the minor tick falls within the span of the major tick label
-    3) the minor tick completely covers the major tick
-
-    Args:
-        ticks: Element class for major tick lables
-        ticksm: Element class for major tick lables
-        bbox: major tick label visibility status
-        bboxm: minor tick label visibility status
-        ir: current axes row index
-        ic: current axes column index
-
-    Returns:
-        updated bboxm table
-    """
-    bbox = bbox[bbox['visible']]
-    if len(bbox) == 0 or len(bboxm) == 0:
-        return bboxm
-    bboxm_orig = bboxm.copy()
-
-    # Disable minor ticks where starting point falls between the major tick coords
-    ol = [is_in_range(tt, bbox[['start', 'stop']].values) for tt in np.nditer(bboxm['start'].values + TICK_OVL_MAX)]
-    while True in ol:
-        for iol, ool in enumerate(ol):
-            if ool:
-                idx = bboxm.index[iol]
-                ticksm.obj[ir, ic][idx].set_visible(False)
-                bboxm.loc[idx, 'ol'] = False
-                bboxm.loc[idx, 'visible'] = False
-                bboxm_orig.loc[idx, 'visible'] = False
-                bboxm_orig.loc[idx, 'label'] = ticksm.obj[ir, ic][idx]._text
-        bboxm = bboxm[bboxm['visible']]
-        if len(bboxm) == 0:
-            break
-        ol = [is_in_range(tt, bbox[['start', 'stop']].values) for tt in np.nditer(bboxm['start'].values + TICK_OVL_MAX)]
-    if len(bboxm) == 0:
-        return bboxm_orig
-
-    # Disable minor ticks where stopping point falls between the major tick coords
-    bboxm = bboxm.copy()
-    ol = [is_in_range(tt, bbox[['start', 'stop']].values) for tt in np.nditer(bboxm['stop'].values - TICK_OVL_MAX)]
-    while True in ol:
-        for iol, ool in enumerate(ol):
-            if ool:
-                idx = bboxm.index[iol]
-                ticksm.obj[ir, ic][idx].set_visible(False)
-                bboxm.loc[idx, 'ol'] = False
-                bboxm.loc[idx, 'visible'] = False
-                bboxm_orig.loc[idx, 'visible'] = False
-        bboxm = bboxm[bboxm['visible']]
-        if len(bboxm) == 0:
-            break
-        ol = [is_in_range(tt, bbox[['start', 'stop']].values) for tt in np.nditer(bboxm['stop'].values - TICK_OVL_MAX)]
-
-    # Disable minor ticks that completely cover the major tick coords
-    for irow, row in bboxm.iterrows():
-        covered = bbox[(row['start'] - bbox.start < 0) & (bbox.stop - row['stop'] < 0)]
-        if len(covered) > 0:
-            ticksm.obj[ir, ic][row.name].set_visible(False)
-            bboxm_orig.loc[row.name, 'visible'] = False
-
-    return bboxm_orig
 
 
 def is_in_range(n: float, tbl: np.ndarray):
@@ -385,6 +397,18 @@ def rendered_edge_width(value: Union[int, float]) -> Callable:
     return (value + 0.3323) / 1.4059
 
 
+def select_minor_ticks(majors, minors):
+    minors['weight'] = 0
+    for imaj, maj in majors[:-1].iterrows():
+        minor = minors[(minors['start'] > maj['stop'] - TICK_OVL_MAX) &
+                       (minors['stop'] < maj['next start'] + TICK_OVL_MAX)].copy()
+        minor['start'] += TICK_OVL_MAX
+        best_ticks = get_non_overlapping_rectangles(minor)
+        minors.loc[best_ticks.index, 'visible'] = True
+
+    return minors
+
+
 class Layout(BaseLayout):
 
     def __init__(self, data: 'Data', defaults: list = [], **kwargs):  # noqa: F821
@@ -410,7 +434,7 @@ class Layout(BaseLayout):
             mplp.close('all')
 
         # Rendering correction equations
-        # edge_width - this doesn't render correctly, maybe due to some aliasing issue?
+        # edge_width doesn't render as specified (aliasing?) so adjust it to render as specified
         kwargs['corrections'] = {
             'edge_width': lambda self: 0 if getattr(self, 'edge_width') == 0
             else (getattr(self, 'edge_width') + 0.3323) / 1.4059}
@@ -509,7 +533,7 @@ class Layout(BaseLayout):
             edge = np.ceil(self.grid_major_y.width[0]) - 1
             val += edge * (len(self.gantt.date_type) - 1)
 
-            return np.ceil(val) - 1  # overlap with axes edge?
+            return np.ceil(val) - 1
 
         if not self.axes.twin_y:
             return 0
@@ -662,15 +686,7 @@ class Layout(BaseLayout):
                 tick = self.tick_labels_major_x
             else:
                 tick = self.tick_labels_minor_x
-
-            # if 'month-year' in self.gantt.date_type:
-            #     val = (2 * tick.size[1] + tick.edge_width + self.ws_ticks_ax) * tick.on
-            # else:
             val = (tick.size[1] + self.ws_ticks_ax) * tick.on
-
-            # val += self.gantt.box_padding_y
-            # val += np.ceil(self.grid_major_y.width[0])
-
             return np.ceil(val)
 
         if self.tick_labels_major_x2.size[1] > self.tick_labels_minor_x2.size[1]:
@@ -2055,11 +2071,15 @@ class Layout(BaseLayout):
                 yy1 -= xs
                 yc = (yx0 + (yx1 - yx0) / 2, yy0 + (yy0 - yy1) / 2)
                 if utl.rectangle_overlap((xw, xh, xc), (yw, yh, yc)):
-                    if self.tick_cleanup == 'remove':
-                        yticks.obj[ir, ic][0].set_visible(False)
-                    else:
+                    # Because these are vertically offset we don't need to be as strict on overlap so use a scale factor
+                    skew = 1.4
+                    if self.tick_cleanup == 'shrink' and \
+                            not utl.rectangle_overlap((xw / sf / skew, xh, xc), (yw / sf / skew, yh, yc)):
                         xticks.obj[ir, ic][0].set_size(xticks.font_size / sf)
                         yticks.obj[ir, ic][0].set_size(yticks.font_size / sf)
+                    else:
+                        # If self.tick_cleanup == 'remove' and the resized tick label would still overlap, remove it
+                        yticks.obj[ir, ic][0].set_visible(False)
 
             # Shrink/remove overlapping ticks in column/wrap plots at x-origin
             if ic > 0 and len(xticks_size_all) > 0:
@@ -2073,10 +2093,12 @@ class Layout(BaseLayout):
                         # if ticks are on the identical x-axis location, force remove
                         xticks.obj[ir, ic - 1][-1].set_visible(False)
                     if utl.rectangle_overlap((xwl, xhl, xcl), (xwf, xhf, xcf)):
-                        if self.tick_cleanup == 'remove':
-                            xticks.obj[ir, ic - 1][-1].set_visible(False)
-                        else:
+                        if self.tick_cleanup == 'shrink' and \
+                                not utl.rectangle_overlap((xwl / sf, xhl, xc), (xwf, xhf, xcf)):
                             xticks.obj[ir, ic - 1][-1].set_size(xticks.font_size / sf)
+                        else:
+                            # If self.tick_cleanup == 'remove' and the resized tick label would still overlap, remove it
+                            xticks.obj[ir, ic - 1][-1].set_visible(False)
 
             # First and last x ticks that may fall under a wrap label
             if len(xticks_size_all) > 0 and ir != self.nrow - 1:
@@ -2101,16 +2123,20 @@ class Layout(BaseLayout):
                 xbbox = hide_overlaps(xticks, xbbox, ir, ic)
             if len(xticksm_size_all) > 0:
                 xbboxm = df_tick_update(df_tick(xticksm, xticksm_size_all, 'x'))
-                xbboxm = hide_overlaps_major_minor(xticks, xticksm, xbbox, xbboxm, ir, ic)
-                xbboxm = hide_overlaps(xticksm, xbboxm, ir, ic)
+                xbboxm['visible'] = False
+                xbboxm = select_minor_ticks(xbbox, xbboxm)
+                for irow, row, in xbboxm.iterrows():
+                    xticksm.obj[ir, ic][irow].set_visible(row.visible)
 
             if len(yticks_size_all) > 0:
                 ybbox = df_tick(yticks, yticks_size_all, 'y')
                 ybbox = hide_overlaps(yticks, ybbox, ir, ic)
             if len(yticksm_size_all) > 0:
                 ybboxm = df_tick_update(df_tick(yticksm, yticksm_size_all, 'y'))
-                ybboxm = hide_overlaps_major_minor(yticks, yticksm, ybbox, ybboxm, ir, ic)
-                ybboxm = hide_overlaps(yticksm, ybboxm, ir, ic)
+                ybboxm['visible'] = False
+                ybboxm = select_minor_ticks(ybbox, ybboxm)
+                for irow, row, in ybboxm.iterrows():
+                    yticksm.obj[ir, ic][irow].set_visible(row.visible)
 
     def _get_tick_xs(self):
         """Calculate extra whitespace at the edge of the plot for the last tick."""
@@ -2257,8 +2283,7 @@ class Layout(BaseLayout):
         if self.label_wrap.size[1] > 0:
             title_height = 0
         else:
-            # this is an offset from somewhere I don't know
-            title_height = self.title.size[1] / 2 - 2
+            title_height = self.title.size[1] / 2 - 2  # can't recall why this offset is needed
         self.title.position[3] = 1 + (self.ws_title_ax
                                       + col_label + title_height
                                       + self.label_wrap.size[1]) / self.axes.size[1]
@@ -2877,7 +2902,6 @@ class Layout(BaseLayout):
                 x_new = mdates.date2num(x) + x_distance + start_offset
                 if is_milestone_start:
                     x_new += xs
-                # MAY NEED TO UPDATE WITH self._pixel_to_mdate
                 self.gantt.bar_labels.obj[ir, ic][start_y].set_x(mdates.num2date(x_new))  # from plot_gantt
 
         # Draw the lines
@@ -3278,7 +3302,6 @@ class Layout(BaseLayout):
                                     zorder=40
                                     )
             else:
-                # what is the use case here?
                 points = ax.plot(dfx, df[y],
                                  marker=marker,
                                  color=line_type.color[(iline, leg_name)],
@@ -3545,15 +3568,6 @@ class Layout(BaseLayout):
                 getattr(self, self.name).obj[ir, ic].set_clim(vmin=ranges['zmin'][ir, ic])
             if 'zmax' in ranges and ranges['zmax'][ir, ic] is not None:
                 getattr(self, self.name).obj[ir, ic].set_clim(vmax=ranges['zmax'][ir, ic])
-        # elif self.name == 'gantt' and not self.gantt.labels_as_yticks and self.gantt_scale == 'auto':
-        #     xmax = self.axes.obj[ir, ic].get_position().x1
-        #     label_max = 0
-        #     for itxt, txt in enumerate(self.gantt.labels.obj[ir, ic]):
-        #         label_max = max(label_max, txt.get_bbox_patch().get_extents().x1)
-        #         print(txt.get_bbox_patch().get_extents().width)
-        #         kw = self.make_kw_dict(self.gantt.labels)
-        #         print(utl.get_text_dimensions(txt.get_text(), kw['font'][itxt], kw['font_size'][itxt],
-        #                                       kw['font_style'][itxt], kw['font_weight'][itxt]))
 
     def set_axes_rc_labels(self, ir: int, ic: int):
         """Add the row/column label boxes and wrap titles.
@@ -3958,8 +3972,8 @@ class Layout(BaseLayout):
                     lim = getattr(axes[ia], f'get_{axx}lim')()
                     vals = [f for f in tp[axx]['ticks'] if f > lim[0]]
                     label_vals = [f for f in tp[axx]['label_vals'] if f > lim[0]]
-                    inc = label_vals[1] - label_vals[0]
                     minor_ticks = [f[1] for f in tp[axx]['labels']][m0:]
+                    inc = label_vals[1] - label_vals[0]
 
                     # Remove any major tick labels from the list of minor ticks
                     dups = []
@@ -3971,7 +3985,7 @@ class Layout(BaseLayout):
                                 dups_idx += [m0 + imt]
                     minor_ticks2 = [f for f in minor_ticks if f not in dups]
                     number = len([f for f in minor_ticks2 if f > vals[0] and f < vals[1]]) + 1
-                    decimals = utl.get_decimals(inc / number)
+                    decimals = utl.get_decimals(inc / number, exponential=getattr(self, f'tick_labels_major_{axx}').sci)
 
                     # Check for minor ticks below the first major tick for log axes
                     if getattr(self, f'axes{lab}').scale in (LOGX if axx == 'x' else LOGY):
@@ -3980,8 +3994,18 @@ class Layout(BaseLayout):
                             decimals += 1
 
                     # Set the tick decimal format
-                    getattr(axes[ia], f'{axx}axis').set_minor_formatter(
-                        ticker.FormatStrFormatter('%%.%sf' % (decimals)))
+                    if getattr(self, f'tick_labels_major_{axx}').sci is True:
+                        getattr(axes[ia], f'{axx}axis').set_minor_formatter(
+                            ticker.FormatStrFormatter('%%.%se' % (decimals)))
+                    else:
+                        getattr(axes[ia], f'{axx}axis').set_minor_formatter(
+                            ticker.FormatStrFormatter('%%.%sf' % (decimals)))
+
+                    # Clean up unecessary zeros at the end of minor ticks
+                    tick_labels = [tick.get_text().rstrip('0').rstrip('.')
+                                   for tick in getattr(axes[ia], f'get_{axx}ticklabels')(minor=True)]
+
+                    getattr(axes[ia], f'set_{axx}ticklabels')(tick_labels, minor=True)
 
         if self.cbar.on:
             for ir, ic in np.ndindex(self.cbar.obj.shape):
@@ -4031,16 +4055,16 @@ class Layout(BaseLayout):
                     [mplc_to_hex(cmap((i + 1) / (maxx + 1)), False)]
 
             # Reset colors
-            if self.legend.column is None:
-                # NO IDEA HOW THIS CASE COULD BE, CONSIDER REMOVING
-                if self.axes.twin_x and 'label_y_font_color' not in kwargs.keys():
-                    self.label_y.font_color = color_list[0]
-                if self.axes.twin_x and 'label_y2_font_color' not in kwargs.keys():
-                    self.label_y2.font_color = color_list[1]
-                if self.axes.twin_y and 'label_x_font_color' not in kwargs.keys():
-                    self.label_x.font_color = color_list[0]
-                if self.axes.twin_y and 'label_x_font_color' not in kwargs.keys():
-                    self.label_x2.font_color = color_list[1]
+            # if self.legend.column is None:
+            #     # NO IDEA HOW THIS CASE COULD BE, CONSIDER REMOVING
+            #     if self.axes.twin_x and 'label_y_font_color' not in kwargs.keys():
+            #         self.label_y.font_color = color_list[0]
+            #     if self.axes.twin_x and 'label_y2_font_color' not in kwargs.keys():
+            #         self.label_y2.font_color = color_list[1]
+            #     if self.axes.twin_y and 'label_x_font_color' not in kwargs.keys():
+            #         self.label_x.font_color = color_list[0]
+            #     if self.axes.twin_y and 'label_x_font_color' not in kwargs.keys():
+            #         self.label_x2.font_color = color_list[1]
 
             self.lines.color.values = copy.copy(color_list)
             self.lines.color_alpha('color', 'alpha')
@@ -4298,8 +4322,6 @@ class Layout(BaseLayout):
                     width += (self.cbar.size[0] + self.ws_ax_cbar) / self.fig.size_int[0]
                 self.axes.obj[ir, ic].set_position([ax0, ax.y0, width, ax.y1 - ax.y0])
 
-                # no label_wrap??
-
                 # Column labels
                 if self.label_col.obj_bg[ir, ic] is not None:
                     self.label_col.obj_bg[ir, ic].set_x(ax0)
@@ -4336,9 +4358,6 @@ class Layout(BaseLayout):
 
                 # Column labels
                 if self.label_col.obj_bg[ir, ic] is not None:
-                    # ww = self.label_col.obj_bg[ir, ic].get_width()
-                    # self.label_col.obj_bg[ir, ic].set_width(
-                    #     ww - (self.cbar.size[0] + self.ws_ax_cbar) / self.fig.size_int[0])
                     self.label_col.obj_bg[ir, ic].set_width(
                         width - (self.cbar.size[0] + self.ws_ax_cbar) / self.fig.size_int[0])
                     center_new = self.label_col.obj_bg[ir, ic].get_width() / 2 + self.label_col.obj_bg[ir, ic].get_x()
@@ -4719,21 +4738,18 @@ class Layout(BaseLayout):
 
         # Set labels
         logx = getattr(self, f'axes{lab}').scale in LOGX + SYMLOGX + LOGITX
-        if self.name in ['hist'] and self.hist.horizontal is True and \
-                self.hist.kde is False:
+        if self.name in ['hist'] and self.hist.horizontal is True and self.hist.kde is False:
             ax.get_xaxis().set_major_locator(MaxNLocator(integer=True))
-        elif not tick_labels_major_x_sci \
-                and self.name not in ['box', 'heatmap'] \
-                and not logx:
+            self._major_x_formatter = MaxNLocator(integer=True)
+        elif not tick_labels_major_x_sci and self.name not in ['box', 'heatmap'] and not logx:
             try:
                 ax.get_xaxis().get_major_formatter().set_scientific(False)
             except:  # noqa
                 pass
-
-        elif not tick_labels_major_x_sci \
-                and self.name not in ['box', 'heatmap']:
+        elif not tick_labels_major_x_sci and self.name not in ['box', 'heatmap']:
             try:
                 ax.get_xaxis().set_major_formatter(ticker.ScalarFormatter())
+
                 # need to recompute the ticks after changing formatter
                 tp = mpl_get_ticks(ax, minor=self.ticks_minor.on)
                 for itick, tick in enumerate(tp['x']['ticks']):
@@ -4741,34 +4757,31 @@ class Layout(BaseLayout):
                         digits = -np.log10(tick)
                     else:
                         digits = 0
-                    tp['x']['label_text'][itick] = \
-                        '{0:.{digits}f}'.format(tick, digits=int(digits))
+                    tp['x']['label_text'][itick] = '{0:.{digits}f}'.format(tick, digits=int(digits))
                 ax.set_xticklabels(tp['x']['label_text'])
             except:  # noqa
                 pass
-        elif (bestx and not logx
-                or not bestx and tick_labels_major_x_sci and logx) \
-                and self.name not in ['box', 'heatmap']:
+        elif ((bestx and not logx
+                or not bestx and tick_labels_major_x_sci and logx)
+                and self.name not in ['box', 'heatmap']) \
+                or self.tick_labels_major_x.sci is True:
             xlim = ax.get_xlim()
             dec = get_sci(tp['x']['ticks'], xlim)
+            self.ticks_major_x.sci = True
             ax.get_xaxis().set_major_formatter(ticker.FormatStrFormatter(dec))
 
         logy = getattr(self, f'axes{lab}').scale in LOGY + SYMLOGY + LOGITY
-        if self.name in ['hist'] and self.hist.horizontal is False and \
-                self.hist.kde is False:
+        if self.name in ['hist'] and self.hist.horizontal is False and self.hist.kde is False:
             ax.get_yaxis().set_major_locator(MaxNLocator(integer=True))
-        elif not tick_labels_major_y_sci \
-                and self.name not in ['heatmap'] \
-                and not logy:
+        elif not tick_labels_major_y_sci and self.name not in ['heatmap'] and not logy:
             try:
                 ax.get_yaxis().get_major_formatter().set_scientific(False)
             except:  # noqa
                 pass
-
-        elif not tick_labels_major_y_sci \
-                and self.name not in ['heatmap']:
+        elif not tick_labels_major_y_sci and self.name not in ['heatmap']:
             try:
                 ax.get_yaxis().set_major_formatter(ticker.ScalarFormatter())
+
                 # need to recompute the ticks after changing formatter
                 tp = mpl_get_ticks(ax, minor=self.ticks_minor.on)
                 for itick, tick in enumerate(tp['y']['ticks']):
@@ -4776,17 +4789,19 @@ class Layout(BaseLayout):
                         digits = -np.log10(tick)
                     else:
                         digits = 0
-                    tp['y']['label_text'][itick] = \
-                        '{0:.{digits}f}'.format(tick, digits=int(digits))
+                    tp['y']['label_text'][itick] = '{0:.{digits}f}'.format(tick, digits=int(digits))
                 ax.set_yticklabels(tp['y']['label_text'])
             except:  # noqa
                 pass
-        elif (besty and not logy
-                or not besty and tick_labels_major_y_sci and logy) \
-                and self.name not in ['heatmap']:
+        elif ((besty and not logy
+                or not besty and tick_labels_major_y_sci and logy)
+                and self.name not in ['heatmap']) \
+                or self.tick_labels_major_y.sci is True:
             ylim = ax.get_ylim()
             dec = get_sci(tp['y']['ticks'], ylim)
+            self.tick_labels_major_y.sci = True
             ax.get_yaxis().set_major_formatter(ticker.FormatStrFormatter(dec))
+            self._major_y_formatter = ticker.FormatStrFormatter(dec)
 
         # Cbar z-axis
         if self.tick_labels_major_z.sci is True and self.cbar.on:
@@ -4805,7 +4820,6 @@ class Layout(BaseLayout):
                     self.cbar.obj[ir, ic].ax.get_yaxis().get_major_formatter().set_scientific(False)
             except:  # noqa
                 pass
-
         return ax
 
     def _set_text_position(self, obj):
@@ -4828,8 +4842,7 @@ class Layout(BaseLayout):
                     else:
                         continue
 
-                # Set the coordinate so text is anchored to figure, axes, or the current
-                #    data range
+                # Set the coordinate so text is anchored to figure, axes, or the current data range
                 coord = None if not hasattr(obj, 'coordinate') \
                     else obj.coordinate.lower()
                 if coord == 'figure':
@@ -5295,7 +5308,6 @@ class Layout(BaseLayout):
                         self.fig.obj.patches.extend([rect])
 
                     # secondary date labels (create manually as text boxes using the actual xticks)
-                    # TODO: allow quarter-years
                     secondary_dates = [f for f in DATE_TYPES[DATE_TYPES.index(primary) + 1:]]
                     secondary_dates = [f for f in secondary_dates if f in self.gantt.date_type]
                     tick = self.tick_labels_major_x
@@ -5330,13 +5342,8 @@ class Layout(BaseLayout):
 
                         # Create text boxes for the dates
                         counts = [0] + list(np.cumsum([sum(1 for _ in group) for _, group in groupby(dates)]))
-                        # y_rect = ax.get_window_extent().y1 + (ii + 1) * height
-                        # y_text = y_rect + self.ws_ticks_ax / 2 + self.tick_labels_major_x.size[1] / 2
                         label_width = utl.get_text_dimensions(
                             dates[0], tick.font, tick.font_size, tick.font_style, tick.font_weight)[0]
-                        # if primary == 'month-year':
-                        #     height = (xticklabs[0].get_window_extent().y1 - ax.get_window_extent().y1) / 2 + \
-                        #         2 * self.gantt.box_padding_y
 
                         for icount, count in enumerate(counts[:-1]):
                             # Determine start and stop point (special care for the partial boxes near the min and max)
