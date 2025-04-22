@@ -11,3 +11,4 @@ gantt_fill_color,str,Hex color string of the Gantt bar fill ,fcp.DEFAULT_COLORS,
 gantt_label_x,str,"By default, x-axis labels are disabled for this plot type",'’,None
 gantt_tick_labels_x_rotation|tick_labels_x_rotation,int,Gantt-specific version of the this kwarg to ensure rotations are not applied globably to all plots from a theme file,90,gantt.html#Legends
 sort,str,"Sort order for the Gantt bars {‘ascending’, ‘descending’}",'descending’,gantt.html#Sorting
+us_holidays,bool,Skip US holidays based on the Federal calendar,True,gantt.html#US-holidays
