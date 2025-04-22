@@ -1,0 +1,10 @@
+Keyword,Data Type,Description,Default,Example
+toolbar,bool,Display the plotly toolbar,True,plotly.html#Toolbar
+toolbar_active_zoom,,,,
+toolbar_edge_width,,,,
+toolbar_location,,,,
+toolbar_rotation,,,,
+toolbar_sticky,,,,
+toolbar_style,,,,
+toolbar_tools,,,,
+toolbar_width,,,,

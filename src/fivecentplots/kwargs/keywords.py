@@ -226,20 +226,22 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
 
     # unused element defaults (although all elements support certain kwargs, some are never used)
     no_alphas = ['ax', 'bar', ]
-    no_fonts = ['line', 'ax', 'bar', 'box_divider', 'box_grand_mean', 'box_grand_median',
+    no_fonts = ['line', 'ax', 'bar', 'box_divider', 'box_grand_mean', 'box_grand_median', 'box',
                 'box_group_means', 'box_mean_diamonds', 'cbar', 'contour', 'fig', 'fills_', 'grid',
-                'imshow', 'rolling_mean', ]
+                'imshow', 'rolling_mean', 'ticks_major', 'ticks_minor', 'ticks', ]
     no_labels = ['line', 'ax', 'bar', ]
-    no_edges = ['line', 'box_divider', 'box_grand_mean', 'box_grand_median', 'box_group_means',]
+    no_edges = ['line', 'box_divider', 'box_grand_mean', 'box_grand_median', 'box_group_means', 'ticks_major',
+                'ticks_minor', ]
     no_fills = ['line', 'whisker', 'median', 'box_divider', 'box_grand_mean', 'box_grand_median',
-                'box_group_means',]
+                'box_group_means', ]
     no_styles = ['ax', 'bar_labels', 'gantt_bar_labels', ]
     no_widths = ['pie', 'contour', 'fig', 'ax', 'fit', 'today', 'grid', 'ticks', 'tick_labels', 'imshow',
-                 'hist', 'plot', 'kde',]
+                 'hist', 'plot', 'kde', ]
     no_std_color = ['label', 'ax', 'ticks', 'imshow', 'hist', 'fig', 'ax', 'fig', 'violin_color', 'box_color', 'bar',
                     ]
     no_rotations = ['heatmap', 'box', 'grid', 'ax', 'line', 'cbar', 'violin', 'contour', 'rolling_mean', 'fig', 'fills',
                     'imshow', 'hist', 'pie', 'bar_labels', 'gantt_bar_labels']
+    no_zorders = ['toolbar']
     new_kwargs = []
     for kw in kwargs_list:
         if any(f in kw for f in no_alphas) and '_alpha' in kw:
@@ -259,6 +261,8 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
         elif any(f in kw for f in no_std_color) and '_color' in kw:
             pass
         elif any(f in kw for f in no_rotations) and '_rotation' in kw:
+            pass
+        elif any(f in kw for f in no_zorders) and '_zorder' in kw:
             pass
         else:
             new_kwargs += [kw]
