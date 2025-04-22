@@ -3,11 +3,7 @@ import pdb
 import numpy as np
 from .. import utilities as utl
 from . layout import LOGX, LOGY, BaseLayout, RepeatedList, Element
-<<<<<<< HEAD
-# from . import layout
-=======
 from . import layout
->>>>>>> 520e540 (updates to plotly)
 from .. import data
 import warnings
 import plotly.offline as pyo
@@ -56,49 +52,30 @@ class Layout(BaseLayout):
         self.kwargs = kwargs
         self.update_markers()
 
-        # Engine-specific "update_layout" keywords; store in one dict to minimize calls to "update_layout"
-        self.ul = {}
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 4daa967 (plotly updates)
-        self.ul['legend'] = {}
-        self.ul['plot_bgcolor'] = None
-        self.ul['title'] = {}
-        for ax in data.axs_on:
-            self.ul[f'{ax}axis_range'] = np.array([[None] * self.ncol] * self.nrow)
-            self.ul[f'{ax}axis_style'] = {}
-            self.ul[f'{ax}axis_title'] = {}
-            self.ul[f'{ax}grid'] = {}
-            self.ul[f'{ax}scale'] = {}
-            self.ul[f'{ax}ticks'] = {}
+        # Engine-specific kwargs; store update parameters in kwargs to avoid calling "update_layout" multiple times
+        self.kwargs['ul_plot_bgcolor'] = None
+        self.kwargs['ul_title'] = {}
+        self.kwargs['ul_xaxis_range'] = np.array([[None] * self.ncol] * self.nrow)
+        self.kwargs['ul_xaxis_style'] = {}
+        self.kwargs['ul_xgrid'] = {}
+        self.kwargs['ul_x2grid'] = {}
+        self.kwargs['ul_xscale'] = {}
+        self.kwargs['ul_xticks'] = {}
+        self.kwargs['ul_xaxis_title'] = {}
+        self.kwargs['ul_x2axis_title'] = {}
+        self.kwargs['ul_yaxis_range'] = np.array([[None] * self.ncol] * self.nrow)
+        self.kwargs['ul_yaxis_style'] = {}
+        self.kwargs['ul_ygrid'] = {}
+        self.kwargs['ul_y2grid'] = {}
+        self.kwargs['ul_yscale'] = {}
+        self.kwargs['ul_yticks'] = {}
+        self.kwargs['ul_yaxis_title'] = {}
+        self.kwargs['ul_y2axis_title'] = {}
 
         # Other engine specific attributes
         self.imshow.binary = utl.kwget(kwargs, self.fcpp, ['binary', 'binary_string'], None)
         # Add other imshow params later
 
-=======
-        self.ul['plot_bgcolor'] = None
-        self.ul['title'] = {}
-        self.ul['xaxis_range'] = np.array([[None] * self.ncol] * self.nrow)
-        self.ul['xaxis_style'] = {}
-        self.ul['xgrid'] = {}
-        self.ul['x2grid'] = {}
-        self.ul['xscale'] = {}
-        self.ul['xticks'] = {}
-        self.ul['xaxis_title'] = {}
-        self.ul['x2axis_title'] = {}
-        self.ul['yaxis_range'] = np.array([[None] * self.ncol] * self.nrow)
-        self.ul['yaxis_style'] = {}
-        self.ul['ygrid'] = {}
-        self.ul['y2grid'] = {}
-        self.ul['yscale'] = {}
-        self.ul['yticks'] = {}
-        self.ul['yaxis_title'] = {}
-        self.ul['y2axis_title'] = {}
-
-        # Other engine specific attributes
->>>>>>> 520e540 (updates to plotly)
         self.modebar = Element('modebar', self.fcpp, kwargs,
                                on=utl.kwget(kwargs, self.fcpp, ['modebar', 'modebar_on'], True),
                                bg_color=utl.kwget(kwargs, self.fcpp, 'modebar_bg_color', None),
@@ -109,17 +86,8 @@ class Layout(BaseLayout):
                                orientation=utl.kwget(kwargs, self.fcpp, 'modebar_orientaiton', 'v'),
                                visible=utl.kwget(kwargs, self.fcpp, 'modebar_visible', False)
                                )
-<<<<<<< HEAD
-<<<<<<< HEAD
         self.modebar.size[0] = 25  # the plotly toolbar
         self.ws_leg_modebar = 5  # space between a legend and modebar
-=======
-        self.ws_modebar = 30  # the plotly toolbar
->>>>>>> 520e540 (updates to plotly)
-=======
-        self.modebar.size[0] = 25  # the plotly toolbar
-        self.ws_leg_modebar = 5  # space between a legend and modebar
->>>>>>> 4daa967 (plotly updates)
 
         # Check for unsupported kwargs
         # unsupported = []
@@ -223,117 +191,13 @@ class Layout(BaseLayout):
         return int(left)
 
     @property
-    def _legx(self) -> float:
-        """Legend whitespace x if location == 0."""
-        if self.legend.location == 0 and self.legend._on:
-<<<<<<< HEAD
-<<<<<<< HEAD
-            return self.legend.size[0] + self.ws_ax_leg
-=======
-            return self.legend.size[0] + self.ws_ax_leg + self.ws_leg_fig + np.ceil(self.legend.edge_width / 2)
->>>>>>> 520e540 (updates to plotly)
-=======
-            return self.legend.size[0] + self.ws_ax_leg
->>>>>>> 4daa967 (plotly updates)
-        else:
-            return 0
-
-    @property
-    def _legy(self) -> float:
-        """Legend whitespace y is location == 11."""
-        if self.legend.location == 11 and self.legend._on:
-            return self.legend.size[1]
-        else:
-            return 0
-
-    @property
     def _right(self) -> float:
+        """Right margin.
+
+        Returns:
+            margin in pixels
         """
-        Width of the space to the right of the axes object (ignores cbar [bar and tick labels] and legend).
-        Round up fractional pixels to match figure output.
-        """
-        # axis to fig right side ws with or without legend
-        ws_ax_fig = (self.ws_ax_fig if not self.legend._on or self.legend.location != 0 else 0)
-
-        # sum all parts
-<<<<<<< HEAD
-        right = np.ceil(ws_ax_fig) + np.ceil(self._labtick_y2) + self._legx
-
-        # modebar
-        if self.modebar.orientation == 'v':  # always add extra ws
-            right += self.modebar.size[0] + self.ws_leg_modebar * self.legend.on
-<<<<<<< HEAD
-=======
-        right = np.ceil(ws_ax_fig)+ np.ceil(self._labtick_y2) + self._legx
-
-        # modebar
-        if self.modebar.orientation=='v':  # always add extra ws
-            right += self.ws_modebar
->>>>>>> 520e540 (updates to plotly)
-=======
->>>>>>> 4daa967 (plotly updates)
-
-        # # box title excess
-        # if self.box_group_title.on and (self.ws_ax_box_title + self.box_title) > \
-        #         self._legx + (self.fig_legend_border if self.legend._on else 0):
-        #     right = np.ceil(self.ws_ax_box_title) + np.ceil(self.box_title) \
-        #          + np.ceil((self.ws_ax_fig if not self.legend.on else 0))
-        # if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
-        #     right += np.ceil(self.box_title)
-
-        # # Main figure title excess size
-        # title_xs_right = np.ceil(self.title.size[0] / 2) \
-        #     - np.ceil((right + (self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1)) / 2)) \
-        #     - np.ceil(self.legend.size[0])
-        # if title_xs_right < 0:
-        #     title_xs_right = 0
-
-        # right += title_xs_right
-
-        # # pie labels
-        # right += np.ceil(self.pie.xs_right)
-
-        return int(right)
-
-    @property
-    def _tick_x(self) -> float:
-        """Height of the primary x ticks and whitespace."""
-        if self.tick_labels_major_x.size[1] > self.tick_labels_minor_x.size[1]:
-            tick = self.tick_labels_major_x
-        else:
-            tick = self.tick_labels_minor_x
-
-        return (tick.size[1] + tick.edge_width + self.ws_ticks_ax) * tick.on
-
-    @property
-    def _tick_x2(self) -> float:
-        """Height of the secondary x ticks and whitespace."""
-        if self.tick_labels_major_x2.size[1] > self.tick_labels_minor_x2.size[1]:
-            tick = self.tick_labels_major_x2
-        else:
-            tick = self.tick_labels_minor_x2
-
-        return (tick.size[1] + tick.edge_width + self.ws_ticks_ax) * tick.on
-
-    @property
-    def _tick_y(self) -> float:
-        """Width of the primary y ticks and whitespace."""
-        if self.tick_labels_major_y.size[0] > self.tick_labels_minor_y.size[0]:
-            tick = self.tick_labels_major_y
-        else:
-            tick = self.tick_labels_minor_y
-
-        return (tick.size[0] + tick.edge_width + self.ws_ticks_ax) * tick.on
-
-    @property
-    def _tick_y2(self) -> float:
-        """Width of the secondary y ticks and whitespace."""
-        if self.tick_labels_major_y2.size[0] > self.tick_labels_minor_y2.size[0]:
-            tick = self.tick_labels_major_y2
-        else:
-            tick = self.tick_labels_minor_y2
-
-        return (tick.size[0] + tick.edge_width + self.ws_ticks_ax) * tick.on
+        return self.legend.size[0] * self.legend.on + (self.label_y2.size[1] + self.ws_label_tick) * self.axes.twin_x
 
     @property
     def _top(self) -> float:
@@ -342,16 +206,7 @@ class Layout(BaseLayout):
         Returns:
             margin in pixels
         """
-<<<<<<< HEAD
-<<<<<<< HEAD
-        toolbar = self.modebar.size[0] if self.modebar.orientation == 'h' else 0
-=======
-        # toolbar = utl.kwget(self.kwargs, self.fcpp, 'save', False) * self.ws_modebar??  Does save force this?
-        toolbar =  self.ws_modebar if (self.modebar.visible and self.modebar.orientation=='h') else 0
->>>>>>> 520e540 (updates to plotly)
-=======
-        toolbar = self.modebar.size[0] if self.modebar.orientation == 'h' else 0
->>>>>>> 4daa967 (plotly updates)
+        toolbar = utl.kwget(self.kwargs, self.fcpp, 'save', False) * self.ws_toolbar
         padding = self.ws_fig_title if self.title.on else self.ws_fig_ax
         return padding + self.title.size[1] + self.ws_title_ax * self.title.on + toolbar
 
@@ -425,91 +280,12 @@ class Layout(BaseLayout):
         # In plotly, no need to add the layout to the plot so we toggle visibility in set_figure_final_layout
         #   Here we just compute the approximate width of the legend for later sizing
         if self.legend.on:
-            # Guesstimate the legend dimensions based on the text size
-            longest_key = self.legend.values.Key.loc[self.legend.values.Key.str.len().idxmax()]
-            key_dim = utl.get_text_dimensions(longest_key, self.legend.font, self.legend.font_size,
-                                              self.legend.font_style, self.legend.font_weight)
-            title_dim = utl.get_text_dimensions(self.legend.text, self.legend.font, self.legend.title_font_size,
-<<<<<<< HEAD
-<<<<<<< HEAD
-                                                self.legend.font_style, self.legend.font_weight, scale_x=1, scale_y=1)
-
-            # Add width for the marker part of the legend and padding with axes (based off empirical measurements)
-            marker_leg_edge_to_text = 40
-            text_to_leg_edge = 5
-            legend_key_width = marker_leg_edge_to_text + key_dim[0] + text_to_leg_edge
-
-            # Set approximate legend size
-            self.legend.size[0] = max(title_dim[0], legend_key_width) + 2 * self.legend.edge_width
-            self.legend.size[1] = \
-                (title_dim[1] if self.legend.text != '' else 0) \
-                + len(leg_vals) * key_dim[1] \
-                + 2 * self.legend.edge_width \
-                + 5 * len(self.legend.values) + 10  # padding
-            print(self.legend.size)
-            print(max(title_dim[0], legend_key_width))
-
-            # Legend styling
-            self.ul['legend'] = \
-                dict(x=1,
-                     y=1,
-                     xanchor='left',
-                     traceorder='normal',
-                     title=dict(text=self.legend.text,
-                                font=dict(family=self.legend.font, size=self.legend.title_font_size)),
-                     font=dict(
-                         family=self.legend.font,
-                         size=self.legend.font_size,
-                         color='black'  # no styling for this right now
-                     ),
-                     bgcolor=self.legend.fill_color[0],
-                     bordercolor=self.legend.edge_color[0],
-                     borderwidth=self.legend.edge_width
-                     )
-=======
-                                                self.legend.font_style, self.legend.font_weight)
-            max_len = max(key_dim[0], title_dim[0])
-=======
-                                                self.legend.font_style, self.legend.font_weight, scale_x=1, scale_y=1)
->>>>>>> 4daa967 (plotly updates)
-
-            # Add width for the marker part of the legend and padding with axes (based off empirical measurements)
-            marker_leg_edge_to_text = 40
-            text_to_leg_edge = 5
-            legend_key_width = marker_leg_edge_to_text + key_dim[0] + text_to_leg_edge
-
-            # Set approximate legend size
-            self.legend.size[0] = max(title_dim[0], legend_key_width) + 2 * self.legend.edge_width
-            self.legend.size[1] = \
-<<<<<<< HEAD
-                (title_dim[1] if self.legend.text != '' else 0) + len(leg_vals) * key_dim[1] + 0  # padding
->>>>>>> 520e540 (updates to plotly)
-=======
-                (title_dim[1] if self.legend.text != '' else 0) \
-                + len(leg_vals) * key_dim[1] \
-                + 2 * self.legend.edge_width \
-                + 5 * len(self.legend.values) + 10  # padding
-            print(self.legend.size)
-            print(max(title_dim[0], legend_key_width))
-
-            # Legend styling
-            self.ul['legend'] = \
-                dict(x=1,
-                     y=1,
-                     xanchor='left',
-                     traceorder='normal',
-                     title=dict(text=self.legend.text,
-                                font=dict(family=self.legend.font, size=self.legend.title_font_size)),
-                     font=dict(
-                         family=self.legend.font,
-                         size=self.legend.font_size,
-                         color='black'  # no styling for this right now
-                     ),
-                     bgcolor=self.legend.fill_color[0],
-                     bordercolor=self.legend.edge_color[0],
-                     borderwidth=self.legend.edge_width
-                     )
->>>>>>> 4daa967 (plotly updates)
+            longest = self.legend.values.Key.loc[self.legend.values.Key.str.len().idxmax()]
+            self.legend.size[0] = utl.get_text_dimensions(longest, self.legend.font,
+                                                          self.legend.font_size, self.legend.font_style,
+                                                          self.legend.font_weight)[0]
+            # add width for the marker part of the legend and padding with axes
+            self.legend.size[0] += 3 * self.markers.size.max() + 10
 
     def add_text(self, ir: int, ic: int, text: [str, None] = None,
                  element: [str, None] = None, offsetx: int = 0,
@@ -528,58 +304,24 @@ class Layout(BaseLayout):
             units (optional): pixel or inches. Defaults to None which is 'pixel'.
         """
 
-<<<<<<< HEAD
-    def _get_figure_size(self, data: 'Data', temp=False, **kwargs):  # noqa: F821
-        """Determine the size of the mpl figure canvas in pixels and inches.
+    def _get_tick_label_sizes(self, data):
+        """Guesstimate the tick label sizes for each axis since plotly doesn't have a way of getting the
+        actual ticks."""
 
-        Args:
-            data: Data object
-            temp: first fig size calc is a dummy calc to get a rough size; don't resize user parameters
-            kwargs: user-defined keyword args
-        """
-        # SKIPPING A LOT FROM MPL, CONSIDER REUSING
-        self.box_labels = 0
+        for ir, ic in np.ndindex(self.axes.obj.shape):
+            # x-axis --> just need the approximate height of text, don't care about tick values
+            if data.ranges['xmin'][ir, ic] is not None:
+                val = str(data.ranges['xmin'][ir, ic])
+                xticks = self.tick_labels_major_x
+                size = utl.get_text_dimensions(val, xticks.font, xticks.font_size,
+                                               xticks.font_style, xticks.font_weight)
+                self.tick_labels_major_x.size[1] = size[1]
 
-=======
-
-    def _get_figure_size(self, data: 'Data', temp=False, **kwargs):  # noqa: F821
-        """Determine the size of the mpl figure canvas in pixels and inches.
-
-        Args:
-            data: Data object
-            temp: first fig size calc is a dummy calc to get a rough size; don't resize user parameters
-            kwargs: user-defined keyword args
-        """
-        # SKIPPING A LOT FROM MPL, CONSIDER REUSING
-        self.box_labels = 0
-
->>>>>>> 520e540 (updates to plotly)
-        # Compute the sum of axes edge thicknesses
-        if self.ws_col == 0 and not self.cbar.on and self.ncol > 1:
-            col_edge_width = self.axes.edge_width * (self.ncol + 1)
-        else:
-            col_edge_width = 2 * self.axes.edge_width * self.ncol
-        if self.ws_row == 0 and not self.label_wrap.on and self.nrow > 1:
-            row_edge_height = self.axes.edge_width * (self.nrow + 1)
-        else:
-            row_edge_height = 2 * self.axes.edge_width * self.nrow
-
-        # Set figure width
-        self.fig.size[0] = \
-            self._left \
-            + self.axes.size[0] * self.ncol \
-            + col_edge_width \
-            + self._right \
-            + self.ws_col * (self.ncol - 1) \
-            + self._cbar
-
-        # Figure height
-        self.fig.size[1] = \
-            self._top \
-            + self.axes.size[1] * self.nrow \
-            + row_edge_height \
-            + self.ws_row * (self.nrow - 1) \
-            + self._bottom
+            # # y-axis --> try to guess where plotly will place the ticks and then guess the tick labels
+            # if data.ranges[ir, ic]['ymin'] is not None and data.ranges[ir, ic]['ymax'] is not None:
+            #     ymin = data.ranges[ir, ic]['ymin']
+            #     ymax = data.ranges[ir, ic]['ymax']
+            #     inc = self.ticks_major_y.increment
 
     def make_figure(self, data: 'data.Data', **kwargs):
         """Make the figure and axes objects.
@@ -1029,16 +771,10 @@ class Layout(BaseLayout):
                 grid = getattr(self, f'grid_major_{ax}{ss}')
                 if grid is not None:
                     dash = dash_lookup.get(grid.style[0], grid.style[0])
-                    self.ul[f'{ax}{ss}grid'] = dict(gridcolor=grid.color[0],
-<<<<<<< HEAD
-                                                    gridwidth=grid.width[0],
-                                                    griddash=dash,
-                                                    )
-=======
+                    self.kwargs[f'ul_{ax}{ss}grid'] = dict(gridcolor=grid.color[0],
                                                            gridwidth=grid.width[0],
                                                            griddash=dash,
                                                            )
->>>>>>> 520e540 (updates to plotly)
 
     def set_axes_labels(self, ir: int, ic: int, data: 'Data'):  # noqa: F821
         """Set the axes labels.
@@ -1088,13 +824,7 @@ class Layout(BaseLayout):
                                color=label.font_color),
                      standoff=self.ws_label_tick)
             lab = getattr(self, f'label_{ax}')
-<<<<<<< HEAD
-            lab.size = utl.get_text_dimensions(lab.text, lab.font, lab.font_size, lab.font_style,
-                                               lab.font_weight, lab.rotation)
-=======
-            lab.size = \
-                utl.get_text_dimensions(lab.text, lab.font, lab.font_size, lab.font_style, lab.font_weight, lab.rotation)
->>>>>>> 520e540 (updates to plotly)
+            lab.size = utl.get_text_dimensions(lab.text, lab.font, lab.font_size, lab.font_style, lab.font_weight)
 
     def set_axes_ranges(self, ir: int, ic: int, ranges: dict):
         """Set the axes ranges.
@@ -1107,21 +837,11 @@ class Layout(BaseLayout):
         """
         # TODO address secondary axes and what happens if None
         if str(self.axes.scale).lower() in LOGX:
-<<<<<<< HEAD
-            self.ul['xaxis_range'][ir, ic] = \
-                np.array([np.log10(ranges['xmin'][ir, ic]), np.log10(ranges['xmax'][ir, ic])])
+            self.kwargs['ul_xaxis_range'][ir, ic] = [np.log10(ranges['xmin'][ir, ic]), np.log10(ranges['xmax'][ir, ic])]
         else:
             self.ul['xaxis_range'][ir, ic] = np.array([ranges['xmin'][ir, ic], ranges['xmax'][ir, ic]])
         if str(self.axes.scale).lower() in LOGY:
-            self.ul['yaxis_range'][ir, ic] = \
-                np.array([np.log10(ranges['ymin'][ir, ic]), np.log10(ranges['ymax'][ir, ic])])
-=======
-            self.ul['xaxis_range'][ir, ic] = np.array([np.log10(ranges['xmin'][ir, ic]), np.log10(ranges['xmax'][ir, ic])])
-        else:
-            self.ul['xaxis_range'][ir, ic] = np.array([ranges['xmin'][ir, ic], ranges['xmax'][ir, ic]])
-        if str(self.axes.scale).lower() in LOGY:
-            self.ul['yaxis_range'][ir, ic] = np.array([np.log10(ranges['ymin'][ir, ic]), np.log10(ranges['ymax'][ir, ic])])
->>>>>>> 520e540 (updates to plotly)
+            self.kwargs['ul_yaxis_range'][ir, ic] = [np.log10(ranges['ymin'][ir, ic]), np.log10(ranges['ymax'][ir, ic])]
         else:
             self.ul['yaxis_range'][ir, ic] = np.array([ranges['ymin'][ir, ic], ranges['ymax'][ir, ic]])
 
@@ -1240,59 +960,18 @@ class Layout(BaseLayout):
             data: Data object
             kwargs: keyword args
         """
-        # Set the figure size
-        self._get_figure_size(data)
-
-        # Update the title position
-        self.ul['title']['x'] = \
-            0.5 + (self.label_y.font_size + self.tick_labels_major_y.font_size) / self.fig.size[0]
-        self.ul['title']['y'] = \
-<<<<<<< HEAD
-<<<<<<< HEAD
-            1 - ((self.modebar.size[0] if (self.modebar.visible and self.modebar.orientation == 'h') else 0) +
-                 self.title.font_size / 2) / self.fig.size[1]
-        # ws_leg_modebar??
-=======
-            1 - ((self.ws_modebar if (self.modebar.visible and self.modebar.orientation=='h') else 0) +
-                 self.title.font_size / 2) / self.fig.size[1]
->>>>>>> 520e540 (updates to plotly)
-=======
-            1 - ((self.modebar.size[0] if (self.modebar.visible and self.modebar.orientation == 'h') else 0) +
-                 self.title.font_size / 2) / self.fig.size[1]
-        # ws_leg_modebar??
->>>>>>> 4daa967 (plotly updates)
-
         # Update the x/y axes
         for ax in data.axs_on:
             kw = {}
-            kw.update(self.ul[f'{ax}ticks'])
-            kw.update(self.ul[f'{ax}axis_style'])
-            kw.update(self.ul[f'{ax}grid'])
-            kw.update(self.ul[f'{ax}scale'])
-<<<<<<< HEAD
-            try:
-                getattr(self.fig.obj, f'update_{ax}axes')(kw)
-            except:  # noqa
-                pass
-
-        # Update the axes labels
-        axis_labels = self.ul['xaxis_title']
-        axis_labels.update(self.ul['yaxis_title'])
-
-        # Add space for tick labels
-        self.fig.obj.update_yaxes(ticksuffix=" ")
-        if self.axes.twin_x:
-            self.fig.obj['layout']['yaxis2'].update(dict(tickprefix=" "))
-<<<<<<< HEAD
-=======
+            kw.update(self.kwargs[f'ul_{ax}ticks'])
+            kw.update(self.kwargs[f'ul_{ax}axis_style'])
+            kw.update(self.kwargs[f'ul_{ax}grid'])
+            kw.update(self.kwargs[f'ul_{ax}scale'])
             getattr(self.fig.obj, f'update_{ax}axes')(kw)
->>>>>>> 520e540 (updates to plotly)
 
         # Update the axes labels
         axis_labels = self.ul['xaxis_title']
         axis_labels.update(self.ul['yaxis_title'])
-=======
->>>>>>> 4daa967 (plotly updates)
 
         # Iterate through subplots to add the traces
         for ir in range(0, self.nrow):
@@ -1335,19 +1014,9 @@ class Layout(BaseLayout):
         self.fig.obj.update_layout()
 
         if self.axes.twin_x:
-<<<<<<< HEAD
-<<<<<<< HEAD
-            self.fig.obj['layout']['yaxis2'].update(self.ul['y2grid'])
-            self.fig.obj['layout']['yaxis2']['title'] = self.ul['y2axis_title']['yaxis_title']
-=======
             leg = dict(yanchor='top', y=0.99, xanchor='right', x=1.55)  # this needs an algo
-            self.fig.obj['layout']['yaxis2'].update(self.ul['y2grid'])
-            self.fig.obj.update_layout(yaxis2_title=self.ul['y2axis_title'], legend=leg)
->>>>>>> 520e540 (updates to plotly)
-=======
-            self.fig.obj['layout']['yaxis2'].update(self.ul['y2grid'])
-            self.fig.obj['layout']['yaxis2']['title'] = self.ul['y2axis_title']['yaxis_title']
->>>>>>> 4daa967 (plotly updates)
+            self.fig.obj['layout']['yaxis2'].update(self.kwargs['ul_y2grid'])
+            self.fig.obj.update_layout(yaxis2_title=self.kwargs['ul_y2axis_title'], legend=leg)
 
         if self.axes.twin_y:
             self.fig.obj.data[1].update(xaxis='x2')
@@ -1394,146 +1063,6 @@ class Layout(BaseLayout):
                            color=self.title.font_color,
                            )
                  )
-
-    def _set_tick_sizes(self, data):
-        """
-        Try to guess the tick rounding in order to approximate the tick size.  Auto tick labels are calculated by js
-        and cannot be queried by python
-
-        See: https://github.com/plotly/plotly.js/blob/4ed586a6402073cc5c50a40cad5f652d7472fcce/src/plots/cartesian/axes.js#L652
-
-        Args:
-            data: data object
-<<<<<<< HEAD
-        """  # noqa: E501
-        return
-        # def getBase(v, roughDTick):
-        #     return v ** np.floor(np.log(roughDTick) / np.log(10))
-
-        # def roundUp(val, arrayIn, reverse):
-        #     """
-        #     Modified from plotly.js
-
-        #     Return the smallest element from (sorted) array arrayIn that's bigger than val,
-        #     or (reverse) the largest element smaller than val
-        #     used to find the best tick given the minimum (non-rounded) tick
-        #     particularly useful for date/time where things are not powers of 10
-        #     binary search is probably overkill here...
-        #     """
-        #     low = 0
-        #     high = len(arrayIn) - 1
-        #     c = 0
-        #     dlow = 0 if reverse else 1
-        #     dhigh = 1 if reverse else 0
-        #     rounded = np.ceil if reverse else np.floor
-        #     # c is just to avoid infinite loops if there's an error
-        #     while low < high and c < 100:
-        #         mid = rounded((low + high) / 2)
-        #         if arrayIn[mid] <= val:
-        #             low = mid + dlow
-        #         else:
-        #             high = mid - dhigh
-        #         c += 1
-        #     return arrayIn[low]
-
-        # def roundDTick(roughDTick, base, roundingSet):
-        #     return base * roundUp(roughDTick / base, roundingSet)
-
-        # roundBase10 = [2, 5, 10]
-        # roundBase24 = [1, 2, 3, 6, 12]
-        # roundBase60 = [1, 2, 5, 10, 15, 30]
-        # # 2&3 day ticks are weird, but need something btwn 1&7
-        # roundDays = [1, 2, 3, 7, 14]
-        # # these don't have to be exact, just close enough to round to the right value
-        # # approx. tick positions for log axes, showing all (1) and just 1, 2, 5 (2)
-        # roundLog1 = [-0.046, 0, 0.301, 0.477, 0.602, 0.699, 0.778, 0.845, 0.903, 0.954, 1]
-        # roundLog2 = [-0.301, 0, 0.301, 0.699, 1]
-        # roundAngles = [15, 30, 45, 90, 180]
-
-        # for ax in data.axs_on:
-        #     ww, hh = 0, 0
-        #     for ir, ic in np.ndindex(self.axes.obj.shape):
-        #         vmin, vmax = data.ranges[f'{ax}min'][ir, ic], data.ranges[f'{ax}max'][ir, ic]
-        #         if self.axes.scale in getattr(layout, f'LOG{ax.upper()}'):
-        #             db()
-        #         else:
-        #             # ax.tick0 = 0;
-        #             # base = getBase(10);
-        #             # ax.dtick = roundDTick(roughDTick, base, roundBase10);
-
-        #             db()
-=======
-        """
-        return
-        def getBase(v, roughDTick):
-            return v ** np.floor(np.log(roughDTick) / np.log(10))
-
-        def roundUp(val, arrayIn, reverse):
-            """
-            Modified from plotly.js
-
-            Return the smallest element from (sorted) array arrayIn that's bigger than val,
-            or (reverse) the largest element smaller than val
-            used to find the best tick given the minimum (non-rounded) tick
-            particularly useful for date/time where things are not powers of 10
-            binary search is probably overkill here...
-            """
-            low = 0
-            high = len(arrayIn) - 1
-            c = 0
-            dlow = 0 if reverse else 1
-            dhigh = 1 if reverse else 0
-            rounded = np.ceil if reverse else np.floor
-            # c is just to avoid infinite loops if there's an error
-            while low < high and c < 100:
-                mid = rounded((low + high) / 2)
-                if arrayIn[mid] <= val:
-                    low = mid + dlow
-                else:
-                    high = mid - dhigh
-                c += 1
-            return arrayIn[low]
-
-        def roundDTick(roughDTick, base, roundingSet):
-            return base * roundUp(roughDTick / base, roundingSet)
-
-        roundBase10 = [2, 5, 10]
-        roundBase24 = [1, 2, 3, 6, 12]
-        roundBase60 = [1, 2, 5, 10, 15, 30]
-        # 2&3 day ticks are weird, but need something btwn 1&7
-        roundDays = [1, 2, 3, 7, 14]
-        # these don't have to be exact, just close enough to round to the right value
-        # approx. tick positions for log axes, showing all (1) and just 1, 2, 5 (2)
-        roundLog1 = [-0.046, 0, 0.301, 0.477, 0.602, 0.699, 0.778, 0.845, 0.903, 0.954, 1]
-        roundLog2 = [-0.301, 0, 0.301, 0.699, 1]
-        roundAngles = [15, 30, 45, 90, 180]
-
-        for ax in data.axs_on:
-            ww, hh = 0, 0
-            for ir, ic in np.ndindex(self.axes.obj.shape):
-                vmin, vmax = data.ranges[f'{ax}min'][ir, ic], data.ranges[f'{ax}max'][ir, ic]
-                if self.axes.scale in getattr(layout, f'LOG{ax.upper()}'):
-                    db()
-                else:
-                    # ax.tick0 = 0;
-                    # base = getBase(10);
-                    # ax.dtick = roundDTick(roughDTick, base, roundBase10);
-
-                    db()
-
->>>>>>> 520e540 (updates to plotly)
-
-        # for ax in data.axs_on:
-        #     tick = getattr(self, f'tick_labels_major_{ax}')
-        #     longest = ''
-        #     for trace in self.fig.obj['data']:
-        #         longest = max([str(f) for f in trace[ax]] + [longest], key=len)
-        #     tick.size = utl.get_text_dimensions(longest, tick.font, tick.font_size, tick.font_style,
-        #                                         tick.font_weight, tick.rotation)
-<<<<<<< HEAD
-        pass
-=======
->>>>>>> 520e540 (updates to plotly)
 
     def _set_weight_and_style(self, element: str):
         """Add html tags to the text string of an element to address font weight and style.
