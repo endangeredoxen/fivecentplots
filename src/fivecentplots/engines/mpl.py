@@ -10,7 +10,7 @@ from typing import Callable, Dict, List, Tuple, Union
 import numpy.typing as npt
 from fivecentplots.utilities import RepeatedList
 import fivecentplots.utilities as utl
-from distutils.version import LooseVersion
+from packaging import version
 from . layout import LOGX, LOGY, SYMLOGX, SYMLOGY, LOGITX, LOGITY, LOG_ALLX, LOG_ALLY, BaseLayout, Element  # noqa
 import warnings
 import matplotlib as mpl
@@ -297,7 +297,7 @@ def iterticks(ax: mplp.Axes, minor: bool = False):
     Yields:
        ticks
     """
-    if LooseVersion(mpl.__version__) >= LooseVersion('3.1'):
+    if version.Version(mpl.__version__) >= version.Version('3.1'):
         major_locs = ax.get_majorticklocs()
         major_labels = ax.major.formatter.format_ticks(major_locs)
         major_ticks = ax.get_major_ticks(len(major_locs))
@@ -1832,7 +1832,7 @@ class Layout(BaseLayout):
         Returns:
             single-key dict with the correctly-named bool for showing/hiding grids
         """
-        if LooseVersion(mpl.__version__) < LooseVersion('3.5'):
+        if version.Version(mpl.__version__) < version.Version('3.5'):
             return {'b': visible}
         else:
             return {'visible': visible}
@@ -3340,7 +3340,7 @@ class Layout(BaseLayout):
         """
         kwargs = {'edgecolor': self.fig.edge_color[idx],
                   'facecolor': self.fig.fill_color[idx]}
-        if LooseVersion(mpl.__version__) < LooseVersion('3.3'):
+        if version.Version(mpl.__version__) < version.Version('3.3'):
             kwargs['linewidth'] = self.fig.edge_width
         self.fig.obj.savefig(filename, **kwargs)
 
@@ -3820,7 +3820,7 @@ class Layout(BaseLayout):
 
             # Force ticks
             if self.separate_ticks or getattr(self, f'axes{lab}').share_x is False:
-                if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
+                if version.Version(mpl.__version__) < version.Version('2.2'):
                     mplp.setp(axes[ia].get_xticklabels(), visible=True)
                 else:
                     if self.axes.twin_x and ia == 1:
@@ -3831,7 +3831,7 @@ class Layout(BaseLayout):
                         axes[ia].xaxis.set_tick_params(which='both', labelbottom=True)
 
             if self.separate_ticks or getattr(self, f'axes{lab}').share_y is False:
-                if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
+                if version.Version(mpl.__version__) < version.Version('2.2'):
                     mplp.setp(axes[ia].get_yticklabels(), visible=True)
                 else:
                     if self.axes.twin_x and ia == 1:
@@ -3843,7 +3843,7 @@ class Layout(BaseLayout):
 
             if self.nwrap > 0 and (ic + (ir + 1) * self.ncol + 1) > self.nwrap or \
                     (ir < self.nrow - 1 and not self.axes.visible[ir + 1, ic]):
-                if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
+                if version.Version(mpl.__version__) < version.Version('2.2'):
                     mplp.setp(axes[ia].get_xticklabels()[1:], visible=True)
                 elif self.axes.twin_y and ia == 1:
                     axes[ia].yaxis.set_tick_params(which='both', labeltop=True)
@@ -3851,7 +3851,7 @@ class Layout(BaseLayout):
                     axes[ia].xaxis.set_tick_params(which='both', labelbottom=True)
 
             if not self.separate_ticks and not self.axes.visible[ir, ic - 1]:
-                if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
+                if version.Version(mpl.__version__) < version.Version('2.2'):
                     mplp.setp(axes[ia].get_yticklabels(), visible=True)
                 elif self.axes.twin_x and ia == 1:
                     axes[ia].yaxis.set_tick_params(which='both', labelright=True)
@@ -3914,7 +3914,7 @@ class Layout(BaseLayout):
             # Turn on minor tick labels
             ax = ['x', 'y']
             sides = {}
-            if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
+            if version.Version(mpl.__version__) < version.Version('2.2'):
                 sides['x'] = {'labelbottom': 'off'}
                 sides['x2'] = {'labeltop': 'off'}
                 sides['y'] = {'labelleft': 'off'}

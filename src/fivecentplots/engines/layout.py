@@ -6,7 +6,7 @@ import datetime
 from .. colors import DEFAULT_COLORS
 from .. utilities import RepeatedList
 from .. import utilities as utl
-from distutils.version import LooseVersion
+from packaging import version
 from collections import defaultdict
 from typing import Callable, Dict
 import warnings
@@ -3383,7 +3383,7 @@ class Element:
         """
         # MPL < v2 does not support alpha in hex color code
         skip_alpha = False
-        if (self.engine == 'mpl' and LooseVersion(mpl.__version__) < LooseVersion('2')) or self.engine in ['plotly']:
+        if (self.engine == 'mpl' and version.Version(mpl.__version__) < version.Version('2')) or self.engine in ['plotly']:
             skip_alpha = True
 
         alpha = RepeatedList(getattr(self, alpha), 'temp')
