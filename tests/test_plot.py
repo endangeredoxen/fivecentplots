@@ -508,7 +508,7 @@ def plt_other_ref_line_mult2(bm=False, make_reference=False, show=False):
         return
 
     if not show:
-        utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
+        # utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
         utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, alias=True)
 
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
