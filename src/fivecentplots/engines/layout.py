@@ -3383,7 +3383,8 @@ class Element:
         """
         # MPL < v2 does not support alpha in hex color code
         skip_alpha = False
-        if (self.engine == 'mpl' and version.Version(mpl.__version__) < version.Version('2')) or self.engine in ['plotly']:
+        if (self.engine == 'mpl' and version.Version(mpl.__version__) < version.Version('2')) or \
+                self.engine in ['plotly']:
             skip_alpha = True
 
         alpha = RepeatedList(getattr(self, alpha), 'temp')

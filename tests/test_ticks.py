@@ -301,6 +301,7 @@ def test_tick_labels_minor(make_reference=False, show=False):
              filename=name.with_suffix('.png'))
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
+
 def test_tick_cleanup(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('tick_cleanup', make_reference, REFERENCE)
