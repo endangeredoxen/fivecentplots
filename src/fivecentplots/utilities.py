@@ -789,8 +789,10 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
             + size[1] * np.abs(np.sin(rotation * np.pi / 180))
         h = size[1] * np.abs(np.cos(rotation * np.pi / 180)) \
             + size[0] * np.abs(np.sin(rotation * np.pi / 180))
+    else:
+        w, h = size
 
-    return size
+    return w, h
 
 
 def kwget(dict1: dict, dict2: dict, vals: [str, list], default: [list, dict]):
