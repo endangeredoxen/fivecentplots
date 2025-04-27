@@ -2045,6 +2045,12 @@ class BaseLayout:
         self.label_col.values_only = utl.kwget(kwargs, self.fcpp, 'label_col_values_only', label_rc.values_only)
         self.label_col.size = [self.axes.size[0], utl.kwget(kwargs, self.fcpp, 'label_col_size', label_rc._size)]
 
+        repeated = ['edge_color', 'fill_color']
+        for label in ['label_row', 'label_col']:
+            for rep in repeated:
+                if 'RepeatedList' not in str(type(getattr(getattr(self, label), rep))):
+                    setattr(getattr(self, label), rep, RepeatedList(getattr(getattr(self, label), rep), rep))
+
         # Wrap label
         self.label_wrap = DF_Element('label_wrap', self.fcpp, kwargs,
                                      on=utl.kwget(kwargs, self.fcpp, 'label_wrap_on', True)
