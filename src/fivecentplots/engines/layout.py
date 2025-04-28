@@ -2007,11 +2007,13 @@ class BaseLayout:
 
         # Allow inversion of some kwargs names for convenience but map back to standardized names
         names = ['wrap_title', 'wrap_label', 'row_label', 'col_label']
+        new_kwargs = {}
         for name in names:
             for k, v in kwargs.items():
                 if name in k:
                     inverted = k.split('_')
-                    kwargs[k.replace(name, f'{inverted[1]}_{inverted[0]}')] = v
+                    new_kwargs[k.replace(name, f'{inverted[1]}_{inverted[0]}')] = v
+        kwargs.update(new_kwargs)
 
         # Row and column labels
         self.label_row = copy.deepcopy(label_rc)

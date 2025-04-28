@@ -204,6 +204,9 @@ class Layout(BaseLayout):
         self.modebar.top_xs = (7 if self.modebar.orientation == 'v' else 0) * self.modebar.on
         self.ws_leg_modebar = 5  # space between a legend and modebar
 
+        # Other
+        self.axs_on = data.axs_on
+
         # Check for unsupported kwargs
         # unsupported = []
 
@@ -537,6 +540,7 @@ class Layout(BaseLayout):
             size = getattr(element, 'size') if hasattr(element, 'size') else size
             fill_color = getattr(element, 'fill_color') if hasattr(element, 'fill_color') else fill_color
             edge_color = getattr(element, 'edge_color') if hasattr(element, 'edge_color') else edge_color
+            edge_width = getattr(element, 'edge_width') if hasattr(element, 'edge_width') else edge_width
             font = getattr(element, 'font') if hasattr(element, 'font') else font
             font_weight = getattr(element, 'font_weight') if hasattr(element, 'font_weight') else font_weight
             font_style = getattr(element, 'font_style') if hasattr(element, 'font_style') else font_style
@@ -549,7 +553,7 @@ class Layout(BaseLayout):
         # add the rectangle
         self.fig.obj.add_shape(
             type='rect',
-            x0=position[0], y0=position[2], x1=position[1], y1=position[3],
+            x0=position[0], y0=position[3], x1=position[1], y1=position[2],
             fillcolor=fill_color if isinstance(fill_color, str) else fill_color[plot_num],
             line=dict(
                 color=edge_color if isinstance(edge_color, str) else edge_color[plot_num],
@@ -567,11 +571,11 @@ class Layout(BaseLayout):
         elif rotation == 270:
             rotation = 90
         if rotation in [90, 270]:
-            x = position[0] + size[0] / 2 / self.axes.size[0]
+            x = position[1] - (position[1] - position[0]) / 2
             y = 0.5
         else:
-            x = 0.5
-            y = position[2] + size[1] / 2 / self.axes.size[1]
+            x = (position[1] - position[0]) / 2
+            y = position[3] + size[1] / 2 / self.axes.size[1]
         self.fig.obj.add_annotation(font=_font, x=x, y=y,
                                     showarrow=False, text=text, textangle=rotation,
                                     xanchor='center', yanchor='middle',
@@ -649,15 +653,64 @@ class Layout(BaseLayout):
         # SKIPPING A LOT FROM MPL, CONSIDER REUSING
         self.box_labels = 0
 
+        # Adjust the column and row whitespace
+        if self.cbar.on and utl.kwget(kwargs, self.fcpp, 'ws_col', -999) == -999 and not self.cbar.shared:
+            self.ws_col = 0
+
+        if self.nrow == 1:
+            self.ws_row = 0
+        if self.ncol == 1:
+            self.ws_col = 0
+
+        # separate ticks and labels
+        if (self.separate_ticks or self.axes.share_y is False) and not self.cbar.on:
+            self.ws_col = max(self._tick_y + self.ws_fig_label, max(self.ws_col, self.ws_col_def))
+        elif (self.separate_ticks or self.axes.share_y is False) and self.cbar.on and not temp:
+            self.ws_col += self._tick_y
+        if self.axes2.on and (self.separate_ticks or self.axes2.share_y is False):
+            if self.ws_col < self.ws_col + self._tick_y2 + self.ws_fig_label:
+                self.ws_col += self._tick_y2 + self.ws_fig_label
+
+        if self.separate_ticks or (self.axes.share_x is False and self.box.on is False) and not temp:
+            self.ws_row = max(self._tick_x + self.ws_fig_label, max(self.ws_row, self.ws_row_def))
+        elif self.axes2.on \
+                and (self.separate_ticks or self.axes2.share_x is False) \
+                and self.box.on is False \
+                and not temp:
+            if self.ws_row < self.ws_row + self._tick_x2 + self.ws_fig_label:
+                self.ws_row += self._tick_x2 + self.ws_fig_label
+
+        if self.separate_labels:
+            self.ws_col = \
+                max(self._labtick_y - self._tick_y + self._labtick_y2 - self._tick_y2 + self.ws_col, self.ws_col)
+            if self.cbar.on and not temp:
+                self.ws_col += self.label_z.size[0] / 2
+            self.ws_row = \
+                max(self._labtick_x - self._tick_x + self._labtick_x2 - self._tick_x2 + self.ws_row, self.ws_row)
+
+        if self.label_wrap.on and 'ws_row' not in kwargs.keys() and self.ws_row == self.ws_row_def:
+            self.ws_row += self.label_wrap.size[1] + 2 * self.label_wrap.edge_width - self.ws_row_def
+        elif self.label_wrap.on and 'ws_row' not in kwargs.keys():
+            self.ws_row += self.label_wrap.size[1] + 2 * self.label_wrap.edge_width
+        if self.box_group_label.on and 'ws_row' not in kwargs.keys():
+            self.ws_row += self.box_labels
+            if self.label_wrap.on:
+                self.ws_row += self.label_wrap.size[1] + 2 * self.label_wrap.edge_width - self.ws_row_def
+        elif not temp and self.name == 'box':
+            self.ws_row += self.box_labels - self.ws_row_def
+
+        self.ws_col = np.ceil(self.ws_col)  # round up to nearest whole pixel
+        self.ws_row = np.ceil(self.ws_row)  # round up to nearest whole pixel
+
+        # Adjust spacing
+        if self.label_wrap.on and 'ws_row' not in kwargs.keys() and self.ws_row == self.ws_row_def:
+            self.ws_row += self.label_wrap.size[1] + 2 * self.label_wrap.edge_width - self.ws_row_def
+        elif self.label_wrap.on and 'ws_row' not in kwargs.keys():
+            self.ws_row += self.label_wrap.size[1] + 2 * self.label_wrap.edge_width
+
         # Compute the sum of axes edge thicknesses
-        if self.ws_col == 0 and not self.cbar.on and self.ncol > 1:
-            col_edge_width = self.axes.edge_width * (self.ncol + 1)
-        else:
-            col_edge_width = 2 * self.axes.edge_width * self.ncol
-        if self.ws_row == 0 and not self.label_wrap.on and self.nrow > 1:
-            row_edge_height = self.axes.edge_width * (self.nrow + 1)
-        else:
-            row_edge_height = 2 * self.axes.edge_width * self.nrow
+        col_edge_width = 2 * self.axes.edge_width * self.ncol
+        row_edge_height = 2 * self.axes.edge_width * self.nrow
 
         # Set figure width
         self.fig.size[0] = \
@@ -1178,7 +1231,7 @@ class Layout(BaseLayout):
 
             # Toggle label visibility
             if not self.separate_labels:
-                if ax == 'x' and ir != self.nrow - 1 and self.nwrap == 0 and self.axes.visible[ir + 1, ic]:
+                if ax == 'x' and ir != self.nrow - 1 and self.axes.visible[ir + 1, ic]:
                     continue
                 if ax == 'x2' and ir != 0:
                     continue
@@ -1234,14 +1287,18 @@ class Layout(BaseLayout):
         """
         # Wrap title
         if ir == 0 and ic == 0 and self.title_wrap.on:
-            self.label_wrap.position = [
-                    0 - (self.axes.edge_width) / self.axes.size[0],
-                    1 + (self.axes.edge_width) / self.axes.size[0],
-                    1 + (self.axes.edge_width + self.ws_label_col + self.label_wrap.size[1]) / self.axes.size[1],
-                    1 + (self.axes.edge_width + self.ws_label_col + self.label_wrap.size[1] + self.title_wrap.size[1])
-                    / self.axes.size[1],
+            # Set the title position (left, right, top, bottom)
+            self.title_wrap.position = [
+                    -(self.axes.edge_width - self.title_wrap.edge_width / 2) / self.axes.size[0],
+                    self.ncol + ((2 * self.ncol - 1) * self.axes.edge_width - self.title_wrap.edge_width / 2) /
+                    self.axes.size[0],
+                    1 + (self.axes.edge_width + self.label_wrap.size[1] + self.title_wrap.size[1] -
+                         self.title_wrap.edge_width / 2) / self.axes.size[1],
+                    1 + (self.axes.edge_width + self.label_wrap.size[1] + self.title_wrap.edge_width / 2) /
+                    self.axes.size[1]
                 ]
 
+            # Make the label
             self.add_label(ir, ic, self.title_wrap.text, element=self.title_wrap)
 
         # Row labels
@@ -1251,12 +1308,12 @@ class Layout(BaseLayout):
             else:
                 lab = self.label_row.values[ir]
 
-            # Set the label position
+            # Set the label position (left, right, top, bottom)
             self.label_row.position = [
                 1 + (self.axes.edge_width + self.ws_label_row) / self.axes.size[0],
                 1 + (self.axes.edge_width + self.ws_label_row + self.label_row.size[0]) / self.axes.size[0],
+                -(self.axes.edge_width) / self.axes.size[1],
                 1 + (self.axes.edge_width) / self.axes.size[1],
-                0 - (self.axes.edge_width) / self.axes.size[1]
             ]
 
             # Make the label
@@ -1267,14 +1324,16 @@ class Layout(BaseLayout):
             if self.label_wrap.on:
                 text = ' | '.join([str(f) for f in utl.validate_list(self.label_wrap.values[ir * self.ncol + ic])])
 
-                # Set the label position
+                # Set the label position (left, right, top, bottom)
                 self.label_wrap.position = [
-                    0 - (self.axes.edge_width) / self.axes.size[0],
-                    1 + (self.axes.edge_width) / self.axes.size[0],
-                    1 + (self.axes.edge_width + self.ws_label_col) / self.axes.size[1],
-                    1 + (self.axes.edge_width + self.ws_label_col + self.label_col.size[1]) / self.axes.size[1],
+                    -(self.axes.edge_width - self.label_wrap.edge_width / 2) / self.axes.size[0],
+                    1 + (self.axes.edge_width - self.label_wrap.edge_width / 2) / self.axes.size[0],
+                    1 + (self.axes.edge_width + self.label_wrap.size[1] - self.label_wrap.edge_width / 2) /
+                    self.axes.size[1],
+                    1 + (self.axes.edge_width + self.label_wrap.edge_width / 2) / self.axes.size[1],
                 ]
 
+                # Make the label
                 self.add_label(ir, ic, text, element=self.label_wrap)
             else:
                 if not self.label_col.values_only:
@@ -1282,12 +1341,12 @@ class Layout(BaseLayout):
                 else:
                     lab = self.label_col.values[ic]
 
-                # Set the label position
+                # Set the label position (left, right, top, bottom)
                 self.label_col.position = [
-                    0 - (self.axes.edge_width) / self.axes.size[0],
+                    -(self.axes.edge_width) / self.axes.size[0],
                     1 + (self.axes.edge_width) / self.axes.size[0],
-                    1 + (self.axes.edge_width + self.ws_label_col) / self.axes.size[1],
                     1 + (self.axes.edge_width + self.ws_label_col + self.label_col.size[1]) / self.axes.size[1],
+                    1 + (self.axes.edge_width + self.ws_label_col) / self.axes.size[1],
                 ]
 
                 # Make the label
@@ -1341,7 +1400,6 @@ class Layout(BaseLayout):
         self.ul['title']['y'] = \
             1 - ((self.modebar.size[0] if (self.modebar.visible and self.modebar.orientation == 'h') else 0) +
                  self.title.font_size / 2) / self.fig.size[1]
-        # ws_leg_modebar??
 
         # Update the x/y axes
         for ax in data.axs_on:
@@ -1359,10 +1417,24 @@ class Layout(BaseLayout):
         axis_labels = self.ul['xaxis_title']
         axis_labels.update(self.ul['yaxis_title'])
 
-        # Add space for tick labels
+        # Add space for tick labels and disable on certain plots
         self.fig.obj.update_yaxes(ticksuffix=" ")
         if self.axes.twin_x:
             self.fig.obj['layout']['yaxis2'].update(dict(tickprefix=" "))
+        for ir, ic in np.ndindex(self.axes.obj.shape):
+            for ax in self.axs_on:
+                if not self.separate_ticks and ax == 'x' and ir != self.nrow - 1:
+                    self.fig.obj.update_xaxes(showticklabels=False, row=ir + 1, col=ic + 1)
+                if not self.separate_ticks and ax == 'x2' and ir != 0:
+                    continue
+                if not self.separate_ticks and ax == 'y' and ic != 0:
+                    self.fig.obj.update_yaxes(showticklabels=False, row=ir + 1, col=ic + 1)
+                if not self.separate_ticks and ax == 'y2' and ic != self.ncol - 1 and \
+                        utl.plot_num(ir, ic, self.ncol) != self.nwrap:
+                    continue
+                if not self.separate_ticks and ax == 'z' and ic != self.ncol - 1 and \
+                        utl.plot_num(ir, ic, self.ncol) != self.nwrap:
+                    continue
 
         # Iterate through subplots to add the traces
         for ir, ic in np.ndindex(self.axes.obj.shape):
@@ -1423,11 +1495,12 @@ class Layout(BaseLayout):
             ])
             self.fig.obj.update_yaxes(row=ir + 1, col=ic + 1, domain=[
                 # bottom edge
-                1 - ((self.ws_col + self.axes.size[1] + 2 * self.axes.edge_width) * ir + self.axes.size[1] + \
+                1 - ((self.ws_row + self.axes.size[1] + 2 * self.axes.edge_width) * ir + self.axes.size[1] +
                      self.axes.edge_width) / fig_y,
                 # top edge
-                1 - ((self.ws_col + self.axes.size[1] + 2 * self.axes.edge_width) * ir + self.axes.edge_width) / fig_y,
+                1 - ((self.ws_row + self.axes.size[1] + 2 * self.axes.edge_width) * ir + self.axes.edge_width) / fig_y,
             ])
+
         # Update the plot labels
         if self.axes.twin_x:
             self.fig.obj['layout']['yaxis2'].update(self.ul['y2grid'])
