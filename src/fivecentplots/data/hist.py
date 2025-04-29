@@ -349,18 +349,24 @@ class Histogram(data.Data):
         else:
             if self.legend is None:
                 subset_dict = {key: value for key, value in self.imgs.items() if key in list(df.index)}
-                counts, vals = self._calc_histograms(ir, ic, np.concatenate(list(subset_dict.values()), 1))
-                df_sub = pd.DataFrame({self.x[0]: vals, self.y[0]: counts})
-                return df_sub
+                if len(subset_dict) > 0:
+                    counts, vals = self._calc_histograms(ir, ic, np.concatenate(list(subset_dict.values()), 1))
+                    df_sub = pd.DataFrame({self.x[0]: vals, self.y[0]: counts})
+                    return df_sub
+                else:
+                    return pd.DataFrame()  # is this enough?
 
             else:
                 df_sub = []
                 for iline, row in self.legend_vals.iterrows():
-                    idx = list(df.loc[df[self.legend] == row['Leg']].index)
+                    idx = list(df.loc[df[self.legend] == row.Leg].index)
                     subset_dict = {key: value for key, value in self.imgs.items() if key in idx}
+                    if len(subset_dict) == 0:
+                        print('Warning: could not find image for legend row "{row.Leg}"')
+                        continue
                     counts, vals = self._calc_histograms(ir, ic, np.concatenate(list(subset_dict.values()), 1))
                     temp = pd.DataFrame({self.x[0]: vals, self.y[0]: counts})
-                    temp[self.legend] = row['Leg']
+                    temp[self.legend] = row.Leg
                     df_sub += [temp]
                 return pd.concat(df_sub)
 

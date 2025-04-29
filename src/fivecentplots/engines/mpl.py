@@ -911,7 +911,8 @@ class Layout(BaseLayout):
                     vals = range(plot_num * lines_per_plot, plot_num * lines_per_plot + lines_per_plot)
                     for ival in vals:
                         if ival < len(ll.values):
-                            line = func(ll.values[ival], color=ll.color[ival],
+                            line = func(ll.values[ival],
+                                        color=ll.color[ival],
                                         linestyle=ll.style[ival],
                                         linewidth=ll.width[ival],
                                         zorder=ll.zorder)
@@ -923,7 +924,8 @@ class Layout(BaseLayout):
                     for ival, val in enumerate(ll.values):
                         if isinstance(val, str) and isinstance(df, pd.DataFrame):
                             val = df[val].iloc[0]
-                        line = func(val, color=ll.color[ival],
+                        line = func(val,
+                                    color=ll.color[ival],
                                     linestyle=ll.style[ival],
                                     linewidth=ll.width[ival],
                                     zorder=ll.zorder)

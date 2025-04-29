@@ -207,7 +207,7 @@ class Layout(BaseLayout):
         # Other
         self.axs_on = data.axs_on
 
-        # Check for unsupported kwargs
+        # Check for unsupported kwargs (add plot names and other features that don't work)
         # unsupported = []
 
     @property
@@ -496,6 +496,55 @@ class Layout(BaseLayout):
             ic: subplot column index
             df: current data. Defaults to None.
         """
+        elements = ['ax_hlines', 'ax_vlines', 'ax2_hlines', 'ax2_vlines']
+        # Set line attibutes
+        for axline in elements:
+            ll = getattr(self, axline)
+            # func = self.axes.obj[ir, ic].add_hline if 'hline' in axline \
+            #     else self.axes.obj[ir, ic].add_vline
+            param = 'y' if 'hline' in axline else 'x'
+            if not ll.on:
+                continue
+            ll.obj[ir, ic] = []
+            if hasattr(ll, 'by_plot') and ll.by_plot:
+                num_plots = self.axes.obj.size
+                num_lines = len(ll.values)
+                # crude assumption that you have the same number for each plot; fix later
+                lines_per_plot = int(num_lines / num_plots)
+                plot_num = utl.plot_num(ir, ic, self.ncol) - 1
+                vals = range(plot_num * lines_per_plot, plot_num * lines_per_plot + lines_per_plot)
+                for ival in vals:
+                    if ival < len(ll.values):
+                        kwargs = {param: ll.values[ival],
+                                  'row': ir + 1,
+                                  'col': ic + 1,
+                                  'line_dash': ll.style[ival],
+                                  'line_width': ll.width[ival],
+                                  'line_color': ll.color[ival],
+                                  }
+                        if ll.text is not None and self.legend._on:
+                            legs = {'name': ll.text, 'showlegend': True}
+                            kwargs.update(legs)
+                        ll.obj[ir, ic] += [kwargs]
+                        if isinstance(ll.text, list) and ll.text[ival] is not None:
+                            self.legend.add_value(ll.text[ival], [axline], 'ref_line')
+            else:
+                for ival, val in enumerate(ll.values):
+                    if isinstance(val, str) and isinstance(df, pd.DataFrame):
+                        val = df[val].iloc[0]
+                    kwargs = {param: val,
+                              'row': ir + 1,
+                              'col': ic + 1,
+                              'line_dash': ll.style[ival],
+                              'line_width': ll.width[ival],
+                              'line_color': ll.color[ival],
+                              }
+                    if len(ll.text) > 0 and ll.text[ival] is not None and self.legend._on:
+                        legs = {'name': ll.text[ival], 'showlegend': True}
+                        kwargs.update(legs)
+                    ll.obj[ir, ic] += [kwargs]
+                    if isinstance(ll.text, list) and ll.text[ival] is not None:
+                        self.legend.add_value(ll.text[ival], [axline], 'ref_line')
 
     def add_label(self, ir: int, ic: int, text: str = '', position: [tuple, None] = None,
                   rotation: int = 0, size: [list, None] = None,
@@ -586,7 +635,12 @@ class Layout(BaseLayout):
         """Add a legend to a figure."""
         # In plotly, no need to add the layout to the plot so we toggle visibility in set_figure_final_layout
         #   Here we just compute the approximate width of the legend for later sizing
-        if self.legend.on:
+        if len(self.legend.values) == 0:
+            self.legend._on = False
+            return
+
+        _leg_vals = leg_vals if leg_vals is not None else []
+        if self.legend._on:
             # Guesstimate the legend dimensions based on the text size
             longest_key = self.legend.values.Key.loc[self.legend.values.Key.str.len().idxmax()]
             key_dim = utl.get_text_dimensions(longest_key, self.legend.font, self.legend.font_size,
@@ -602,7 +656,7 @@ class Layout(BaseLayout):
             self.legend.size[0] = max(title_dim[0], legend_key_width) + 2 * self.legend.edge_width
             self.legend.size[1] = \
                 (title_dim[1] if self.legend.text != '' else 0) \
-                + len(leg_vals) * key_dim[1] \
+                + len(_leg_vals) * key_dim[1] \
                 + 2 * self.legend.edge_width \
                 + 5 * len(self.legend.values) + 10  # default padding
 
@@ -1131,7 +1185,7 @@ class Layout(BaseLayout):
 
         # Make the scatter trace
         show_legend = False
-        if leg_name not in self.legend.values['Key'].values:
+        if leg_name is not None and leg_name not in self.legend.values['Key'].values:
             show_legend = True
         self.axes.obj[ir, ic] += [
             go.Scatter(x=dfx[mask],
@@ -1194,15 +1248,13 @@ class Layout(BaseLayout):
             ic (int): subplot column index
 
         """
-        dash_lookup = {'-': 'solid', '--': 'dash', '.': 'dot'}
         for ss in ['', '2']:
             for ax in ['x', 'y']:
                 grid = getattr(self, f'grid_major_{ax}{ss}')
                 if grid is not None:
-                    dash = dash_lookup.get(grid.style[0], grid.style[0])
                     self.ul[f'{ax}{ss}grid'] = dict(gridcolor=grid.color[0],
                                                     gridwidth=grid.width[0],
-                                                    griddash=dash,
+                                                    griddash=grid.style[0],
                                                     )
 
     def set_axes_labels(self, ir: int, ic: int, data: 'Data'):  # noqa: F821
@@ -1265,17 +1317,32 @@ class Layout(BaseLayout):
             ranges: min/max axes limits for each axis
 
         """
-        # TODO address secondary axes and what happens if None
+        # primary x
         if str(self.axes.scale).lower() in LOGX:
             self.ul['xaxis_range'][ir, ic] = \
                 np.array([np.log10(ranges['xmin'][ir, ic]), np.log10(ranges['xmax'][ir, ic])])
         else:
             self.ul['xaxis_range'][ir, ic] = np.array([ranges['xmin'][ir, ic], ranges['xmax'][ir, ic]])
+        # secondary x
+        if self.axes.twin_y:
+            if str(self.axes.scale).lower() in LOGX:
+                self.ul['x2axis_range'][ir, ic] = \
+                    np.array([np.log10(ranges['x2min'][ir, ic]), np.log10(ranges['x2max'][ir, ic])])
+            else:
+                self.ul['x2axis_range'][ir, ic] = np.array([ranges['x2min'][ir, ic], ranges['x2max'][ir, ic]])
+        # primary y
         if str(self.axes.scale).lower() in LOGY:
             self.ul['yaxis_range'][ir, ic] = \
                 np.array([np.log10(ranges['ymin'][ir, ic]), np.log10(ranges['ymax'][ir, ic])])
         else:
             self.ul['yaxis_range'][ir, ic] = np.array([ranges['ymin'][ir, ic], ranges['ymax'][ir, ic]])
+        # secondary y
+        if self.axes.twin_x:
+            if str(self.axes.scale).lower() in LOGY:
+                self.ul['y2axis_range'][ir, ic] = \
+                    np.array([np.log10(ranges['y2min'][ir, ic]), np.log10(ranges['y2max'][ir, ic])])
+            else:
+                self.ul['y2axis_range'][ir, ic] = np.array([ranges['y2min'][ir, ic], ranges['y2max'][ir, ic]])
 
     def set_axes_rc_labels(self, ir: int, ic: int):
         """Add the row/column label boxes and wrap titles.
@@ -1445,9 +1512,22 @@ class Layout(BaseLayout):
                 else:
                     self.fig.obj.add_trace(self.axes.obj[ir, ic][trace], row=ir + 1, col=ic + 1)
 
+            # Add axhvlines
+            axlines = ['ax_hlines', 'ax_vlines', 'ax2_hlines', 'ax2_vlines']
+            for line in axlines:
+                func = self.fig.obj.add_vline if 'vline' in line else self.fig.obj.add_hline
+                if not getattr(self, line).on:
+                    continue
+                for vals in getattr(self, line).obj[ir, ic]:
+                    func(**vals)
+
             # Set the ranges
             self.fig.obj.update_xaxes(row=ir + 1, col=ic + 1, range=self.ul['xaxis_range'][ir, ic])
+            if self.axes.twin_y:
+                self.fig.obj['layout']['xaxis2']['range'] = self.ul['x2axis_range'][ir, ic]
             self.fig.obj.update_yaxes(row=ir + 1, col=ic + 1, range=self.ul['yaxis_range'][ir, ic])
+            if self.axes.twin_x:
+                self.fig.obj['layout']['yaxis2']['range'] = self.ul['y2axis_range'][ir, ic]
 
         # Get the tick sizes
         for ax in data.axs_on:
@@ -1476,14 +1556,6 @@ class Layout(BaseLayout):
                                    )
 
         # Set the axes positions
-        #   Notes:
-        #     - This is not fully accurate and may never be, given what info is available in advance before render
-        #     - self.fig.obj['layout']['margin']['t'] does not include top axes edge width
-        #     - self.fig.obj['layout']['margin']['b'] includes bottom axes edge width
-        #     - x-domain: 0 == ?left axes edge at left margin - axes width
-        #                 1 == ?top axes edge at top margin
-        #     - y-domain: 0 == bottom axes edge at bottom margin - axes width
-        #                 1 == top axes edge at top margin
         fig_x = self.fig.size[0] - self._margin_left - self._margin_right
         fig_y = self.fig.size[1] - self.fig.obj['layout']['margin']['t'] - self.fig.obj['layout']['margin']['b']
         for ir, ic in np.ndindex(self.axes.obj.shape):

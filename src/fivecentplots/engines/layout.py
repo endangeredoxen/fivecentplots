@@ -3090,6 +3090,29 @@ class BaseLayout:
 
 
 class Element:
+    _styles = {
+               'mpl': {
+                   'solid': '-',
+                   'dot': ':',
+                   'dash': '--',
+                   'longdash': (0, (10, 2)),
+                   'dashdot': '-.',
+                   'longdashdot': (0, (10, 2, 1, 2))
+               },
+               'plotly': {
+                   'solid': 'solid',
+                   '-': 'solid',
+                   'dot': 'dot',
+                   ':': 'dot',
+                   'dash': 'dash',
+                   '--': 'dash',
+                   'longdash': 'longdash',
+                   'dashdot': 'dashdot',
+                   '-.': 'dashdot',
+                   'longdashdot': 'longdashdot'
+               }
+             }
+
     def __init__(self, name: str = 'None', fcpp: dict = {}, others: dict = {},
                  obj: [None, 'ObjectArray'] = None, **kwargs):
         """Element object is a container for storing/accessing the attributes
@@ -3216,7 +3239,8 @@ class Element:
             self.style = utl.kwget(kwargs, fcpp, f'{name}_style', kwargs.get('style', '-'))
         else:
             self.style = kwargs['style']
-        if not isinstance(self.style, RepeatedList):
+        self.style = self._style_convert
+        if not isinstance(self.style, RepeatedList) and self.style is not None:
             self.style = RepeatedList(self.style, 'style')
 
         # overrides
@@ -3362,6 +3386,31 @@ class Element:
             return int(np.ceil(self._size[0])), int(np.ceil(self._size[1]))
         else:
             return [0, 0]
+
+    @property
+    def _style_convert(self):
+        """
+        Deal with engine differences for style names
+        """
+        if self.engine in self._styles:
+            # Using a known engine
+            if isinstance(self.style, list):
+                # List of style markers
+                for iss, ss in enumerate(self.style):
+                    if ss in self._styles[self.engine]:
+                        self.style[iss] = self._styles[self.engine][ss]
+                return self.style
+            elif isinstance(self.style, RepeatedList):
+                # List of style markers
+                for iss, ss in enumerate(self.style.values):
+                    if ss in self._styles[self.engine]:
+                        self.style.values[iss] = self._styles[self.engine][ss]
+                return self.style
+            elif self.style in self._styles[self.engine]:
+                # Single style marker
+                return self._styles[self.engine][self.style]
+        else:
+            return self.style
 
     @property
     def text(self):
