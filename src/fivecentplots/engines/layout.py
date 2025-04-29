@@ -3409,6 +3409,8 @@ class Element:
             elif self.style in self._styles[self.engine]:
                 # Single style marker
                 return self._styles[self.engine][self.style]
+            else:
+                return self.style
         else:
             return self.style
 

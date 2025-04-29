@@ -225,15 +225,15 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
     kwargs_list = [f for f in kwargs_list if f not in exclude]
 
     # unused element defaults (although all elements support certain kwargs, some are never used)
-    no_alphas = ['ax', 'bar', ]
+    no_alphas = ['ax', 'bar', 'fig', ]
     no_fonts = ['line', 'ax', 'bar', 'box_divider', 'box_grand_mean', 'box_grand_median', 'box',
                 'box_group_means', 'box_mean_diamonds', 'cbar', 'contour', 'fig', 'fills_', 'grid',
                 'imshow', 'rolling_mean', 'ticks_major', 'ticks_minor', 'ticks', ]
-    no_labels = ['line', 'ax', 'bar', ]
+    no_labels = ['line', 'ax', 'bar', 'fig', ]
     no_edges = ['line', 'box_divider', 'box_grand_mean', 'box_grand_median', 'box_group_means', 'ticks_major',
-                'ticks_minor', ]
+                'ticks_minor', 'hist', 'imshow', ]
     no_fills = ['line', 'whisker', 'median', 'box_divider', 'box_grand_mean', 'box_grand_median',
-                'box_group_means', ]
+                'box_group_means', 'hist', 'imshow', ]
     no_styles = ['ax', 'bar_labels', 'gantt_bar_labels', ]
     no_widths = ['pie', 'contour', 'fig', 'ax', 'fit', 'today', 'grid', 'ticks', 'tick_labels', 'imshow',
                  'hist', 'plot', 'kde', ]
@@ -248,7 +248,7 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
             pass
         elif any(f in kw for f in no_fonts) and '_font' in kw:
             pass
-        elif any(f in kw for f in no_labels) and '_label' in kw:
+        elif any(f in kw for f in no_labels) and '_label' in kw and 'ws' not in kw:
             pass
         elif any(f in kw for f in no_edges) and '_edge_' in kw:
             pass
@@ -258,7 +258,9 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
             pass
         elif any(f in kw for f in no_widths) and '_edge' not in kw and '_width' in kw:
             pass
-        elif any(f in kw for f in no_std_color) and '_color' in kw:
+        elif any(f in kw for f in no_std_color) and '_color' in kw and \
+                '_edge_color' not in kw and \
+                '_fill_color' not in kw:
             pass
         elif any(f in kw for f in no_rotations) and '_rotation' in kw:
             pass
