@@ -811,7 +811,7 @@ modebar_edge_width
 modebar_fill_color
 modebar_logo
 modebar_on
-modebar_orientaiton
+modebar_orientation
 modebar_remove_buttons
 modebar_rotation
 modebar_style

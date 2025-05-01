@@ -1577,7 +1577,7 @@ class Layout(BaseLayout):
                     sub[row_top] = sub[row_top].astype(np.float32)
                     sub[row_bot] = sub[row_bot].astype(np.float32)
 
-                    # Get the  if row_bot labels can fit in row_top width
+                    # Determine the if row_bot labels can fit in row_top width
                     sub['group'] = sub[row_bot].ne(sub[row_bot].shift()).cumsum()
                     sub.loc[sub['group'] % 2 == 1, 'group'] += 1
                     sub['cumsum'] = sub.groupby('group')[row_top].cumsum()
@@ -4331,6 +4331,13 @@ class Layout(BaseLayout):
                     self.label_col.obj_bg[ir, ic].set_width(self.axes.size[0] / self.fig.size[0])
                     center_new = self.label_col.obj_bg[ir, ic].get_width() / 2 + self.label_col.obj_bg[ir, ic].get_x()
                     self.label_col.obj[ir, ic].set_x(center_new)
+
+                # Wrap labels
+                if self.label_wrap.obj_bg[ir, ic] is not None:
+                    self.label_wrap.obj_bg[ir, ic].set_x(ax0)
+                    self.label_wrap.obj_bg[ir, ic].set_width(self.axes.size[0] / self.fig.size[0])
+                    center_new = self.label_wrap.obj_bg[ir, ic].get_width() / 2 + self.label_wrap.obj_bg[ir, ic].get_x()
+                    self.label_wrap.obj[ir, ic].set_x(center_new)
 
             # Adjust title_wrap
             if self.label_wrap.obj_bg[0, 0] is not None and self.title_wrap.obj_bg is not None:

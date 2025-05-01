@@ -913,11 +913,12 @@ class Data:
             fit coefficients list
             rsq (for poly fit only)
         """
-        df2 = df.copy()
-        df[f'{x} Fit'] = np.nan
-        df[f'{y} Fit'] = np.nan
-
         if self.fit is True or isinstance(self.fit, int):
+            df2 = df.copy()
+            df = df.copy()
+            df[f'{x} Fit'] = np.nan
+            df[f'{y} Fit'] = np.nan
+
             # Set range of the fit
             if isinstance(self.fit_range_x, list):
                 df2 = df2[(df2[x] >= self.fit_range_x[0])

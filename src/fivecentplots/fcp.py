@@ -1098,9 +1098,12 @@ def plot_control_limit(ir: int, ic: int, iline: int, layout: 'engines.Layout', d
     """Add control limit shading to a plot.
 
     Args:
-
+        ir (int): current subplot row number
+        ic (int): current subplot column number
+        iline (int): iterator
+        layout (obj): layout object
+        data (obj): Data object
     """
-
     x = [data.ranges['xmin'][ir, ic], data.ranges['xmax'][ir, ic]]
     if layout.lcl.on:
         if layout.ucl.on and layout.control_limit_side == 'inside':
@@ -1187,10 +1190,10 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
         if coeffs[-1] > 0:
             eqn += '+'
         eqn += f'{round(coeffs[-1], 3)}'
-        layout.add_text(ir, ic, eqn, 'fit')
+        layout.add_text(ir, ic, eqn, 'fit', position=layout.fit.position[0])
 
     if layout.fit.rsq:
-        layout.add_text(ir, ic, f'R^2={round(rsq, 4)}', 'fit')
+        layout.add_text(ir, ic, f'R^2={round(rsq, 4)}', 'fit', position=layout.fit.position[1])
 
     return data
 

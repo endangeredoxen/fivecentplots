@@ -186,22 +186,33 @@ class Layout(BaseLayout):
 
         # Other engine specific attributes
         self.dpi = utl.kwget(kwargs, self.fcpp, 'dpi', 72)
+
+        self.fit.yanchor = utl.kwget(kwargs, self.fcpp, 'fit_yanchor', 'top')
+        self.fit.position.values[0] = \
+            utl.kwget(kwargs, self.fcpp, 'eqn_position', [self.fit.padding, f'ymax - {self.fit.padding / 2}'])
+        self.fit.position.values[1] = \
+            utl.kwget(kwargs, self.fcpp, 'rsq_position', [self.fit.padding, f'ymax - {2.2 * self.fit.font_size}'])
+        self.fit.xanchor = utl.kwget(kwargs, self.fcpp, 'fit_xanchor', 'left')
+        self.fit.xanchor = utl.kwget(kwargs, self.fcpp, 'fit_xanchor', 'left')
+
         self.imshow.binary = utl.kwget(kwargs, self.fcpp, ['binary', 'binary_string'], None)
+
         self.legend.itemwidth = utl.kwget(kwargs, self.fcpp, 'legend_itemwidth', 30)
-        # Add other imshow params later
+
         self.modebar = Element('modebar', self.fcpp, kwargs,
                                on=utl.kwget(kwargs, self.fcpp, ['modebar', 'modebar_on'], True),
-                               fill_color=utl.kwget(kwargs, self.fcpp, ['modebar_bg_color', 'modebar_fill_color'],
-                                                    '#ffffff'),
+                               fill_color=\
+                                   utl.kwget(kwargs, self.fcpp, ['modebar_bg_color', 'modebar_fill_color'], '#ffffff'),
                                button_active_color=utl.kwget(kwargs, self.fcpp, 'modebar_button_active_color', None),
                                button_color=utl.kwget(kwargs, self.fcpp, 'modebar_button_color', None),
                                logo=utl.kwget(kwargs, self.fcpp, 'modebar_logo', False),
                                remove_buttons=utl.kwget(kwargs, self.fcpp, 'modebar_remove_buttons', []),
-                               orientation=utl.kwget(kwargs, self.fcpp, 'modebar_orientaiton', 'v'),
+                               orientation=utl.kwget(kwargs, self.fcpp, 'modebar_orientaiton', 'h'),
+                               # vertical orientation is not rendering in jupyter notebook correctly
+                               size=[25, 25],
                                visible=utl.kwget(kwargs, self.fcpp, 'modebar_visible', False)
                                )
-        self.modebar.size[0] = 25  # the plotly toolbar
-        self.modebar.top_xs = (7 if self.modebar.orientation == 'v' else 0) * self.modebar.on
+
         self.ws_leg_modebar = 5  # space between a legend and modebar
 
         # Other
@@ -455,17 +466,22 @@ class Layout(BaseLayout):
             + np.ceil(self.label_col.size[1] + 2 * self.label_col.edge_width * self.label_col.on) \
             + np.ceil(self.ws_label_col * self.label_col.on) \
             + np.ceil(self._labtick_x2) \
-            + (self.modebar.size[0] if self.modebar.orientation == 'h' else 0) \
-            + 0*self.modebar.top_xs
+            + (self.modebar.size[0] if self.modebar.orientation == 'h' else self.modebar.size[1])
+
         return val
 
     @property
     def _ws_title(self) -> float:
         """Get ws in the title region depending on title visibility."""
-        if self.title.on:
-            val = self.ws_fig_title + self.title.size[1] + self.ws_title_ax
+        if self.modebar.orientation == 'h' and self.modebar.size[1] > self.ws_fig_title:
+            val = 0
         else:
-            val = self.ws_fig_ax
+            val = self.ws_fig_title
+
+        if self.title.on:
+            val += self.title.size[1] + self.ws_title_ax
+        else:
+            val += self.ws_fig_ax
         return val
 
     def add_box_labels(self, ir: int, ic: int, data):
@@ -595,6 +611,8 @@ class Layout(BaseLayout):
             font_style = getattr(element, 'font_style') if hasattr(element, 'font_style') else font_style
             font_color = getattr(element, 'font_color') if hasattr(element, 'font_color') else font_color
             font_size = getattr(element, 'font_size') if hasattr(element, 'font_size') else font_size
+            xanchor = getattr(element, 'xanchor') if hasattr(element, 'xanchor') else 'center'
+            yanchor = getattr(element, 'yanchor') if hasattr(element, 'yanchor') else 'middle'
 
         # add style to the label text string
         self._set_weight_and_style_str(text, font_weight, font_style)
@@ -627,7 +645,7 @@ class Layout(BaseLayout):
             y = position[3] + size[1] / 2 / self.axes.size[1]
         self.fig.obj.add_annotation(font=_font, x=x, y=y,
                                     showarrow=False, text=text, textangle=rotation,
-                                    xanchor='center', yanchor='middle',
+                                    xanchor=xanchor, yanchor=yanchor,
                                     xref='x domain', yref='y domain',
                                     row=ir + 1, col=ic + 1)
 
@@ -645,8 +663,11 @@ class Layout(BaseLayout):
             longest_key = self.legend.values.Key.loc[self.legend.values.Key.str.len().idxmax()]
             key_dim = utl.get_text_dimensions(longest_key, self.legend.font, self.legend.font_size,
                                               self.legend.font_style, self.legend.font_weight, dpi=self.dpi)
-            title_dim = utl.get_text_dimensions(self.legend.text, self.legend.font, self.legend.title_font_size,
-                                                self.legend.font_style, self.legend.font_weight, dpi=self.dpi)
+            if self.legend.text is None:
+                title_dim = [0, 0]
+            else:
+                title_dim = utl.get_text_dimensions(self.legend.text, self.legend.font, self.legend.title_font_size,
+                                                    self.legend.font_style, self.legend.font_weight, dpi=self.dpi)
 
             # Add width for the marker part of the legend and padding with axes (based off empirical measurements)
             text_to_leg_edge = 5
@@ -695,6 +716,103 @@ class Layout(BaseLayout):
             coord (optional): MPL coordinate type. Defaults to None.
             units (optional): pixel or inches. Defaults to None which is 'pixel'.
         """
+        if text is None:
+            return
+
+        if isinstance(element, str):
+            element = getattr(self, element)
+        elif element is None:
+            element = self.text
+
+        # Format font parameters
+        _font = dict(family=element.font if isinstance(element.font, str) else element.font[0],
+                     size=element.font_size if isinstance(element.font_size, int) else element.font_size[0],
+                     color=element.font_color if isinstance(element.font_color, str) else element.font_color[0]
+                     )
+        _rotation = element.rotation if isinstance(element.rotation, int) else element.rotation[0]
+        xanchor = getattr(element, 'xanchor') if hasattr(element, 'xanchor') else 'center'
+        yanchor = getattr(element, 'yanchor') if hasattr(element, 'yanchor') else 'middle'
+
+        # Get the position
+        position = kwargs.get('position', [element.position[0], element.position[3]])
+
+        # Add the text
+        self.fig.obj.add_annotation(font=_font, x=position[0], y=position[-1],
+                                    showarrow=False, text=text, textangle=_rotation,
+                                    xanchor=xanchor, yanchor=yanchor,
+                                    xref='x domain', yref='y domain',
+                                    row=ir + 1, col=ic + 1)
+
+        # Store the annotation in the element object
+        if element.obj is None:
+            element.obj = self.obj_array
+
+        if element.obj[ir, ic] is None:
+            element.obj[ir, ic] = []
+
+        element.obj[ir, ic] += [self.fig.obj['layout']['annotations'][-1]]
+
+    def fill_between_lines(self, ir: int, ic: int, iline: int, x: [np.ndarray, pd.Index],
+                           lcl: [np.ndarray, pd.Series], ucl: [np.ndarray, pd.Series], element: str,
+                           leg_name: [str, None] = None, twin: bool = False):
+        """Shade a region between two curves.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            iline: data subset index (from Data.get_plot_data)
+            x: x-axis values
+            lcl: y-axis values for the lower bound of the fill
+            ucl: y-axis values for the upper bound of the fill
+            element: name of the Element object associated with this fill
+            leg_name (optional): legend value name if legend enabled.
+                Defaults to None.
+            twin (optional): denotes if twin axis is enabled or not.
+                Defaults to False.
+        """
+        # Twinning
+        if twin and self.axes.twin_x:
+            yaxis = 'y2'
+        else:
+            yaxis = 'y1'
+        if twin and self.axes.twin_y:
+            xaxis = 'x2'
+        else:
+            xaxis = 'x1'
+
+        # Line props
+        element = getattr(self, element)
+        fc = element.fill_color
+        ec = element.edge_color
+        mls = dict(line=dict(width=element.edge_width,
+                             color=element.fill_color[iline],
+                             dash=element.style[iline],
+                             ))
+
+        # First line
+        self.axes.obj[ir, ic] += [
+            go.Scatter(x=x,
+                       y=lcl,
+                       name='fill',
+                       mode='lines',
+                       xaxis=xaxis,
+                       yaxis=yaxis,
+                       showlegend=False,
+                       **mls
+                       )]
+
+        # Second line
+        self.axes.obj[ir, ic] += [
+            go.Scatter(x=x,
+                       y=ucl,
+                       name='fill',
+                       mode='lines',
+                       xaxis=xaxis,
+                       yaxis=yaxis,
+                       fill="tonexty",
+                       showlegend=True if leg_name is not None else False,
+                       **mls
+                       )]
 
     def _get_figure_size(self, data: 'Data', temp=False, **kwargs):  # noqa: F821
         """Determine the size of the mpl figure canvas in pixels and inches.
@@ -792,16 +910,21 @@ class Layout(BaseLayout):
             data: Data object
         """
         for ax in data.axs_on:
+            if getattr(self, f'tick_labels_major_{ax}').on is False:
+                continue
+
             scale_x, scale_y = 1, 1
 
             # Try to guess the tick labels
             ticklabs = getattr(self, f'tick_labels_major_{ax}')
-            if data.ranges[f'{ax}min'].min() is None or data.ranges[f'{ax}max'].max() is None:
+            vmin = data.ranges[f'{ax}min'][data.ranges[f'{ax}min'] != None]
+            vmax = data.ranges[f'{ax}max'][data.ranges[f'{ax}max'] != None]
+
+            if len(vmin) == 0 or len(vmax) == 0:
                 # Assume categorical
                 labs = data.df_rc[getattr(data, ax)].values.flatten()
-            elif isinstance(data.ranges[f'{ax}min'].min(), np.datetime64) or \
-                    isinstance(data.ranges[f'{ax}max'].max(), np.datetime64):
-                delta = data.ranges[f'{ax}max'].max() - data.ranges[f'{ax}min'].min()
+            elif isinstance(vmin.min(), np.datetime64) or isinstance(vmax.max(), np.datetime64):
+                delta = vmax.max() - vmin.min()
                 if delta / np.timedelta64(365, 'D') > 1:
                     # More than 1 year, assume month-year format
                     labs = ['Jan 2000']
@@ -819,7 +942,7 @@ class Layout(BaseLayout):
             else:
                 # Numerical min/max
                 labs = guess_tick_labels(
-                    data.ranges[f'{ax}min'].min(), data.ranges[f'{ax}max'].max(), self.axes.size,
+                    vmin.min(), vmax.max(), self.axes.size,
                     True if ax in ['x', 'x2'] else False,
                     ticklabs.font_size,
                     True if self.axes.scale in [f'log{ax}', f'semilog{ax}', 'log', 'loglog'] else False,
@@ -883,6 +1006,39 @@ class Layout(BaseLayout):
         Returns:
             updated Data Object with new axes ranges
         """
+        idx = np.where(np.isin(xvals, df.index))[0]
+        ixvals = list(range(0, len(xvals)))
+
+        # Orientation??
+
+        # Styles
+        if self.bar.color_by == 'bar':
+            edgecolor = [self.bar.edge_color[i] for i, f in enumerate(df.index)]
+            fillcolor = [self.bar.fill_color[i] for i, f in enumerate(df.index)]
+        else:
+            edgecolor = self.bar.edge_color[(iline, leg_name)]
+            fillcolor = self.bar.fill_color[(iline, leg_name)]
+
+        # Make the plot
+        if not self.axes.obj[ir, ic]:
+            self.axes.obj[ir, ic] = []
+
+        if self.bar.horizontal:
+            self.axes.obj[ir, ic] += [
+                go.Bar(x=df.values,
+                        y=idx,
+                        marker=dict(color=fillcolor, opacity=self.bar.fill_alpha),
+                        orientation='h' if self.bar.horizontal else 'v',
+                        )]
+        else:
+            self.axes.obj[ir, ic] += [
+                go.Bar(x=idx,
+                        y=df.values,
+                        marker=dict(color=fillcolor, opacity=self.bar.fill_alpha),
+                        )]
+        print(fillcolor)
+
+        return data
 
     def plot_box(self, ir: int, ic: int, data: 'data.Data', **kwargs) -> 'MPL_Boxplot_Object':  # noqa: F821
         """Plot boxplot.
@@ -1014,7 +1170,7 @@ class Layout(BaseLayout):
             else:
                 hovertemplate = 'x: %{x}<br>y: %{y}<br>z: %{z:.2f}<extra></extra>'
             self.axes.obj[ir, ic] = [go.Heatmap(z=df,
-                                                colorscale='gray',
+                                                colorscale=self.cmap[0],
                                                 hovertemplate=hovertemplate
                                                 )
                                      ]
@@ -1141,7 +1297,7 @@ class Layout(BaseLayout):
                 dfx = np.random.normal(df[x], 0.03, size=len(df[y]))
 
         # Set the plot mode
-        if line_type.on and self.markers.on:
+        if line_type.on and self.markers.on and not marker_disable:
             mode = 'lines+markers'
         elif line_type.on:
             mode = 'lines'
@@ -1153,9 +1309,9 @@ class Layout(BaseLayout):
             self.axes.obj[ir, ic] = []
 
         # Set marker type
-        if self.markers.on and self.markers.type[iline] in HOLLOW_MARKERS:
+        if self.markers.on and self.markers.type[iline] in HOLLOW_MARKERS and not marker_disable:
             marker_symbol = self.markers.type[iline] + ('-open' if not self.markers.filled else '')
-        else:
+        elif not marker_disable:
             marker_symbol = self.markers.type[iline]
 
         # Twinning
@@ -1169,7 +1325,7 @@ class Layout(BaseLayout):
             xaxis = 'x1'
 
         # Define markers and lines (TODO: add style support)
-        if self.markers.on:
+        if self.markers.on and not marker_disable:
             mls = dict(marker_symbol=marker_symbol,
                        marker_size=self.markers.size[iline],
                        marker_color=self.markers.fill_color[iline],
@@ -1177,9 +1333,16 @@ class Layout(BaseLayout):
                                              width=self.markers.edge_width[iline])),
                        line=dict(width=self.lines.width[iline])
                        )
-        elif self.lines.on:
-            mls = dict(line=dict(width=self.lines.width[iline],
-                                 color=self.lines.color[iline]))
+        # elif self.lines.on:
+        #     mls = dict(line=dict(width=self.lines.width[iline],
+        #                          color=self.lines.color[iline],
+        #                          dash=self.lines.style[iline],
+        #                          ))
+        elif line_type.on:
+            mls = dict(line=dict(width=line_type.width[0],
+                                 color=line_type.color[0],
+                                 dash=line_type.style[0],
+                                 ))
         else:
             mls = {}
 
@@ -1462,11 +1625,10 @@ class Layout(BaseLayout):
         self._get_figure_size(data)
 
         # Update the title position
-        self.ul['title']['x'] = \
-            0.5 + (self.label_y.font_size + self.tick_labels_major_y.font_size) / self.fig.size[0]
+        self.ul['title']['x'] = 0.5
         self.ul['title']['y'] = \
-            1 - ((self.modebar.size[0] if (self.modebar.visible and self.modebar.orientation == 'h') else 0) +
-                 self.title.font_size / 2) / self.fig.size[1]
+            1 - ((self.modebar.size[0] if (self.modebar.visible and self.modebar.orientation == 'h')
+                  else self.modebar.size[1]) + self.title.font_size / 2) / self.fig.size[1]
 
         # Update the x/y axes
         for ax in data.axs_on:
@@ -1490,7 +1652,7 @@ class Layout(BaseLayout):
             self.fig.obj['layout']['yaxis2'].update(dict(tickprefix=" "))
         for ir, ic in np.ndindex(self.axes.obj.shape):
             for ax in self.axs_on:
-                if not self.separate_ticks and ax == 'x' and ir != self.nrow - 1:
+                if not self.separate_ticks and ax == 'x' and ir != self.nrow - 1 and data.share_y is True:
                     self.fig.obj.update_xaxes(showticklabels=False, row=ir + 1, col=ic + 1)
                 if not self.separate_ticks and ax == 'x2' and ir != 0:
                     continue
@@ -1528,10 +1690,6 @@ class Layout(BaseLayout):
             self.fig.obj.update_yaxes(row=ir + 1, col=ic + 1, range=self.ul['yaxis_range'][ir, ic])
             if self.axes.twin_x:
                 self.fig.obj['layout']['yaxis2']['range'] = self.ul['y2axis_range'][ir, ic]
-
-        # Get the tick sizes
-        for ax in data.axs_on:
-            self._set_tick_sizes(data)
 
         # Update the figure layout
         self.fig.obj.update_layout(autosize=True,
@@ -1604,6 +1762,30 @@ class Layout(BaseLayout):
         elif not self.modebar.on:
             self.modebar.obj['displayModeBar'] = False
 
+        # Update text positions
+        for ir, ic in np.ndindex(self.axes.obj.shape):
+            # Only want to do this to non-grouping labels
+            if self.fit.obj is None and self.text.obj[ir, ic] is None:
+                continue
+
+            texts = self.fig.obj['layout']['annotations']
+            for text in texts:
+                if (self.fit.obj is None or text not in self.fit.obj[ir, ic]) and \
+                        (self.text.obj[ir, ic] is None or text not in self.text.obj[ir, ic]):
+                    continue
+                if isinstance(text['x'], str):
+                    text['x'] = text['x'].replace('xmin', str(data.ranges['xmin'][ir, ic])) \
+                                         .replace('xmax', str(data.ranges['xmax'][ir, ic]))
+                    text['x'] = utl.arithmetic_eval(text['x'])
+                if text['x'] > 1:
+                    text['x'] /= self.axes.size[0]
+                if isinstance(text['y'], str):
+                    text['y'] = text['y'].replace('ymin', str(data.ranges['ymin'][ir, ic])) \
+                                         .replace('ymax', str(self.axes.size[1]))
+                    text['y'] = utl.arithmetic_eval(text['y'])
+                if text['y'] > 1:
+                    text['y'] /= self.axes.size[1]
+
     def set_figure_title(self):
         """Set a figure title."""
         if self.title.text is None:
@@ -1611,7 +1793,9 @@ class Layout(BaseLayout):
 
         # TODO: deal with other alignments
         self._set_weight_and_style('title')
-        self.title.size[1] = self.title.font_size
+        self.title.size = utl.get_text_dimensions(self.title.text, self.title.font, self.title.font_size,
+                                                  self.title.font_style, self.title.font_weight, dpi=self.dpi)
+
         self.ul['title'] = \
             dict(text=self.title.text,
                  xanchor='center',
@@ -1621,81 +1805,8 @@ class Layout(BaseLayout):
                            )
                  )
 
-    def _set_tick_sizes(self, data):
-        """
-        Try to guess the tick rounding in order to approximate the tick size.  Auto tick labels are calculated by js
-        and cannot be queried by python
-
-        See: https://github.com/plotly/plotly.js/blob/4ed586a6402073cc5c50a40cad5f652d7472fcce/src/plots/cartesian/axes.js#L652
-
-        Args:
-            data: data object
-        """  # noqa: E501
-        return
-        # def getBase(v, roughDTick):
-        #     return v ** np.floor(np.log(roughDTick) / np.log(10))
-
-        # def roundUp(val, arrayIn, reverse):
-        #     """
-        #     Modified from plotly.js
-
-        #     Return the smallest element from (sorted) array arrayIn that's bigger than val,
-        #     or (reverse) the largest element smaller than val
-        #     used to find the best tick given the minimum (non-rounded) tick
-        #     particularly useful for date/time where things are not powers of 10
-        #     binary search is probably overkill here...
-        #     """
-        #     low = 0
-        #     high = len(arrayIn) - 1
-        #     c = 0
-        #     dlow = 0 if reverse else 1
-        #     dhigh = 1 if reverse else 0
-        #     rounded = np.ceil if reverse else np.floor
-        #     # c is just to avoid infinite loops if there's an error
-        #     while low < high and c < 100:
-        #         mid = rounded((low + high) / 2)
-        #         if arrayIn[mid] <= val:
-        #             low = mid + dlow
-        #         else:
-        #             high = mid - dhigh
-        #         c += 1
-        #     return arrayIn[low]
-
-        # def roundDTick(roughDTick, base, roundingSet):
-        #     return base * roundUp(roughDTick / base, roundingSet)
-
-        # roundBase10 = [2, 5, 10]
-        # roundBase24 = [1, 2, 3, 6, 12]
-        # roundBase60 = [1, 2, 5, 10, 15, 30]
-        # # 2&3 day ticks are weird, but need something btwn 1&7
-        # roundDays = [1, 2, 3, 7, 14]
-        # # these don't have to be exact, just close enough to round to the right value
-        # # approx. tick positions for log axes, showing all (1) and just 1, 2, 5 (2)
-        # roundLog1 = [-0.046, 0, 0.301, 0.477, 0.602, 0.699, 0.778, 0.845, 0.903, 0.954, 1]
-        # roundLog2 = [-0.301, 0, 0.301, 0.699, 1]
-        # roundAngles = [15, 30, 45, 90, 180]
-
-        # for ax in data.axs_on:
-        #     ww, hh = 0, 0
-        #     for ir, ic in np.ndindex(self.axes.obj.shape):
-        #         vmin, vmax = data.ranges[f'{ax}min'][ir, ic], data.ranges[f'{ax}max'][ir, ic]
-        #         if self.axes.scale in getattr(layout, f'LOG{ax.upper()}'):
-        #             db()
-        #         else:
-        #             # ax.tick0 = 0;
-        #             # base = getBase(10);
-        #             # ax.dtick = roundDTick(roughDTick, base, roundBase10);
-
-        #             db()
-
-        # for ax in data.axs_on:
-        #     tick = getattr(self, f'tick_labels_major_{ax}')
-        #     longest = ''
-        #     for trace in self.fig.obj['data']:
-        #         longest = max([str(f) for f in trace[ax]] + [longest], key=len)
-        #     tick.size = utl.get_text_dimensions(longest, tick.font, tick.font_size, tick.font_style,
-        #                                         tick.font_weight, tick.rotation)
-        pass
+    def _set_text_position(self, obj, position=None):
+        """Move text label to the correct location."""
 
     def _set_weight_and_style(self, element: str):
         """Add html tags to the text string of an element to address font weight and style.
