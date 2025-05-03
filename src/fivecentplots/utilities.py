@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Any, Union, Tuple, Dict, List
 from . import data
 import numpy.typing as npt
-from PIL import ImageFont
+from PIL import ImageFont, Image, ImageDraw
 try:
     import cv2  # required for testing
 except (ImportError, ModuleNotFoundError):
@@ -749,7 +749,7 @@ def get_repeating_decimal_end(value: float) -> int:
 
 
 def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, font_weight: str, rotation: float = 0,
-                        dpi: int = 100, ignore_html: bool = True, **kwargs) -> tuple:
+                        dpi: int = 100, ignore_html: bool = True, show=False, **kwargs) -> tuple:
     """Use pillow to try and figure out actual dimensions of text.
 
     Args:
@@ -791,6 +791,13 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
             + size[0] * np.abs(np.sin(rotation * np.pi / 180))
     else:
         w, h = size
+
+    if show:
+        image = Image.new('RGB', (w, h), color='white')
+        draw = ImageDraw.Draw(image)
+        draw.text((0, 0), text, font=font, fill='black')
+        image.save("utl_font_size.png")
+        show_file("utl_font_size.png")
 
     return w, h
 

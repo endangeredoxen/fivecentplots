@@ -633,7 +633,8 @@ class BaseLayout:
 
         # Other boxplot elements
         self.violin = Element('violin', self.fcpp, kwargs,
-                              on=utl.kwget(kwargs, self.fcpp, ['box_violin', 'violin'], kwargs.get('violin', False)),
+                              on=utl.kwget(kwargs, self.fcpp, ['box_violin', 'violin', 'violins'],
+                                           kwargs.get('violin', False)),
                               box_color=utl.kwget(kwargs, self.fcpp, 'violin_box_color', '#555555'),
                               box_on=utl.kwget(kwargs, self.fcpp, 'violin_box_on', True),
                               edge_color=utl.kwget(kwargs, self.fcpp, 'violin_edge_color', '#aaaaaa'),
@@ -1302,7 +1303,7 @@ class BaseLayout:
                     edge_width=utl.kwget(kwargs, self.fcpp, ['gantt_today_edge_width', 'today_edge_width'], 0),
                     fill_color=utl.kwget(kwargs, self.fcpp, ['gantt_today_fill_color', 'today_fill_color'],
                                          '#555555'),
-                    font=utl.kwget(kwargs, self.fcpp, ['gantt_today_font', 'today_font'], 'sans-serif'),
+                    font=utl.kwget(kwargs, self.fcpp, ['gantt_today_font', 'today_font'], 'Arial'),
                     font_color=utl.kwget(kwargs, self.fcpp, ['gantt_today_font_color', 'today_font_color'], '#ffffff'),
                     font_size=utl.kwget(kwargs, self.fcpp, ['gantt_today_font_size', 'today_font_size'], 13),
                     font_style=utl.kwget(kwargs, self.fcpp,
@@ -1602,7 +1603,6 @@ class BaseLayout:
                               interp=utl.kwget(kwargs, self.fcpp, ['imshow_interp', 'interp'],
                                                kwargs.get('interp', 'none')),
                               )
-
         # unless the color map is explicity defined in kwargs or self.fcpp,
         # override the inferno default for imshow
         if self.imshow.on and not utl.kwget(kwargs, self.fcpp, 'cmap', None):
@@ -1736,7 +1736,7 @@ class BaseLayout:
                                      edge_width=utl.kwget(kwargs, self.fcpp, 'legend_edge_width', 1),
                                      fill_alpha=utl.kwget(kwargs, self.fcpp, 'legend_fill_alpha', 1),
                                      fill_color=utl.kwget(kwargs, self.fcpp, 'legend_fill_color', '#ffffff'),
-                                     font=utl.kwget(kwargs, self.fcpp, 'legend_font', 'sans-serif'),
+                                     font=utl.kwget(kwargs, self.fcpp, 'legend_font', 'Arial'),
                                      font_size=utl.kwget(kwargs, self.fcpp, 'legend_font_size', 12),
                                      location=LEGEND_LOCATION[utl.kwget(kwargs, self.fcpp, 'legend_location', 0)],
                                      marker_alpha=utl.kwget(kwargs, self.fcpp, 'legend_marker_alpha', 1),
@@ -2145,7 +2145,7 @@ class BaseLayout:
                                                     'text_fill_color', 'none'),
                                                     'text_fill_color'),
                             font=RepeatedList(utl.kwget(kwargs, self.fcpp,
-                                              'text_font', 'sans-serif'), 'text_font'),
+                                              'text_font', 'Arial'), 'text_font'),
                             font_color=RepeatedList(utl.kwget(kwargs, self.fcpp,
                                                     'text_font_color', '#000000'),
                                                     'text_font_color'),
@@ -2226,7 +2226,7 @@ class BaseLayout:
                     and not kwargs.get('tick_labels_major_fill_alpha', None)
                     and not kwargs.get('tick_labels_major_fill_color', None)
                     else 1,
-                    font=utl.kwget(kwargs, self.fcpp, 'tick_labels_font', 'sans-serif'),
+                    font=utl.kwget(kwargs, self.fcpp, 'tick_labels_font', 'Arial'),
                     font_size=utl.kwget(kwargs, self.fcpp, 'tick_labels_font_size', 13),
                     offset=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_offset', False),
                     padding=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_padding', 2),
@@ -2677,7 +2677,7 @@ class BaseLayout:
     def add_label(self, ir: int, ic: int, text: str = '', position: [tuple, None] = None,
                   rotation: int = 0, size: [list, None] = None,
                   fill_color: str = '#ffffff', edge_color: str = '#aaaaaa',
-                  edge_width: int = 1, font: str = 'sans-serif', font_weight: str = 'normal',
+                  edge_width: int = 1, font: str = 'Arial', font_weight: str = 'normal',
                   font_style: str = 'normal', font_color: str = '#666666', font_size: int = 14,
                   offset: bool = False, **kwargs) -> ['Text_Object', 'Rectangle_Object']:  # noqa: F821
         """Add a label to the plot.
@@ -2695,7 +2695,7 @@ class BaseLayout:
             fill_color: hex color code for label fill. Defaults to '#ffffff'.
             edge_color: hex color code for label edge. Defaults to '#aaaaaa'.
             edge_width: width of the label bounding box edge. Defaults to 1.
-            font: name of the font for the label. Defaults to 'sans-serif'.
+            font: name of the font for the label. Defaults to 'Arial'.
             font_weight: mpl font weight str ('normal', 'bold', etc.). Defaults to 'normal'.
             font_style: mpl font style str ('normal', 'italic', etc.). Defaults to 'normal'.
             font_color:  hex color code for label text. Defaults to '#666666'.
@@ -3197,7 +3197,7 @@ class Element:
 
         # fonts
         if 'font' not in kwargs:
-            self.font = utl.kwget(kwargs, fcpp, f'{name}_font', kwargs.get('font', 'sans-serif'))
+            self.font = utl.kwget(kwargs, fcpp, f'{name}_font', kwargs.get('font', 'Arial'))
         else:
             self.font = kwargs['font']
         if 'font_color' not in kwargs:
@@ -3242,6 +3242,18 @@ class Element:
         self.style = self._style_convert
         if not isinstance(self.style, RepeatedList) and self.style is not None:
             self.style = RepeatedList(self.style, 'style')
+        if 'style2' in kwargs:
+            bkup_style = self.style
+            self.style = kwargs['style2']
+            kwargs['style2'] = self._style_convert
+            self.style = bkup_style
+            if not isinstance(kwargs['style2'], RepeatedList):
+                kwargs['style2'] = RepeatedList(kwargs['style2'], 'style2')
+        if 'edge_style' in kwargs:
+            bkup_style = self.style
+            self.style = kwargs['edge_style']
+            kwargs['edge_style'] = self._style_convert
+            self.style = bkup_style
 
         # overrides
         attrs = ['color', 'fill_color', 'edge_color']
@@ -3594,7 +3606,7 @@ class Legend_Element(DF_Element):
             curve: reference to curve obj (plotting engine specific)
             line_type_name: line type description
         """
-        temp = pd.DataFrame({'Key': key, 'Curve': curve, 'LineType': line_type_name},
+        temp = pd.DataFrame({'Key': str(key), 'Curve': curve, 'LineType': line_type_name},
                             index=[len(self._values)])
 
         # don't add duplicates - this could miss a case where the curve type is actually different

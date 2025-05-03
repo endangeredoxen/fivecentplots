@@ -977,15 +977,16 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                 dividers += [irow + 0.5]
 
             # Plot points
-            if isinstance(dd.legend_vals, pd.DataFrame):
-                for jj, jrow in dd.legend_vals.iterrows():
-                    temp = gg.loc[gg[dd.legend] == jrow['names']][dd.y].dropna()
-                    temp['x'] = irow + 1
+            if not layout.violin.on:
+                if isinstance(dd.legend_vals, pd.DataFrame):
+                    for jj, jrow in dd.legend_vals.iterrows():
+                        points = gg.loc[gg[dd.legend] == jrow['names']][dd.y].dropna()
+                        points['x'] = irow + 1
+                        if len(points) > 0:
+                            layout.plot_xy(ir, ic, jj, points, 'x', dd.y[0], jrow['names'], False, zorder=10)
+                else:
                     if len(temp) > 0:
-                        layout.plot_xy(ir, ic, jj, temp, 'x', dd.y[0], jrow['names'], False, zorder=10)
-            else:
-                if len(temp) > 0:
-                    layout.plot_xy(ir, ic, irow, temp, 'x', dd.y[0], None, False, zorder=10)
+                        layout.plot_xy(ir, ic, irow, temp, 'x', dd.y[0], None, False, zorder=10)
 
             # plot mean diamonds
             if layout.box_mean_diamonds.on:

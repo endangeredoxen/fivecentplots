@@ -704,6 +704,11 @@ class Data:
         # if vmin >= vmax:
         #     raise DataError(f'{ax}min must be less than {ax}max [{vmin} >= {vmax}]')
 
+        # Make sure vmin != vmax
+        if vmin is not None and vmax is not None and vmin == vmax:
+            vmin -= 0.1 * vmin
+            vmax += 0.1 * vmax
+
         return vmin, vmax
 
     def get_data_ranges(self):
