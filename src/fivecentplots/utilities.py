@@ -318,6 +318,16 @@ def dfkwarg(args: tuple, kwargs: dict, plotter: object) -> dict:
                                  f'\n{doc_url(plotter.url)}')
         kwargs['df'] = args
         return kwargs
+    elif (isinstance(args, np.ndarray) and (len(args.shape) == 2 or len(args.shape) == 3)) or \
+            (isinstance(args, list) and (len(args) == 2 or len(args) == 3)) \
+            and len(args[0]) == len(args[1]) and len(args[0]) == len(args[-1]) and plotter.name in ['xy']:
+        if len(args) == 3:
+            kwargs['df'] = pd.DataFrame({'x': args[0], 'y': args[1], 'groups': args[2]})
+        else:
+            kwargs['df'] = pd.DataFrame({'x': args[0], 'y': args[1]})
+        kwargs['x'] = 'x'
+        kwargs['y'] = 'y'
+        return kwargs
     else:
         raise data.DataError('Data source has invalid data type!  '
                              '\n\nPlease consult the docs for more information on which data types are allowed for a '

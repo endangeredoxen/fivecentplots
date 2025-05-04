@@ -1078,7 +1078,8 @@ class Layout(BaseLayout):
                     and isinstance(self.legend.values, pd.DataFrame) \
                     and isinstance(leg_vals, pd.DataFrame) \
                     and not np.array_equal(self.legend.values['Key'].values, leg_vals['names'].values):
-                leg_vals = self.legend.values.set_index('Key').loc[leg_vals['names']].reset_index()
+                leg_vals['names'] = leg_vals['names'].map(str)
+                leg_vals = self.legend.values.set_index('Key').loc[leg_vals['names'].values].reset_index()
             else:
                 leg_vals = self.legend.values
 

@@ -1,6 +1,7 @@
 import pandas as pd
 import pdb
 import numpy as np
+import numpy.typing as npt
 import scipy.stats
 from .. import utilities as utl
 from . layout import LOGX, LOGY, BaseLayout, RepeatedList, Element
@@ -170,7 +171,8 @@ class Layout(BaseLayout):
 
         # Update kwargs
         self.kwargs = kwargs
-        self.update_markers()
+        if self.markers.on:
+            self.update_markers()
 
         # Engine-specific "update_layout" keywords; store in one dict to minimize calls to "update_layout"
         self.ul = {}
@@ -213,6 +215,7 @@ class Layout(BaseLayout):
                                visible=utl.kwget(kwargs, self.fcpp, 'modebar_visible', False)
                                )
         self.ws_leg_modebar = 5  # space between a legend and modebar
+        self.ws_ax_leg = 10
 
         # Other
         self.axs_on = data.axs_on
@@ -254,6 +257,12 @@ class Layout(BaseLayout):
         # return np.maximum(heights, heightst)
 
     @property
+    def _cbar_width(self) -> float:
+        """
+        """
+        return self.cbar.size[0] * 2  + self.ws_ax_cbar + self.ws_ax_fig
+
+    @property
     def _cbar_props(self) -> float:
         """Set properties of a colorbar"""
         cbar = dict(lenmode='pixels',
@@ -264,9 +273,9 @@ class Layout(BaseLayout):
                                   style=self.tick_labels_major_z.font_style,
                                   weight=self.tick_labels_major_z.font_weight
                                   ),
-                    xanchor="right",
-                    xref='container',
-                    xpad=self.ws_ax_fig,
+                    xanchor="left",
+                    xref='paper',
+                    xpad=0,
                     ticks="outside",
                     )
         return cbar
@@ -284,6 +293,9 @@ class Layout(BaseLayout):
     @property
     def _labtick_x2(self) -> float:
         """Height of the secondary x label + x tick labels + related whitespace."""
+        if self.pie.on:
+            return 0
+
         if not self.axes.twin_y:
             return 0
 
@@ -366,31 +378,44 @@ class Layout(BaseLayout):
 
     @property
     def _margin_right(self) -> float:
-        """Right margin.
+        """Right margin (just the whitespace)
 
         Returns:
             margin in pixels
         """
-        val = self.modebar.size[0] if self.modebar.orientation == 'v' else 0
-        val += self.ws_ax_fig if not self.legend._on or self.legend.location != 0 else self.ws_leg_fig
-        val += self.axes.edge_width
-        if self.axes.twin_x:
-            val += self._labtick_y2 + (self.ws_ax_leg if self.legend._on else 0)
+        # val = self.modebar.size[0] if self.modebar.orientation == 'v' else 0
+        # val += self.ws_ax_fig if not self.legend._on or self.legend.location != 0 else self.ws_leg_fig
+        # val += self.axes.edge_width
+        # if self.axes.twin_x:
+        #     val += self._labtick_y2 + (self.ws_ax_leg if self.legend._on else 0)
 
-        if self.cbar.on:
-            val = max(0, val - self.cbar.size[0] * 2 + self.ws_ax_cbar)
+        # # if self.cbar.on:
+        # #     val = max(0, val - self.cbar.size[0] * 2 + self.ws_ax_cbar)
 
-        if self.legend._on:
-            val = max(self.ws_leg_fig, val - self.legend.size[0])
+        # # if self.legend._on:
+        # #     val = max(self.ws_leg_fig, val - self.legend.size[0])
 
-        if self.box_group_title.on and (self.ws_ax_box_title + self.box_title) > \
-                self._legx + (self.fig_legend_border if self.legend._on else 0):
-            val += np.ceil(self.ws_ax_box_title) + np.ceil(self.box_title) \
-                 + np.ceil((self.ws_ax_fig if not self.legend.on else 0))
-        if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
-            val += np.ceil(self.box_title)
+        # if self.box_group_title.on and (self.ws_ax_box_title + self.box_title) > \
+        #         self._legx + (self.fig_legend_border if self.legend._on else 0):
+        #     val += np.ceil(self.ws_ax_box_title) + np.ceil(self.box_title) \
+        #          + np.ceil((self.ws_ax_fig if not self.legend.on else 0))
+        # if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
+        #     val += np.ceil(self.box_title)
 
-        return val
+        # axis to fig right side ws with or without legend
+        # if self.cbar.on:
+        #     return 0
+        # elif self.legend._on and self.legend.location == 0 and not self.box_group_title.on:
+        #     return self.ws_leg_fig
+        # elif self.box_group_title.on and not self.legend._on:
+        #     return self.ws_ax_box_title + self.box_title + self.ws_ax_fig
+        # else:
+        #     return self.ws_ax_fig
+
+        if self.legend._on and self.legend.location == 0:
+            return self.ws_leg_fig
+        else:
+            return self.ws_ax_fig + self.axes.edge_width
 
     @property
     def _margin_top(self) -> float:
@@ -399,10 +424,72 @@ class Layout(BaseLayout):
         Returns:
             margin in pixels
         """
-        # val = 7 if self.modebar.orientation == 'v' else 0  # xs modebar you can't get rid of
-        # val += self.ws_label_col + self.label_col.size[1] + 2 * self.label_col.edge_width * self.label_col.on
-        val = self._ws_title + (self.modebar.size[0] if self.modebar.orientation == 'h' else 7)
-        return val
+        return self._ws_title + (self.modebar.size[0] if self.modebar.orientation == 'h' else 7)
+
+    @property
+    def _axes_dimensions(self):
+        """
+        Try to compute the width / height of the axis area.  This will depend on margins and elements
+        that are present outside the plotting area.  Not exact!
+        """
+        # xaxis width in pixels
+        ww = self.axes.size[0] + self.axes.edge_width + self._labtick_y2
+        if self.label_row.on:
+            ww += self._row_label_width
+        # if self.legend.on:
+        #     ww += self.ws_ax_leg
+        if self.cbar.on:
+            ww += self.ws_ax_fig
+
+        # yaxis
+        hh = self.fig.size[1] - self._top - self._bottom  # probably need to fix for secondary x
+
+        # # account for subplots
+        # w *= self.ncol
+        # w += self.ws_col * (self.ncol - 1)
+
+        # h *= self.nrow
+        # h += self.ws_row * (self.nrow - 1)
+
+        return ww, hh
+
+    def _axes_domain(self, ir, ic):
+        """
+        "Try" to compute the axis domain x0, x1, y0, and y1 values.  This depends on the content in the margins
+        and may not be exact.  Values must be between [0, 1]
+        """
+        ww, hh = self._axes_dimensions
+
+        # Base dimensions
+        ww = self.axes.size[0] + self.axes.edge_width + self._labtick_y2
+        hh = self.fig.size[1] - self._top - self._bottom
+
+        # Width with subplots: ww has two axes edges but first one isn't counted
+        w_total = ww * self.ncol + self.ws_col * (self.ncol - 1) + self.axes.edge_width
+        if self.label_row.on:
+            w_total += self._row_label_width
+        if self.cbar.on:
+            w_total += self.ws_ax_fig
+        if self.box_group_title.on:
+            w_total += self.box_group_title.size[0]
+
+        # Height with subplots
+        h_total = hh * self.nrow + self.ws_row * (self.nrow - 1)
+
+        # left xaxis domain
+        x0 = (ww + self.axes.edge_width + self.ws_col) * ic / w_total
+
+        # right xaxis domain
+        x1 = x0 + (ww - self.axes.edge_width) / w_total
+
+        # bottom yaxis domain
+        y0 = 1 - ((self.ws_row + self.axes.size[1] + 2 * self.axes.edge_width) * ir + self.axes.size[1] +
+                  self.axes.edge_width) / hh
+
+        # top yaxis domain
+        y1 = 1 - ((self.ws_row + self.axes.size[1] + 2 * self.axes.edge_width) * ir + self.axes.edge_width) / hh
+
+        return x0, x1, y0, y1
 
     @property
     def _row_label_width(self) -> float:
@@ -439,17 +526,8 @@ class Layout(BaseLayout):
         if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
             right += np.ceil(self.box_title)
 
-        # # Main figure title excess size
-        # title_xs_right = np.ceil(self.title.size[0] / 2) \
-        #     - np.ceil((right + (self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1)) / 2)) \
-        #     - np.ceil(self.legend.size[0])
-        # if title_xs_right < 0:
-        #     title_xs_right = 0
-
-        # right += title_xs_right
-
-        # # pie labels
-        # right += np.ceil(self.pie.xs_right)
+        # pie labels
+        right += np.ceil(self.pie.xs_right)
 
         return int(right)
 
@@ -593,10 +671,12 @@ class Layout(BaseLayout):
 
             # Group titles
             if self.box_group_title.on and ic == data.ncol - 1:
-                self.box_group_title.size = \
+                box_group_title_size = \
                     utl.get_text_dimensions(str(data.groups[k]), self.box_group_title.font,
                                             self.box_group_title.font_size, self.box_group_title.font_style,
                                             self.box_group_title.font_weight, dpi=self.dpi)
+                self.box_group_title.size[0] = max(self.box_group_title.size[0], box_group_title_size[0])
+                self.box_group_title.size[1] = max(self.box_group_title.size[1], box_group_title_size[1])
                 l = 1 + (self.axes.edge_width + 2) / self.axes.size[0]
                 r = l + (self.box_group_title.size[0] + self.box_group_title.padding) / self.axes.size[0]
                 t = t0
@@ -782,7 +862,11 @@ class Layout(BaseLayout):
         _leg_vals = leg_vals if leg_vals is not None else []
         if self.legend._on:
             # Estimate the legend dimensions based on the text size
-            longest_leg_item = self.legend.values.Key.loc[self.legend.values.Key.str.len().idxmax()]
+            if self.name == 'pie':
+                longest_leg_item = leg_vals.names.loc[self.legend.values.Key.str.len().idxmax()]
+            else:
+                # should they all be like above??
+                longest_leg_item = self.legend.values.Key.loc[self.legend.values.Key.str.len().idxmax()]
             item_dim = utl.get_text_dimensions(longest_leg_item, self.legend.font, self.legend.font_size,
                                                self.legend.font_style, self.legend.font_weight, dpi=self.dpi)
             if self.legend.text is None:
@@ -796,7 +880,7 @@ class Layout(BaseLayout):
             title_width = 2 + title_dim[0] * 0.88 + 2  # title font size shrinks for some reason
 
             # Set approximate legend size
-            self.legend.size[0] = max(item_width, title_width) + self.legend.edge_width
+            self.legend.size[0] = max(item_width, title_width) + 2 * self.legend.edge_width #- self.axes.edge_width
             self.legend.size[1] = \
                 (title_dim[1] if self.legend.text != '' else 0) \
                 + len(_leg_vals) * item_dim[1] \
@@ -807,8 +891,8 @@ class Layout(BaseLayout):
             self.ul['legend'] = \
                 dict(x=1,
                      y=1,
-                     xanchor='right',
-                     yanchor='top',
+                     xref='container',
+                     xanchor='left',
                      traceorder='normal',
                      title=dict(text=self.legend.text,
                                 font=dict(family=self.legend.font,
@@ -821,7 +905,8 @@ class Layout(BaseLayout):
                      ),
                      bgcolor=self.legend.fill_color[0],
                      bordercolor=self.legend.edge_color[0],
-                     borderwidth=self.legend.edge_width
+                     borderwidth=self.legend.edge_width,
+                     itemwidth=self.legend.itemwidth
                      )
 
     def add_text(self, ir: int, ic: int, text: [str, None] = None,
@@ -948,7 +1033,6 @@ class Layout(BaseLayout):
             temp: first fig size calc is a dummy calc to get a rough size; don't resize user parameters
             kwargs: user-defined keyword args
         """
-        # SKIPPING A LOT FROM MPL, CONSIDER REUSING
         self.box_labels = sum(self.box_group_label.heights)
         self.box_labels -= self.box_group_label.edge_width * self.box_group_label.size_all['ii'].max() \
             if len(self.box_group_label.size_all) > 0 else 0
@@ -958,16 +1042,16 @@ class Layout(BaseLayout):
             self.box_labels -= 1
         self.box_labels = np.round(self.box_labels)
 
-        self.box_title = 0
+        self.box_title = 0  # not sure!
         if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
             self.box_title = self.box_group_title.size[0] + self.ws_ax_box_title
         elif self.box_group_title.on and self.box_group_title.size != [0, 0] and \
                 self.box_group_title.size[0] > self.legend.size[0]:
             self.box_title = self.box_group_title.size[0] - self.legend.size[0]  # + self.ws_ax_box_title
 
-        # Adjust the column and row whitespace
-        if self.cbar.on and utl.kwget(kwargs, self.fcpp, 'ws_col', -999) == -999 and not self.cbar.shared:
-            self.ws_col = 0
+        # # Adjust the column and row whitespace
+        # if self.cbar.on and utl.kwget(kwargs, self.fcpp, 'ws_col', -999) == -999 and not self.cbar.shared:
+        #     self.ws_col = 0
 
         if self.nrow == 1:
             self.ws_row = 0
@@ -1307,9 +1391,52 @@ class Layout(BaseLayout):
             reference to the contour plot object
             reference to the colorbar object
         """
+        # Convert data type
+        xx = np.array(df[x])
+        yy = np.array(df[y])
+        zz = np.array(df[z])
+
+        # Make the grid
+        xi = np.linspace(min(xx), max(xx))
+        yi = np.linspace(min(yy), max(yy))
+        zi = scipy.interpolate.griddata((xx, yy), zz, (xi[None, :], yi[:, None]), method=self.contour.interp)
+
+        # Deal with out of range values
+        zi = np.clip(zi, data.ranges['zmin'][ir, ic], data.ranges['zmax'][ir, ic])
+
+        # Set the contours
+        levels = np.linspace(data.ranges['zmin'][ir, ic] * 0.999, data.ranges['zmax'][ir, ic] * 1.001,
+                             self.contour.levels)
+
+        # Make the plot
+        self.axes.obj[ir, ic] += [go.Contour(z=zi,
+                                              x=xi,
+                                              y=yi,
+                                              ncontours=self.contour.levels,
+                                              contours_coloring='fill' if self.contour.filled else 'lines',
+                                              showscale=self.cbar.on,
+                                              line_width=self.contour.width[0]
+                                              )]
+
+        if self.contour.show_points:
+            mls = dict(marker_symbol=self.markers.type[0],
+                       marker_size=self.markers.size[0],
+                       marker_color=self.markers.fill_color[0],
+                       marker=dict(line=dict(color=self.markers.edge_color[0],
+                                             width=self.markers.edge_width[0])),
+                       )
+            self.axes.obj[ir, ic] += [go.Scatter(x=xx,
+                                                 y=yy,
+                                                 mode='markers',
+                                                 **mls
+                                                 )]
+
+        return self.axes.obj, None
+
 
     def plot_gantt(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str, y: str,
-                   leg_name: str, yvals: list, ngroups: int):
+                   leg_name: str, xvals: npt.NDArray, yvals: list, bar_labels: list, ngroups: int,
+                   data: 'Data'):
         """Plot gantt graph.
 
         Args:
@@ -1323,8 +1450,31 @@ class Layout(BaseLayout):
             yvals: list of tuples of groupling column values
             ngroups: total number of groups in the full data set based on
                 data.get_plot_data
-
         """
+        # Plot the bars
+        raise NotImplementedError("gantt chart not implemented yet")
+        for ii, (irow, row) in enumerate(df.iterrows()):
+            if leg_name is not None:
+                yi = yvals.index((row[y], leg_name))
+            else:
+                yi = yvals.index((row[y],))
+
+            edgecolor = self.gantt.edge_color[(iline, leg_name)]
+            fillcolor = self.gantt.fill_color[(iline, leg_name)]
+
+            marker = dict(color=fillcolor,
+                          opacity=self.gantt.fill_alpha,
+                          line_color=self.gantt.edge_color[iline],
+                          line_width=self.gantt.edge_width,
+                          )
+            self.axes.obj[ir, ic] += [go.Bar(x=[(row[x[0]], (row[x[1]] - row[x[0]]).total_seconds())],
+                                             y=[(yi - self.gantt.height / 2, self.gantt.height)],
+                                             orientation='h',
+                                             marker=marker,
+                                             name=leg_name,
+                                             showlegend=True if self.legend._on else False,
+                                             )]
+
 
     def plot_heatmap(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str,
                      z: str, data: 'data.Data') -> 'MPL_imshow_object':  # noqa: F821
@@ -1836,6 +1986,8 @@ class Layout(BaseLayout):
                 show = True
             if ax == 'y' and (self.axes.spine_left or self.axes.spine_right):
                 show = True
+            if self.axes.edge_width == 0:
+                show=False
             self.ul[f'{ax}axis_style'] = dict(showline=show, linecolor=self.axes.edge_color[0],
                                               linewidth=self.axes.edge_width, mirror=True)
 
@@ -1918,6 +2070,9 @@ class Layout(BaseLayout):
             ranges: min/max axes limits for each axis
 
         """
+        if len(ranges) == 0:
+            return
+
         # primary x
         if str(self.axes.scale).lower() in LOGX:
             self.ul['xaxis_range'][ir, ic] = \
@@ -1978,11 +2133,12 @@ class Layout(BaseLayout):
                 lab = self.label_row.values[ir]
 
             # Set the label position (left, right, top, bottom)
+            x0 = 1 + (self.axes.edge_width + self.label_row.edge_width + self.ws_label_row) / self.axes.size[0]
             self.label_row.position = [
-                1 + (self.axes.edge_width + self.ws_label_row) / self.axes.size[0],
-                1 + (self.axes.edge_width + self.ws_label_row + self.label_row.size[0]) / self.axes.size[0],
-                -(self.axes.edge_width) / (self.axes.size[1] / self.wh_ratio),
-                1 + (self.axes.edge_width) / (self.axes.size[1] / self.wh_ratio),
+                x0,
+                x0 + (self.label_row.size[0] + self.label_row.edge_width) / self.axes.size[0],
+                -(self.axes.edge_width - self.label_row.edge_width / 2) / (self.axes.size[1] / self.wh_ratio),
+                1 + (self.axes.edge_width - self.label_row.edge_width / 2) / (self.axes.size[1] / self.wh_ratio),
             ]
 
             # Make the label
@@ -2067,17 +2223,11 @@ class Layout(BaseLayout):
         # Update the title position
         self.ul['title']['x'] = 0.5
         self.ul['title']['y'] = 1 - (self._top - self.ws_title_ax - self.title.font_size / 2) / self.fig.size[1]
-            # 1 - ((self.modebar.size[0] * (self.modebar.visible and self.modebar.orientation == 'h')) + \
-            #     self.title.font_size / 2) / self.fig.size[1]
 
         # Adjust the legend position (only for outside of plot right now)
-        if self.legend.on and self.legend.position == 0:
-            leg_x = (self._labtick_y2 + self.ws_ax_leg + self.axes.edge_width - 5) / self.axes.size[0]
-            self.ul['legend']['x'] = 1 + leg_x  # spacing of 5px exists by default
-            self.ul['legend']['y'] = \
-                self.fig.obj['layout']['yaxis']['domain'][1] + self.axes.edge_width / fig_y
-            self.ul['legend']['itemwidth'] = 30
-            self.fig.obj.update_layout(legend=self.ul['legend'], legend_tracegroupgap=0)
+        if self.legend.on and self.legend.location == 0:
+            self.ul['legend']['x'] = 1 - (self.ws_leg_fig + self.legend.size[0]) /  self.fig.size[0]
+            self.fig.obj.update_layout(legend=self.ul['legend'])
 
         # Update the x/y axes
         for ax in data.axs_on:
@@ -2170,25 +2320,12 @@ class Layout(BaseLayout):
                                    width=self.fig.size[0],
                                    **axis_labels,
                                    )
-        self.fig.obj['layout']['xaxis']['automargin'] = True
 
         # Set the axes positions
-        fig_x = self.fig.size[0] - self._margin_left - self._right
-        fig_y = self.fig.size[1] - self.fig.obj['layout']['margin']['t'] - self.fig.obj['layout']['margin']['b']
         for ir, ic in np.ndindex(self.axes.obj.shape):
-            self.fig.obj.update_xaxes(row=ir + 1, col=ic + 1, domain=[
-                # left edge
-                ((self.ws_col + self.axes.size[0] + 2 * self.axes.edge_width) * ic) / fig_x,
-                # right edge
-                ((self.ws_col + self.axes.size[0] + 2 * self.axes.edge_width) * ic + self.axes.size[0]) / fig_x,
-            ])
-            self.fig.obj.update_yaxes(row=ir + 1, col=ic + 1, domain=[
-                # bottom edge
-                1 - ((self.ws_row + self.axes.size[1] + 2 * self.axes.edge_width) * ir + self.axes.size[1] +
-                     self.axes.edge_width) / fig_y,
-                # top edge
-                1 - ((self.ws_row + self.axes.size[1] + 2 * self.axes.edge_width) * ir + self.axes.edge_width) / fig_y,
-            ])
+            x0, x1, y0, y1 = self._axes_domain(ir, ic)
+            self.fig.obj.update_xaxes(row=ir + 1, col=ic + 1, domain=[x0, x1])
+            self.fig.obj.update_yaxes(row=ir + 1, col=ic + 1, domain=[y0, y1])
 
         # Update the plot labels
         if self.axes.twin_x:
@@ -2322,14 +2459,6 @@ class Layout(BaseLayout):
 
     def update_markers(self):
         """Update the marker list to valid option for new engine."""
-        # db()
-        # if 'marker_type' in self.kwargs.keys():
-        #     marker_list = self.kwargs['marker_type']
-        # elif self.kwargs.get('markers') not in [None, True]:
-        #     marker_list = utl.validate_list(self.kwargs.get('markers'))
-        # else:
-        #     marker_list = utl.validate_list(DEFAULT_MARKERS)
-        # self.markers.type = RepeatedList(marker_list, 'markers')
         mm = {'o': 'circle',
               '+': 'cross',
               's': 'square',

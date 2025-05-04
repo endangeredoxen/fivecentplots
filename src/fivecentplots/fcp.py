@@ -977,7 +977,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                 dividers += [irow + 0.5]
 
             # Plot points
-            if not layout.violin.on:
+            if not (layout.violin.on and not layout.violin.markers):
                 if isinstance(dd.legend_vals, pd.DataFrame):
                     for jj, jrow in dd.legend_vals.iterrows():
                         points = gg.loc[gg[dd.legend] == jrow['names']][dd.y].dropna()
