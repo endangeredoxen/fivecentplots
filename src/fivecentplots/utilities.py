@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Any, Union, Tuple, Dict, List
 from . import data
 import numpy.typing as npt
-from PIL import ImageFont
+from PIL import ImageFont, Image, ImageDraw
 try:
     import cv2  # required for testing
 except (ImportError, ModuleNotFoundError):
@@ -317,6 +317,16 @@ def dfkwarg(args: tuple, kwargs: dict, plotter: object) -> dict:
                                  'which describe the requirement for 2D, 3D, or 4D image array shapes'
                                  f'\n{doc_url(plotter.url)}')
         kwargs['df'] = args
+        return kwargs
+    elif (isinstance(args, np.ndarray) and (len(args.shape) == 2 or len(args.shape) == 3)) or \
+            (isinstance(args, list) and (len(args) == 2 or len(args) == 3)) \
+            and len(args[0]) == len(args[1]) and len(args[0]) == len(args[-1]) and plotter.name in ['xy']:
+        if len(args) == 3:
+            kwargs['df'] = pd.DataFrame({'x': args[0], 'y': args[1], 'groups': args[2]})
+        else:
+            kwargs['df'] = pd.DataFrame({'x': args[0], 'y': args[1]})
+        kwargs['x'] = 'x'
+        kwargs['y'] = 'y'
         return kwargs
     else:
         raise data.DataError('Data source has invalid data type!  '
@@ -748,8 +758,8 @@ def get_repeating_decimal_end(value: float) -> int:
     return 0, ''
 
 
-def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, font_weight: str,
-                        dpi: int = 100, **kwargs) -> tuple:
+def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, font_weight: str, rotation: float = 0,
+                        dpi: int = 100, ignore_html: bool = True, show=False, **kwargs) -> tuple:
     """Use pillow to try and figure out actual dimensions of text.
 
     Args:
@@ -758,8 +768,9 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
         font_size: font size
         font_style: normal vs italic
         font_weight: normal vs bold
+        rotation: text rotation
         dpi: dots per inch, mpl uses px for font and pillow uses pt so need to convert
-        kwargs: in place to
+        ignore_html: strip html tags
 
     Returns:
         size tuple
@@ -777,9 +788,28 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
     fp.set_weight(font_weight)
     fontfile = findfont(fp, fallback_to_default=True)
     font = ImageFont.truetype(fontfile, int(np.ceil(font_size * dpi / 72)))
+
+    if ignore_html:
+        text = strip_html(text)
+
     size = font.getbbox(text)[2:]
 
-    return size
+    if rotation != 0:
+        w = size[0] * np.abs(np.cos(rotation * np.pi / 180)) \
+            + size[1] * np.abs(np.sin(rotation * np.pi / 180))
+        h = size[1] * np.abs(np.cos(rotation * np.pi / 180)) \
+            + size[0] * np.abs(np.sin(rotation * np.pi / 180))
+    else:
+        w, h = size
+
+    if show:
+        image = Image.new('RGB', (w, h), color='white')
+        draw = ImageDraw.Draw(image)
+        draw.text((0, 0), text, font=font, fill='black')
+        image.save("utl_font_size.png")
+        show_file("utl_font_size.png")
+
+    return w, h
 
 
 def kwget(dict1: dict, dict2: dict, vals: [str, list], default: [list, dict]):

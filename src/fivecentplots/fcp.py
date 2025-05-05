@@ -977,15 +977,16 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                 dividers += [irow + 0.5]
 
             # Plot points
-            if isinstance(dd.legend_vals, pd.DataFrame):
-                for jj, jrow in dd.legend_vals.iterrows():
-                    temp = gg.loc[gg[dd.legend] == jrow['names']][dd.y].dropna()
-                    temp['x'] = irow + 1
+            if not (layout.violin.on and not layout.violin.markers):
+                if isinstance(dd.legend_vals, pd.DataFrame):
+                    for jj, jrow in dd.legend_vals.iterrows():
+                        points = gg.loc[gg[dd.legend] == jrow['names']][dd.y].dropna()
+                        points['x'] = irow + 1
+                        if len(points) > 0:
+                            layout.plot_xy(ir, ic, jj, points, 'x', dd.y[0], jrow['names'], False, zorder=10)
+                else:
                     if len(temp) > 0:
-                        layout.plot_xy(ir, ic, jj, temp, 'x', dd.y[0], jrow['names'], False, zorder=10)
-            else:
-                if len(temp) > 0:
-                    layout.plot_xy(ir, ic, irow, temp, 'x', dd.y[0], None, False, zorder=10)
+                        layout.plot_xy(ir, ic, irow, temp, 'x', dd.y[0], None, False, zorder=10)
 
             # plot mean diamonds
             if layout.box_mean_diamonds.on:
@@ -1098,9 +1099,12 @@ def plot_control_limit(ir: int, ic: int, iline: int, layout: 'engines.Layout', d
     """Add control limit shading to a plot.
 
     Args:
-
+        ir (int): current subplot row number
+        ic (int): current subplot column number
+        iline (int): iterator
+        layout (obj): layout object
+        data (obj): Data object
     """
-
     x = [data.ranges['xmin'][ir, ic], data.ranges['xmax'][ir, ic]]
     if layout.lcl.on:
         if layout.ucl.on and layout.control_limit_side == 'inside':
@@ -1187,10 +1191,10 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
         if coeffs[-1] > 0:
             eqn += '+'
         eqn += f'{round(coeffs[-1], 3)}'
-        layout.add_text(ir, ic, eqn, 'fit')
+        layout.add_text(ir, ic, eqn, 'fit', position_index=0)
 
     if layout.fit.rsq:
-        layout.add_text(ir, ic, f'R^2={round(rsq, 4)}', 'fit')
+        layout.add_text(ir, ic, f'R^2={round(rsq, 4)}', 'fit', position_index=1)
 
     return data
 

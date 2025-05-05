@@ -14,6 +14,7 @@ ax_edge_left
 ax_edge_right
 ax_edge_top
 ax_edge_width
+ax_fill_color
 ax_hlines
 ax_hlines_by_plot
 ax_hlines_zorder
@@ -26,8 +27,10 @@ ax_vlines_zorder
 ax_zorder
 bar
 bar_align
+bar_edge_color
 bar_edge_width
 bar_error_bars
+bar_fill_color
 bar_height
 bar_horizontal
 bar_rolling
@@ -38,6 +41,8 @@ bar_style
 bar_width
 bar_zorder
 bars
+binary
+binary_string
 bins
 box
 box_alpha
@@ -70,6 +75,7 @@ box_group_label_alpha
 box_group_label_edge_alpha
 box_group_label_edge_width
 box_group_label_fill_alpha
+box_group_label_fill_color
 box_group_label_height
 box_group_label_style
 box_group_label_width
@@ -144,7 +150,9 @@ box_width
 box_zorder
 business_days
 cbar
+cbar_edge_color
 cbar_edge_width
+cbar_fill_color
 cbar_shared
 cbar_size
 cbar_style
@@ -205,10 +213,9 @@ error_bars
 error_color
 explode
 fig
-fig_alpha
-fig_edge_alpha
+fig_edge_color
 fig_edge_width
-fig_fill_alpha
+fig_fill_color
 fig_groups
 fig_style
 fig_zorder
@@ -285,7 +292,9 @@ gantt_label_box_padding_x
 gantt_label_boxes
 gantt_label_coord
 gantt_label_coordinate
+gantt_label_edge_color
 gantt_label_edge_width
+gantt_label_fill_color
 gantt_label_font
 gantt_label_font_size
 gantt_label_font_style
@@ -357,7 +366,9 @@ gantt_workstreams_font_style
 gantt_workstreams_font_weight
 gantt_workstreams_highlight_row
 gantt_workstreams_label_align
+gantt_workstreams_label_edge_color
 gantt_workstreams_label_edge_style
+gantt_workstreams_label_fill_color
 gantt_workstreams_label_font_size
 gantt_workstreams_label_font_style
 gantt_workstreams_label_font_weight
@@ -545,8 +556,6 @@ heatmap_zorder
 hist_align
 hist_bins
 hist_cumulative
-hist_edge_width
-hist_fill_alpha
 hist_horizontal
 hist_kde
 hist_normalize
@@ -558,9 +567,6 @@ ignore_dates
 imgs
 imshow
 imshow_alpha
-imshow_edge_alpha
-imshow_edge_width
-imshow_fill_alpha
 imshow_interp
 imshow_style
 imshow_zorder
@@ -575,6 +581,7 @@ label_boxes
 label_col_edge_alpha
 label_col_edge_style
 label_col_edge_width
+label_col_fill_color
 label_col_font_size
 label_col_on
 label_col_padding
@@ -584,6 +591,7 @@ label_distance
 label_edge_style
 label_edge_width
 label_fill_alpha
+label_fill_color
 label_font_size
 label_font_style
 label_font_weight
@@ -609,6 +617,7 @@ label_rc_zorder
 label_row_edge_alpha
 label_row_edge_style
 label_row_edge_width
+label_row_fill_color
 label_row_font_size
 label_row_on
 label_row_padding
@@ -719,6 +728,7 @@ legend_fill_alpha
 legend_fill_color
 legend_font
 legend_font_size
+legend_itemwidth
 legend_location
 legend_marker_alpha
 legend_marker_size
@@ -776,6 +786,19 @@ milestone_text_font_weight
 milestone_text_rotation
 milestone_text_units
 milestones
+modebar
+modebar_edge_color
+modebar_edge_width
+modebar_fill_color
+modebar_logo
+modebar_on
+modebar_orientation
+modebar_remove_buttons
+modebar_rotation
+modebar_style
+modebar_visible
+modebar_width
+modebar_zorder
 ncol
 nleg
 normalize
@@ -1172,12 +1195,14 @@ ticks_direction
 ticks_edge_alpha
 ticks_edge_width
 ticks_fill_alpha
+ticks_fill_color
 ticks_increment
 ticks_length
 ticks_major
 ticks_major_alpha
 ticks_major_direction
 ticks_major_fill_alpha
+ticks_major_fill_color
 ticks_major_increment
 ticks_major_length
 ticks_major_rotation
@@ -1187,6 +1212,7 @@ ticks_major_x2
 ticks_major_x2_alpha
 ticks_major_x2_direction
 ticks_major_x2_fill_alpha
+ticks_major_x2_fill_color
 ticks_major_x2_increment
 ticks_major_x2_length
 ticks_major_x2_rotation
@@ -1195,6 +1221,7 @@ ticks_major_x2_zorder
 ticks_major_x_alpha
 ticks_major_x_direction
 ticks_major_x_fill_alpha
+ticks_major_x_fill_color
 ticks_major_x_increment
 ticks_major_x_length
 ticks_major_x_rotation
@@ -1205,6 +1232,7 @@ ticks_major_y2
 ticks_major_y2_alpha
 ticks_major_y2_direction
 ticks_major_y2_fill_alpha
+ticks_major_y2_fill_color
 ticks_major_y2_increment
 ticks_major_y2_length
 ticks_major_y2_rotation
@@ -1213,6 +1241,7 @@ ticks_major_y2_zorder
 ticks_major_y_alpha
 ticks_major_y_direction
 ticks_major_y_fill_alpha
+ticks_major_y_fill_color
 ticks_major_y_increment
 ticks_major_y_length
 ticks_major_y_rotation
@@ -1222,6 +1251,7 @@ ticks_major_z
 ticks_major_z_alpha
 ticks_major_z_direction
 ticks_major_z_fill_alpha
+ticks_major_z_fill_color
 ticks_major_z_increment
 ticks_major_z_length
 ticks_major_z_rotation
@@ -1232,6 +1262,7 @@ ticks_minor
 ticks_minor_alpha
 ticks_minor_direction
 ticks_minor_fill_alpha
+ticks_minor_fill_color
 ticks_minor_length
 ticks_minor_number
 ticks_minor_rotation
@@ -1241,6 +1272,7 @@ ticks_minor_x2
 ticks_minor_x2_alpha
 ticks_minor_x2_direction
 ticks_minor_x2_fill_alpha
+ticks_minor_x2_fill_color
 ticks_minor_x2_length
 ticks_minor_x2_number
 ticks_minor_x2_rotation
@@ -1249,6 +1281,7 @@ ticks_minor_x2_zorder
 ticks_minor_x_alpha
 ticks_minor_x_direction
 ticks_minor_x_fill_alpha
+ticks_minor_x_fill_color
 ticks_minor_x_length
 ticks_minor_x_number
 ticks_minor_x_rotation
@@ -1259,6 +1292,7 @@ ticks_minor_y2
 ticks_minor_y2_alpha
 ticks_minor_y2_direction
 ticks_minor_y2_fill_alpha
+ticks_minor_y2_fill_color
 ticks_minor_y2_length
 ticks_minor_y2_number
 ticks_minor_y2_rotation
@@ -1267,6 +1301,7 @@ ticks_minor_y2_zorder
 ticks_minor_y_alpha
 ticks_minor_y_direction
 ticks_minor_y_fill_alpha
+ticks_minor_y_fill_color
 ticks_minor_y_length
 ticks_minor_y_number
 ticks_minor_y_rotation
@@ -1276,6 +1311,7 @@ ticks_minor_z
 ticks_minor_z_alpha
 ticks_minor_z_direction
 ticks_minor_z_fill_alpha
+ticks_minor_z_fill_color
 ticks_minor_z_length
 ticks_minor_z_number
 ticks_minor_z_rotation
@@ -1292,6 +1328,7 @@ ticks_x2_direction
 ticks_x2_edge_alpha
 ticks_x2_edge_width
 ticks_x2_fill_alpha
+ticks_x2_fill_color
 ticks_x2_increment
 ticks_x2_length
 ticks_x2_number
@@ -1303,6 +1340,7 @@ ticks_x_direction
 ticks_x_edge_alpha
 ticks_x_edge_width
 ticks_x_fill_alpha
+ticks_x_fill_color
 ticks_x_increment
 ticks_x_length
 ticks_x_number
@@ -1316,6 +1354,7 @@ ticks_y2_direction
 ticks_y2_edge_alpha
 ticks_y2_edge_width
 ticks_y2_fill_alpha
+ticks_y2_fill_color
 ticks_y2_increment
 ticks_y2_length
 ticks_y2_number
@@ -1327,6 +1366,7 @@ ticks_y_direction
 ticks_y_edge_alpha
 ticks_y_edge_width
 ticks_y_fill_alpha
+ticks_y_fill_color
 ticks_y_increment
 ticks_y_length
 ticks_y_number
@@ -1339,6 +1379,7 @@ ticks_z_direction
 ticks_z_edge_alpha
 ticks_z_edge_width
 ticks_z_fill_alpha
+ticks_z_fill_color
 ticks_z_increment
 ticks_z_length
 ticks_z_number
@@ -1408,6 +1449,9 @@ today_text
 today_units
 toolbar
 toolbar_active_zoom
+toolbar_edge_color
+toolbar_edge_width
+toolbar_fill_color
 toolbar_edge_width
 toolbar_location
 toolbar_rotation
@@ -1461,7 +1505,9 @@ width
 workstream_brackets
 workstreams
 workstreams_highlight_row
+workstreams_label_edge_color
 workstreams_label_edge_style
+workstreams_label_fill_color
 workstreams_label_font_size
 workstreams_label_font_style
 workstreams_label_font_weight

@@ -911,7 +911,8 @@ class Layout(BaseLayout):
                     vals = range(plot_num * lines_per_plot, plot_num * lines_per_plot + lines_per_plot)
                     for ival in vals:
                         if ival < len(ll.values):
-                            line = func(ll.values[ival], color=ll.color[ival],
+                            line = func(ll.values[ival],
+                                        color=ll.color[ival],
                                         linestyle=ll.style[ival],
                                         linewidth=ll.width[ival],
                                         zorder=ll.zorder)
@@ -923,7 +924,8 @@ class Layout(BaseLayout):
                     for ival, val in enumerate(ll.values):
                         if isinstance(val, str) and isinstance(df, pd.DataFrame):
                             val = df[val].iloc[0]
-                        line = func(val, color=ll.color[ival],
+                        line = func(val,
+                                    color=ll.color[ival],
                                     linestyle=ll.style[ival],
                                     linewidth=ll.width[ival],
                                     zorder=ll.zorder)
@@ -1076,7 +1078,8 @@ class Layout(BaseLayout):
                     and isinstance(self.legend.values, pd.DataFrame) \
                     and isinstance(leg_vals, pd.DataFrame) \
                     and not np.array_equal(self.legend.values['Key'].values, leg_vals['names'].values):
-                leg_vals = self.legend.values.set_index('Key').loc[leg_vals['names']].reset_index()
+                leg_vals['names'] = leg_vals['names'].map(str)
+                leg_vals = self.legend.values.set_index('Key').loc[leg_vals['names'].values].reset_index()
             else:
                 leg_vals = self.legend.values
 
@@ -1575,7 +1578,7 @@ class Layout(BaseLayout):
                     sub[row_top] = sub[row_top].astype(np.float32)
                     sub[row_bot] = sub[row_bot].astype(np.float32)
 
-                    # Get the  if row_bot labels can fit in row_top width
+                    # Determine the if row_bot labels can fit in row_top width
                     sub['group'] = sub[row_bot].ne(sub[row_bot].shift()).cumsum()
                     sub.loc[sub['group'] % 2 == 1, 'group'] += 1
                     sub['cumsum'] = sub.groupby('group')[row_top].cumsum()
@@ -3327,8 +3330,8 @@ class Layout(BaseLayout):
 
         # Add a reference to the line to self.lines
         if leg_name is not None:
-            if leg_name is not None and leg_name not in list(self.legend.values['Key']):
-                self.legend.add_value(leg_name, points if points is not None else lines, line_type_name)
+            if leg_name is not None and str(leg_name) not in list(self.legend.values['Key']):
+                self.legend.add_value(str(leg_name), points if points is not None else lines, line_type_name)
 
     def save(self, filename: str, idx: int = 0):
         """Save a plot window.
@@ -4329,6 +4332,13 @@ class Layout(BaseLayout):
                     self.label_col.obj_bg[ir, ic].set_width(self.axes.size[0] / self.fig.size[0])
                     center_new = self.label_col.obj_bg[ir, ic].get_width() / 2 + self.label_col.obj_bg[ir, ic].get_x()
                     self.label_col.obj[ir, ic].set_x(center_new)
+
+                # Wrap labels
+                if self.label_wrap.obj_bg[ir, ic] is not None:
+                    self.label_wrap.obj_bg[ir, ic].set_x(ax0)
+                    self.label_wrap.obj_bg[ir, ic].set_width(self.axes.size[0] / self.fig.size[0])
+                    center_new = self.label_wrap.obj_bg[ir, ic].get_width() / 2 + self.label_wrap.obj_bg[ir, ic].get_x()
+                    self.label_wrap.obj[ir, ic].set_x(center_new)
 
             # Adjust title_wrap
             if self.label_wrap.obj_bg[0, 0] is not None and self.title_wrap.obj_bg is not None:

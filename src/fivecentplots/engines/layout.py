@@ -633,7 +633,8 @@ class BaseLayout:
 
         # Other boxplot elements
         self.violin = Element('violin', self.fcpp, kwargs,
-                              on=utl.kwget(kwargs, self.fcpp, ['box_violin', 'violin'], kwargs.get('violin', False)),
+                              on=utl.kwget(kwargs, self.fcpp, ['box_violin', 'violin', 'violins'],
+                                           kwargs.get('violin', False)),
                               box_color=utl.kwget(kwargs, self.fcpp, 'violin_box_color', '#555555'),
                               box_on=utl.kwget(kwargs, self.fcpp, 'violin_box_on', True),
                               edge_color=utl.kwget(kwargs, self.fcpp, 'violin_edge_color', '#aaaaaa'),
@@ -1302,7 +1303,7 @@ class BaseLayout:
                     edge_width=utl.kwget(kwargs, self.fcpp, ['gantt_today_edge_width', 'today_edge_width'], 0),
                     fill_color=utl.kwget(kwargs, self.fcpp, ['gantt_today_fill_color', 'today_fill_color'],
                                          '#555555'),
-                    font=utl.kwget(kwargs, self.fcpp, ['gantt_today_font', 'today_font'], 'sans-serif'),
+                    font=utl.kwget(kwargs, self.fcpp, ['gantt_today_font', 'today_font'], 'Arial'),
                     font_color=utl.kwget(kwargs, self.fcpp, ['gantt_today_font_color', 'today_font_color'], '#ffffff'),
                     font_size=utl.kwget(kwargs, self.fcpp, ['gantt_today_font_size', 'today_font_size'], 13),
                     font_style=utl.kwget(kwargs, self.fcpp,
@@ -1602,7 +1603,6 @@ class BaseLayout:
                               interp=utl.kwget(kwargs, self.fcpp, ['imshow_interp', 'interp'],
                                                kwargs.get('interp', 'none')),
                               )
-
         # unless the color map is explicity defined in kwargs or self.fcpp,
         # override the inferno default for imshow
         if self.imshow.on and not utl.kwget(kwargs, self.fcpp, 'cmap', None):
@@ -1736,7 +1736,7 @@ class BaseLayout:
                                      edge_width=utl.kwget(kwargs, self.fcpp, 'legend_edge_width', 1),
                                      fill_alpha=utl.kwget(kwargs, self.fcpp, 'legend_fill_alpha', 1),
                                      fill_color=utl.kwget(kwargs, self.fcpp, 'legend_fill_color', '#ffffff'),
-                                     font=utl.kwget(kwargs, self.fcpp, 'legend_font', 'sans-serif'),
+                                     font=utl.kwget(kwargs, self.fcpp, 'legend_font', 'Arial'),
                                      font_size=utl.kwget(kwargs, self.fcpp, 'legend_font_size', 12),
                                      location=LEGEND_LOCATION[utl.kwget(kwargs, self.fcpp, 'legend_location', 0)],
                                      marker_alpha=utl.kwget(kwargs, self.fcpp, 'legend_marker_alpha', 1),
@@ -2007,11 +2007,13 @@ class BaseLayout:
 
         # Allow inversion of some kwargs names for convenience but map back to standardized names
         names = ['wrap_title', 'wrap_label', 'row_label', 'col_label']
+        new_kwargs = {}
         for name in names:
             for k, v in kwargs.items():
                 if name in k:
                     inverted = k.split('_')
-                    kwargs[k.replace(name, f'{inverted[1]}_{inverted[0]}')] = v
+                    new_kwargs[k.replace(name, f'{inverted[1]}_{inverted[0]}')] = v
+        kwargs.update(new_kwargs)
 
         # Row and column labels
         self.label_row = copy.deepcopy(label_rc)
@@ -2044,6 +2046,12 @@ class BaseLayout:
         self.label_col.padding = utl.kwget(kwargs, self.fcpp, 'label_col_padding', label_rc.padding)
         self.label_col.values_only = utl.kwget(kwargs, self.fcpp, 'label_col_values_only', label_rc.values_only)
         self.label_col.size = [self.axes.size[0], utl.kwget(kwargs, self.fcpp, 'label_col_size', label_rc._size)]
+
+        repeated = ['edge_color', 'fill_color']
+        for label in ['label_row', 'label_col']:
+            for rep in repeated:
+                if 'RepeatedList' not in str(type(getattr(getattr(self, label), rep))):
+                    setattr(getattr(self, label), rep, RepeatedList(getattr(getattr(self, label), rep), rep))
 
         # Wrap label
         self.label_wrap = DF_Element('label_wrap', self.fcpp, kwargs,
@@ -2137,7 +2145,7 @@ class BaseLayout:
                                                     'text_fill_color', 'none'),
                                                     'text_fill_color'),
                             font=RepeatedList(utl.kwget(kwargs, self.fcpp,
-                                              'text_font', 'sans-serif'), 'text_font'),
+                                              'text_font', 'Arial'), 'text_font'),
                             font_color=RepeatedList(utl.kwget(kwargs, self.fcpp,
                                                     'text_font_color', '#000000'),
                                                     'text_font_color'),
@@ -2218,7 +2226,7 @@ class BaseLayout:
                     and not kwargs.get('tick_labels_major_fill_alpha', None)
                     and not kwargs.get('tick_labels_major_fill_color', None)
                     else 1,
-                    font=utl.kwget(kwargs, self.fcpp, 'tick_labels_font', 'sans-serif'),
+                    font=utl.kwget(kwargs, self.fcpp, 'tick_labels_font', 'Arial'),
                     font_size=utl.kwget(kwargs, self.fcpp, 'tick_labels_font_size', 13),
                     offset=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_offset', False),
                     padding=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_padding', 2),
@@ -2669,7 +2677,7 @@ class BaseLayout:
     def add_label(self, ir: int, ic: int, text: str = '', position: [tuple, None] = None,
                   rotation: int = 0, size: [list, None] = None,
                   fill_color: str = '#ffffff', edge_color: str = '#aaaaaa',
-                  edge_width: int = 1, font: str = 'sans-serif', font_weight: str = 'normal',
+                  edge_width: int = 1, font: str = 'Arial', font_weight: str = 'normal',
                   font_style: str = 'normal', font_color: str = '#666666', font_size: int = 14,
                   offset: bool = False, **kwargs) -> ['Text_Object', 'Rectangle_Object']:  # noqa: F821
         """Add a label to the plot.
@@ -2687,7 +2695,7 @@ class BaseLayout:
             fill_color: hex color code for label fill. Defaults to '#ffffff'.
             edge_color: hex color code for label edge. Defaults to '#aaaaaa'.
             edge_width: width of the label bounding box edge. Defaults to 1.
-            font: name of the font for the label. Defaults to 'sans-serif'.
+            font: name of the font for the label. Defaults to 'Arial'.
             font_weight: mpl font weight str ('normal', 'bold', etc.). Defaults to 'normal'.
             font_style: mpl font style str ('normal', 'italic', etc.). Defaults to 'normal'.
             font_color:  hex color code for label text. Defaults to '#666666'.
@@ -3082,6 +3090,29 @@ class BaseLayout:
 
 
 class Element:
+    _styles = {
+               'mpl': {
+                   'solid': '-',
+                   'dot': ':',
+                   'dash': '--',
+                   'longdash': (0, (10, 2)),
+                   'dashdot': '-.',
+                   'longdashdot': (0, (10, 2, 1, 2))
+               },
+               'plotly': {
+                   'solid': 'solid',
+                   '-': 'solid',
+                   'dot': 'dot',
+                   ':': 'dot',
+                   'dash': 'dash',
+                   '--': 'dash',
+                   'longdash': 'longdash',
+                   'dashdot': 'dashdot',
+                   '-.': 'dashdot',
+                   'longdashdot': 'longdashdot'
+               }
+             }
+
     def __init__(self, name: str = 'None', fcpp: dict = {}, others: dict = {},
                  obj: [None, 'ObjectArray'] = None, **kwargs):
         """Element object is a container for storing/accessing the attributes
@@ -3166,7 +3197,7 @@ class Element:
 
         # fonts
         if 'font' not in kwargs:
-            self.font = utl.kwget(kwargs, fcpp, f'{name}_font', kwargs.get('font', 'sans-serif'))
+            self.font = utl.kwget(kwargs, fcpp, f'{name}_font', kwargs.get('font', 'Arial'))
         else:
             self.font = kwargs['font']
         if 'font_color' not in kwargs:
@@ -3208,8 +3239,21 @@ class Element:
             self.style = utl.kwget(kwargs, fcpp, f'{name}_style', kwargs.get('style', '-'))
         else:
             self.style = kwargs['style']
-        if not isinstance(self.style, RepeatedList):
+        self.style = self._style_convert
+        if not isinstance(self.style, RepeatedList) and self.style is not None:
             self.style = RepeatedList(self.style, 'style')
+        if 'style2' in kwargs:
+            bkup_style = self.style
+            self.style = kwargs['style2']
+            kwargs['style2'] = self._style_convert
+            self.style = bkup_style
+            if not isinstance(kwargs['style2'], RepeatedList):
+                kwargs['style2'] = RepeatedList(kwargs['style2'], 'style2')
+        if 'edge_style' in kwargs:
+            bkup_style = self.style
+            self.style = kwargs['edge_style']
+            kwargs['edge_style'] = self._style_convert
+            self.style = bkup_style
 
         # overrides
         attrs = ['color', 'fill_color', 'edge_color']
@@ -3354,6 +3398,33 @@ class Element:
             return int(np.ceil(self._size[0])), int(np.ceil(self._size[1]))
         else:
             return [0, 0]
+
+    @property
+    def _style_convert(self):
+        """
+        Deal with engine differences for style names
+        """
+        if self.engine in self._styles:
+            # Using a known engine
+            if isinstance(self.style, list):
+                # List of style markers
+                for iss, ss in enumerate(self.style):
+                    if ss in self._styles[self.engine]:
+                        self.style[iss] = self._styles[self.engine][ss]
+                return self.style
+            elif isinstance(self.style, RepeatedList):
+                # List of style markers
+                for iss, ss in enumerate(self.style.values):
+                    if ss in self._styles[self.engine]:
+                        self.style.values[iss] = self._styles[self.engine][ss]
+                return self.style
+            elif self.style in self._styles[self.engine]:
+                # Single style marker
+                return self._styles[self.engine][self.style]
+            else:
+                return self.style
+        else:
+            return self.style
 
     @property
     def text(self):
@@ -3535,7 +3606,7 @@ class Legend_Element(DF_Element):
             curve: reference to curve obj (plotting engine specific)
             line_type_name: line type description
         """
-        temp = pd.DataFrame({'Key': key, 'Curve': curve, 'LineType': line_type_name},
+        temp = pd.DataFrame({'Key': str(key), 'Curve': curve, 'LineType': line_type_name},
                             index=[len(self._values)])
 
         # don't add duplicates - this could miss a case where the curve type is actually different
