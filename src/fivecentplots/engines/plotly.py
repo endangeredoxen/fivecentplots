@@ -203,8 +203,8 @@ class Layout(BaseLayout):
         self.legend.itemwidth = utl.kwget(kwargs, self.fcpp, 'legend_itemwidth', 30)
         self.modebar = Element('modebar', self.fcpp, kwargs,
                                on=utl.kwget(kwargs, self.fcpp, ['modebar', 'modebar_on'], True),
-                               fill_color=\
-                                   utl.kwget(kwargs, self.fcpp, ['modebar_bg_color', 'modebar_fill_color'], '#ffffff'),
+                               fill_color=utl.kwget(kwargs, self.fcpp, ['modebar_bg_color', 'modebar_fill_color'],
+                                                    '#ffffff'),
                                button_active_color=utl.kwget(kwargs, self.fcpp, 'modebar_button_active_color', None),
                                button_color=utl.kwget(kwargs, self.fcpp, 'modebar_button_color', None),
                                logo=utl.kwget(kwargs, self.fcpp, 'modebar_logo', False),
@@ -260,7 +260,7 @@ class Layout(BaseLayout):
     def _cbar_width(self) -> float:
         """
         """
-        return self.cbar.size[0] * 2  + self.ws_ax_cbar + self.ws_ax_fig
+        return self.cbar.size[0] * 2 + self.ws_ax_cbar + self.ws_ax_fig
 
     @property
     def _cbar_props(self) -> float:
@@ -355,7 +355,7 @@ class Layout(BaseLayout):
     def _legx(self) -> float:
         """Legend whitespace x if location == 0."""
         if self.legend.location == 0 and self.legend._on:
-            return self.legend.size[0]  + self.ws_ax_leg
+            return self.legend.size[0] + self.ws_ax_leg
         else:
             return 0
 
@@ -474,7 +474,7 @@ class Layout(BaseLayout):
             w_total += self.box_group_title.size[0]
 
         # Height with subplots
-        h_total = hh * self.nrow + self.ws_row * (self.nrow - 1)
+        # h_total = hh * self.nrow + self.ws_row * (self.nrow - 1)
 
         # left xaxis domain
         x0 = (ww + self.axes.edge_width + self.ws_col) * ic / w_total
@@ -516,7 +516,7 @@ class Layout(BaseLayout):
 
         # cbar
         if self.cbar.on:
-            right += self.cbar.size[0] * 2  + self.ws_ax_cbar # includes the ticks
+            right += self.cbar.size[0] * 2 + self.ws_ax_cbar  # includes the ticks
 
         # box title excess
         if self.box_group_title.on and (self.ws_ax_box_title + self.box_title) > \
@@ -626,7 +626,7 @@ class Layout(BaseLayout):
         self.box_group_title.obj_bg[ir, ic] = np.array([[None]] * num_cols)
 
         # Create the labels
-        t0 = -(self.axes.edge_width - self.box_group_label.edge_width / 2) / self.axes.size[1]
+        top0 = -(self.axes.edge_width - self.box_group_label.edge_width / 2) / self.axes.size[1]
         for ii in range(0, num_cols):
             k = num_cols - 1 - ii
             sub = data.changes[num_cols - 1 - ii][data.changes[num_cols - 1 - ii] == 1]
@@ -638,14 +638,13 @@ class Layout(BaseLayout):
                 # This array structure just makes one big list of all the labels
                 # can we use it with multiple groups or do we need to reshape??
                 # Probably need a 2D but that will mess up size_all indexing
-                l0 = 0.5
+                left0 = 0.5
                 for jj in range(0, len(sub)):
                     # set the width now since it is a factor of the axis size
                     if jj == len(sub) - 1:
                         width = len(data.changes) - sub.index[jj]
                     else:
                         width = sub.index[jj + 1] - sub.index[jj]
-                    #width = width * (self.axes.size[0]) / len(data.changes)
                     label = data.indices.loc[sub.index[jj], num_cols - 1 - ii]
                     if jj == 0:
                         self.box_group_label.size_label = \
@@ -654,12 +653,12 @@ class Layout(BaseLayout):
                                                     self.box_group_label.font_weight, dpi=self.dpi)
                         self.box_group_label.size = [np.ceil(width), self.box_group_label.height]
                         # auto height and width??
-                    l = l0
-                    r = l + width
-                    l0 = r
-                    t = t0
-                    b = t - self.box_group_label.height / self.axes.size[1]
-                    self.box_group_label.position = [l, r, t, b]
+                    left = left0
+                    right = left + width
+                    left0 = right
+                    top = top0
+                    bottom = top - self.box_group_label.height / self.axes.size[1]
+                    self.box_group_label.position = [left, right, top, bottom]
                     self.add_label(ir, ic, str(label), element=self.box_group_label)
                     if plot_num > 1:
                         pn = str(plot_num)
@@ -677,15 +676,15 @@ class Layout(BaseLayout):
                                             self.box_group_title.font_weight, dpi=self.dpi)
                 self.box_group_title.size[0] = max(self.box_group_title.size[0], box_group_title_size[0])
                 self.box_group_title.size[1] = max(self.box_group_title.size[1], box_group_title_size[1])
-                l = 1 + (self.axes.edge_width + 2) / self.axes.size[0]
-                r = l + (self.box_group_title.size[0] + self.box_group_title.padding) / self.axes.size[0]
-                t = t0
-                b = t - self.box_group_label.height / self.axes.size[1]
-                self.box_group_title.position = [l, r, t, b]
+                left = 1 + (self.axes.edge_width + 2) / self.axes.size[0]
+                right = left + (self.box_group_title.size[0] + self.box_group_title.padding) / self.axes.size[0]
+                top = top0
+                bottom = top - self.box_group_label.height / self.axes.size[1]
+                self.box_group_title.position = [left, right, top, bottom]
                 self.box_group_title.xanchor = 'left'
                 self.add_label(ir, ic, data.groups[k], element=self.box_group_title)
 
-            t0 = b
+            top0 = bottom
 
     def add_fills(self, ir: int, ic: int, df: pd.DataFrame, data: 'Data'):  # noqa: F821
         """Add rectangular fills to the plot.
@@ -844,7 +843,7 @@ class Layout(BaseLayout):
                 x = position[0]
             else:
                 x = (position[1] - position[0]) / 2 + position[0]
-            y = position[2] - (position[2] - position[3]) / 2 #+ size[1] / 2 / self.axes.size[1]
+            y = position[2] - (position[2] - position[3]) / 2
         self.fig.obj.add_annotation(font=_font, x=x, y=y,
                                     showarrow=False, text=text, textangle=rotation,
                                     xanchor=xanchor, yanchor=yanchor,
@@ -880,7 +879,7 @@ class Layout(BaseLayout):
             title_width = 2 + title_dim[0] * 0.88 + 2  # title font size shrinks for some reason
 
             # Set approximate legend size
-            self.legend.size[0] = max(item_width, title_width) + 2 * self.legend.edge_width #- self.axes.edge_width
+            self.legend.size[0] = max(item_width, title_width) + 2 * self.legend.edge_width
             self.legend.size[1] = \
                 (title_dim[1] if self.legend.text != '' else 0) \
                 + len(_leg_vals) * item_dim[1] \
@@ -944,8 +943,10 @@ class Layout(BaseLayout):
         xanchor = getattr(element, 'xanchor') if hasattr(element, 'xanchor') else 'center'
         yanchor = getattr(element, 'yanchor') if hasattr(element, 'yanchor') else 'middle'
 
-        # Get the position
-        position = kwargs.get('position', [element.position[0], element.position[3]])
+        # Get the optional position index for a repeated list
+        position_idx = kwargs.get('position_index')
+        if position_idx is not None:
+            position = element.position[position_idx]
 
         # Add the text
         self.fig.obj.add_annotation(font=_font, x=position[0], y=position[-1],
@@ -993,8 +994,6 @@ class Layout(BaseLayout):
 
         # Line props
         element = getattr(self, element)
-        fc = element.fill_color
-        ec = element.edge_color
         mls = dict(line=dict(width=element.edge_width,
                              color=element.fill_color[iline],
                              dash=element.style[iline],
@@ -1150,8 +1149,8 @@ class Layout(BaseLayout):
 
             # Try to guess the tick labels
             ticklabs = getattr(self, f'tick_labels_major_{ax}')
-            vmin = data.ranges[f'{ax}min'][data.ranges[f'{ax}min'] != None]
-            vmax = data.ranges[f'{ax}max'][data.ranges[f'{ax}max'] != None]
+            vmin = data.ranges[f'{ax}min'][data.ranges[f'{ax}min'] is not None]
+            vmax = data.ranges[f'{ax}max'][data.ranges[f'{ax}max'] is not None]
 
             if self.name in ['heatmap'] and ax in ['x', 'y']:
                 if ax == 'y':
@@ -1254,9 +1253,6 @@ class Layout(BaseLayout):
         Returns:
             updated Data Object with new axes ranges
         """
-        idx = np.where(np.isin(xvals, df.index))[0]
-        ixvals = list(range(0, len(xvals)))
-
         # Styles
         if self.bar.color_by == 'bar':
             edgecolor = [self.bar.edge_color[i] for i, f in enumerate(df.index)]
@@ -1268,7 +1264,7 @@ class Layout(BaseLayout):
         # Make the plot
         marker = dict(color=fillcolor,
                       opacity=self.bar.fill_alpha,
-                      line_color=self.bar.edge_color[iline],
+                      line_color=edgecolor,
                       line_width=self.bar.edge_width,
                       )
         if self.bar.horizontal:
@@ -1283,7 +1279,6 @@ class Layout(BaseLayout):
             if iline == 0:
                 # Update ranges
                 if self.bar.horizontal:
-                    axx = 'y'
                     xmin, xmax = data.ranges['xmin'][ir, ic], data.ranges['xmax'][ir, ic]
                     data.ranges['xmin'][ir, ic] = data.ranges['ymin'][ir, ic]
                     data.ranges['xmax'][ir, ic] = data.ranges['ymax'][ir, ic]
@@ -1300,7 +1295,6 @@ class Layout(BaseLayout):
 
         if self.bar.stacked:
             self.fig.obj.update_layout(barmode='stack')
-
 
         # Legend
         if leg_name is not None:
@@ -1334,23 +1328,23 @@ class Layout(BaseLayout):
                                                     width=0.5,
                                                     )]
                 if self.violin.box_on:
-                    q25 = np.percentile(data[idd], 25)
-                    med = np.percentile(data[idd], 50)
-                    q75 = np.percentile(data[idd], 75)
-                    iqr = q75 - q25
-                    whisker_max = min(max(data[idd]), q75 + 1.5 * iqr)
-                    whisker_min = max(min(data[idd]), q25 - 1.5 * iqr)
+                    # q25 = np.percentile(data[idd], 25)
+                    # med = np.percentile(data[idd], 50)
+                    # q75 = np.percentile(data[idd], 75)
+                    # iqr = q75 - q25
+                    # whisker_max = min(max(data[idd]), q75 + 1.5 * iqr)
+                    # whisker_min = max(min(data[idd]), q25 - 1.5 * iqr)
                     self.axes.obj[ir, ic] += [go.Box(x=[idd + 1] * len(dd),
-                                                    y=dd,
-                                                    name='',
-                                                    boxpoints=False,
-                                                    whiskerwidth=self.box_whisker.width[idd],
-                                                    fillcolor=self.violin.box_color,
-                                                    width=0.1,
-                                                    line=dict(width=self.box.edge_width,
-                                                            color=self.box.edge_color[idd]),
-                                                    showlegend=False
-                                                    )]
+                                                     y=dd,
+                                                     name='',
+                                                     boxpoints=False,
+                                                     whiskerwidth=self.box_whisker.width[idd],
+                                                     fillcolor=self.violin.box_color,
+                                                     width=0.1,
+                                                     line=dict(width=self.box.edge_width,
+                                                               color=self.box.edge_color[idd]),
+                                                     showlegend=False
+                                                     )]
                     # self.plot_line(ir, ic, [idd, idd], [whisker_min, q75],
                     #                style=['solid'], color=[self.violin.whisker_color],
                     #                width=[self.violin.whisker_width])
@@ -1372,7 +1366,6 @@ class Layout(BaseLayout):
                                                  )]
 
         return self.axes.obj
-
 
     def plot_contour(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str, z: str,
                      data: 'data.Data') -> ['MPL_contour_object', 'MPL_colorbar_object']:  # noqa: F821
@@ -1405,18 +1398,18 @@ class Layout(BaseLayout):
         zi = np.clip(zi, data.ranges['zmin'][ir, ic], data.ranges['zmax'][ir, ic])
 
         # Set the contours
-        levels = np.linspace(data.ranges['zmin'][ir, ic] * 0.999, data.ranges['zmax'][ir, ic] * 1.001,
-                             self.contour.levels)
+        # levels = np.linspace(data.ranges['zmin'][ir, ic] * 0.999, data.ranges['zmax'][ir, ic] * 1.001,
+        #                      self.contour.levels)
 
         # Make the plot
         self.axes.obj[ir, ic] += [go.Contour(z=zi,
-                                              x=xi,
-                                              y=yi,
-                                              ncontours=self.contour.levels,
-                                              contours_coloring='fill' if self.contour.filled else 'lines',
-                                              showscale=self.cbar.on,
-                                              line_width=self.contour.width[0]
-                                              )]
+                                             x=xi,
+                                             y=yi,
+                                             ncontours=self.contour.levels,
+                                             contours_coloring='fill' if self.contour.filled else 'lines',
+                                             showscale=self.cbar.on,
+                                             line_width=self.contour.width[0]
+                                             )]
 
         if self.contour.show_points:
             mls = dict(marker_symbol=self.markers.type[0],
@@ -1433,10 +1426,9 @@ class Layout(BaseLayout):
 
         return self.axes.obj, None
 
-
     def plot_gantt(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str, y: str,
                    leg_name: str, xvals: npt.NDArray, yvals: list, bar_labels: list, ngroups: int,
-                   data: 'Data'):
+                   data: 'Data'):  # noqa
         """Plot gantt graph.
 
         Args:
@@ -1459,10 +1451,7 @@ class Layout(BaseLayout):
             else:
                 yi = yvals.index((row[y],))
 
-            edgecolor = self.gantt.edge_color[(iline, leg_name)]
-            fillcolor = self.gantt.fill_color[(iline, leg_name)]
-
-            marker = dict(color=fillcolor,
+            marker = dict(color=self.gantt.fill_color[iline],
                           opacity=self.gantt.fill_alpha,
                           line_color=self.gantt.edge_color[iline],
                           line_width=self.gantt.edge_width,
@@ -1474,7 +1463,6 @@ class Layout(BaseLayout):
                                              name=leg_name,
                                              showlegend=True if self.legend._on else False,
                                              )]
-
 
     def plot_heatmap(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str,
                      z: str, data: 'data.Data') -> 'MPL_imshow_object':  # noqa: F821
@@ -1500,10 +1488,6 @@ class Layout(BaseLayout):
         rows = len(df)
         map_sq = min(self.axes.size[0] / cols, self.axes.size[1] / rows)
         self.axes.size = [map_sq * cols, map_sq * rows]
-
-        # Set the z range
-        zmin = data.ranges['zmin'][ir, ic]
-        zmax = data.ranges['zmax'][ir, ic]
 
         # Set text labels
         if not self.heatmap.text:
@@ -1554,26 +1538,25 @@ class Layout(BaseLayout):
         if self.hist.cumulative:
             counts = np.cumsum(counts)
 
-        marker=dict(color=self.hist.fill_color[iline],
-                    opacity=self.hist.fill_alpha,
-                    line_color=self.hist.edge_color[iline],
-                    line_width=self.hist.edge_width,
-                    )
+        marker = dict(color=self.hist.fill_color[iline],
+                      opacity=self.hist.fill_alpha,
+                      line_color=self.hist.edge_color[iline],
+                      line_width=self.hist.edge_width,
+                      )
 
         if self.hist.horizontal:
             self.axes.obj[ir, ic] += [
-                go.Bar(y=(bin_edges[:-1] + bin_edges[1:]) / 2, # x-coordinates are bin centers
-                       x=counts, # y-coordinates are the counts in each bin
-                       width=np.diff(bin_edges), # width of the bars
+                go.Bar(y=(bin_edges[:-1] + bin_edges[1:]) / 2,  # x-coordinates are bin centers
+                       x=counts,  # y-coordinates are the counts in each bin
+                       width=np.diff(bin_edges),  # width of the bars
                        marker=marker,
                        orientation='h',
                        name=leg_name,
                        showlegend=True if self.legend._on else False,
-                )
+                       )
             ]
             if iline == 0:
                 # Update ranges
-                axx = 'y'
                 xmin, xmax = data.ranges['xmin'][ir, ic], data.ranges['xmax'][ir, ic]
                 data.ranges['xmin'][ir, ic] = data.ranges['ymin'][ir, ic]
                 data.ranges['xmax'][ir, ic] = data.ranges['ymax'][ir, ic]
@@ -1587,7 +1570,7 @@ class Layout(BaseLayout):
                        marker=marker,
                        name=leg_name,
                        showlegend=True if self.legend._on else False,
-                )
+                       )
             ]
 
         # Add a kde
@@ -1704,7 +1687,7 @@ class Layout(BaseLayout):
                             df[..., ch],
                             (df[..., ch].min() if data.ranges['zmin'][ir, ic] is None else data.ranges['zmin'][ir, ic],
                              df[..., ch].max() if data.ranges['zmax'][ir, ic] is None else data.ranges['zmax'][ir, ic]
-                            ),
+                             ),
                             np.uint8,
                         )
                         for ch in range(df.shape[-1])
@@ -1796,7 +1779,6 @@ class Layout(BaseLayout):
         if self.legend._on:
             self.legend.add_value('Pie', None, 'lines')
 
-
     def plot_polygon(self, ir: int, ic: int, points: list, **kwargs):
         """Plot a polygon.
 
@@ -1820,7 +1802,7 @@ class Layout(BaseLayout):
                                              showlegend=False,
                                              zorder=100,
                                              **mls
-                                            )]
+                                             )]
 
     def plot_xy(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str, y: str,
                 leg_name: str, twin: bool, zorder: int = 1, line_type: [str, None] = None,
@@ -1987,7 +1969,7 @@ class Layout(BaseLayout):
             if ax == 'y' and (self.axes.spine_left or self.axes.spine_right):
                 show = True
             if self.axes.edge_width == 0:
-                show=False
+                show = False
             self.ul[f'{ax}axis_style'] = dict(showline=show, linecolor=self.axes.edge_color[0],
                                               linewidth=self.axes.edge_width, mirror=True)
 
@@ -2226,7 +2208,7 @@ class Layout(BaseLayout):
 
         # Adjust the legend position (only for outside of plot right now)
         if self.legend.on and self.legend.location == 0:
-            self.ul['legend']['x'] = 1 - (self.ws_leg_fig + self.legend.size[0]) /  self.fig.size[0]
+            self.ul['legend']['x'] = 1 - (self.ws_leg_fig + self.legend.size[0]) / self.fig.size[0]
             self.fig.obj.update_layout(legend=self.ul['legend'])
 
         # Update the x/y axes
@@ -2454,7 +2436,6 @@ class Layout(BaseLayout):
             config.update(self.modebar.obj)
 
             # pio.renderers.default = 'iframe'  # not sure about this
-            db()
             self.fig.obj.show(config=config)
 
     def update_markers(self):
@@ -2486,7 +2467,7 @@ class Layout(BaseLayout):
               r'\gamma': 'hexagon2',
               r'\sigma': 'circle-dot',
               r'\star': 'square-dot',
-        }
+              }
 
         for imarker, marker in enumerate(self.markers.type.values):
             if marker in mm.values():

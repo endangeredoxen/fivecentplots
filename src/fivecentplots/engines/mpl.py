@@ -3330,8 +3330,8 @@ class Layout(BaseLayout):
 
         # Add a reference to the line to self.lines
         if leg_name is not None:
-            if leg_name is not None and leg_name not in list(self.legend.values['Key']):
-                self.legend.add_value(leg_name, points if points is not None else lines, line_type_name)
+            if leg_name is not None and str(leg_name) not in list(self.legend.values['Key']):
+                self.legend.add_value(str(leg_name), points if points is not None else lines, line_type_name)
 
     def save(self, filename: str, idx: int = 0):
         """Save a plot window.

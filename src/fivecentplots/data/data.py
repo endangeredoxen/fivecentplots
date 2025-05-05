@@ -675,9 +675,9 @@ class Data:
             axmin = np.min(vals)
             axmax = np.max(vals)
             axdelta = axmax - axmin
-        if axdelta and axdelta <= 0:
-            axmin -= 0.1 * axmin
-            axmax += 0.1 * axmax
+        if axdelta is not None and axdelta <= 0:
+            axmin -= self.ax_limit_padding * axmin
+            axmax += self.ax_limit_padding * axmax
 
         # Get min value
         if getattr(self, f'{ax}min')[plot_num] is None and getattr(self, f'ax_limit_padding_{ax}min') is not None:
@@ -706,8 +706,8 @@ class Data:
 
         # Make sure vmin != vmax
         if vmin is not None and vmax is not None and vmin == vmax:
-            vmin -= 0.1 * vmin
-            vmax += 0.1 * vmax
+            vmin -= self.ax_limit_padding * vmin
+            vmax += self.ax_limit_padding * vmax
 
         return vmin, vmax
 

@@ -1191,10 +1191,10 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
         if coeffs[-1] > 0:
             eqn += '+'
         eqn += f'{round(coeffs[-1], 3)}'
-        layout.add_text(ir, ic, eqn, 'fit', position=layout.fit.position[0])
+        layout.add_text(ir, ic, eqn, 'fit', position_index=0)
 
     if layout.fit.rsq:
-        layout.add_text(ir, ic, f'R^2={round(rsq, 4)}', 'fit', position=layout.fit.position[1])
+        layout.add_text(ir, ic, f'R^2={round(rsq, 4)}', 'fit', position_index=1)
 
     return data
 
