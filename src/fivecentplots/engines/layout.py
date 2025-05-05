@@ -1303,7 +1303,7 @@ class BaseLayout:
                     edge_width=utl.kwget(kwargs, self.fcpp, ['gantt_today_edge_width', 'today_edge_width'], 0),
                     fill_color=utl.kwget(kwargs, self.fcpp, ['gantt_today_fill_color', 'today_fill_color'],
                                          '#555555'),
-                    font=utl.kwget(kwargs, self.fcpp, ['gantt_today_font', 'today_font'], 'Arial'),
+                    font=utl.kwget(kwargs, self.fcpp, ['gantt_today_font', 'today_font'], 'Arial'),>>>>>>> v0.6.0
                     font_color=utl.kwget(kwargs, self.fcpp, ['gantt_today_font_color', 'today_font_color'], '#ffffff'),
                     font_size=utl.kwget(kwargs, self.fcpp, ['gantt_today_font_size', 'today_font_size'], 13),
                     font_style=utl.kwget(kwargs, self.fcpp,
