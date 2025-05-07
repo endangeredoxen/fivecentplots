@@ -1,0 +1,16 @@
+Task,Assigned,Start,Stop,Category
+Record drums,Taylor,2010-09-01,2010-09-05,Recording
+Record bass,Nate,2010-09-04,2010-09-06,Recording
+Record rhythm guitar,Pat,2010-09-06,2010-09-08,Recording
+Record rhythm guitar,Dave,2010-09-06,2010-09-08,Recording
+Record lead guitar,Chris,2010-09-07,2010-09-09,Recording
+Record keys,Rami,2010-09-07,2010-09-09,Recording
+Record lead vocals,Dave,2010-09-09,2010-09-11,Recording
+Record backup vocals,Chris,2010-09-11,2010-09-12,Recording
+Record backup vocals,Taylor,2010-09-11,2010-09-12,Recording
+Guitar overdubs,Pat,2010-09-11,2010-09-12,Recording
+Guitar overdubs,Chris,2010-09-11,2010-09-12,Recording
+Production,Butch,2010-09-12,2010-09-16,Post
+Mixing,Alan,2010-09-16,2010-09-20,Post
+Mastering,Joe,2010-09-21,2010-09-25,Post
+Mastering,Emily,2010-09-21,2010-09-25,Post

@@ -1,0 +1,85 @@
+Experiment,Batch,X,Y,Value
+Control,101,1,-4,3.5
+Control,101,1,-2,2.1
+Control,101,1,0,3.3
+Control,101,1,2,3.2
+Control,101,1,4,4
+Control,101,-2,0,2.5
+Control,101,-2,6,2.2
+Control,101,-2,-4,3
+Control,101,3,4,2.3
+Control,101,5,1,2.6
+Control,101,5,0,1.5
+Control,101,5,-4,1.1
+Control,101,-2,-2,1.3
+Control,101,-2,-4,1.2
+Control,101,-2,0,1
+Control,101,-4,4,1.5
+Control,101,-4,-4,1.2
+Control,101,-4,-3,1
+Control,101,4,3,1.3
+Control,101,4,2,1.6
+Control,101,4,-4,3.5
+Control,103,1,-4,2.1
+Control,103,1,-2,5.3
+Control,103,1,0,5.2
+Control,103,1,2,4.5
+Control,103,1,4,3.5
+Control,103,-2,0,2.6
+Control,103,-2,6,3.6
+Control,103,-2,-4,4.3
+Control,103,3,4,7.6
+Control,103,5,1,4.5
+Control,103,5,0,4.1
+Control,103,5,-4,4.3
+Control,103,-2,-2,2.2
+Control,103,-2,-4,4
+Control,103,-2,0,4.5
+Control,103,-4,4,3.2
+Control,103,-4,-4,2
+Control,103,-4,-3,6.3
+Control,103,4,3,1.6
+Control,103,4,2,0
+Control,103,4,-4,0.1
+No Nitride,101,1,-4,11.5
+No Nitride,101,1,-2,4.1
+No Nitride,101,1,0,4.3
+No Nitride,101,1,2,7.2
+No Nitride,101,1,7,4
+No Nitride,101,-2,0,12.5
+No Nitride,101,-2,6,12.2
+No Nitride,101,-2,-4,13
+No Nitride,101,3,4,12.3
+No Nitride,101,5,1,12.6
+No Nitride,101,5,0,11.5
+No Nitride,101,5,-4,11.1
+No Nitride,101,-2,-2,11.3
+No Nitride,101,-2,-4,11.2
+No Nitride,101,-2,0,11
+No Nitride,101,-4,4,11.5
+No Nitride,101,-4,-4,11.2
+No Nitride,101,-4,-3,11
+No Nitride,101,4,3,11.3
+No Nitride,101,4,2,11.6
+No Nitride,101,4,-4,13.5
+No Nitride,103,1,-4,12.1
+No Nitride,103,1,-2,15.3
+No Nitride,103,1,0,15.2
+No Nitride,103,1,2,14.5
+No Nitride,103,1,4,13.5
+No Nitride,103,-2,0,12.6
+No Nitride,103,-2,6,13.6
+No Nitride,103,-2,-4,14.3
+No Nitride,103,3,4,17.6
+No Nitride,103,5,1,14.5
+No Nitride,103,5,0,14.1
+No Nitride,103,5,-4,-4.3
+No Nitride,103,-2,-2,-2.2
+No Nitride,103,-2,-4,-4
+No Nitride,103,-2,0,-4.5
+No Nitride,103,-4,4,-3.2
+No Nitride,103,-4,-4,12
+No Nitride,103,-4,-3,16.3
+No Nitride,103,4,3,11.6
+No Nitride,103,4,2,10
+No Nitride,103,4,-4,10.1
