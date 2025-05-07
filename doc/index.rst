@@ -320,6 +320,12 @@ Refer to the topics on the sidebar for more details on plot types and options.
 
 .. toctree::
    :maxdepth: 1
+   :caption: Engines
+
+   plotly.ipynb
+
+.. toctree::
+   :maxdepth: 1
    :caption: Other
 
    changelog
