@@ -48,8 +48,9 @@ jobs:
     - name: Plot tests
       run: |
         python -m pytest tests -s --benchmark-save=output.json --benchmark-save-data
-    - name: Store benchmark result
-      uses: benchmark-action/github-action-benchmark@v1
+    - name: Upload benchmark results
+      uses: actions/upload-artifact@v3
       with:
-        tool: 'pytest'
-        output-file-path: output.json
+        name: benchmark-results
+        path: .benchmarks/output.json
+        retention-days: 90
