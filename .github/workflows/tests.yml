@@ -49,7 +49,7 @@ jobs:
       run: |
         python -m pytest tests -s --benchmark-save=output.json --benchmark-save-data
     - name: Upload benchmark results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v2
       with:
         name: benchmark-results
         path: .benchmarks/output.json
