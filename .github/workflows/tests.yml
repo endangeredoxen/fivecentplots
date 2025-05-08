@@ -45,12 +45,14 @@ jobs:
     - name: Lint with flake8
       run: |
         flake8 src
-    - name: Plot tests
+    - name: Run tests with benchmarks
       run: |
-        python -m pytest tests -s --benchmark-save=output.json --benchmark-save-data
+        mkdir -p benchmark_results
+        python -m pytest tests -s --benchmark-json=benchmark_results/output.json --benchmark-save-data
+        ls -la benchmark_results/
+    # Simple artifact upload without version
     - name: Upload benchmark results
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact
       with:
         name: benchmark-results
-        path: .benchmarks/output.json
-        retention-days: 90
+        path: benchmark_results/output.json
