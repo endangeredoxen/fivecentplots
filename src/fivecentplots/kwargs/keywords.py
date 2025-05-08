@@ -110,7 +110,7 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
                                          'ticks_major_y2', 'ticks_major_z'],
                          'ticks_minor': ['ticks_minor_x', 'ticks_minor_x2', 'ticks_minor_y',
                                          'ticks_minor_y2', 'ticks_minor_z'],
-                        }
+                         }
     exclude = ['prop', 'on', 'kwargs', 'axline', 'self', 'fcpp', 'utl.kwargs']
 
     # Get files
@@ -280,7 +280,7 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
     no_styles = [
         'ax', 'bar', 'box_mean_diamonds', 'box_group_label', 'box_group_title', 'cbar', 'contour',
         'fills', 'gantt_workstreams_title', 'hist', 'imshow', 'interval', 'legend', 'markers',
-        'pie', 'label_rc','label_wrap', 'title_wrap', 'text', 'title', 'label_col', 'label_row',
+        'pie', 'label_rc', 'label_wrap', 'title_wrap', 'text', 'title', 'label_col', 'label_row',
         'ticks', 'violin', 'gantt_bar_labels',
         'label_x', 'label_x2', 'label_y', 'label_y2',
         'tick_labels_major_x', 'tick_labels_major_x2', 'tick_labels_major_y', 'tick_labels_major_y2',
@@ -290,7 +290,7 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
     ]
     no_widths = [
         'ax', 'box_group_label', 'box_group_title', 'cbar', 'fills', 'hist', 'imshow', 'interval',
-        'legend', 'label_rc','label_wrap', 'title_wrap', 'text', 'title', 'label_col', 'label_row',
+        'legend', 'label_rc', 'label_wrap', 'title_wrap', 'text', 'title', 'label_col', 'label_row',
         'ticks', 'violin',
         'label_x', 'label_x2', 'label_y', 'label_y2', 'markers_width',
         'tick_labels_major_x', 'tick_labels_major_x2', 'tick_labels_major_y', 'tick_labels_major_y2',

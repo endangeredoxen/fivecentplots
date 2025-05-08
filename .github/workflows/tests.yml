@@ -47,4 +47,4 @@ jobs:
         flake8 src
     - name: Plot tests
       run: |
-        python -m pytest tests -s
+        python -m pytest tests -s --benchmark-save=output.json --benchmark-save-data

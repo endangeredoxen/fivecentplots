@@ -114,7 +114,7 @@ in **pandas** DataFrames.
             <p>
                <ul>
                   <li><b>fivecentplots</b> can wrap any plotting "engine" (or library) with the same API</li>
-                  <li>Getting the same plot from say <b>matplotlib</b> or <b>bokeh</b> is as easy as chaning one kwarg in the exact same function call (more development is needed here, but conceptually it works)</li>
+                  <li>Getting the same plot from <b>matplotlib</b> or <b>plotly</b> is as easy as chaning one kwarg in the exact same function call</li>
                </ul>
             </p>
          </div>
@@ -275,9 +275,10 @@ different API!  But with **fivecentplots** we can just change the kwarg defining
 
 |
 
-  .. note:: **bokeh** support is still limited and not all plot types are currently available.
-            It does not currently have as much styling flexibility as **matplotlib**
-            so plots are not a 1:1 exact replication.
+  .. note:: As of v0.6 **matplotlib** has the richest available plotting feature set.  **plotly** supports most plot
+            types and many of the same style features.  **bokeh** support is limited to only scatter plots at this
+            time.
+
 
 
 Refer to the topics on the sidebar for more details on plot types and options.
