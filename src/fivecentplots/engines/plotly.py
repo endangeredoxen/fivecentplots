@@ -617,16 +617,17 @@ class Layout(BaseLayout):
         """
         num_cols = len(data.changes.columns)
         plot_num = utl.plot_num(ir, ic, self.ncol)
+        box_lab = self.box_group_label
 
         # Set up the label/title arrays to reflect the groups
         max_labels = int(data.changes.sum().max())
-        self.box_group_label.obj[ir, ic] = np.array([[None] * max_labels] * num_cols)
-        self.box_group_label.obj_bg[ir, ic] = np.array([[None] * max_labels] * num_cols)
+        box_lab.obj[ir, ic] = np.array([[None] * max_labels] * num_cols)
+        box_lab.obj_bg[ir, ic] = np.array([[None] * max_labels] * num_cols)
         self.box_group_title.obj[ir, ic] = np.array([[None]] * num_cols)
         self.box_group_title.obj_bg[ir, ic] = np.array([[None]] * num_cols)
 
         # Create the labels
-        top0 = -(self.axes.edge_width - self.box_group_label.edge_width / 2) / self.axes.size[1]
+        top0 = -(self.axes.edge_width - box_lab.edge_width / 2) / self.axes.size[1]
         for ii in range(0, num_cols):
             k = num_cols - 1 - ii
             sub = data.changes[num_cols - 1 - ii][data.changes[num_cols - 1 - ii] == 1]
@@ -634,7 +635,7 @@ class Layout(BaseLayout):
                 sub = data.changes[num_cols - 1 - ii]
 
             # Group labels
-            if self.box_group_label.on:
+            if box_lab.on:
                 # This array structure just makes one big list of all the labels
                 # can we use it with multiple groups or do we need to reshape??
                 # Probably need a 2D but that will mess up size_all indexing
@@ -645,28 +646,36 @@ class Layout(BaseLayout):
                         width = len(data.changes) - sub.index[jj]
                     else:
                         width = sub.index[jj + 1] - sub.index[jj]
-                    label = data.indices.loc[sub.index[jj], num_cols - 1 - ii]
                     if jj == 0:
-                        self.box_group_label.size_label = \
-                            utl.get_text_dimensions(str(label), self.box_group_label.font,
-                                                    self.box_group_label.font_size, self.box_group_label.font_style,
-                                                    self.box_group_label.font_weight, dpi=self.dpi)
-                        self.box_group_label.size = [np.ceil(width), self.box_group_label.height]
+                        longest = max(data.indices[ii], key=len)
+                        size_label = \
+                            utl.get_text_dimensions(str(longest), box_lab.font, box_lab.font_size, box_lab.font_style,
+                                                    box_lab.font_weight, box_lab.rotation, dpi=self.dpi)
+                        box_lab.size = [np.ceil(width), max(box_lab.height, size_label[1] + 8)]  # 4 * 2 == padding
+
                         # auto height and width??
+
                     left = left0
                     right = left + width
                     left0 = right
                     top = top0
-                    bottom = top - self.box_group_label.height / self.axes.size[1]
-                    self.box_group_label.position = [left, right, top, bottom]
-                    self.add_label(ir, ic, str(label), element=self.box_group_label)
+                    bottom = top - box_lab.size[1] / self.axes.size[1]
+                    box_lab.position = [left, right, top, bottom]
+                    label = data.indices.loc[sub.index[jj], num_cols - 1 - ii]
+                    self.add_label(ir, ic, str(label), element=box_lab)
                     if plot_num > 1:
                         pn = str(plot_num)
                     else:
                         pn = ''
                     self.fig.obj['layout']['annotations'][-1]['xref'] = f'x{pn}'
                     self.fig.obj['layout']['shapes'][-1]['xref'] = f'x{pn}'
-                self.box_group_label.heights += [self.box_group_label.height]
+
+                    # Update size tracker
+                    box_lab.size_all = (ir, ic, ii, jj, (right - left) * self.axes.size[0] / len(sub),
+                                        (top - bottom) * self.axes.size[1],
+                                        left, right, bottom, top, box_lab.rotation)
+
+                box_lab.heights += [box_lab.size[1]]
 
             # Group titles
             if self.box_group_title.on and ic == data.ncol - 1:
@@ -837,7 +846,7 @@ class Layout(BaseLayout):
             rotation = 90
         if rotation in [90, 270]:
             x = position[1] - (position[1] - position[0]) / 2
-            y = 0.5
+            y = (position[2] - position[3]) / 2 + position[3]
         else:
             if xanchor == 'left':
                 x = position[0]
@@ -2270,6 +2279,8 @@ class Layout(BaseLayout):
 
             # Add box lines
             if self.name == 'box' and self.box_divider.on:
+                if self.box_divider.obj[ir, ic] is None:
+                    self.box_divider.obj[ir, ic] = []
                 for vals in self.box_divider.obj[ir, ic]:
                     self.fig.obj.add_vline(**vals)
 

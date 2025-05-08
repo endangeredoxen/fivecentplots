@@ -90,6 +90,7 @@ box_group_label_font_size
 box_group_label_font_style
 box_group_label_font_weight
 box_group_label_height
+box_group_label_rotation
 box_group_label_zorder
 box_group_means
 box_group_means_alpha
@@ -109,6 +110,7 @@ box_group_title_font_size
 box_group_title_font_style
 box_group_title_font_weight
 box_group_title_padding
+box_group_title_rotation
 box_group_title_zorder
 box_labels_on
 box_marker_edge_alpha
@@ -139,6 +141,7 @@ box_range_lines_color
 box_range_lines_style
 box_range_lines_width
 box_range_lines_zorder
+box_rotation
 box_stat_line
 box_stat_line_alpha
 box_stat_line_color

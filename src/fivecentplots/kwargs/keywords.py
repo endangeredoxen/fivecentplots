@@ -307,7 +307,7 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
         'tick_labels_minor_y2', 'tick_labels_minor_z',
     ]
     no_rotations = [
-        'ax', 'bar', 'box', 'box_grand_mean', 'box_grand_median', 'box_group_means', 'box_mean_diamonds',
+        'ax', 'bar', 'box_grand_mean', 'box_grand_median', 'box_group_means', 'box_mean_diamonds',
         'box_divider', 'box_range_lines', 'box_stat_line', 'box_whisker', 'cbar', 'contour', 'fig', 'fills',
         'fit', 'grid', 'heatmap', 'hist', 'kde', 'imshow', 'interval', 'legend', 'line', 'lines',
         'markers', 'pie', 'ref_line', 'violin', 'rolling_mean',
