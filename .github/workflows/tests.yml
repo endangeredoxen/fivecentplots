@@ -48,3 +48,8 @@ jobs:
     - name: Plot tests
       run: |
         python -m pytest tests -s --benchmark-save=output.json --benchmark-save-data
+    - name: Store benchmark result
+      uses: benchmark-action/github-action-benchmark@v1
+      with:
+        tool: 'pytest'
+        output-file-path: output.json
