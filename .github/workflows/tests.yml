@@ -50,9 +50,9 @@ jobs:
         mkdir -p benchmark_results
         python -m pytest tests -s --benchmark-json=benchmark_results/output.json --benchmark-save-data
         ls -la benchmark_results/
-    # Simple artifact upload without version
+    # Use the oldest version of upload-artifact for maximum compatibility
     - name: Upload benchmark results
-      uses: actions/upload-artifact
+      uses: actions/upload-artifact@v1
       with:
         name: benchmark-results
         path: benchmark_results/output.json
