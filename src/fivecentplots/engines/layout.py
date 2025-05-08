@@ -1185,7 +1185,7 @@ class BaseLayout:
             gantt_workstreams._size = [gantt_workstreams.size, 0]  # use size_orig b/c on = False
 
         gantt_workstreams_title = \
-            Element('gantt.workstreams', self.fcpp, kwargs,
+            Element('gantt_workstreams_title', self.fcpp, kwargs,
                     on=True if (utl.kwget(kwargs, self.fcpp,
                                 ['gantt_workstreams_title', 'workstreams_title'], None) is None
                                 and gantt_workstreams.on) else False,
@@ -2773,7 +2773,10 @@ class BaseLayout:
         kwargs['fill_color'] = copy.copy(element.fill_color)
         kwargs['edge_color'] = copy.copy(element.edge_color)
         kwargs['edge_width'] = copy.copy(element.edge_width)
-        kwargs['edge_width_adj'] = copy.copy(element.edge_width_adj)
+        if hasattr(element, 'edge_width_adj'):
+            kwargs['edge_width_adj'] = copy.copy(element.edge_width_adj)
+        else:
+            kwargs['edge_width_adj'] = copy.copy(element.edge_width)
         kwargs['font'] = copy.copy(element.font)
         kwargs['font_weight'] = copy.copy(element.font_weight)
         kwargs['font_style'] = copy.copy(element.font_style)

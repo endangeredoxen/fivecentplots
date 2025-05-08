@@ -101,6 +101,16 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
     axlines = ['ax_hlines', 'ax_vlines', 'ax2_hlines', 'ax2_vlines']
     color_params = ['fill_alpha', 'fill_color', 'edge_alpha', 'edge_color', 'color']
     other = ['marker_type']
+    expanded_elements = {'label': ['label_x', 'label_x2', 'label_y', 'label_y2', 'label_z'],
+                         'tick_labels_major': ['tick_labels_major_x', 'tick_labels_major_x2', 'tick_labels_major_y',
+                                               'tick_labels_major_y2', 'tick_labels_major_z'],
+                         'tick_labels_minor': ['tick_labels_minor_x', 'tick_labels_minor_x2', 'tick_labels_minor_y',
+                                               'tick_labels_minor_y2', 'tick_labels_minor_z'],
+                         'ticks_major': ['ticks_major_x', 'ticks_major_x2', 'ticks_major_y',
+                                         'ticks_major_y2', 'ticks_major_z'],
+                         'ticks_minor': ['ticks_minor_x', 'ticks_minor_x2', 'ticks_minor_y',
+                                         'ticks_minor_y2', 'ticks_minor_z'],
+                        }
     exclude = ['prop', 'on', 'kwargs', 'axline', 'self', 'fcpp', 'utl.kwargs']
 
     # Get files
@@ -109,6 +119,7 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
     # regex to find method calls in python files
     func_regex = r'(\w+)\(((?:[^()]*\([^()]*\))*[^()]*)\)'
     bracket_regex = r',(?![^\(\[]*[\]\)])'
+    element_regex = r"Element\('([^']+)'"  # get all the Element class names
 
     kwargs_list = ['df', 'imgs'] + axs + [f'{f}min' for f in axs] + [f'{f}max' for f in axs]
     names_list = []
@@ -187,7 +198,16 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
 
             # Step 3: get all Element names and populate kwargs
             names = []
-            found_element = [f[1] for f in funcs if 'Element' in f[0] and f[1] not in ['Element', 'DF_Element']]
+            # found_element = [f[1] for f in funcs if 'Element' in f[0] and f[1] not in ['Element', 'DF_Element']]
+            found_element = re.findall(element_regex, contents)
+            found_element = [f.replace('.', '_') for f in found_element]
+
+            for k, v in expanded_elements.items():
+                # some elements are created programatically and aren't directly detected
+                if k in found_element:
+                    index = found_element.index(k)
+                    found_element[index:index + 1] = v
+
             for fe in found_element:
                 names += [fe.split(',')[0].replace("f'", '')]
             for name in names:
@@ -225,26 +245,83 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
     kwargs_list = [f for f in kwargs_list if f not in exclude]
 
     # unused element defaults (although all elements support certain kwargs, some are never used)
-    no_alphas = ['ax', 'bar', 'fig', ]
-    no_fonts = ['line', 'ax', 'bar', 'box_divider', 'box_grand_mean', 'box_grand_median', 'box',
-                'box_group_means', 'box_mean_diamonds', 'cbar', 'contour', 'fig', 'fills_', 'grid',
-                'imshow', 'rolling_mean', 'ticks_major', 'ticks_minor', 'ticks', ]
-    no_labels = ['line', 'ax', 'bar', 'fig', ]
-    no_edges = ['line', 'box_divider', 'box_grand_mean', 'box_grand_median', 'box_group_means', 'ticks_major',
-                'ticks_minor', 'hist', 'imshow', ]
-    no_fills = ['line', 'whisker', 'median', 'box_divider', 'box_grand_mean', 'box_grand_median',
-                'box_group_means', 'hist', 'imshow', ]
-    no_styles = ['ax', 'bar_labels', 'gantt_bar_labels', ]
-    no_widths = ['pie', 'contour', 'fig', 'ax', 'fit', 'today', 'grid', 'ticks', 'tick_labels', 'imshow',
-                 'hist', 'plot', 'kde', ]
-    no_std_color = ['label', 'ax', 'ticks', 'imshow', 'hist', 'fig', 'ax', 'fig', 'violin_color', 'box_color', 'bar',
-                    ]
-    no_rotations = ['heatmap', 'box', 'grid', 'ax', 'line', 'cbar', 'violin', 'contour', 'rolling_mean', 'fig', 'fills',
-                    'imshow', 'hist', 'pie', 'bar_labels', 'gantt_bar_labels']
-    no_zorders = ['toolbar']
+    no_alphas = [
+        'ax', 'bar_alpha', 'box_group_label', 'box_group_title', 'cbar', 'contour', 'fig', 'fills', 'fit',
+        'gantt_milestone_text', 'heatmap_alpha', 'hist', 'imshow', 'interval', 'legend_alpha', 'label_rc',
+        'label_wrap', 'title_wrap', 'text', 'title', 'label_col', 'label_row',
+        'tick_labels_major_x', 'tick_labels_major_x2', 'tick_labels_major_y', 'tick_labels_major_y2',
+        'tick_labels_major_z', 'tick_labels_minor_x', 'tick_labels_minor_x2', 'tick_labels_minor_y',
+        'tick_labels_minor_y2', 'tick_labels_minor_z',
+        'violin', 'gantt_alpha', 'label_x', 'label_x2', 'label_y', 'label_y2',
+        'markers_alpha'
+    ]
+    no_fonts = [
+        'ax', 'bar', 'box_grand_mean', 'box_grand_median', 'box_group_means', 'box_mean_diamonds',
+        'box_divider', 'box_range_lines', 'box_stat_line', 'box_whisker', 'cbar', 'contour', 'fig', 'fills',
+        'grid', 'hist', 'kde', 'imshow', 'interval', 'line', 'lines', 'markers', 'pie',
+        'ticks', 'violin', 'rolling_mean',
+    ]
+    no_labels = [
+        'ax', 'bar', 'box_grand_mean', 'box_grand_median', 'box_group_means', 'box_mean_diamonds',
+        'box_divider', 'box_range_lines', 'box_stat_line', 'box_whisker', 'cbar', 'contour', 'fig', 'fills',
+        'fit', 'gantt_milestone_text', 'heatmap_label', 'hist', 'kde', 'imshow', 'interval', 'legend',
+        'markers', 'pie', 'ref_line', 'ticks', 'rolling_mean', 'violin',
+    ]
+    no_edges = [
+        'box_grand_mean', 'box_grand_median', 'box_group_means', 'box_divider', 'box_range_lines', 'box_stat_line',
+        'box_whisker', 'cbar', 'contour', 'fills', 'fit', 'grid', 'kde', 'imshow', 'line', 'lines', 'ref_line',
+        'rolling_mean',
+    ]
+    no_fills = [
+        'box_grand_mean', 'box_grand_median', 'box_group_means', 'box_divider', 'box_range_lines', 'box_stat_line',
+        'box_whisker', 'cbar', 'contour', 'fills', 'fit', 'grid', 'heatmap', 'kde', 'imshow', 'line', 'lines',
+        'ref_line', 'rolling_mean',
+    ]
+    no_styles = [
+        'ax', 'bar', 'box_mean_diamonds', 'box_group_label', 'box_group_title', 'cbar', 'contour',
+        'fills', 'gantt_workstreams_title', 'hist', 'imshow', 'interval', 'legend', 'markers',
+        'pie', 'label_rc','label_wrap', 'title_wrap', 'text', 'title', 'label_col', 'label_row',
+        'ticks', 'violin', 'gantt_bar_labels',
+        'label_x', 'label_x2', 'label_y', 'label_y2',
+        'tick_labels_major_x', 'tick_labels_major_x2', 'tick_labels_major_y', 'tick_labels_major_y2',
+        'tick_labels_major_z', 'tick_labels_minor_x', 'tick_labels_minor_x2', 'tick_labels_minor_y',
+        'tick_labels_minor_y2', 'tick_labels_minor_z',
+
+    ]
+    no_widths = [
+        'ax', 'box_group_label', 'box_group_title', 'cbar', 'fills', 'hist', 'imshow', 'interval',
+        'legend', 'label_rc','label_wrap', 'title_wrap', 'text', 'title', 'label_col', 'label_row',
+        'ticks', 'violin',
+        'label_x', 'label_x2', 'label_y', 'label_y2', 'markers_width',
+        'tick_labels_major_x', 'tick_labels_major_x2', 'tick_labels_major_y', 'tick_labels_major_y2',
+        'tick_labels_major_z', 'tick_labels_minor_x', 'tick_labels_minor_x2', 'tick_labels_minor_y',
+        'tick_labels_minor_y2', 'tick_labels_minor_z',
+    ]
+    no_std_color = [
+        'ax', 'bar', 'box_group_label', 'box_group_title', 'cbar', 'contour', 'fig', 'fills',
+        'gantt_labels', 'gantt_milestone_text', 'hist', 'imshow', 'interval', 'legend', 'markers', 'label_rc',
+        'label_wrap', 'title_wrap', 'text', 'title', 'label_col', 'label_row', 'label_x', 'label_x2', 'label_y',
+        'label_y2', 'ticks',
+        'tick_labels_major_x', 'tick_labels_major_x2', 'tick_labels_major_y', 'tick_labels_major_y2',
+        'tick_labels_major_z', 'tick_labels_minor_x', 'tick_labels_minor_x2', 'tick_labels_minor_y',
+        'tick_labels_minor_y2', 'tick_labels_minor_z',
+    ]
+    no_rotations = [
+        'ax', 'bar', 'box', 'box_grand_mean', 'box_grand_median', 'box_group_means', 'box_mean_diamonds',
+        'box_divider', 'box_range_lines', 'box_stat_line', 'box_whisker', 'cbar', 'contour', 'fig', 'fills',
+        'fit', 'grid', 'heatmap', 'hist', 'kde', 'imshow', 'interval', 'legend', 'line', 'lines',
+        'markers', 'pie', 'ref_line', 'violin', 'rolling_mean',
+
+    ]
+    no_zorders = [
+        'bar', 'cbar', 'contour', 'fig', 'fills',  'heatmap', 'hist', 'imshow',
+        'legend', 'pie', 'rolling_mean', 'toolbars'
+    ]
     new_kwargs = []
     for kw in kwargs_list:
-        if any(f in kw for f in no_alphas) and '_alpha' in kw:
+        if any(f in kw for f in no_alphas) and '_alpha' in kw and \
+                '_edge_alpha' not in kw and \
+                '_fill_alpha' not in kw:
             pass
         elif any(f in kw for f in no_fonts) and '_font' in kw:
             pass
@@ -254,13 +331,16 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
             pass
         elif any(f in kw for f in no_fills) and '_fill_' in kw:
             pass
-        elif any(f in kw for f in no_styles) and '_style' in kw:
+        elif any(f in kw for f in no_styles) and '_style' in kw and \
+                '_edge_style' not in kw and \
+                '_font_style' not in kw:
             pass
         elif any(f in kw for f in no_widths) and '_edge' not in kw and '_width' in kw:
             pass
         elif any(f in kw for f in no_std_color) and '_color' in kw and \
                 '_edge_color' not in kw and \
-                '_fill_color' not in kw:
+                '_fill_color' not in kw and \
+                '_font_color' not in kw:
             pass
         elif any(f in kw for f in no_rotations) and '_rotation' in kw:
             pass

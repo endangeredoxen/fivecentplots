@@ -633,21 +633,21 @@ class Layout(BaseLayout):
         if self.name in ['heatmap', 'pie']:  # skip these plot types
             return
 
-        if ranges['xmin'][ir, ic] is not None:
+        if 'xmin' in ranges and ranges['xmin'][ir, ic] is not None:
             self.axes.obj[ir, ic].x_range.start = ranges['xmin'][ir, ic]
-        if ranges['x2min'][ir, ic] is not None:
+        if 'x2min' in ranges and ranges['x2min'][ir, ic] is not None:
             self.axes.obj[ir, ic].extra_x_ranges['x2'].start = ranges['x2min'][ir, ic]
-        if ranges['xmax'][ir, ic] is not None:
+        if 'xmax' in ranges and ranges['xmax'][ir, ic] is not None:
             self.axes.obj[ir, ic].x_range.end = ranges['xmax'][ir, ic]
-        if ranges['x2max'][ir, ic] is not None:
+        if 'x2max' in ranges and ranges['x2max'][ir, ic] is not None:
             self.axes.obj[ir, ic].extra_x_ranges['x2'].end = ranges['x2max'][ir, ic]
-        if ranges['ymin'][ir, ic] is not None:
+        if 'ymin' in ranges and ranges['ymin'][ir, ic] is not None:
             self.axes.obj[ir, ic].y_range.start = ranges['ymin'][ir, ic]
-        if ranges['y2min'][ir, ic] is not None:
+        if 'y2min' in ranges and ranges['y2min'][ir, ic] is not None:
             self.axes.obj[ir, ic].extra_y_ranges['y2'].start = ranges['y2min'][ir, ic]
-        if ranges['ymax'][ir, ic] is not None:
+        if 'ymax' in ranges and ranges['ymax'][ir, ic] is not None:
             self.axes.obj[ir, ic].y_range.end = ranges['ymax'][ir, ic]
-        if ranges['y2max'][ir, ic] is not None:
+        if 'y2max' in ranges and ranges['y2max'][ir, ic] is not None:
             self.axes.obj[ir, ic].extra_y_ranges['y2'].end = ranges['y2max'][ir, ic]
 
     def set_axes_rc_labels(self, ir: int, ic: int):
@@ -795,6 +795,8 @@ class Layout(BaseLayout):
         elif self.title_wrap.on:
             tt = self.title_wrap
             self.title.text = tt.text
+        else:
+            return
 
         title.align = tt.align
         title.text_color = tt.font_color

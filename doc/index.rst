@@ -321,8 +321,9 @@ Refer to the topics on the sidebar for more details on plot types and options.
 .. toctree::
    :maxdepth: 1
    :caption: Engines
-
+   engines
    plotly.ipynb
+   bokeh.ipynb
 
 .. toctree::
    :maxdepth: 1

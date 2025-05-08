@@ -209,7 +209,7 @@ class Layout(BaseLayout):
                                button_color=utl.kwget(kwargs, self.fcpp, 'modebar_button_color', None),
                                logo=utl.kwget(kwargs, self.fcpp, 'modebar_logo', False),
                                remove_buttons=utl.kwget(kwargs, self.fcpp, 'modebar_remove_buttons', []),
-                               orientation=utl.kwget(kwargs, self.fcpp, 'modebar_orientaiton', 'h'),
+                               orientation=utl.kwget(kwargs, self.fcpp, 'modebar_orientation', 'h'),
                                # vertical orientation is not rendering in jupyter notebook correctly
                                size=[25, 25],
                                visible=utl.kwget(kwargs, self.fcpp, 'modebar_visible', False)
@@ -1149,8 +1149,8 @@ class Layout(BaseLayout):
 
             # Try to guess the tick labels
             ticklabs = getattr(self, f'tick_labels_major_{ax}')
-            vmin = data.ranges[f'{ax}min'][data.ranges[f'{ax}min'] is not None]
-            vmax = data.ranges[f'{ax}max'][data.ranges[f'{ax}max'] is not None]
+            vmin = data.ranges[f'{ax}min'][data.ranges[f'{ax}min'] != None]  # noqa
+            vmax = data.ranges[f'{ax}max'][data.ranges[f'{ax}max'] != None]  # noqa
 
             if self.name in ['heatmap'] and ax in ['x', 'y']:
                 if ax == 'y':
