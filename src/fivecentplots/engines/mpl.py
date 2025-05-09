@@ -3597,7 +3597,8 @@ class Layout(BaseLayout):
         if (ir == 0 and self.label_col.on) or self.label_wrap.on:
             if self.label_wrap.on:
                 if not self.label_wrap.values_only:
-                    lab = ' | '.join([str(f) for f in utl.validate_list(self.label_wrap.values[ir * self.ncol + ic])])
+                    lab = ' | '.join([str(f) for f in utl.validate_list(self.label_wrap.values[ir * self.ncol + ic])
+                                      if f != 'wrap_reference_999'])
                 else:
                     lab = None
                 self.label_wrap.obj[ir, ic], self.label_wrap.obj_bg[ir, ic] = \

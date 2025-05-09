@@ -2,6 +2,7 @@ from . import data
 import pdb
 import pandas as pd
 import numpy as np
+from natsort import natsorted
 from .. import utilities
 utl = utilities
 db = pdb.set_trace
@@ -62,6 +63,7 @@ class ImShow(data.Data):
 
         # kwargs overrrides
         kwargs['ax_limit_padding'] = kwargs.get('ax_limit_padding', 0)  # don't pad range limits by default
+        self.wrap_reference = kwargs.get('wrap_reference', {})
 
         # Catch invalid axis options
         vals = ['twin_x', 'twin_y'] + [f for f in kwargs if f[0:2] == 'x2'] + [f for f in kwargs if f[0:2] == 'y2']
@@ -78,6 +80,21 @@ class ImShow(data.Data):
             raise data.GroupingError('Cannot wrap by "y" for imshow plots')
         if 'legend' in kwargs and kwargs['legend'] is not None:
             raise data.GroupingError('legend not available for imshow plots')
+        if 'wrap_reference' in kwargs:
+            error = False
+            if not isinstance(kwargs['wrap_reference'], dict):
+                error = True
+            keys = kwargs['wrap_reference'].keys()
+            if len(keys) == 0 or len(keys) > 2:
+                error = True
+            title_key = [f for f in keys if f != 'position'][0]
+            if not isinstance(kwargs['wrap_reference'][title_key], np.ndarray):
+                error = True
+            if error:
+                raise data.GroupingError('wrap_reference must be a dictionary with at least one key '
+                                         'containing an image array')
+        if 'wrap_reference' in kwargs and 'wrap' not in kwargs:
+            raise data.GroupingError('wrap_reference can only be used with a wrap plot')
 
         # Super data.Data
         super().__init__(self.name, self.req, self.opt, self.fcpp, **kwargs)
@@ -169,3 +186,36 @@ class ImShow(data.Data):
 
         subset_dict = {key: value for key, value in self.imgs.items() if key in list(df.index)}
         return np.concatenate(list(subset_dict.values()), 1)
+
+    def _filter_data(self, kwargs):
+        """Apply an optional filter to the data.
+
+        Args:
+            kwargs: user-defined keyword args
+        """
+        data.Data._filter_data(self, kwargs)
+
+        if len(self.wrap_reference) > 0:
+            # Figure out the new data
+            position = self.wrap_reference.get('position', 'first')
+            title = [f for f in self.wrap_reference.keys() if f != 'position'][0]
+            wrap_cols = utl.validate_list(kwargs.get('wrap'))
+            if self.sort:
+                wrap_cols = natsorted(wrap_cols)
+                self.df_all = self.df_all.sort_values(wrap_cols)
+                self.sort = False
+
+            # Add the wrap reference image
+            self.imgs['wrap_reference'] = self.wrap_reference[title]
+            wrap_row = pd.DataFrame(columns=self.df_all.columns, index=['wrap_reference'])
+            wrap_row[wrap_cols[0]] = title
+            for icol in range(1, len(wrap_cols)):
+                wrap_row[wrap_cols[icol]] = 'wrap_reference_999'  # special code to drop this later
+            wrap_row['rows'] = self.wrap_reference[title].shape[0]
+            wrap_row['cols'] = self.wrap_reference[title].shape[1]
+            wrap_row['channels'] = self.wrap_reference[title].shape[2]
+            wrap_row = wrap_row.fillna('')
+            if position == 'last':
+                self.df_all = pd.concat([self.df_all, wrap_row])
+            else:
+                self.df_all = pd.concat([wrap_row, self.df_all])
