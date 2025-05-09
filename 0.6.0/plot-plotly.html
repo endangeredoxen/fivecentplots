@@ -119,10 +119,6 @@
 <li class="toctree-l1"><a class="reference internal" href="nq.html">nq</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pie.html">pie</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Engines</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="plotly.html">plotly</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
@@ -471,8 +467,8 @@ div.rendered_html tbody tr:hover {
 <div class="section" id="Setup">
 <h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
 <p>Import packages</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -486,10 +482,79 @@ div.rendered_html tbody tr:hover {
 <span class="n">fcp</span><span class="o">.</span><span class="n">set_theme</span><span class="p">(</span><span class="s1">&#39;gray_plotly&#39;</span><span class="p">)</span>
 <span class="n">fcp</span><span class="o">.</span><span class="n">KWARGS</span><span class="p">[</span><span class="s1">&#39;inline&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="n">fcp</span><span class="o">.</span><span class="n">KWARGS</span><span class="p">[</span><span class="s1">&#39;engine&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;plotly&#39;</span>
-<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> <span class="s1">&#39;Boost Level&#39;</span><span class="p">],</span>
-         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">,</span> <span class="n">label_rc_font_size</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The autoreload extension is already loaded. To reload it, use:
+  %reload_ext autoreload
+Previous theme file found! Renaming to &#34;defaults_old.py&#34; and copying theme &#34;gray_plotly&#34;...done!
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/Users/steve/Code/fivecentplots/tests/.benchmarks/Darwin-CPython-3.10-64bit/0003_v0.6.json&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;benchmarks&#39;</span><span class="p">])</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;stats&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">]]</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">explode</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">100</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;plotly&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span>
+            <span class="n">box_group_label_rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script type="text/javascript">if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.0.1.min.js"></script>                <div id="7b469173-13b3-4c2c-896f-e0ae7b27b99a" class="plotly-graph-div" style="height:594.0px; width:538.0px;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("7b469173-13b3-4c2c-896f-e0ae7b27b99a")) {                    Plotly.newPlot(                        "7b469173-13b3-4c2c-896f-e0ae7b27b99a",                        [{"hovertemplate":"(%{x}, %{y})\u003cextra\u003e\u003c\u002fextra\u003e","line":{"color":"#4b72b0","dash":"solid","width":1.2},"marker":{"color":"#c34e52","line":{"color":"#c34e52","width":1.5},"size":5,"symbol":"circle-open"},"mode":"markers","showlegend":false,"x":{"dtype":"f8","bdata":"sk\u002fCJug38T\u002fn+Xx6fcfuP0tlJZ+S\u002fu8\u002fsIBy7Y5q8D9CU\u002f\u002fnli7wP3l698tQAvA\u002f4CpoQbEg8D\u002f2pa5tnL\u002fvP0jZDm05r+8\u002fjgy5WV168D\u002fB8XQnQFXuP8sP+djvoO8\u002fufrDYecl8D8L13SKuCfwP6g3eus+lvA\u002fftiyyfM68D\u002fBK99ekFjwP\u002fALxAXHJu4\u002fZN8BZejS7j\u002fFBqSgIX7wPw=="},"xaxis":"x","y":{"dtype":"f8","bdata":"AADAXRJBqD8AAKBblCWqPwAAMGDJ1bY\u002fAADAfTmzqD8AAAABah6oPwAA4ITrBag\u002fAAAATMUSqT8AAEBl\u002fCGoPwAAwH0dOKg\u002fAABgzEHQtT8AAAD8jDGoPwAAQJyk+ac\u002fAACAGD5IqD8AAOCFyuWnPwAAQCzw76c\u002fAAAgCaXjpz8AACCOrvinPwAAoMXEDKg\u002fAAAQKVsRtT8AACCRRAmoPw=="},"yaxis":"y","type":"scatter"},{"hovertemplate":"(%{x}, %{y})\u003cextra\u003e\u003c\u002fextra\u003e","line":{"color":"#c34e52","dash":"solid","width":1.2},"marker":{"color":"#c34e52","line":{"color":"#c34e52","width":1.5},"size":5,"symbol":"circle-open"},"mode":"markers","showlegend":false,"x":{"dtype":"f8","bdata":"IT01FaS4\u002fz9vRcYCmS0AQNaMcQ8mKwBAsP6pD214\u002fz8h0tlY7gQAQJg+0hpnxf8\u002fllzaiLYB\u002fz8jGflIyOb\u002fP6ivyGw54\u002f4\u002fydv00Y+pAEClIqCactj\u002fP1\u002fbmfqjHgBAu6Nn4WQNAEBhrz6S+Kv\u002fP4rYDAoE7f8\u002fBvwbCaw1AEDjlAT\u002f9nP\u002fP4IIJOqcXwBA+hTWQ49mAEAjnf3NgmD\u002fPw=="},"xaxis":"x","y":{"dtype":"f8","bdata":"AACABmL\u002fpz8AAADHguinPwAAYK\u002fpQag\u002fAADAWBgiqD8AAID8wXSoPwAA4BT\u002fK6g\u002fAACgha\u002f7pz8AAGDgD2WoPwAA4APJO6g\u002fAABgrMQ8tT8AAKCeePSnPwAAINGuHKg\u002fAAAAOj5aqD8AAEAeFmqoPwAAIP1LLKg\u002fAABA00wdqD8AAKC2KfinPwAAAN0IZag\u002fAACA5XpbtT8AAKA1PySoPw=="},"yaxis":"y","type":"scatter"},{"hovertemplate":"(%{x}, %{y})\u003cextra\u003e\u003c\u002fextra\u003e","line":{"color":"#54a767","dash":"solid","width":1.2},"marker":{"color":"#c34e52","line":{"color":"#c34e52","width":1.5},"size":5,"symbol":"circle-open"},"mode":"markers","showlegend":false,"x":{"dtype":"f8","bdata":"0SqreSZ6CEBRA3VN+WAIQM1wJvlrNwhASI9uhNAgCEAbwnUM\u002fQYIQKHS25fk4AdANc5bWz8yCEDC3QeD9R8IQILzDqcy8gdAtYDSKqBrCEBHt3ZZZDYIQAeWD+4bAwhA7Ewf18T0B0Cc1E5sseAHQMPU2twbqAdAdzo43evzB0A="},"xaxis":"x","y":{"dtype":"f8","bdata":"AADgKFxprz8AACBiLoOvPwAAQMb4MK8\u002fAAAASkNnrz8AAOD0Lku5PwAAwCNkbK8\u002fAAAgPgXArz8AAGAVxauvPwAAoBwibq8\u002fAAAgS+Yyrz8AAICQup2vPwAAIJxrcq8\u002fAADAw7O4rz8AACDONcy5PwAAQJ5Baa8\u002fAABgpkI8rz8="},"yaxis":"y","type":"scatter"},{"hovertemplate":"(%{x}, %{y})\u003cextra\u003e\u003c\u002fextra\u003e","line":{"color":"#8172b1","dash":"solid","width":1.2},"marker":{"color":"#c34e52","line":{"color":"#c34e52","width":1.5},"size":5,"symbol":"circle-open"},"mode":"markers","showlegend":false,"x":{"dtype":"f8","bdata":"+E2X\u002fYP1D0DblSFP7eAPQOLk5tSK7g9ASyWm5ZMREEB1wbJlqyUQQCqa8QCCABBAnD9J5YAAEEB9fWS4yRYQQFrxoovKDxBA1Syld07UD0A4VK0zqQAQQFAU25FuPhBAyLa2sLXID0CkUw9bZr4PQNk39lSixA9Ah5R4OxEEEEA="},"xaxis":"x","y":{"dtype":"f8","bdata":"AABwOewrsD8AAGBOe12wPwAAYPOO+bA\u002fAAAAiPRusD8AANBcNby6PwAAUPXWU7A\u002fAAAATwVcsD8AAMAYrjSwPwAAsAjhPrA\u002fAABwxjAUsD8AANCTMimwPwAAAMGqerA\u002fAAAQr13tuT8AAECL+hGwPwAAYDbIEbA\u002fAAAgmWPTsD8="},"yaxis":"y","type":"scatter"},{"hovertemplate":"(%{x}, %{y})\u003cextra\u003e\u003c\u002fextra\u003e","line":{"color":"#64b4cc","dash":"solid","width":1.2},"marker":{"color":"#c34e52","line":{"color":"#c34e52","width":1.5},"size":5,"symbol":"circle-open"},"mode":"markers","showlegend":false,"x":{"dtype":"f8","bdata":"pDFk0V\u002fsE0A6BP+28A0UQHIgzSa97hNAI\u002fVHQmApFEAK7DQx9OQTQA=="},"xaxis":"x","y":{"dtype":"f8","bdata":"AAAgghwnsT8AAEBszMW7PwAAcGuZ+bA\u002fAAAwDksWsT8AANDAVgmxPw=="},"yaxis":"y","type":"scatter"},{"hovertemplate":"(%{x}, %{y})\u003cextra\u003e\u003c\u002fextra\u003e","line":{"color":"#ccb973","dash":"solid","width":1.2},"marker":{"color":"#c34e52","line":{"color":"#c34e52","width":1.5},"size":5,"symbol":"circle-open"},"mode":"markers","showlegend":false,"x":{"dtype":"f8","bdata":"FJvugC8EGEBQxPZZszAYQJE7Tts64xdADza09BgYGEAZYZ9tC+AXQKaNgVOq9BdAfRwIAnjcF0BC65kTXPcXQDMVnGg8+RdABVvWX8McGEBGDJdH+gIYQPM8PXny7RdAlNDbyp0TGEDgje6ZpCQYQEeKkFyS0hdAQWg7Mor0F0AxwSTVUx8YQDiqyVTA5RdAveXHvMfHF0CW\u002f1BXkPUXQP87c3lB\u002fBdAje0cGXG4F0C0py0jND0YQA=="},"xaxis":"x","y":{"dtype":"f8","bdata":"AAAwh\u002foDtD8AAIAUAySmPwAAICBDE6Y\u002fAAAwiA\u002fssz8AAKC+SEKnPwAAgMyUsKg\u002fAABAbk4lpj8AACAMPPelPwAAoAsiBqY\u002fAADAnnb4pT8AACDEeKemPwAAAAb1eaY\u002fAABA+wPlpT8AAAA8FAWnPwAAwALsV6Y\u002fAADg7lcBpz8AAEBr04ymPwAA4P+PX6Y\u002fAABAmxw+pj8AAMDUzgqmPwAAAIXrBaY\u002fAABw1cpxsz8AAKApjyKmPw=="},"yaxis":"y","type":"scatter"},{"line":{"color":"#cccccc","dash":"solid","width":1},"mode":"lines","showlegend":false,"x":[0.8,1.2],"y":[0.08919962499930989,0.08919962499930989],"type":"scatter","xaxis":"x","yaxis":"y"},{"line":{"color":"#cccccc","dash":"solid","width":1},"mode":"lines","showlegend":false,"x":[0.8,1.2],"y":[0.04665866600407753,0.04665866600407753],"type":"scatter","xaxis":"x","yaxis":"y"},{"line":{"color":"#cccccc","dash":"dash","width":1},"mode":"lines","showlegend":false,"x":[1,1],"y":[0.04665866600407753,0.08919962499930989],"type":"scatter","xaxis":"x","yaxis":"y"},{"line":{"color":"#cccccc","dash":"solid","width":1},"mode":"lines","showlegend":false,"x":[1.8,2.2],"y":[0.08342712500598282,0.08342712500598282],"type":"scatter","xaxis":"x","yaxis":"y"},{"line":{"color":"#cccccc","dash":"solid","width":1},"mode":"lines","showlegend":false,"x":[1.8,2.2],"y":[0.046695791999809444,0.046695791999809444],"type":"scatter","xaxis":"x","yaxis":"y"},{"line":{"color":"#cccccc","dash":"dash","width":1},"mode":"lines","showlegend":false,"x":[2,2],"y":[0.046695791999809444,0.08342712500598282],"type":"scatter","xaxis":"x","yaxis":"y"},{"line":{"color":"#cccccc","dash":"solid","width":1},"mode":"lines","showlegend":false,"x":[2.8,3.2],"y":[0.10077225000713952,0.10077225000713952],"type":"scatter","xaxis":"x","yaxis":"y"},{"line":{"color":"#cccccc","dash":"solid","width":1},"mode":"lines","showlegend":false,"x":[2.8,3.2],"y":[0.0609204999927897,0.0609204999927897],"type":"scatter","xaxis":"x","yaxis":"y"},{"line":{"color":"#cccccc","dash":"dash","width":1},"mode":"lines","showlegend":false,"x":[3,3],"y":[0.0609204999927897,0.10077225000713952],"type":"scatter","xaxis":"x","yaxis":"y"},{"line":{"color":"#cccccc","dash":"solid","width":1},"mode":"lines","showlegend":false,"x":[3.8,4.2],"y":[0.10443433299951721,0.10443433299951721],"type":"scatter","xaxis":"x","yaxis":"y"},{"line":{"color":"#cccccc","dash":"solid","width":1},"mode":"lines","showlegend":false,"x":[3.8,4.2],"y":[0.06277133300318383,0.06277133300318383],"type":"scatter","xaxis":"x","yaxis":"y"},{"line":{"color":"#cccccc","dash":"dash","width":1},"mode":"lines","showlegend":false,"x":[4,4],"y":[0.06277133300318383,0.10443433299951721],"type":"scatter","xaxis":"x","yaxis":"y"},{"line":{"color":"#cccccc","dash":"solid","width":1},"mode":"lines","showlegend":false,"x":[4.8,5.2],"y":[0.10848691599676386,0.10848691599676386],"type":"scatter","xaxis":"x","yaxis":"y"},{"line":{"color":"#cccccc","dash":"solid","width":1},"mode":"lines","showlegend":false,"x":[4.8,5.2],"y":[0.06630858300195541,0.06630858300195541],"type":"scatter","xaxis":"x","yaxis":"y"},{"line":{"color":"#cccccc","dash":"dash","width":1},"mode":"lines","showlegend":false,"x":[5,5],"y":[0.06630858300195541,0.10848691599676386],"type":"scatter","xaxis":"x","yaxis":"y"},{"line":{"color":"#cccccc","dash":"solid","width":1},"mode":"lines","showlegend":false,"x":[5.8,6.2],"y":[0.07818570900417399,0.07818570900417399],"type":"scatter","xaxis":"x","yaxis":"y"},{"line":{"color":"#cccccc","dash":"solid","width":1},"mode":"lines","showlegend":false,"x":[5.8,6.2],"y":[0.04276287500397302,0.04276287500397302],"type":"scatter","xaxis":"x","yaxis":"y"},{"line":{"color":"#cccccc","dash":"dash","width":1},"mode":"lines","showlegend":false,"x":[6,6],"y":[0.04276287500397302,0.07818570900417399],"type":"scatter","xaxis":"x","yaxis":"y"},{"boxpoints":false,"fillcolor":"#ffffff","line":{"color":"#aaaaaa","width":0.5},"name":"","showlegend":false,"whiskerwidth":0.5,"x":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"y":{"dtype":"f8","bdata":"AADAXRJBqD8AAKBblCWqPwAAMGDJ1bY\u002fAADAfTmzqD8AAAABah6oPwAA4ITrBag\u002fAAAATMUSqT8AAEBl\u002fCGoPwAAwH0dOKg\u002fAABgzEHQtT8AAAD8jDGoPwAAQJyk+ac\u002fAACAGD5IqD8AAOCFyuWnPwAAQCzw76c\u002fAAAgCaXjpz8AACCOrvinPwAAoMXEDKg\u002fAAAQKVsRtT8AACCRRAmoPw=="},"type":"box","xaxis":"x","yaxis":"y"},{"boxpoints":false,"fillcolor":"#ffffff","line":{"color":"#aaaaaa","width":0.5},"name":"","showlegend":false,"whiskerwidth":0.5,"x":[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],"y":{"dtype":"f8","bdata":"AACABmL\u002fpz8AAADHguinPwAAYK\u002fpQag\u002fAADAWBgiqD8AAID8wXSoPwAA4BT\u002fK6g\u002fAACgha\u002f7pz8AAGDgD2WoPwAA4APJO6g\u002fAABgrMQ8tT8AAKCeePSnPwAAINGuHKg\u002fAAAAOj5aqD8AAEAeFmqoPwAAIP1LLKg\u002fAABA00wdqD8AAKC2KfinPwAAAN0IZag\u002fAACA5XpbtT8AAKA1PySoPw=="},"type":"box","xaxis":"x","yaxis":"y"},{"boxpoints":false,"fillcolor":"#ffffff","line":{"color":"#aaaaaa","width":0.5},"name":"","showlegend":false,"whiskerwidth":0.5,"x":[3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],"y":{"dtype":"f8","bdata":"AADgKFxprz8AACBiLoOvPwAAQMb4MK8\u002fAAAASkNnrz8AAOD0Lku5PwAAwCNkbK8\u002fAAAgPgXArz8AAGAVxauvPwAAoBwibq8\u002fAAAgS+Yyrz8AAICQup2vPwAAIJxrcq8\u002fAADAw7O4rz8AACDONcy5PwAAQJ5Baa8\u002fAABgpkI8rz8="},"type":"box","xaxis":"x","yaxis":"y"},{"boxpoints":false,"fillcolor":"#ffffff","line":{"color":"#aaaaaa","width":0.5},"name":"","showlegend":false,"whiskerwidth":0.5,"x":[4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4],"y":{"dtype":"f8","bdata":"AABwOewrsD8AAGBOe12wPwAAYPOO+bA\u002fAAAAiPRusD8AANBcNby6PwAAUPXWU7A\u002fAAAATwVcsD8AAMAYrjSwPwAAsAjhPrA\u002fAABwxjAUsD8AANCTMimwPwAAAMGqerA\u002fAAAQr13tuT8AAECL+hGwPwAAYDbIEbA\u002fAAAgmWPTsD8="},"type":"box","xaxis":"x","yaxis":"y"},{"boxpoints":false,"fillcolor":"#ffffff","line":{"color":"#aaaaaa","width":0.5},"name":"","showlegend":false,"whiskerwidth":0.5,"x":[5,5,5,5,5],"y":{"dtype":"f8","bdata":"AAAgghwnsT8AAEBszMW7PwAAcGuZ+bA\u002fAAAwDksWsT8AANDAVgmxPw=="},"type":"box","xaxis":"x","yaxis":"y"},{"boxpoints":false,"fillcolor":"#ffffff","line":{"color":"#aaaaaa","width":0.5},"name":"","showlegend":false,"whiskerwidth":0.5,"x":[6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],"y":{"dtype":"f8","bdata":"AAAwh\u002foDtD8AAIAUAySmPwAAICBDE6Y\u002fAAAwiA\u002fssz8AAKC+SEKnPwAAgMyUsKg\u002fAABAbk4lpj8AACAMPPelPwAAoAsiBqY\u002fAADAnnb4pT8AACDEeKemPwAAAAb1eaY\u002fAABA+wPlpT8AAAA8FAWnPwAAwALsV6Y\u002fAADg7lcBpz8AAEBr04ymPwAA4P+PX6Y\u002fAABAmxw+pj8AAMDUzgqmPwAAAIXrBaY\u002fAABw1cpxsz8AAKApjyKmPw=="},"type":"box","xaxis":"x","yaxis":"y"},{"line":{"color":"#666666","dash":"solid","width":1},"mode":"lines","showlegend":false,"x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAAAhAAAAAAAAAEEAAAAAAAAAUQAAAAAAAABhA"},"y":[0.05315758124997956,0.05081566249864409,0.06623608843983675,0.06870853125019494,0.07501874160079751,0.048216286129900254],"type":"scatter","xaxis":"x","yaxis":"y"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"xaxis":{"anchor":"y","domain":[0.0,0.9090909090909091],"tickfont":{"family":"Arial","size":16},"ticks":"inside","tickcolor":"#ffffff","ticklen":0,"tickwidth":0,"showticklabels":false,"tickangle":0,"showline":true,"linecolor":"#aaaaaa","linewidth":1,"mirror":true,"gridcolor":"#ffffff","gridwidth":1.3,"griddash":"solid","range":[0.5,6.5]},"yaxis":{"anchor":"x","domain":[0.0024875621890547706,0.9975124378109452],"tickfont":{"family":"Arial","size":16},"ticks":"inside","tickcolor":"#ffffff","ticklen":6.2,"tickwidth":2.2,"showticklabels":true,"tickangle":0,"showline":true,"linecolor":"#aaaaaa","linewidth":1,"mirror":true,"gridcolor":"#ffffff","gridwidth":1.3,"griddash":"solid","ticksuffix":" ","range":[0.03947667295433348,0.1117731180464034],"title":{"font":{"family":"Arial","size":18,"color":"#000000","style":"italic","weight":"bold"},"text":"\u003ci\u003e\u003cb\u003edata\u003c\u002fb\u003e\u003c\u002fi\u003e","standoff":15}},"shapes":[{"fillcolor":"#ffffff","line":{"color":"#aaaaaa","width":1},"type":"rect","x0":0.5,"x1":1.5,"xref":"x","y0":-0.39625,"y1":-0.00125,"yref":"y domain"},{"fillcolor":"#ffffff","line":{"color":"#aaaaaa","width":1},"type":"rect","x0":1.5,"x1":2.5,"xref":"x","y0":-0.39625,"y1":-0.00125,"yref":"y domain"},{"fillcolor":"#ffffff","line":{"color":"#aaaaaa","width":1},"type":"rect","x0":2.5,"x1":3.5,"xref":"x","y0":-0.39625,"y1":-0.00125,"yref":"y domain"},{"fillcolor":"#ffffff","line":{"color":"#aaaaaa","width":1},"type":"rect","x0":3.5,"x1":4.5,"xref":"x","y0":-0.39625,"y1":-0.00125,"yref":"y domain"},{"fillcolor":"#ffffff","line":{"color":"#aaaaaa","width":1},"type":"rect","x0":4.5,"x1":5.5,"xref":"x","y0":-0.39625,"y1":-0.00125,"yref":"y domain"},{"fillcolor":"#ffffff","line":{"color":"#aaaaaa","width":1},"type":"rect","x0":5.5,"x1":6.5,"xref":"x","y0":-0.39625,"y1":-0.00125,"yref":"y domain"},{"fillcolor":"#ffffff","line":{"color":"#ffffff","width":1},"type":"rect","x0":1.0075,"x1":1.1275,"xref":"x domain","y0":-0.051250000000000004,"y1":-0.00125,"yref":"y domain"}],"annotations":[{"font":{"color":"#666666","family":"Arial","size":14,"style":"normal","weight":"normal"},"showarrow":false,"text":"test_error","textangle":-90,"x":1.0,"xanchor":"center","xref":"x","y":-0.19874999999999998,"yanchor":"middle","yref":"y domain"},{"font":{"color":"#666666","family":"Arial","size":14,"style":"normal","weight":"normal"},"showarrow":false,"text":"test_horizontal","textangle":-90,"x":2.0,"xanchor":"center","xref":"x","y":-0.19874999999999998,"yanchor":"middle","yref":"y domain"},{"font":{"color":"#666666","family":"Arial","size":14,"style":"normal","weight":"normal"},"showarrow":false,"text":"test_legend","textangle":-90,"x":3.0,"xanchor":"center","xref":"x","y":-0.19874999999999998,"yanchor":"middle","yref":"y domain"},{"font":{"color":"#666666","family":"Arial","size":14,"style":"normal","weight":"normal"},"showarrow":false,"text":"test_stacked","textangle":-90,"x":4.0,"xanchor":"center","xref":"x","y":-0.19874999999999998,"yanchor":"middle","yref":"y domain"},{"font":{"color":"#666666","family":"Arial","size":14,"style":"normal","weight":"normal"},"showarrow":false,"text":"test_stacked_horizontal","textangle":-90,"x":5.0,"xanchor":"center","xref":"x","y":-0.19874999999999998,"yanchor":"middle","yref":"y domain"},{"font":{"color":"#666666","family":"Arial","size":14,"style":"normal","weight":"normal"},"showarrow":false,"text":"test_vertical","textangle":-90,"x":6.0,"xanchor":"center","xref":"x","y":-0.19874999999999998,"yanchor":"middle","yref":"y domain"},{"font":{"color":"#666666","family":"Arial","size":15,"style":"normal","weight":"bold"},"showarrow":false,"text":"name","textangle":0,"x":1.0075,"xanchor":"left","xref":"x domain","y":-0.026250000000000002,"yanchor":"middle","yref":"y domain"}],"margin":{"l":79.0,"r":11,"t":25.0,"b":167.0},"modebar":{"orientation":"h","bgcolor":"#ffffff"},"title":{"x":0.5,"y":0.9949494949494949},"autosize":false,"height":594.0,"paper_bgcolor":"#ffffff","plot_bgcolor":"#eaeaea","showlegend":false,"width":538.0,"boxgap":0.35},                        {"scrollZoom": true, "displaylogo": false, "modeBarButtonsToRemove": [], "responsive": true}                    ).then(function(){
+
+var gd = document.getElementById('7b469173-13b3-4c2c-896f-e0ae7b27b99a');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
@@ -520,7 +585,7 @@ The autoreload extension is already loaded. To reload it, use:
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&#39;0.6.0-a2&#39;
+&#39;0.6.0-b0&#39;
 </pre></div></div>
 </div>
 <div class="section" id="Sample-data">
@@ -780,6 +845,15 @@ Previous theme file found! Renaming to &#34;defaults_old.py&#34; and copying the
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">fcp</span><span class="o">.</span><span class="n">KWARGS</span><span class="p">[</span><span class="s1">&#39;inline&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
 </pre></div>
 </div>
 </div>
@@ -1771,7 +1845,7 @@ var element = document.currentScript.previousSibling.previousSibling;
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_82_0.png" src="_images/plot-plotly_82_0.png" />
+<img alt="_images/plot-plotly_85_0.png" src="_images/plot-plotly_85_0.png" />
 </div>
 </div>
 <p>Next we plot multiple horizontal and vertical lines at the same time and use the tuple formulation to style them independently (note one line contains the tuple value for legend name and thus is shown in the legend):</p>
@@ -1791,7 +1865,7 @@ var element = document.currentScript.previousSibling.previousSibling;
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_84_0.png" src="_images/plot-plotly_84_0.png" />
+<img alt="_images/plot-plotly_87_0.png" src="_images/plot-plotly_87_0.png" />
 </div>
 </div>
 <p>We can also plot ax_lines using data from a DataFrame column. Below we define a new column and plot the value from the first row as a horizontal line:</p>
@@ -1811,7 +1885,7 @@ var element = document.currentScript.previousSibling.previousSibling;
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_86_0.png" src="_images/plot-plotly_86_0.png" />
+<img alt="_images/plot-plotly_89_0.png" src="_images/plot-plotly_89_0.png" />
 </div>
 </div>
 <p>For row/col/wrap plots, we can also apply the keyword <code class="docutils literal notranslate"><span class="pre">ax_[h|v]lines_by_plot=True</span></code> to pass a different value to each subplot:</p>
@@ -1830,7 +1904,7 @@ var element = document.currentScript.previousSibling.previousSibling;
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_88_0.png" src="_images/plot-plotly_88_0.png" />
+<img alt="_images/plot-plotly_91_0.png" src="_images/plot-plotly_91_0.png" />
 </div>
 </div>
 </div>
@@ -1852,7 +1926,7 @@ var element = document.currentScript.previousSibling.previousSibling;
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_91_0.png" src="_images/plot-plotly_91_0.png" />
+<img alt="_images/plot-plotly_94_0.png" src="_images/plot-plotly_94_0.png" />
 </div>
 </div>
 <p>Since this fit is garbage, let’s make it a polynomial of degree 5. We’ll also disable the legend just because:</p>
@@ -1871,7 +1945,7 @@ var element = document.currentScript.previousSibling.previousSibling;
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_93_0.png" src="_images/plot-plotly_93_0.png" />
+<img alt="_images/plot-plotly_96_0.png" src="_images/plot-plotly_96_0.png" />
 </div>
 </div>
 <p>Let’s return to our linear fit example. After about Voltage = 1.3V, the response looks somewhat linear. We can constrain the region of interest for the fit by supplying a start and stop value to the keywords <code class="docutils literal notranslate"><span class="pre">fit_range_x</span></code> (which selects data points that fall within this range on the x-axis) or <code class="docutils literal notranslate"><span class="pre">fit_range_y</span></code> (which selects data points that fall within this range on the y-axis). The R^2 of this fit looks much better than before.</p>
@@ -1890,7 +1964,7 @@ var element = document.currentScript.previousSibling.previousSibling;
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_95_0.png" src="_images/plot-plotly_95_0.png" />
+<img alt="_images/plot-plotly_98_0.png" src="_images/plot-plotly_98_0.png" />
 </div>
 </div>
 <p>In the case of multiple datasets, we can also add a line of fit for each item in a legend by specifying a DataFrame column in the <code class="docutils literal notranslate"><span class="pre">legend</span></code> keyword:</p>
@@ -1909,7 +1983,7 @@ var element = document.currentScript.previousSibling.previousSibling;
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_97_0.png" src="_images/plot-plotly_97_0.png" />
+<img alt="_images/plot-plotly_100_0.png" src="_images/plot-plotly_100_0.png" />
 </div>
 </div>
 <p>Fits also work with subplot grouping:</p>
@@ -1928,7 +2002,7 @@ var element = document.currentScript.previousSibling.previousSibling;
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_99_0.png" src="_images/plot-plotly_99_0.png" />
+<img alt="_images/plot-plotly_102_0.png" src="_images/plot-plotly_102_0.png" />
 </div>
 </div>
 </div>
@@ -1949,7 +2023,7 @@ var element = document.currentScript.previousSibling.previousSibling;
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_102_0.png" src="_images/plot-plotly_102_0.png" />
+<img alt="_images/plot-plotly_105_0.png" src="_images/plot-plotly_105_0.png" />
 </div>
 </div>
 <p>One option to deal with this is to sort the DataFrame by x-value. Unfortunately, this can result in a very jagged mess as lines are drawn between points with similar x-value but different y-value.</p>
@@ -1969,7 +2043,7 @@ var element = document.currentScript.previousSibling.previousSibling;
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_104_0.png" src="_images/plot-plotly_104_0.png" />
+<img alt="_images/plot-plotly_107_0.png" src="_images/plot-plotly_107_0.png" />
 </div>
 </div>
 <p>Rather than drawing connecting lines between all points, fivecentplots allows you to select a representative statistic of the data at each value (such as the median) and plot a line based on this value instead. This is accomplished using the <code class="docutils literal notranslate"><span class="pre">stat</span></code> keyword (any stats that can be applied to a pandas <code class="docutils literal notranslate"><span class="pre">groupby</span></code> object are valid).</p>
@@ -1988,7 +2062,7 @@ var element = document.currentScript.previousSibling.previousSibling;
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_106_0.png" src="_images/plot-plotly_106_0.png" />
+<img alt="_images/plot-plotly_109_0.png" src="_images/plot-plotly_109_0.png" />
 </div>
 </div>
 <p>Alternatively, if we plot Current vs Voltage, our mean stat line becomes jagged and nasty. This is due to the fact that the current values for each voltage point vary between datasets. This is not any better than just plotting a simple connecting line between points.</p>
@@ -2006,7 +2080,7 @@ var element = document.currentScript.previousSibling.previousSibling;
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_108_0.png" src="_images/plot-plotly_108_0.png" />
+<img alt="_images/plot-plotly_111_0.png" src="_images/plot-plotly_111_0.png" />
 </div>
 </div>
 <p>For cases where the x-values are not identical and have some jitter from one dataset to the next, you can use the keyword <code class="docutils literal notranslate"><span class="pre">stat_val</span></code> and specify an alternative DataFrame column to use for the statistical calculation (the actual plotted x-axis will still be whatever is specified for the <code class="docutils literal notranslate"><span class="pre">x</span></code> keyword). Here we use a column called “I Set” which represents the setpoint current while “I [A]” represents the actual measured current. We still have some jaggedness in the stat line but it is now
@@ -2025,7 +2099,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_110_0.png" src="_images/plot-plotly_110_0.png" />
+<img alt="_images/plot-plotly_113_0.png" src="_images/plot-plotly_113_0.png" />
 </div>
 </div>
 <p>Stat lines also work with multiple DataFrame columns are plotted on a given axis. For example, consider the following with two values on the y-axis:</p>
@@ -2043,7 +2117,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_112_0.png" src="_images/plot-plotly_112_0.png" />
+<img alt="_images/plot-plotly_115_0.png" src="_images/plot-plotly_115_0.png" />
 </div>
 </div>
 </div>
@@ -2138,7 +2212,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_118_0.png" src="_images/plot-plotly_118_0.png" />
+<img alt="_images/plot-plotly_121_0.png" src="_images/plot-plotly_121_0.png" />
 </div>
 </div>
 <p>Next we show the IQR around each point based on the 25th and 75th percentiles:</p>
@@ -2155,7 +2229,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_120_0.png" src="_images/plot-plotly_120_0.png" />
+<img alt="_images/plot-plotly_123_0.png" src="_images/plot-plotly_123_0.png" />
 </div>
 </div>
 <p>Lastly we show the +/-2 sigma range of each data point:</p>
@@ -2172,7 +2246,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_122_0.png" src="_images/plot-plotly_122_0.png" />
+<img alt="_images/plot-plotly_125_0.png" src="_images/plot-plotly_125_0.png" />
 </div>
 </div>
 <p>We can style the shaded interval region using kwargs that relate to the type of interval. Here is an example for the <code class="docutils literal notranslate"><span class="pre">nq_int</span></code> option:</p>
@@ -2190,7 +2264,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_124_0.png" src="_images/plot-plotly_124_0.png" />
+<img alt="_images/plot-plotly_127_0.png" src="_images/plot-plotly_127_0.png" />
 </div>
 </div>
 </div>
@@ -2211,7 +2285,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_127_0.png" src="_images/plot-plotly_127_0.png" />
+<img alt="_images/plot-plotly_130_0.png" src="_images/plot-plotly_130_0.png" />
 </div>
 </div>
 <p>Now consider the case where we have both an upper and a lower control limit. Again, notice that the ranges outside of the limits are shaded. We will also enable a legend to make the meaning of the shaded region obvious.</p>
@@ -2228,7 +2302,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_129_0.png" src="_images/plot-plotly_129_0.png" />
+<img alt="_images/plot-plotly_132_0.png" src="_images/plot-plotly_132_0.png" />
 </div>
 </div>
 <p>We can invert the shading behavior to show points that fall within our target range using the keyword <code class="docutils literal notranslate"><span class="pre">control_limit_side=&quot;inside&quot;</span></code> (“outside” is used by default). If both ucl and lcl are defined, use kwargs for lcl to style the shaded region):</p>
@@ -2246,7 +2320,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_131_0.png" src="_images/plot-plotly_131_0.png" />
+<img alt="_images/plot-plotly_134_0.png" src="_images/plot-plotly_134_0.png" />
 </div>
 </div>
 </div>
@@ -2270,7 +2344,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_135_0.png" src="_images/plot-plotly_135_0.png" />
+<img alt="_images/plot-plotly_138_0.png" src="_images/plot-plotly_138_0.png" />
 </div>
 </div>
 <p>We can also add multiple reference lines to a single plot:</p>
@@ -2292,7 +2366,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_137_0.png" src="_images/plot-plotly_137_0.png" />
+<img alt="_images/plot-plotly_140_0.png" src="_images/plot-plotly_140_0.png" />
 </div>
 </div>
 </div>
@@ -2314,7 +2388,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot-plotly_140_0.png" src="_images/plot-plotly_140_0.png" />
+<img alt="_images/plot-plotly_143_0.png" src="_images/plot-plotly_143_0.png" />
 </div>
 </div>
 </div>

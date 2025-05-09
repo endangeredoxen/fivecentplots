@@ -118,10 +118,6 @@
 <li class="toctree-l1"><a class="reference internal" href="nq.html">nq</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pie.html">pie</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Engines</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="plotly.html">plotly</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
@@ -312,7 +308,7 @@ in <strong>pandas</strong> DataFrames.</p>
          <p>
             <ul>
                <li><b>fivecentplots</b> can wrap any plotting "engine" (or library) with the same API</li>
-               <li>Getting the same plot from say <b>matplotlib</b> or <b>bokeh</b> is as easy as chaning one kwarg in the exact same function call (more development is needed here, but conceptually it works)</li>
+               <li>Getting the same plot from <b>matplotlib</b> or <b>plotly</b> is as easy as chaning one kwarg in the exact same function call</li>
             </ul>
          </p>
       </div>
@@ -456,9 +452,9 @@ different API!  But with <strong>fivecentplots</strong> we can just change the k
 <blockquote>
 <div><div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><strong>bokeh</strong> support is still limited and not all plot types are currently available.
-It does not currently have as much styling flexibility as <strong>matplotlib</strong>
-so plots are not a 1:1 exact replication.</p>
+<p>As of v0.6 <strong>matplotlib</strong> has the richest available plotting feature set.  <strong>plotly</strong> supports most plot
+types and many of the same style features.  <strong>bokeh</strong> support is limited to only scatter plots at this
+time.</p>
 </div>
 </div></blockquote>
 <p>Refer to the topics on the sidebar for more details on plot types and options.</p>
@@ -491,12 +487,6 @@ so plots are not a 1:1 exact replication.</p>
 <li class="toctree-l1"><a class="reference internal" href="imshow.html">imshow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nq.html">nq</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pie.html">pie</a></li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Engines</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="plotly.html">plotly</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">

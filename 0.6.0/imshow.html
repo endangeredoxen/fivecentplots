@@ -137,6 +137,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#Grouped-Images">Grouped Images</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Simple-grouping-example">Simple grouping example</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#More-advanced-example">More advanced example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Wrap-reference">Wrap reference</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#Pixel-accuracy">Pixel accuracy</a><ul>
@@ -149,10 +150,6 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="nq.html">nq</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pie.html">pie</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Engines</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="plotly.html">plotly</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
@@ -503,33 +500,41 @@ div.rendered_html tbody tr:hover {
 <div class="section" id="Setup">
 <h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
 <p>Import packages:</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">imageio.v3</span> <span class="k">as</span> <span class="nn">imageio</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The autoreload extension is already loaded. To reload it, use:
+  %reload_ext autoreload
+</pre></div></div>
+</div>
 <p>Load a completely ridiculous 8-bit RGB color test image as a <code class="docutils literal notranslate"><span class="pre">np.array</span></code>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">img_rgb</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;test_data/imshow_cat_pirate.png&#39;</span><span class="p">))</span>
+<span></span><span class="n">img_rgb</span> <span class="o">=</span> <span class="n">imageio</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;test_data/imshow_cat_pirate.png&#39;</span><span class="p">))</span>
 <span class="n">img_rgb</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
@@ -684,7 +689,7 @@ fcp.imshow(img, **kwargs)
 </div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -696,8 +701,7 @@ fcp.imshow(img, **kwargs)
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
@@ -874,7 +878,7 @@ fcp.imshow(img, **kwargs)
 <h3>RGB<a class="headerlink" href="#RGB" title="Permalink to this headline">¶</a></h3>
 <p>RGB data must be stored in a <code class="docutils literal notranslate"><span class="pre">numpy</span></code> array. For a single image, it can be passed as the primary <code class="docutils literal notranslate"><span class="pre">arg</span></code> to the <code class="docutils literal notranslate"><span class="pre">imshow</span></code> plotting function, along with any other desired <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> to fine tune the final result:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -891,8 +895,7 @@ fcp.imshow(img, **kwargs)
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
@@ -1423,10 +1426,10 @@ fcp.imshow(img, **kwargs)
 <h2>Split color planes<a class="headerlink" href="#Split-color-planes" title="Permalink to this headline">¶</a></h2>
 <p>This section applies only to single-channel image data</p>
 <p>When analyzing Bayer-type images, it is often useful to split the image data based on the color-filter array pattern used on the image sensor. fivecentplots provides a simple utility function to do this and <code class="docutils literal notranslate"><span class="pre">imshow</span></code> can be used to display the result. Consider the following image:</p>
-<p><img alt="821c3e0383ef4ab3b6452e02fb5e75ee" src="https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg" /></p>
+<p><img alt="dbc8ac25dac7432a8e847d0cd1d2a682" src="https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg" /></p>
 <p>First we read the image from the world-wide web and convert into a Bayer-like RAW image (rough hack for the purposes of this example):</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1446,8 +1449,7 @@ fcp.imshow(img, **kwargs)
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
@@ -2031,10 +2033,60 @@ array([[ 0,  0,  0, ..., 34,  1,  1],
 </div>
 <p>..note:: The above images are zoomed in automatically because our crop dimensions are smaller than the default value for <code class="docutils literal notranslate"><span class="pre">ax_size=[400,</span> <span class="pre">400]</span></code></p>
 </div>
+<div class="section" id="Wrap-reference">
+<h3>Wrap reference<a class="headerlink" href="#Wrap-reference" title="Permalink to this headline">¶</a></h3>
+<p>Sometimes in image processing analysis, it is helpful to compare results with a reference image. When plotting multiple frame in a <code class="docutils literal notranslate"><span class="pre">wrap</span></code> plot configuration, reference images can be added as the first or last image in the group by passing a dictionary to the kwarg <code class="docutils literal notranslate"><span class="pre">wrap_reference</span></code>. This dictionary contains two keys, each with a single value:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 57%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Reference label name (str)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">np.array</span></code> containing image data</p></td>
+</tr>
+<tr class="row-odd"><td><p>‘position’ (optional)</p></td>
+<td><p>‘first’ (default) or ‘last’</p></td>
+</tr>
+</tbody>
+</table>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">imgs</span><span class="o">=</span><span class="n">imgs</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;kernel&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma&#39;</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;gain==1 &amp; kernel &lt; 9 &amp; sigma in [0, 1]&#39;</span><span class="p">,</span>
+           <span class="n">xmin</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+           <span class="n">wrap_reference</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;original&#39;</span><span class="p">:</span> <span class="n">base_img</span><span class="p">,</span> <span class="s1">&#39;position&#39;</span><span class="p">:</span> <span class="s1">&#39;first&#39;</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/imshow_76_0.png" src="_images/imshow_76_0.png" />
+</div>
+</div>
+</div>
 </div>
 <div class="section" id="Pixel-accuracy">
 <h2>Pixel accuracy<a class="headerlink" href="#Pixel-accuracy" title="Permalink to this headline">¶</a></h2>
 <p>The importance of pixel accuracy when rendering images through <code class="docutils literal notranslate"><span class="pre">fcp.imshow</span></code> depends on the application. In some cases, we may specifically not want pixel accuracy as it can make the rendered image quality look poor and pixelated. This section describes the options available to address this issue within fivecentplots.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="Preserving-pixel-values">
 <h3>Preserving pixel values<a class="headerlink" href="#Preserving-pixel-values" title="Permalink to this headline">¶</a></h3>
 <p>Let’s create a very basic checkerboard image with only two pixel values, 0 and 255:</p>
@@ -2078,7 +2130,7 @@ array([[  0, 255,   0, ..., 255,   0, 255],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/imshow_80_0.png" src="_images/imshow_80_0.png" />
+<img alt="_images/imshow_84_0.png" src="_images/imshow_84_0.png" />
 </div>
 </div>
 <p>This is hard to visualize, but fortunately, we can size up the image and still preserve the pixel pattern:</p>
@@ -2095,7 +2147,7 @@ array([[  0, 255,   0, ..., 255,   0, 255],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/imshow_82_0.png" src="_images/imshow_82_0.png" />
+<img alt="_images/imshow_86_0.png" src="_images/imshow_86_0.png" />
 </div>
 </div>
 </div>
@@ -2115,7 +2167,7 @@ array([[  0, 255,   0, ..., 255,   0, 255],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/imshow_85_0.png" src="_images/imshow_85_0.png" />
+<img alt="_images/imshow_89_0.png" src="_images/imshow_89_0.png" />
 </div>
 </div>
 <p>The above image is small but careful inspection shows that the black squares are not uniformly sized. We can illustrate this better by saving the images and reading them back, stripping off the plot figure border, and converting to grayscale:</p>
@@ -2225,7 +2277,7 @@ array([[  0,   0,   0, 243, 243, 243,   0,   0, 243, 243, 243,   0,   0,
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/imshow_94_0.png" src="_images/imshow_94_0.png" />
+<img alt="_images/imshow_98_0.png" src="_images/imshow_98_0.png" />
 </div>
 </div>
 <p>..note:: Interpolation can be helpful when plotting high-resolution color images that look pixelated</p>
