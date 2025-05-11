@@ -25,7 +25,7 @@ df_interval = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_inter
 ts = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_ts.csv')
 
 # Set theme
-fcp.set_theme('gray')
+fcp.set_theme('gray_original')
 # fcp.set_theme('white')
 
 

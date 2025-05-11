@@ -26,7 +26,7 @@ img_cat_orig = imageio.imread(Path(fcp.__file__).parent / 'test_data/imshow_cat_
 img_cat = utl.img_grayscale_deprecated(img_cat_orig)
 
 # Set theme
-fcp.set_theme('gray')
+fcp.set_theme('gray_original')
 
 
 # Other

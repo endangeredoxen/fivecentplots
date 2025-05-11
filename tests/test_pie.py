@@ -25,7 +25,7 @@ df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_bar.csv')
 df.loc[df.pH < 0, 'pH'] = -df.pH
 
 # Set theme
-fcp.set_theme('gray')
+fcp.set_theme('gray_original')
 # fcp.set_theme('white')
 
 

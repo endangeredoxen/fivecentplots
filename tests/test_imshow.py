@@ -56,7 +56,7 @@ for i in range(0, 6):
     img_all = pd.concat([img_all, temp])
 
 # Set theme
-fcp.set_theme('gray')
+fcp.set_theme('gray_original')
 # fcp.set_theme('white')
 
 

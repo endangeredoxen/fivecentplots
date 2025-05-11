@@ -28,7 +28,7 @@ seaborn_url = r'https://raw.githubusercontent.com/mwaskom/seaborn-data/master'
 df_crash = pd.read_csv(seaborn_url + '/car_crashes.csv')
 
 # Set theme
-fcp.set_theme('gray')
+fcp.set_theme('gray_original')
 # fcp.set_theme('white')
 
 

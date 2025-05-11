@@ -27,7 +27,7 @@ df2 = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_gantt_milesto
 
 
 # Set theme
-fcp.set_theme('gray')
+fcp.set_theme('gray_original')
 # fcp.set_theme('white')
 
 
