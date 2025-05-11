@@ -47,7 +47,11 @@ for nb in ipynb:
 # COPY SPECIAL IMAGES
 print('Copying special images...')
 images = {'_build/html/_images':
-          ['_static/images/index.png']
+          ['_static/images/intro_xy.png',
+           '_static/images/intro_box.png',
+           '_static/images/intro_gantt.png',
+           '_static/images/intro_imshow.png',
+          ]
 }
 
 for k, v in images.items():

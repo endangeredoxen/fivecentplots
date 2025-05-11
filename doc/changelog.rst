@@ -4,13 +4,47 @@ Changelog
 0.6.0
 =====
 * plotly support added (including boxplots!)
-* major overhaul of DataFrame management for faster plotting
-* refactor of input data structures for image data
-* Improved support for bokeh
-* Add compatibility for `matplotlib==3.7`
-* Fix long figure title bug
-* For rc labels, add option to drop the row/column name in the label text with keyword `label_rc_names`, `label_row_names`, or `label_col_names` = `False`
-* Remove deprecated kwarg in `np.histogram` call
+* Major plotting speed improvements with `matplotlib`
+
+  .. image:: _static/images/v0p6_speed.png
+
+  +-----------+------------------+
+  | Plot type | Avg % Speed Up * |
+  +===========+==================+
+  | barplot   |    26.3          |
+  +-----------+------------------+
+  | boxplot   |    28.2          |
+  +-----------+------------------+
+  | contour   |    38.3          |
+  +-----------+------------------+
+  | gantt     |    23.8          |
+  +-----------+------------------+
+  | heatmap   |    21.4          |
+  +-----------+------------------+
+  | hist      |    38.9          |
+  +-----------+------------------+
+  | imshow    |    41.2          |
+  +-----------+------------------+
+  | pie       |    29.1          |
+  +-----------+------------------+
+  | plot      |    38.2          |
+  +-----------+------------------+
+
+  *based on unit test benchmarking
+
+
+
+* Refactor of input data structures for better handling of image data
+* Improved (but still limited) support for bokeh
+* Compatibility for newer releases of dependent packages like `numpy`, `matplotlib`, etc
+* New warnings provided for kwargs that are not supported
+* Enhanced gantt charts (`matplotlib` only)
+* `Support <plot.html#Lists-and-Arrays>`_ for plotting x-y data without a `DataFrame` (just cause)
+* Changes to `gray.py` theme for smaller font sizes; original settings available via theme `gray_original.py`
+
+0.5.4
+=====
+* Bug fixes
 
 0.5.2
 =====

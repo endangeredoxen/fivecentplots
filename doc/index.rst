@@ -2,49 +2,36 @@
    sphinx-quickstart on Sat Apr 16 09:57:41 2016.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
-.. role:: title
 .. role:: tagline
 
-.. container:: twocol
+fivecentplots: a Python Plotting Analgesic
+==========================================
 
-   .. container:: leftside
-
-      :title:`fivecentplots`
-
-   .. container:: rightside
-
-      .. figure:: _static/images/logo.png
-         :figwidth: 80%
-
-
-|
-|
-|
-
-:tagline:`A Python plotting analgesic`
-
-|
+:tagline:`Spend more time analyzing your data than analyzing how to plot your data`
 
 .. raw:: html
 
-   <img class="imgidx" alt="_images/index.png" src="_images/index.png">
+   <div class="intro-container">
+      <div class="intro-gallery">
+         <img class="imgidx dark-light" id="imgidx0" alt="_images/intro_xy.png" src="_images/intro_xy.png">
+         <img class="imgidx dark-light" id="imgidx1" alt="_images/intro_box.png" src="_images/intro_box.png">
+         <img class="imgidx dark-light" id="imgidx2" alt="_images/intro_gantt.png" src="_images/intro_gantt.png">
+         <img class="imgidx dark-light" id="imgidx3" alt="_images/intro_imshow.png" src="_images/intro_imshow.png">
+      </div>
 
-|
-
-.. raw:: html
-
-   <h2>Why another Python plotting library?</h2>
-
-There is no shortage of quality plotting libraries in Python.  While basic plots can be easy,
-complex plots with custom styling and formatting often involve mastery of a daunting API
-and many lines of code.  This complexity is discouraging to new/casual Python users and may lead
-them to abandon Python in favor of more comfortable, albeit inferior, plotting tools like Excel.
-
-.. raw:: html
+      <div class="intro-text" id="why-oh-why">
+         <h2 style="width: 100%">Another Python plotting library, really??</h2>
+         <p> There is no shortage of quality plotting libraries in Python.  Basic plots with default styling are
+            often easy, but acheiving complex figures with subplots, legends, overlays, and custom styling can
+            require a mastery of a daunting API and many lines of code.  This complexity is discouraging to the new/casual Python
+            user and can lead them to abandon Python in favor of more comfortable, albeit inferior, plotting tools like Excel.
+         </p>
+      </div>
+   </div>
 
 
-**fivecentplots** simplifies the API required to generate complex plots, specifically for data
-in **pandas** DataFrames.
+**fivecentplots** exists to drastically simplify the API required to generate complex plots, specifically for data
+within **pandas** DataFrames.
 
 .. raw:: html
 
@@ -59,9 +46,9 @@ in **pandas** DataFrames.
          <div class="contain">
             <p>
                <ul>
-                  <li>Plots require a single function call with no additional lines of code</li>
-                  <li>All style, formatting, and grouping is determined using optional keyword arguments or a simple "theme" file</li>
-                  <li>Data come from DataFrames and can be accessed by simple column names</li>
+                  <li>Plots are generated from a <b>single function call</b></li>
+                  <li>Plot contents and design <b>defined by optional keyword arguments</b> with defaults in a simple "theme" file</li>
+                  <li><b>Simple data access</b> using DataFrame column names and text-based filtering</li>
                </ul>
             </p>
          </div>
@@ -75,9 +62,9 @@ in **pandas** DataFrames.
          <div class="contain">
             <p>
                <ul>
-                  <li> All colors, sizes, marker themes, grouping options, etc. can be defined by optional keyword arguments in a single function call
-                  <li> Repeated kwargs can also be pulled from a simple theme file
-                  <li> All the complexity of a plotting library's API is managed behind the scenes, simplifying the user's life</li>
+                  <li> Colors, sizes, marker styles, subplot grouping, you name it--<b>everything is defined by keyword arguments</b>
+                  <li> Keyword names follow a <b>basic naming convention</b> (ex: <span class="code">legend_title_font_size</span> defines the font size of the legend title)
+                  <li> <b>Behind the scenes</b>, keywords translated into the complex code / API of the underlying plotting package (like <span class="code">matplotlib</span>)</li>
                </ul>
             </p>
          </div>
@@ -91,9 +78,9 @@ in **pandas** DataFrames.
          <div class="contain">
             <p>
                <ul>
-                  <li>With <b>pandas</b>, statistical analysis in Python rivals or surpasses that of commercial software packages
-                      like JMP. However, JMP has some useful plotting options that are tedious to create
-                      in Python.  <b>fivencentplots</b> makes it easy to create:
+                  <li>pandas enables statistical analysis in Python comparable to that of commercial software packages
+                      like JMP. However, JMP offers easy creation of many useful charts that are tedious to create in Python.  <b>fivencentplots solves this</b>,
+                      making it easy to create:
                      <ul>
                         <li><a href='http://www.jmp.com/support/help/Variability_Gauge_Charts.shtml'>JMP-style variability gauge charts </a></li>
                         <li><a href='http://www.jmp.com/support/help/Additional_Examples_of_the_Overlay_Plot_Platform.shtml#192569'>Grouped overlay plots</a> </li>
@@ -113,8 +100,11 @@ in **pandas** DataFrames.
          <div class="contain">
             <p>
                <ul>
-                  <li><b>fivecentplots</b> can wrap any plotting "engine" (or library) with the same API</li>
-                  <li>Getting the same plot from <b>matplotlib</b> or <b>plotly</b> is as easy as chaning one kwarg in the exact same function call</li>
+                  <li>Need a high-quality static image in <span class="code">matplotlib</span> style?  No problem!  Prefer an
+                      interactive web plot from <span class="code">plotly</span>? No problem!
+                      <b>fivecentplots can wrap any plotting "engine"</b> (or package)</li>
+                  <li>Most importantly, <b>fivecentplots maintains the same API</b> regardless of plotting library.
+                      The same function call invoked for <span class="code">matplotlib</span> can be used for <span class="code">plotly</span>--no need to learn a new syntax and API</li>
                </ul>
             </p>
          </div>
@@ -128,8 +118,8 @@ in **pandas** DataFrames.
          <div class="contain">
             <p>
                <ul>
-                  <li>Automated bulk plotting is available in <b>fivecentplots</b> using ini-style config files instead of explicit function calls</li>
-                  <li>This feature is very useful for production environments with standardized measurement data so users do not have to manually create line-health plots</li>
+                  <li>Automated bulk plotting is easy since all plot parameters can be accessed from dictionary-like structures (yaml, json, ini)</li>
+                  <li>Useful for production environments with standardized measurement data so users do not have to manually create line-health plots</li>
                </ul>
             </p>
          </div>
@@ -138,17 +128,16 @@ in **pandas** DataFrames.
 
       <div class="card">
          <div class="header">
-            MATPLOTLIB SIZING
+            SIZING
          </div>
 
          <div class="contain">
             <p>
                <ul>
-                  <li>When using <b>matplotlib</b> as the plotting engine, <b>>fivecentplots</b> shifts the
-                     sizing paradigm so the user can define the plot area size instead of
-                     the entire figure size</li>
-                  <li>Plots can now have consistent and controllable plotting area sizes and do not get squished to
-                     accomodate other elements (such as labels and legends) in the figure.</li>
+                  <li>Most plotting libraries define size based on the overall figure,
+                      leaving you to guess an appropriate size to properly fit your desired contents.
+                      <b>fivecentplots shifts the sizing paradigm by automatically determining the figure size based on the internal contents</b></li>
+                  <li>Axes areas are more consistent and contents are less likely to get squished to fit in the figure</li>
                </ul>
             </p>
          </div>
@@ -181,7 +170,7 @@ Using **fivecentplots**, we need a single function call with the some select key
             ref_line=df['Voltage'], ref_line_legend_text='y==x', ref_line_style='--',
             xmin=0, xmax=1.7, ymin=[0, 0, 0], ymax=[1.3, 1.7, 5.2])
 
-Consider one possible approach to generate a very similar plot using **matplotlib** only:
+Consider one possible approach to generate a very similar plot using pure **matplotlib** syntax:
 
 .. code-block:: python
 
@@ -260,7 +249,7 @@ clear:  **fivecentplots** can reduce the barrier to generate complex plots.
 
    <br>
 
-What if we wanted to do the same plot in raw **bokeh** code?  Well, we'd need to learn an entirely
+What if we wanted to do the same plot in raw **bokeh** or **plotly** code?  Well, we'd need to learn an entirely
 different API!  But with **fivecentplots** we can just change the kwarg defining the plotting engine
 (``engine``) and we are all set:
 
@@ -273,11 +262,10 @@ different API!  But with **fivecentplots** we can just change the kwarg defining
 
 .. image:: _static/images/syntax_bokeh.png
 
-|
 
-  .. note:: As of v0.6 **matplotlib** has the richest available plotting feature set.  **plotly** supports most plot
-            types and many of the same style features.  **bokeh** support is limited to only scatter plots at this
-            time.
+.. note:: As of v0.6 **matplotlib** has the richest available plotting feature set.  **plotly** supports most plot
+         types and many of the same style features.  **bokeh** support is limited to only scatter plots at this
+         time.
 
 
 
@@ -294,37 +282,37 @@ Refer to the topics on the sidebar for more details on plot types and options.
    :maxdepth: 1
    :caption: Basics
 
-   install
-   layout
-   keyword
-   grouping.ipynb
-   styles.ipynb
-   ranges.ipynb
-   ticks.ipynb
-   misc.ipynb
+   basics/install
+   basics/layout
+   basics/keyword
+   basics/grouping.ipynb
+   basics/styles.ipynb
+   basics/ranges.ipynb
+   basics/ticks.ipynb
+   basics/misc.ipynb
    api/fcp
 
 .. toctree::
    :maxdepth: 1
    :caption: Plot Types
 
-   plot.ipynb
-   barplot.ipynb
-   boxplot.ipynb
-   contour.ipynb
-   gantt.ipynb
-   heatmap.ipynb
-   hist.ipynb
-   imshow.ipynb
-   nq.ipynb
-   pie.ipynb
+   plot_types/plot.ipynb
+   plot_types/barplot.ipynb
+   plot_types/boxplot.ipynb
+   plot_types/contour.ipynb
+   plot_types/gantt.ipynb
+   plot_types/heatmap.ipynb
+   plot_types/hist.ipynb
+   plot_types/imshow.ipynb
+   plot_types/nq.ipynb
+   plot_types/pie.ipynb
 
 .. toctree::
    :maxdepth: 1
    :caption: Engines
-   engines
-   plotly.ipynb
-   bokeh.ipynb
+   engines/engines
+   engines/plotly.ipynb
+   engines/bokeh.ipynb
 
 .. toctree::
    :maxdepth: 1
