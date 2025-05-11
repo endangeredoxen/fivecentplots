@@ -300,6 +300,9 @@ class BaseLayout:
         # Update the label text
         self._set_label_text(data)
 
+        # Make a reference to the timer for debugging
+        self.timer = kwargs.get('timer')
+
     def _init_axes(self, data, kwargs: dict) -> dict:
         """Create the axes object
 
@@ -806,7 +809,7 @@ class BaseLayout:
                           utl.kwget(self.fcpp, {}, 'box_marker_edge_width', self.markers.edge_width))
             self.markers.edge_alpha = \
                 utl.kwget(kwargs, {}, ['box_marker_edge_alpha', 'marker_edge_alpha'],
-                          utl.kwget(self.fcpp, {}, 'box_marker_edge_alpha', self.markers.edge_alpha))
+                          utl.kwget(self.fcpp, {}, 'box_marker_edge_alpha', 0.75))
             self.markers.edge_color = \
                 utl.kwget(kwargs, {}, ['box_marker_edge_color', 'marker_edge_color'],
                           utl.kwget(self.fcpp, {}, 'box_marker_edge_color', self.markers.edge_color))
@@ -825,7 +828,7 @@ class BaseLayout:
                           utl.kwget(self.fcpp, {}, 'box_marker_fill', self.markers.filled))
             self.markers.size = \
                 utl.kwget(kwargs, {}, ['box_marker_size', 'marker_size'],
-                          utl.kwget(self.fcpp, {}, 'box_marker_size', 4))
+                          utl.kwget(self.fcpp, {}, 'box_marker_size', 3))
             self.markers.zorder = \
                 utl.kwget(kwargs, {}, ['box_marker_zorder', 'marker_zorder'],
                           utl.kwget(self.fcpp, {}, 'box_marker_zorder', self.markers.zorder))
@@ -1749,8 +1752,11 @@ class BaseLayout:
                                      overflow=0,
                                      text=kwargs.get('legend_title',
                                                      kwargs.get('legend') if kwargs.get('legend') is not True else ''),
-                                     title_font_size=utl.kwget(kwargs, self.fcpp, 'legend_title_font_size', 12),
                                      )
+        self.legend.title = Element('legend_title', self.fcpp, kwargs,
+                                    on=utl.kwget(kwargs, self.fcpp, 'legend_title_on', True),
+                                    font_size=utl.kwget(kwargs, self.fcpp, 'legend_title_font_size', 12),
+                                    )
 
         # For pie plot user must force legend enabled
         if self.legend._on and self.name == 'pie':
@@ -2226,8 +2232,8 @@ class BaseLayout:
                     and not kwargs.get('tick_labels_major_fill_alpha', None)
                     and not kwargs.get('tick_labels_major_fill_color', None)
                     else 1,
-                    font=utl.kwget(kwargs, self.fcpp, 'tick_labels_font', 'Arial'),
-                    font_size=utl.kwget(kwargs, self.fcpp, 'tick_labels_font_size', 13),
+                    font=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_font', 'Arial'),
+                    font_size=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_font_size', 13),
                     offset=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_offset', False),
                     padding=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_padding', 2),
                     scale_factor=1.5,

@@ -933,20 +933,19 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
     Keywords:
 
     """
-
     # Init arrays
     data = []
     labels = []
     dividers = []
     stats = []
-
     if dd.groups is not None:
         col = dd.changes.columns
 
         # Plot the groups
         for irow, row in dd.indices.iterrows():
-            gg = df_rc.copy().sort_values(by=dd.groups)
-            gg = gg.set_index(dd.groups)
+            # gg = df_rc.copy().sort_values(by=dd.groups)
+            # gg = gg.set_index(dd.groups)
+            gg = df_rc.set_index(dd.groups).sort_index()
             if len(gg) > 1:
                 gg = gg.loc[tuple(row)]
             if isinstance(gg, pd.Series):
@@ -977,7 +976,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                 dividers += [irow + 0.5]
 
             # Plot points
-            if not (layout.violin.on and not layout.violin.markers):
+            if not (layout.violin.on and not layout.violin.markers) and layout.markers.on:
                 if isinstance(dd.legend_vals, pd.DataFrame):
                     for jj, jrow in dd.legend_vals.iterrows():
                         points = gg.loc[gg[dd.legend] == jrow['names']][dd.y].dropna()

@@ -25,7 +25,8 @@ class Box(data.Data):
         self.axs_on = ['x', 'y']  # x still exists but is covered up by label boxes
 
     def _get_groups(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Return the groupby keys of a DataFrame
+        """
+        Return the groupby keys of a DataFrame
 
         Args:
             df: input DataFrame
@@ -36,8 +37,8 @@ class Box(data.Data):
         return pd.DataFrame(df.groupby(self.groups).groups.keys())
 
     def get_box_index_changes(self):
-        """Make a DataFrame that shows when groups vals change; used for grouping
-        labels
+        """
+        Make a DataFrame that shows when groups vals change; used for grouping labels
 
         Args:
             df (pd.DataFrame): grouping values
@@ -90,7 +91,7 @@ class Box(data.Data):
             ic: subplot column index
             df_rc: data subset
         """
-        if (self.groups is not None and self.groups != []) and len(self.df_rc.groupby(self.groups)) == 0:
+        if (self.groups is not None and self.groups != []) and self.df_rc.groupby(self.groups, dropna=False).ngroups == 0:
             return
         self.get_box_index_changes()
         self.ranges['xmin'][ir, ic] = 0.5
@@ -107,6 +108,10 @@ class Box(data.Data):
         Returns:
             modified DataFrame subset
         """
+        # Don't do anything for axes sharing if just one subplot
+        if self.nrow == 1 and self.ncol == 1:
+            return df
+
         if self.share_x and self.groups is not None and len(df) > 0:
             df1 = self._get_groups(self.df_all)
             df2 = self._get_groups(df)

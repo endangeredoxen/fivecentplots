@@ -1058,7 +1058,10 @@ class Layout(BaseLayout):
             except AttributeError:
                 # Needed for earlier versions of mpl
                 leg.get_title().set_fontfamily(font)
-            leg.get_title().set_fontsize(self.legend.title_font_size)
+            leg.get_title().set_fontsize(self.legend.title.font_size)
+            leg.get_title().set_color(self.legend.title.font_color)
+            leg.get_title().set_style(self.legend.title.font_style)
+            leg.get_title().set_weight(self.legend.title.font_weight)
             leg.get_frame().set_facecolor(self.legend.fill_color[0])
             leg.get_frame().set_alpha(self.legend.fill_alpha)
             leg.get_frame().set_edgecolor(self.legend.edge_color[0])
@@ -1495,8 +1498,8 @@ class Layout(BaseLayout):
             lab = self.box_group_label
             lens_all = pd.DataFrame(columns=['ir', 'ic', 'ii', 'vals'])
             for ir, ic in np.ndindex(lab.obj.shape):
-                data.df_rc = data._subset(ir, ic)
-                data.get_box_index_changes()
+                # data.df_rc = data._subset(ir, ic)
+                # data.get_box_index_changes()
                 divider = self.axes.size[0] / len(data.changes)
                 if lab.obj[ir, ic] is None:
                     continue
@@ -3877,7 +3880,7 @@ class Layout(BaseLayout):
             majmin = ['major', 'minor']
             for ax in axx:
                 for mm in majmin:
-                    if getattr(self, f'tick_labels_{mm}_x{lab}').on:
+                    if getattr(self, f'tick_labels_{mm}_{ax}{lab}').on:
                         self._check_font(getattr(self, f'tick_labels_{mm}_{ax}{lab}').font)
                         ticks_font = font_manager.FontProperties(
                             family=getattr(self, f'tick_labels_{mm}_{ax}{lab}').font,
@@ -4431,7 +4434,7 @@ class Layout(BaseLayout):
 
                     # Position and resize the background boxes
                     if jj == 0:
-                        x0 = bbox.x0
+                        x0 = bbox.x0 - (self.axes.edge_width - self.box_group_label.edge_width) / 2
                     else:
                         x0 = lab.obj_bg[ir, ic][ii, jj - 1].get_window_extent().x1
                     lab.obj_bg[ir, ic][ii, jj].set_x(x0 / self.fig.size_int[0])
@@ -4439,7 +4442,7 @@ class Layout(BaseLayout):
                         x1 = x0 + (lab.obj_bg[ir, ic][ii, jj + 1].width
                                    - lab.obj_bg[ir, ic][ii, jj].width) * self.axes.size[0]
                     else:
-                        x1 = bbox.x1
+                        x1 = bbox.x1 + (self.axes.edge_width - self.box_group_label.edge_width) / 2
                     lab.obj_bg[ir, ic][ii, jj].set_width((x1 - x0) / self.fig.size_int[0])
 
                     # update these for later
@@ -4475,6 +4478,8 @@ class Layout(BaseLayout):
                     for idiv, div in enumerate(dividers):
                         div.set_transform(self.fig.obj.transFigure)
                         changes = data.changes[data.changes[idx] != 0][1:]
+                        if idiv >= len(changes.index):
+                            continue
                         div_at = changes.index[idiv]
                         loc = lab_bg_size.loc[ir, ic, idx].iloc[div_at - 1].x1
                         div.set_xdata([loc / self.fig.size_int[0], loc / self.fig.size_int[0]])

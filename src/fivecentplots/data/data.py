@@ -181,6 +181,10 @@ class Data:
         self.filter = kwargs.get('filter', None)
         self._filter_data(kwargs)
 
+        # Make sure no duplicate indices
+        if self.df_all.index.has_duplicates:
+            self.df_all = self.df_all.reset_index(drop=True)
+
         # Define rc grouping column names
         self.col = kwargs.get('col', None)
         self.col_vals = None
@@ -457,7 +461,7 @@ class Data:
                 if self.imgs is None:
                     self.df_all[val] = self.df_all[val].astype(float)
                 continue
-            except ValueError:
+            except (ValueError, TypeError):
                 pass
             try:
                 if self.imgs is None and not self.ignore_dates:
@@ -554,7 +558,7 @@ class Data:
         Returns:
             updated df with potentially reduced range of data
         """
-        data_set = data_set.copy()
+        # data_set = data_set.copy()  # do we need it?
 
         # Get the max/min autoscale values
         for ax in self.axs_on:
@@ -589,16 +593,18 @@ class Data:
                         cols = getattr(self, ax)
                         if mm == 'min':
                             mask = (data_set[cols] >= user_limit)
-                            idx = data_set.loc[mask.sum(axis=1) > 0].index
-                            data_set = data_set.loc[idx]
+                            if len(mask[mask.all(axis=1)]) < len(data_set):
+                                idx = data_set.loc[mask.sum(axis=1) > 0].index
+                                data_set = data_set.loc[idx]
                         else:
                             if data_set[col].dtype == 'datetime64[ns]' and \
                                     len(data_set[data_set[col] <= user_limit]) == 0:
                                 data_set[col] = user_limit
                             else:
                                 mask = (data_set[cols] <= user_limit)
-                                idx = data_set.loc[mask.sum(axis=1) > 0].index
-                                data_set = data_set.loc[idx]
+                                if len(mask[mask.all(axis=1)]) < len(data_set):
+                                    idx = data_set.loc[mask.sum(axis=1) > 0].index
+                                    data_set = data_set.loc[idx]
 
             vmin, vmax = getattr(self, f'{ax}min')[plot_num], getattr(self, f'{ax}max')[plot_num]
             if vmin is not None and vmax is not None and vmin >= vmax:
@@ -1221,7 +1227,6 @@ class Data:
                 # Find data ranges for this subset
                 else:
                     df_rc = self._get_auto_scale(self.df_rc, plot_num)  # is this copy ok??
-
                     for ax in self.axs_on:
                         if getattr(self, ax) is None:
                             continue
@@ -1333,8 +1338,9 @@ class Data:
         return df
 
     def _subset_modify(self, ir: int, ic: int, df: pd.DataFrame) -> pd.DataFrame:
-        """Optional function in a Data childe class user to perform any additional
-        DataFrame subsetting that may be required
+        """
+        Optional function in a Data childe class user to perform any additional DataFrame subsetting that may
+        be required
 
         Args:
             ir: subplot row index
@@ -1347,8 +1353,8 @@ class Data:
         return df
 
     def _subset_row_col(self, ir: int, ic: int) -> pd.DataFrame:
-        """For row/column plots (no wrap), select the revelant subset from
-        self.df_fig.
+        """
+        For row/column plots (no wrap), select the revelant subset from self.df_fig.
 
         Args:
             ir: subplot row index
@@ -1372,7 +1378,8 @@ class Data:
             col = self.col_vals[ic]
             return self.df_fig[(self.df_fig[self.col[0]] == col)].copy()
         else:
-            return self.df_fig.copy()
+            # return self.df_fig.copy()  # why copy?
+            return self.df_fig
 
     def _subset_wrap(self, ir: int, ic: int) -> pd.DataFrame:
         """For wrap plots, select the revelant subset from self.df_fig.

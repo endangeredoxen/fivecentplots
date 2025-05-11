@@ -966,6 +966,9 @@ def img_data_format(kwargs: dict) -> Tuple[pd.DataFrame, dict]:
 
     elif isinstance(imgs, dict) and isinstance(df, pd.DataFrame):
         # Case 2: image data already in correct format
+        if df.index.has_duplicates:
+            raise data.DataError('image dataframe has duplicate index values so it cannot be matched with image dict')
+
         df_groups = df.copy()
         df_groups['rows'] = -1
         df_groups['cols'] = -1
