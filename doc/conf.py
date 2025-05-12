@@ -28,17 +28,6 @@ db = pdb.set_trace
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
 
-# # copy over latest ipynb files from tests folder
-# cur_dir = os.path.dirname(os.path.realpath(__file__))
-# test_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'tests', 'notebooks')
-# nbs = [f for f in os.listdir(test_dir) if '.ipynb' in f]
-# nbs = [f for f in nbs if 'checkpoint' not in f]
-# for nb in nbs:
-#     if os.path.exists(os.path.join(cur_dir, nb)):
-#         os.remove(os.path.join(cur_dir, nb))
-#     shutil.copyfile(os.path.join(test_dir, nb), os.path.join(cur_dir, nb))
-
-# -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #needs_sphinx = '1.0'
@@ -46,12 +35,6 @@ db = pdb.set_trace
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-# extensions = [
-#     'sphinx.ext.autodoc',
-#     'sphinxcontrib.napoleon',
-#     'sphinx.ext.doctest',
-#     'nbsphinx',
-# ]
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',

@@ -38,6 +38,7 @@ bar_fill_alpha
 bar_fill_color
 bar_height
 bar_horizontal
+bar_labels
 bar_rolling
 bar_rolling_mean
 bar_stacked
@@ -993,7 +994,9 @@ tick_labels_major_z_padding
 tick_labels_major_z_rotation
 tick_labels_major_z_zorder
 tick_labels_minor
+tick_labels_minor_edge_color
 tick_labels_minor_edge_width
+tick_labels_minor_fill_color
 tick_labels_minor_font
 tick_labels_minor_font_color
 tick_labels_minor_font_size

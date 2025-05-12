@@ -43,7 +43,7 @@ logging.getLogger('matplotlib.font_manager').disabled = True  # disable font log
 FONT_LIST = font_manager.get_font_names()
 
 db = pdb.set_trace
-TICK_OVL_MAX = 0.75  # maximum allowed overlap for tick labels in float pixels
+TICK_OVL_MAX = 1.15  # maximum allowed overlap for tick labels in float pixels
 ROTATE_90_OFFSET_X = 0  # spacing offset for 90 deg rotated axes labels
 
 
@@ -1498,8 +1498,6 @@ class Layout(BaseLayout):
             lab = self.box_group_label
             lens_all = pd.DataFrame(columns=['ir', 'ic', 'ii', 'vals'])
             for ir, ic in np.ndindex(lab.obj.shape):
-                # data.df_rc = data._subset(ir, ic)
-                # data.get_box_index_changes()
                 divider = self.axes.size[0] / len(data.changes)
                 if lab.obj[ir, ic] is None:
                     continue

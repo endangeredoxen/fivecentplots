@@ -73,7 +73,7 @@ def plt_grid_column(bm=False, make_reference=False, show=False):
 
     if not show:
         utl.unit_test_measure_axes_cols(name, 59, 302, 2)
-        utl.unit_test_measure_margin(name, 59, 120, left=74, right=81, bottom=10, alias=True)
+        utl.unit_test_measure_margin(name, 59, 120, left=79, right=81, bottom=10, alias=True)
         utl.unit_test_measure_margin(name, 59, 120, top=10, alias=False)
 
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -92,7 +92,7 @@ def plt_grid_row(bm=False, make_reference=False, show=False):
 
     if not show:
         utl.unit_test_measure_axes_rows(name, 260, 302, 2)
-        utl.unit_test_measure_margin(name, 80, 120, left=74, top=10, bottom=10, alias=True)
+        utl.unit_test_measure_margin(name, 80, 120, left=79, top=13, bottom=10, alias=True)
         utl.unit_test_measure_margin(name, 80, 120, right=41, alias=False)
 
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -313,7 +313,7 @@ def plt_group_means(bm=False, make_reference=False, show=False):
         return
 
     if not show:
-        utl.unit_test_measure_margin(name, 20, 300, left=74, right=81, bottom=10, top=10, alias=True)
+        utl.unit_test_measure_margin(name, 20, 300, left=79, right=81, bottom=10, top=12, alias=True)
 
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
@@ -358,7 +358,7 @@ def plt_group_single(bm=False, make_reference=False, show=False):
         return
 
     if not show:
-        utl.unit_test_measure_margin(name, 50, 190, left=74, bottom=10, top=10, right=106, alias=True)
+        utl.unit_test_measure_margin(name, 50, 190, left=79, bottom=10, top=12, right=106, alias=True)
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
@@ -415,7 +415,7 @@ def plt_simple(bm=False, make_reference=False, show=False):
         return
 
     if not show:
-        utl.unit_test_measure_margin(name, 20, 150, left=74, bottom=10, top=10, right=10, alias=True)
+        utl.unit_test_measure_margin(name, 20, 150, left=80, bottom=10, top=12, right=10, alias=True)
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 

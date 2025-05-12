@@ -262,7 +262,7 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
         'ticks', 'violin', 'rolling_mean',
     ]
     no_labels = [
-        'ax', 'bar', 'box_grand_mean', 'box_grand_median', 'box_group_means', 'box_mean_diamonds',
+        'ax', 'box_grand_mean', 'box_grand_median', 'box_group_means', 'box_mean_diamonds',
         'box_divider', 'box_range_lines', 'box_stat_line', 'box_whisker', 'cbar', 'contour', 'fig', 'fills',
         'fit', 'gantt_milestone_text', 'heatmap_label', 'hist', 'kde', 'imshow', 'interval', 'legend',
         'markers', 'pie', 'ref_line', 'ticks', 'rolling_mean', 'violin',

@@ -103,7 +103,7 @@ def plt_col_cbar(bm=False, make_reference=False, show=False):
         return
 
     if not show:
-        utl.unit_test_measure_axes_cols(name, 90, 300, 4, cbar=True, alias=False)
+        utl.unit_test_measure_axes_cols(name, 75, 300, 4, cbar=True, alias=False)
 
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
@@ -242,7 +242,7 @@ def plt_col_share_z(bm=False, make_reference=False, show=False):
         # Label widths
         utl.unit_test_measure_axes_cols(name, 13, 300, 4, alias=False)
         # Margins
-        utl.unit_test_measure_margin(name, 70, 150, left=10, right=81, top=10, bottom=10, alias=False)
+        utl.unit_test_measure_margin(name, 70, 150, left=10, right=85, top=10, bottom=10, alias=False)
 
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
@@ -259,11 +259,11 @@ def plt_col_z_user_range(bm=False, make_reference=False, show=False):
 
     if not show:
         # Axes widths
-        utl.unit_test_measure_axes_cols(name, 54, 300, 4, alias=False, cbar=True)
+        utl.unit_test_measure_axes_cols(name, 63, 300, 4, alias=False, cbar=True)
         # Label widths
         utl.unit_test_measure_axes_cols(name, 13, 300, 4, alias=False)
         # Margins
-        utl.unit_test_measure_margin(name, 70, 150, left=10, right=88, top=10, bottom=10, alias=False)
+        utl.unit_test_measure_margin(name, 70, 150, left=10, right=94, top=10, bottom=10, alias=False)
 
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
@@ -568,7 +568,7 @@ def plt_share_row(bm=False, make_reference=False, show=False):
 
     if not show:
         # Label margins
-        utl.unit_test_measure_margin(name, 48, None, left=10, right=161, alias=False)
+        utl.unit_test_measure_margin(name, 48, None, left=10, right=165, alias=False)
         # Label widths
         utl.unit_test_measure_axes_cols(name, 48, 300, 4, alias=False)
         # Axes margins

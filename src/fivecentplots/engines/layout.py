@@ -809,7 +809,7 @@ class BaseLayout:
                           utl.kwget(self.fcpp, {}, 'box_marker_edge_width', self.markers.edge_width))
             self.markers.edge_alpha = \
                 utl.kwget(kwargs, {}, ['box_marker_edge_alpha', 'marker_edge_alpha'],
-                          utl.kwget(self.fcpp, {}, 'box_marker_edge_alpha', 0.75))
+                          utl.kwget(self.fcpp, {}, 'box_marker_edge_alpha', self.markers.edge_alpha))
             self.markers.edge_color = \
                 utl.kwget(kwargs, {}, ['box_marker_edge_color', 'marker_edge_color'],
                           utl.kwget(self.fcpp, {}, 'box_marker_edge_color', self.markers.edge_color))
@@ -2233,7 +2233,7 @@ class BaseLayout:
                     and not kwargs.get('tick_labels_major_fill_color', None)
                     else 1,
                     font=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_font', 'Arial'),
-                    font_size=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_font_size', 13),
+                    font_size=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_font_size', 12),
                     offset=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_offset', False),
                     padding=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_padding', 2),
                     scale_factor=1.5,
@@ -2350,7 +2350,7 @@ class BaseLayout:
                     and not kwargs.get('tick_labels_minor_fill_alpha', None)
                     and not kwargs.get('tick_labels_minor_fill_color', None)
                     else 1,
-                    font_size=10,
+                    font_size=utl.kwget(kwargs, self.fcpp, 'tick_labels_minor_font_size', 10),
                     padding=utl.kwget(kwargs, self.fcpp, 'tick_labels_minor_padding', 2),
                     edge_width=utl.kwget(kwargs, self.fcpp, 'tick_labels_minor_edge_width', 0),
                     )

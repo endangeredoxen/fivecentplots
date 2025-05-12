@@ -117,7 +117,7 @@ def test_fonts(make_reference=False, show=False):
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              title='My Oh My This Is Way Too Long of a Title for This Plot What Were You Thinking!',
-             title_font_style='italic', label_y_font_size=25, label_y_style='normal',
+             title_font_style='italic', label_y_font_size=25, label_y_font_style='normal',
              label_x_font_weight='normal', tick_labels_major_font='fantasy', filename=name.with_suffix('.png'))
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
@@ -270,7 +270,7 @@ def test_marker_boxplot3(make_reference=False, show=False):
                 marker_size=10, box_whisker_color=[0, 0, 1, 1, 2, 2], box_whisker_width=1, jitter=False,
                 box_marker_edge_alpha=0.6, box_marker_fill_alpha=1, box_marker_type=['+'], verbose=True,
                 filename=name.with_suffix('.png'))
-    fcp.set_theme('gray', verbose=True)
+    fcp.set_theme('gray_original', verbose=True)
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
@@ -403,7 +403,7 @@ def test_theme_white(make_reference=False, show=False):
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              filename=name.with_suffix('.png'))
-    fcp.set_theme('gray')  # return to default gray
+    fcp.set_theme('gray_original')  # return to default gray
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
@@ -412,11 +412,11 @@ def test_theme_white_fly(make_reference=False, show=False):
     name = utl.unit_test_get_img_name('theme_white_fly', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.set_theme('gray')
+    fcp.set_theme('gray_original')
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], theme='white',
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              filename=name.with_suffix('.png'))
-    fcp.set_theme('gray')  # return to default gray
+    fcp.set_theme('gray_original')  # return to default gray
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
@@ -425,7 +425,7 @@ def test_theme_gray(make_reference=False, show=False):
     name = utl.unit_test_get_img_name('theme_gray', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.set_theme('gray')
+    fcp.set_theme('gray_original')
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              filename=name.with_suffix('.png'))

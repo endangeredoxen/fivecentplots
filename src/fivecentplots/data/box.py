@@ -91,7 +91,8 @@ class Box(data.Data):
             ic: subplot column index
             df_rc: data subset
         """
-        if (self.groups is not None and self.groups != []) and self.df_rc.groupby(self.groups, dropna=False).ngroups == 0:
+        if (self.groups is not None and self.groups != []) and \
+                self.df_rc.groupby(self.groups, dropna=False).ngroups == 0:
             return
         self.get_box_index_changes()
         self.ranges['xmin'][ir, ic] = 0.5

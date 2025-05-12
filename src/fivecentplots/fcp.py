@@ -943,8 +943,6 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
 
         # Plot the groups
         for irow, row in dd.indices.iterrows():
-            # gg = df_rc.copy().sort_values(by=dd.groups)
-            # gg = gg.set_index(dd.groups)
             gg = df_rc.set_index(dd.groups).sort_index()
             if len(gg) > 1:
                 gg = gg.loc[tuple(row)]

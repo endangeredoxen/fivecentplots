@@ -1,4 +1,6 @@
 import json
+import pandas as pd
+import fivecentplots as fcp
 
 # v0.5
 with open('/Users/steve/Desktop/0001_v0.5.json', 'r') as file:
@@ -7,7 +9,8 @@ df_0p5 = pd.DataFrame(data_v0_5['benchmarks'])
 df_0p5['rounds'] = df_0p5['stats'].apply(lambda x: x['rounds'])
 df_0p5 = df_0p5.loc[df_0p5.rounds < 500]
 df_0p5['data'] = df_0p5['stats'].apply(lambda x: x['data'])
-df_0p5['plot_type'] = df_0p5['fullname'].apply(lambda x: x.split('/')[1].split('::')[0].split('test_')[1].split('.py')[0])
+df_0p5['plot_type'] = df_0p5['fullname'].apply(
+    lambda x: x.split('/')[1].split('::')[0].split('test_')[1].split('.py')[0])
 df_0p5 = df_0p5[['plot_type', 'name', 'data']]
 df_0p5 = df_0p5.explode('data')
 df_0p5['version'] = '0.5'
@@ -20,7 +23,8 @@ df_0p6 = pd.DataFrame(data_v0_6['benchmarks'])
 df_0p6['rounds'] = df_0p6['stats'].apply(lambda x: x['rounds'])
 df_0p6 = df_0p6.loc[df_0p6.rounds < 500]
 df_0p6['data'] = df_0p6['stats'].apply(lambda x: x['data'])
-df_0p6['plot_type'] = df_0p6['fullname'].apply(lambda x: x.split('/')[1].split('::')[0].split('test_')[1].split('.py')[0])
+df_0p6['plot_type'] = df_0p6['fullname'].apply(
+    lambda x: x.split('/')[1].split('::')[0].split('test_')[1].split('.py')[0])
 df_0p6 = df_0p6[['plot_type', 'name', 'data']]
 df_0p6 = df_0p6.explode('data')
 df_0p6['version'] = '0.6'
@@ -61,11 +65,6 @@ fcp.boxplot(df, y='data', groups=['plot_type', 'version'], ymax='q0.99', ymin=0,
 
 # drop plots that are not in both versions
 # stats
-
-## bugs
-# ymin not being applied
-# auto didn't work
-# plotly takes forever
 
 compare = pd.pivot_table(df.groupby(['plot_type', 'name', 'version']).mean().reset_index(), values='data',
                          index=['plot_type', 'name'], columns='version')
