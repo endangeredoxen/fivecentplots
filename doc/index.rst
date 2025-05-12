@@ -272,53 +272,47 @@ different API!  But with **fivecentplots** we can just change the kwarg defining
 Refer to the topics on the sidebar for more details on plot types and options.
 
 
-.. raw:: html
+Basics
+------
 
-   <br>
-   <hr>
-   <h2>Documentation</h2>
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Basics
-
-   basics/install
-   basics/layout
-   basics/keyword
-   basics/grouping.ipynb
-   basics/styles.ipynb
-   basics/ranges.ipynb
-   basics/ticks.ipynb
-   basics/misc.ipynb
-   api/fcp
+Information about using, configuration, and customizing this theme.
 
 .. toctree::
-   :maxdepth: 1
-   :caption: Plot Types
+   :maxdepth: 2
 
-   plot_types/plot.ipynb
-   plot_types/barplot.ipynb
-   plot_types/boxplot.ipynb
-   plot_types/contour.ipynb
-   plot_types/gantt.ipynb
-   plot_types/heatmap.ipynb
-   plot_types/hist.ipynb
-   plot_types/imshow.ipynb
-   plot_types/nq.ipynb
-   plot_types/pie.ipynb
+   basics/index
+
+Plot Types
+----------
+
+Information about the community behind this theme and how you can contribute.
 
 .. toctree::
-   :maxdepth: 1
-   :caption: Engines
-   engines/engines
-   engines/plotly.ipynb
-   engines/bokeh.ipynb
+   :maxdepth: 2
+
+   plot_types/index
+
+Engines
+-------
+
+Several example pages to demonstrate the functionality of this theme when used alongside other Sphinx extensions.
 
 .. toctree::
-   :maxdepth: 1
-   :caption: Other
+   :maxdepth: 2
+
+   engines/index
+
+.. toctree::
+   :hidden:
 
    changelog
-   older
-   GitHub <https://github.com/endangeredoxen/fivecentplots>
 
+API
+---
+
+The content of the exposed `pydata_sphinx_theme` API.
+
+.. toctree::
+   :maxdepth: 2
+
+   api/index

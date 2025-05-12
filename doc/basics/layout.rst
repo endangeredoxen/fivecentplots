@@ -143,40 +143,13 @@ section of the docs.
 
 Engine
 ------
-**fivecentplots** is *not a new graphics generation library*.  In fact, plots are created using existing Python plotting
-packages.  These "engines" are wrapped by module-specific ``Layout`` classes in **fivecentplots** to provide a new,
-simpler API that allows complex plotting via kwargs.  All unique and complicated API calls of a given plotting package
-are handled behind the scenes. The most mature "engine" supported by **fivecentplots** is **matplotlib** which is
-enabled by default.  Currently, there is limited support for **bokeh**, but this will grow in the future.  Additional
-"engines" could easily be supported through the creation of a new ``Layout`` class (volunteers welcome!).  Using this
-approach of API unification through kwargs, **fivecentplots** enables the user to switch between plotting engines by
-changing only one kwarg, ``engine``.  Besides this the plot call remains *exactly the same*.
+As mentioned elsewhere, **fivecentplots** is a simplified interface to *exisitng* Python plotting packages.  Conversion
+from keyword arguments into the plotting-engine-specific code occurs behind-the-scenes within an engine-specific
+`Layout` class.  Wherever possible, `Element` objects share the same name and as many common attributes as possible.
+However, there are instances when a certain `Element` only exists within one "engine" and a unique keyword must be
+defined.  That said, the goal is always Tolkien-esque: *one API to rule them all*.  More details on plotting engines
+is available in the `Engines <engines/index.html>`_ section.
 
-For example, say you need a high-quality plot for a paper and prefer to use **matplotlib**, you
-could do the following:
-
-.. code:: python
-
-   fcp.plot(df, x='Voltage', y='I [A]', legend='Die',
-            filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25')
-
-.. image:: ../_static/images/engine_mpl.png
-
-.. note:: Notice that ``engine`` is not explicitly called above because **matplotlib** is assumed by default.
-
-Now suppose you need to interactively manipulate the same data set, thus making a static image less attractive.
-You could switch "engines" and plot via **bokeh**, all with the addition of just one keyword ``engine='bokeh'``:
-
-.. code:: python
-
-   fcp.plot(df, x='Voltage', y='I [A]', legend='Die', engine='bokeh',
-            filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25')
-
-.. image:: ../_static/images/engine_bokeh.png
-   :height: 471px
-
-All with only **one** kwarg change!
-
-.. note:: As of version 0.5.0, **bokeh** support is limited compared with **matplotlib**.  More
-          development is needed.  Not all plot types are available at this time.
+.. warning:: Support for multiple engines is a work in progress.  Please file a bug report if something you need
+             is missing.
 

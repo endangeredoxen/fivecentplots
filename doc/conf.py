@@ -160,7 +160,7 @@ html_theme_options = {
     "external_links": [
         {"name": "github", "url": "https://github.com/endangeredoxen/fivecentplots"},
     ],
-    "show_nav_level": 1,
+    "show_nav_level": 2,
     "navbar_align": "left",
     # "switcher": {
     #     "json_url": "https://raw.githubusercontent.com/endangeredoxen/fivecentplots/refs/heads/gh-pages/switcher.json",

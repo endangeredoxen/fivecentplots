@@ -64,12 +64,17 @@ div.header {
    padding-bottom: 3px;
    border-radius: 3px 3px 0px 0px;
 }
+html[data-theme="dark"]{
+   /* --pst-color-background: #121212; */
+   /*--pst-color-link: #ffc107; */
+
+}
 html[data-theme="dark"] div.header{
    background-color: #3e454f;
    color: #eeeeee;
 }
 html[data-theme="dark"] div.card{
-   background-color: #65707f;
+   background-color: #9ea9b9;
    color: #1c2026;
 }
 .code{
@@ -81,7 +86,7 @@ html[data-theme="dark"] .code{
    color: #fefaed;
 }
 html[data-theme="dark"] div.contain a{
-   color: #78d7e7;
+   color: #6e273a;
 }
 div.contain {
    padding: 5px;
@@ -106,4 +111,41 @@ div.contain {
 .tagline{
    font-size: 14px;
    font-style: italic;
+}
+html[data-theme="dark"] .input_area{
+   border: 1px solid #2a313d !important;  /*1px solid #414e61 !important; */
+   padding: 5px !important;
+   background-color: #2a313d !important;
+   margin-bottom: 12px !important;
+   border-radius: 4px !important;
+}
+.prompt{
+   display: none !important;
+}
+.bd-page-width{
+   max-width: 95%;
+}
+.bd-sidebar-primary{
+   width: 300px;
+}
+.bd-main .bd-content{
+   justify-content: left;
+}
+html[data-theme="dark"] .highlight{
+   background: #2b2b2b;
+   color: #F8F8F2;
+}
+div.nboutput.container div.output_area img{
+   margin: auto !important;
+   display: block !important;
+   vertical-align: baseline;
+}
+.sd-btn-primary, .sd-btn-outline-primary:hover, .sd-btn-outline-primary:focus{
+   background-color: #4f5c71 !important;
+   border-color: #4f5c71 !important;
+   /* color: #eeeeee !important; */
+}
+.sd-btn-primary:hover{
+   background-color: #818fa6 !important;
+   border-color: #4f5c71 !important;
 }
