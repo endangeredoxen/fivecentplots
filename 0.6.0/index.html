@@ -1,247 +1,382 @@
 
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" />
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>fivecentplots beta documentation</title>
-  
 
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Archivo Black" type="text/css" />
 
-  
-  
-    <link rel="shortcut icon" href="_static/favicon.ico"/>
-  
+<html lang="en" data-content_root="./" data-theme="dark">
 
-  
-  
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    <title>fivecentplots: a Python Plotting Analgesic &#8212; fivecentplots</title>
   
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "dark";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "dark";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
 
+    </style>
+  </noscript>
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=ea406944" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=e167ab61"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
+    <link rel="icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installation" href="install.html" /> 
-</head>
+    <link rel="next" title="Basics" href="basics/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.6" />
+    <meta name="docbuild:last-update" content="May 12, 2025"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="dark">
 
-<body class="wy-body-for-nav">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
-   
-  <div class="wy-grid-for-nav">
+  
+  <dialog id="pst-search-dialog">
     
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-          
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
 
-          
-            <a href="#" class="icon icon-home"> fivecentplots
-          
-
-          
-          </a>
-
-          
-            
-            
-              <div class="version">
-                0.6.0-b0
-              </div>
-            
-          
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
 
-          
-        </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
 
+  
+    
+  
+
+<a class="navbar-brand logo" href="#">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="_static/logo.png" class="logo__image only-dark" alt="fivecentplots - Home"/>
+    <img src="_static/logo.png" class="logo__image only-light pst-js-only" alt="fivecentplots - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="basics/index.html">
+    Basics
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="plot_types/index.html">
+    Plot Types
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="engines/index.html">
+    Engines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api/index.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://github.com/endangeredoxen/fivecentplots">
+    github
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
         
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="layout.html">Layout and Elements</a></li>
-<li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="grouping.html">Grouping data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/fcp.html">API</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Plot Types</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt charts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hist.html">hist</a></li>
-<li class="toctree-l1"><a class="reference internal" href="imshow.html">imshow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="nq.html">nq</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pie.html">pie</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Other</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/endangeredoxen/fivecentplots">GitHub</a></li>
-</ul>
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
 
-            
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
           
-        </div>
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="basics/index.html">
+    Basics
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="plot_types/index.html">
+    Plot Types
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="engines/index.html">
+    Engines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/endangeredoxen/fivecentplots">
+    github
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
         
       </div>
-    </nav>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
 
+
+      </div>
       
-      <nav class="wy-nav-top" aria-label="top navigation">
+      <main id="main-content" class="bd-main" role="main">
         
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">fivecentplots</a>
         
-      </nav>
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none"></div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="fivecentplots-a-python-plotting-analgesic">
+<h1>fivecentplots: a Python Plotting Analgesic<a class="headerlink" href="#fivecentplots-a-python-plotting-analgesic" title="Link to this heading">#</a></h1>
+<p><span class="tagline">Spend more time analyzing your data than analyzing how to plot your data</span></p>
+<div class="intro-container">
+   <div class="intro-gallery">
+      <img class="imgidx dark-light" id="imgidx0" alt="_images/intro_xy.png" src="_images/intro_xy.png">
+      <img class="imgidx dark-light" id="imgidx1" alt="_images/intro_box.png" src="_images/intro_box.png">
+      <img class="imgidx dark-light" id="imgidx2" alt="_images/intro_gantt.png" src="_images/intro_gantt.png">
+      <img class="imgidx dark-light" id="imgidx3" alt="_images/intro_imshow.png" src="_images/intro_imshow.png">
+   </div>
 
-
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
-    
-      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
-        
-      <li>&lt;no title&gt;</li>
-    
-    
-      <li class="wy-breadcrumbs-aside">
-        
-          
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
-          
-        
-      </li>
-    
-  </ul>
-
-  
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-            
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<div class="twocol docutils container">
-<div class="leftside docutils container">
-<p><span class="title">fivecentplots</span></p>
-</div>
-<div class="rightside docutils container">
-<div class="figure align-default" style="width: 80%">
-<img alt="_images/logo.png" src="_images/logo.png" />
-</div>
-</div>
-</div>
-<div class="line-block">
-<div class="line"><br /></div>
-<div class="line"><br /></div>
-<div class="line"><br /></div>
-</div>
-<p><span class="tagline">A Python plotting analgesic</span></p>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
-<img class="imgidx" alt="_images/index.png" src="_images/index.png"><div class="line-block">
-<div class="line"><br /></div>
-</div>
-<h2>Why another Python plotting library?</h2><p>There is no shortage of quality plotting libraries in Python.  While basic plots can be easy,
-complex plots with custom styling and formatting often involve mastery of a daunting API
-and many lines of code.  This complexity is discouraging to new/casual Python users and may lead
-them to abandon Python in favor of more comfortable, albeit inferior, plotting tools like Excel.</p>
-<p><strong>fivecentplots</strong> simplifies the API required to generate complex plots, specifically for data
-in <strong>pandas</strong> DataFrames.</p>
+   <div class="intro-text" id="why-oh-why">
+      <h2 style="width: 100%">Another Python plotting library, really??</h2>
+      <p> There is no shortage of quality plotting libraries in Python.  Basic plots with default styling are
+         often easy, but acheiving complex figures with subplots, legends, overlays, and custom styling can
+         require a mastery of a daunting API and many lines of code.  This complexity is discouraging to the new/casual Python
+         user and can lead them to abandon Python in favor of more comfortable, albeit inferior, plotting tools like Excel.
+      </p>
+   </div>
+</div><p><strong>fivecentplots</strong> exists to drastically simplify the API required to generate complex plots, specifically for data
+within <strong>pandas</strong> DataFrames.</p>
 <div class="section" id="advantages-of-fivecentplots">
 <h2>Advantages of fivecentplots</h2>
 <div class="flex-container">
@@ -253,9 +388,9 @@ in <strong>pandas</strong> DataFrames.</p>
       <div class="contain">
          <p>
             <ul>
-               <li>Plots require a single function call with no additional lines of code</li>
-               <li>All style, formatting, and grouping is determined using optional keyword arguments or a simple "theme" file</li>
-               <li>Data come from DataFrames and can be accessed by simple column names</li>
+               <li>Plots are generated from a <b>single function call</b></li>
+               <li>Plot contents and design <b>defined by optional keyword arguments</b> with defaults in a simple "theme" file</li>
+               <li><b>Simple data access</b> using DataFrame column names and text-based filtering</li>
             </ul>
          </p>
       </div>
@@ -269,9 +404,9 @@ in <strong>pandas</strong> DataFrames.</p>
       <div class="contain">
          <p>
             <ul>
-               <li> All colors, sizes, marker themes, grouping options, etc. can be defined by optional keyword arguments in a single function call
-               <li> Repeated kwargs can also be pulled from a simple theme file
-               <li> All the complexity of a plotting library's API is managed behind the scenes, simplifying the user's life</li>
+               <li> Colors, sizes, marker styles, subplot grouping, you name it--<b>everything is defined by keyword arguments</b>
+               <li> Keyword names follow a <b>basic naming convention</b> (ex: <span class="code">legend_title_font_size</span> defines the font size of the legend title)
+               <li> <b>Behind the scenes</b>, keywords translated into the complex code / API of the underlying plotting package (like <span class="code">matplotlib</span>)</li>
             </ul>
          </p>
       </div>
@@ -285,9 +420,9 @@ in <strong>pandas</strong> DataFrames.</p>
       <div class="contain">
          <p>
             <ul>
-               <li>With <b>pandas</b>, statistical analysis in Python rivals or surpasses that of commercial software packages
-                   like JMP. However, JMP has some useful plotting options that are tedious to create
-                   in Python.  <b>fivencentplots</b> makes it easy to create:
+               <li>pandas enables statistical analysis in Python comparable to that of commercial software packages
+                   like JMP. However, JMP offers easy creation of many useful charts that are tedious to create in Python.  <b>fivencentplots solves this</b>,
+                   making it easy to create:
                   <ul>
                      <li><a href='http://www.jmp.com/support/help/Variability_Gauge_Charts.shtml'>JMP-style variability gauge charts </a></li>
                      <li><a href='http://www.jmp.com/support/help/Additional_Examples_of_the_Overlay_Plot_Platform.shtml#192569'>Grouped overlay plots</a> </li>
@@ -307,8 +442,11 @@ in <strong>pandas</strong> DataFrames.</p>
       <div class="contain">
          <p>
             <ul>
-               <li><b>fivecentplots</b> can wrap any plotting "engine" (or library) with the same API</li>
-               <li>Getting the same plot from <b>matplotlib</b> or <b>plotly</b> is as easy as chaning one kwarg in the exact same function call</li>
+               <li>Need a high-quality static image in <span class="code">matplotlib</span> style?  No problem!  Prefer an
+                   interactive web plot from <span class="code">plotly</span>? No problem!
+                   <b>fivecentplots can wrap any plotting "engine"</b> (or package)</li>
+               <li>Most importantly, <b>fivecentplots maintains the same API</b> regardless of plotting library.
+                   The same function call invoked for <span class="code">matplotlib</span> can be used for <span class="code">plotly</span>--no need to learn a new syntax and API</li>
             </ul>
          </p>
       </div>
@@ -322,8 +460,8 @@ in <strong>pandas</strong> DataFrames.</p>
       <div class="contain">
          <p>
             <ul>
-               <li>Automated bulk plotting is available in <b>fivecentplots</b> using ini-style config files instead of explicit function calls</li>
-               <li>This feature is very useful for production environments with standardized measurement data so users do not have to manually create line-health plots</li>
+               <li>Automated bulk plotting is easy since all plot parameters can be accessed from dictionary-like structures (yaml, json, ini)</li>
+               <li>Useful for production environments with standardized measurement data so users do not have to manually create line-health plots</li>
             </ul>
          </p>
       </div>
@@ -332,17 +470,16 @@ in <strong>pandas</strong> DataFrames.</p>
 
    <div class="card">
       <div class="header">
-         MATPLOTLIB SIZING
+         SIZING
       </div>
 
       <div class="contain">
          <p>
             <ul>
-               <li>When using <b>matplotlib</b> as the plotting engine, <b>>fivecentplots</b> shifts the
-                  sizing paradigm so the user can define the plot area size instead of
-                  the entire figure size</li>
-               <li>Plots can now have consistent and controllable plotting area sizes and do not get squished to
-                  accomodate other elements (such as labels and legends) in the figure.</li>
+               <li>Most plotting libraries define size based on the overall figure,
+                   leaving you to guess an appropriate size to properly fit your desired contents.
+                   <b>fivecentplots shifts the sizing paradigm by automatically determining the figure size based on the internal contents</b></li>
+               <li>Axes areas are more consistent and contents are less likely to get squished to fit in the figure</li>
             </ul>
          </p>
       </div>
@@ -364,10 +501,10 @@ in <strong>pandas</strong> DataFrames.</p>
          <span class="n">xmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mf">1.7</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ymax</span><span class="o">=</span><span class="p">[</span><span class="mf">1.3</span><span class="p">,</span> <span class="mf">1.7</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">])</span>
 </pre></div>
 </div>
-<p>Consider one possible approach to generate a very similar plot using <strong>matplotlib</strong> only:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">matplotlib</span>
-<span class="kn">import</span> <span class="nn">natsort</span>
+<p>Consider one possible approach to generate a very similar plot using pure <strong>matplotlib</strong> syntax:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pylab</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">natsort</span>
 
 <span class="c1"># Filter the DataFrame to get the subset of interest</span>
 <span class="n">df_sub</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">Substrate</span><span class="o">==</span><span class="s2">&quot;Si&quot;</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Target Wavelength&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">450</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">25</span><span class="p">)]</span>
@@ -436,7 +573,7 @@ in <strong>pandas</strong> DataFrames.</p>
 <p>This example is obviously a bit contrived as you could simplify things by modifying <cite>rc_params</cite>
 or eliminating some of the specific style elments used here, but the general idea should be
 clear:  <strong>fivecentplots</strong> can reduce the barrier to generate complex plots.</p>
-<br><p>What if we wanted to do the same plot in raw <strong>bokeh</strong> code?  Well, we’d need to learn an entirely
+<br><p>What if we wanted to do the same plot in raw <strong>bokeh</strong> or <strong>plotly</strong> code?  Well, we’d need to learn an entirely
 different API!  But with <strong>fivecentplots</strong> we can just change the kwarg defining the plotting engine
 (<code class="docutils literal notranslate"><span class="pre">engine</span></code>) and we are all set:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="n">share_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -446,103 +583,194 @@ different API!  But with <strong>fivecentplots</strong> we can just change the k
 </pre></div>
 </div>
 <img alt="_images/syntax_bokeh.png" src="_images/syntax_bokeh.png" />
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
-<blockquote>
-<div><div class="admonition note">
+<div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>As of v0.6 <strong>matplotlib</strong> has the richest available plotting feature set.  <strong>plotly</strong> supports most plot
 types and many of the same style features.  <strong>bokeh</strong> support is limited to only scatter plots at this
 time.</p>
 </div>
-</div></blockquote>
 <p>Refer to the topics on the sidebar for more details on plot types and options.</p>
-<br>
-<hr>
-<h2>Documentation</h2><div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<section id="basics">
+<h2>Basics<a class="headerlink" href="#basics" title="Link to this heading">#</a></h2>
+<p>Information about using, configuration, and customizing this theme.</p>
+<div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="layout.html">Layout and Elements</a></li>
-<li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="grouping.html">Grouping data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/fcp.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics/index.html">Basics</a></li>
+</ul>
+</div>
+</section>
+<section id="plot-types">
+<h2>Plot Types<a class="headerlink" href="#plot-types" title="Link to this heading">#</a></h2>
+<p>Information about the community behind this theme and how you can contribute.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="plot_types/index.html">Plot Types</a></li>
+</ul>
+</div>
+</section>
+<section id="engines">
+<h2>Engines<a class="headerlink" href="#engines" title="Link to this heading">#</a></h2>
+<p>Several example pages to demonstrate the functionality of this theme when used alongside other Sphinx extensions.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="engines/index.html">Engines</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="engines/index.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engines/index.html#adding-new-engines">Adding New Engines</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Plot Types</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt charts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hist.html">hist</a></li>
-<li class="toctree-l1"><a class="reference internal" href="imshow.html">imshow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="nq.html">nq</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pie.html">pie</a></li>
-</ul>
 </div>
+</section>
+<section id="api">
+<h2>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h2>
+<p>The content of the exposed <cite>pydata_sphinx_theme</cite> API.</p>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/endangeredoxen/fivecentplots">GitHub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/axes.html">axes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/bar.html">bar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/boxplot.html">boxplot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/cbar.html">cbar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/contour.html">contour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/fcp.html">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/figure.html">figure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gantt.html">gantt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gridlines.html">gridlines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/grouping.html">grouping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/heatmap.html">heatmap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/hist.html">hist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/imshow.html">imshow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/labels.html">labels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/legend.html">legend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/lines.html">lines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/markers.html">markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/nq.html">nq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/options.html">options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/pie.html">pie</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/plot.html">plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/tick_labels.html">tick_labels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/ticks.html">ticks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/ws.html">ws</a></li>
+</ul>
+</li>
 </ul>
 </div>
+</section>
+</section>
 
 
-           </div>
-           
-          </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="install.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>
-        &#169; Copyright 2022, Steve Nicholes.
-
-    </p>
-  </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
-
-</footer>
-        </div>
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="right-next"
+       href="basics/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Basics</p>
       </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
-    </section>
 
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#basics">Basics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-types">Plot Types</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#engines">Engines</a><ul class="nav section-nav flex-column">
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
   </div>
   
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script>
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
 
-  
-  
+  <p class="copyright">
     
-   
+      © Copyright 2012-2025.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
 
-</body>
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
 </html>

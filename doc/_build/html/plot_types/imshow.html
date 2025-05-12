@@ -1,0 +1,2317 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="dark">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>imshow &#8212; fivecentplots</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "dark";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "dark";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=ea406944" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=e167ab61"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'plot_types/imshow';</script>
+    <link rel="icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="nq" href="nq.html" />
+    <link rel="prev" title="hist" href="hist.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.6" />
+    <meta name="docbuild:last-update" content="May 12, 2025"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="dark">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-dark" alt="fivecentplots - Home"/>
+    <img src="../_static/logo.png" class="logo__image only-light pst-js-only" alt="fivecentplots - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../basics/index.html">
+    Basics
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Plot Types
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../engines/index.html">
+    Engines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://github.com/endangeredoxen/fivecentplots">
+    github
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../basics/index.html">
+    Basics
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Plot Types
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../engines/index.html">
+    Engines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/endangeredoxen/fivecentplots">
+    github
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hist.html">hist</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">imshow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nq.html">nq</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pie.html">pie</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Plot Types</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">imshow</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="imshow">
+<h1>imshow<a class="headerlink" href="#imshow" title="Link to this heading">#</a></h1>
+<p>This section describes various options available for imshow plots in <strong>fivecentplots</strong></p>
+<p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/api/imshow.html#imshow">See the full API </a></p>
+<section id="Setup">
+<h2>Setup<a class="headerlink" href="#Setup" title="Link to this heading">#</a></h2>
+<p>Import packages:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">fivecentplots</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fcp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">imageio.v3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">imageio</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The autoreload extension is already loaded. To reload it, use:
+  %reload_ext autoreload
+</pre></div></div>
+</div>
+<p>Load a completely ridiculous 8-bit RGB color test image as a <code class="docutils literal notranslate"><span class="pre">np.array</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">img_rgb</span> <span class="o">=</span> <span class="n">imageio</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;test_data/imshow_cat_pirate.png&#39;</span><span class="p">))</span>
+<span class="n">img_rgb</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([[[223, 221, 220],
+        [223, 221, 220],
+        [223, 221, 220],
+        ...,
+        [222, 220, 219],
+        [222, 220, 219],
+        [222, 220, 219]],
+
+       [[223, 221, 220],
+        [223, 221, 220],
+        [223, 221, 220],
+        ...,
+        [222, 220, 219],
+        [222, 220, 219],
+        [222, 220, 219]],
+
+       [[223, 221, 220],
+        [223, 221, 220],
+        [223, 221, 220],
+        ...,
+        [222, 220, 219],
+        [222, 220, 219],
+        [222, 220, 219]],
+
+       ...,
+
+       [[ 86,  95, 108],
+        [ 84,  93, 106],
+        [ 81,  90, 103],
+        ...,
+        [210, 211, 209],
+        [210, 211, 209],
+        [210, 211, 209]],
+
+       [[ 85,  94, 107],
+        [ 83,  92, 105],
+        [ 81,  90, 103],
+        ...,
+        [211, 212, 210],
+        [211, 212, 210],
+        [211, 212, 210]],
+
+       [[ 84,  93, 106],
+        [ 83,  92, 105],
+        [ 81,  90, 103],
+        ...,
+        [211, 212, 210],
+        [211, 212, 210],
+        [211, 212, 210]]], dtype=uint8)
+</pre></div></div>
+</div>
+</section>
+<section id="Input-data-format">
+<h2>Input data format<a class="headerlink" href="#Input-data-format" title="Link to this heading">#</a></h2>
+<p>fivecentplots was originally designed to simplify plotting from 2D <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>s. However, this approach is not convenient or efficient for storing / displaying / processing image data, especially for color images with 3 or more channels of pixel data. Starting with v0.6.0, fivecentplots adopts a new convention that is significantly faster, particularly when grouping across multiple images:</p>
+<p>Single images without any grouping labels:</p>
+<p>Image data is passed to the plotting function through the its first and only required <code class="docutils literal notranslate"><span class="pre">arg</span></code></p>
+<ul>
+<li><p>Option 1 (recommended): image data is stored in <code class="docutils literal notranslate"><span class="pre">numpy</span></code> array → works with 2D grayscale/RAW image and RGBA color images (3 or 4 channels)</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>img = imageio.imread(&#39;some_image_file.png&#39;)  # np.array
+fcp.imshow(img, **kwargs)
+</pre></div>
+</div>
+</li>
+<li><p>Option 2: image data is stored in a 2D <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> with interger labeled columns and integer labeled row indices → works for 2D grayscale/RAW only</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>img = pd.DataFrame(imageio.imread(&#39;some_image_file.png&#39;))  # pd.DataFrame
+fcp.imshow(img, **kwargs)
+</pre></div>
+</div>
+</li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line">Multiple images with grouping labels:</div>
+</div>
+<ul class="simple">
+<li><p>Grouping label information:</p>
+<ul>
+<li><p>stored in a <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code></p></li>
+<li><p>each grouping label is a column in the <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code></p></li>
+<li><p>one row for each image</p></li>
+<li><p>row index is a unique key / name / number that corresponds to the image data</p></li>
+</ul>
+</li>
+<li><p>Image data:</p>
+<ul>
+<li><p>stored as a dictionary of <code class="docutils literal notranslate"><span class="pre">np.array</span></code>s</p></li>
+<li><p>each dictionary key matches a row index value for the grouping <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code></p></li>
+<li><p>dictionary is passed to special kwarg named <code class="docutils literal notranslate"><span class="pre">imgs</span></code></p></li>
+</ul>
+</li>
+</ul>
+<p>Examples of both cases are provided below.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;alpha_blend&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">],</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">2.2</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">]},</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;img0&#39;</span><span class="p">,</span> <span class="s1">&#39;img1&#39;</span><span class="p">,</span> <span class="s1">&#39;img2&#39;</span><span class="p">])</span>
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>alpha_blend</th>
+      <th>gamma</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>img0</th>
+      <td>1</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>img1</th>
+      <td>10</td>
+      <td>2.2</td>
+    </tr>
+    <tr>
+      <th>img2</th>
+      <td>50</td>
+      <td>1.8</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">imgs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;img0&#39;</span><span class="p">:</span> <span class="n">imageio</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;test_data/imshow_color_bars.png&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;img1&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.75</span> <span class="o">*</span> <span class="n">imageio</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;test_data/imshow_color_bars.png&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
+        <span class="s1">&#39;img2&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.15</span> <span class="o">*</span> <span class="n">imageio</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;test_data/imshow_color_bars.png&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)}</span>
+<span class="n">imgs</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;img0&#39;: array([[[254,   0,   0],
+         [254,   0,   0],
+         [254,   0,   0],
+         ...,
+         [254,   0, 246],
+         [254,   0, 246],
+         [254,   0, 246]],
+
+        [[254,   0,   0],
+         [254,   0,   0],
+         [254,   0,   0],
+         ...,
+         [254,   0, 246],
+         [254,   0, 246],
+         [254,   0, 246]],
+
+        [[254,   0,   0],
+         [254,   0,   0],
+         [254,   0,   0],
+         ...,
+         [254,   0, 246],
+         [254,   0, 246],
+         [254,   0, 246]],
+
+        ...,
+
+        [[254,   0,   0],
+         [254,   0,   0],
+         [254,   0,   0],
+         ...,
+         [254,   0, 246],
+         [254,   0, 246],
+         [254,   0, 246]],
+
+        [[254,   0,   0],
+         [254,   0,   0],
+         [254,   0,   0],
+         ...,
+         [254,   0, 246],
+         [254,   0, 246],
+         [254,   0, 246]],
+
+        [[254,   0,   0],
+         [254,   0,   0],
+         [254,   0,   0],
+         ...,
+         [254,   0, 246],
+         [254,   0, 246],
+         [254,   0, 246]]], dtype=uint8),
+ &#39;img1&#39;: array([[[188,   0,   0],
+         [188,   0,   0],
+         [188,   0,   0],
+         ...,
+         [188,   0, 174],
+         [188,   0, 174],
+         [188,   0, 174]],
+
+        [[188,   0,   0],
+         [188,   0,   0],
+         [188,   0,   0],
+         ...,
+         [188,   0, 174],
+         [188,   0, 174],
+         [188,   0, 174]],
+
+        [[188,   0,   0],
+         [188,   0,   0],
+         [188,   0,   0],
+         ...,
+         [188,   0, 174],
+         [188,   0, 174],
+         [188,   0, 174]],
+
+        ...,
+
+        [[188,   0,   0],
+         [188,   0,   0],
+         [188,   0,   0],
+         ...,
+         [188,   0, 174],
+         [188,   0, 174],
+         [188,   0, 174]],
+
+        [[188,   0,   0],
+         [188,   0,   0],
+         [188,   0,   0],
+         ...,
+         [188,   0, 174],
+         [188,   0, 174],
+         [188,   0, 174]],
+
+        [[188,   0,   0],
+         [188,   0,   0],
+         [188,   0,   0],
+         ...,
+         [188,   0, 174],
+         [188,   0, 174],
+         [188,   0, 174]]], dtype=uint8),
+ &#39;img2&#39;: array([[[38,  0,  0],
+         [38,  0,  0],
+         [38,  0,  0],
+         ...,
+         [38,  0, 36],
+         [38,  0, 36],
+         [38,  0, 36]],
+
+        [[38,  0,  0],
+         [38,  0,  0],
+         [38,  0,  0],
+         ...,
+         [38,  0, 36],
+         [38,  0, 36],
+         [38,  0, 36]],
+
+        [[38,  0,  0],
+         [38,  0,  0],
+         [38,  0,  0],
+         ...,
+         [38,  0, 36],
+         [38,  0, 36],
+         [38,  0, 36]],
+
+        ...,
+
+        [[38,  0,  0],
+         [38,  0,  0],
+         [38,  0,  0],
+         ...,
+         [38,  0, 36],
+         [38,  0, 36],
+         [38,  0, 36]],
+
+        [[38,  0,  0],
+         [38,  0,  0],
+         [38,  0,  0],
+         ...,
+         [38,  0, 36],
+         [38,  0, 36],
+         [38,  0, 36]],
+
+        [[38,  0,  0],
+         [38,  0,  0],
+         [38,  0,  0],
+         ...,
+         [38,  0, 36],
+         [38,  0, 36],
+         [38,  0, 36]]], dtype=uint8)}
+</pre></div></div>
+</div>
+<p>And the plot is executed as follows:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">imgs</span><span class="o">=</span><span class="n">imgs</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha_blend&#39;</span><span class="p">],</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">ws_col</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_imshow_13_0.png" src="../_images/plot_types_imshow_13_0.png" />
+</div>
+</div>
+</section>
+<section id="Basic-image-display">
+<h2>Basic image display<a class="headerlink" href="#Basic-image-display" title="Link to this heading">#</a></h2>
+<section id="RGB">
+<h3>RGB<a class="headerlink" href="#RGB" title="Link to this heading">#</a></h3>
+<p>RGB data must be stored in a <code class="docutils literal notranslate"><span class="pre">numpy</span></code> array. For a single image, it can be passed as the primary <code class="docutils literal notranslate"><span class="pre">arg</span></code> to the <code class="docutils literal notranslate"><span class="pre">imshow</span></code> plotting function, along with any other desired <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> to fine tune the final result:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_rgb</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">])</span>
+<span class="n">img_rgb</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_imshow_17_0.png" src="../_images/plot_types_imshow_17_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(1000, 2000, 3)
+</pre></div></div>
+</div>
+<p>..note:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>-  when specifying ``ax_size`` the aspect ratio of the original data will be preserved and the larger value between *actual* height or width will adopt the *specified* height or width
+-  tick labels are disable by default for ``imshow`` (use ``tick_labels_major=True`` to enable)
+</pre></div>
+</div>
+</section>
+<section id="RAW-/-Grayscale">
+<h3>RAW / Grayscale<a class="headerlink" href="#RAW-/-Grayscale" title="Link to this heading">#</a></h3>
+<p>fivecentplots can also be used to display 2D RAW/grayscale image data. For this example, we first covert the above RGB image into a scaled 16-bit grayscale <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> using an <code class="docutils literal notranslate"><span class="pre">fcp.utilities</span></code> functions:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">img_raw</span> <span class="o">=</span> <span class="n">fcp</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">img_grayscale</span><span class="p">(</span><span class="n">img_rgb</span><span class="p">,</span> <span class="n">as_df</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">img_raw</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>...</th>
+      <th>1990</th>
+      <th>1991</th>
+      <th>1992</th>
+      <th>1993</th>
+      <th>1994</th>
+      <th>1995</th>
+      <th>1996</th>
+      <th>1997</th>
+      <th>1998</th>
+      <th>1999</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>...</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>...</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>...</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>...</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>56773</td>
+      <td>...</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+      <td>56516</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>995</th>
+      <td>25661</td>
+      <td>24890</td>
+      <td>23862</td>
+      <td>23348</td>
+      <td>23183</td>
+      <td>22670</td>
+      <td>21642</td>
+      <td>20871</td>
+      <td>20555</td>
+      <td>20298</td>
+      <td>...</td>
+      <td>54295</td>
+      <td>54295</td>
+      <td>54295</td>
+      <td>54295</td>
+      <td>54295</td>
+      <td>54295</td>
+      <td>54038</td>
+      <td>54038</td>
+      <td>54038</td>
+      <td>54038</td>
+    </tr>
+    <tr>
+      <th>996</th>
+      <td>25404</td>
+      <td>24633</td>
+      <td>23862</td>
+      <td>23348</td>
+      <td>23183</td>
+      <td>22413</td>
+      <td>21642</td>
+      <td>20871</td>
+      <td>20555</td>
+      <td>20298</td>
+      <td>...</td>
+      <td>54295</td>
+      <td>54295</td>
+      <td>54295</td>
+      <td>54295</td>
+      <td>54295</td>
+      <td>54295</td>
+      <td>54038</td>
+      <td>54038</td>
+      <td>54038</td>
+      <td>54038</td>
+    </tr>
+    <tr>
+      <th>997</th>
+      <td>25147</td>
+      <td>24633</td>
+      <td>23862</td>
+      <td>23348</td>
+      <td>22926</td>
+      <td>22413</td>
+      <td>21642</td>
+      <td>21128</td>
+      <td>20555</td>
+      <td>20298</td>
+      <td>...</td>
+      <td>54295</td>
+      <td>54295</td>
+      <td>54295</td>
+      <td>54295</td>
+      <td>54295</td>
+      <td>54295</td>
+      <td>54038</td>
+      <td>54038</td>
+      <td>54038</td>
+      <td>54038</td>
+    </tr>
+    <tr>
+      <th>998</th>
+      <td>24890</td>
+      <td>24376</td>
+      <td>23862</td>
+      <td>23091</td>
+      <td>22670</td>
+      <td>22156</td>
+      <td>21385</td>
+      <td>21128</td>
+      <td>20298</td>
+      <td>20041</td>
+      <td>...</td>
+      <td>54295</td>
+      <td>54295</td>
+      <td>54038</td>
+      <td>54038</td>
+      <td>54038</td>
+      <td>54038</td>
+      <td>54295</td>
+      <td>54295</td>
+      <td>54295</td>
+      <td>54295</td>
+    </tr>
+    <tr>
+      <th>999</th>
+      <td>24633</td>
+      <td>24376</td>
+      <td>23862</td>
+      <td>23091</td>
+      <td>22670</td>
+      <td>22156</td>
+      <td>21385</td>
+      <td>21128</td>
+      <td>20298</td>
+      <td>20041</td>
+      <td>...</td>
+      <td>54295</td>
+      <td>54295</td>
+      <td>54038</td>
+      <td>54038</td>
+      <td>54038</td>
+      <td>54038</td>
+      <td>54295</td>
+      <td>54295</td>
+      <td>54295</td>
+      <td>54295</td>
+    </tr>
+  </tbody>
+</table>
+<p>1000 rows × 2000 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_raw</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Fake RAW, Fake Pirate&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_imshow_22_0.png" src="../_images/plot_types_imshow_22_0.png" />
+</div>
+</div>
+<p>..note:: <code class="docutils literal notranslate"><span class="pre">imshow</span></code> uses the “gray” colormap by default for single-channel RAW images</p>
+</section>
+</section>
+<section id="Colors">
+<h2>Colors<a class="headerlink" href="#Colors" title="Link to this heading">#</a></h2>
+<p>This section applies only to single-channel image data</p>
+<section id="Color-map">
+<h3>Color map<a class="headerlink" href="#Color-map" title="Link to this heading">#</a></h3>
+<p>We can add any standard color map from matplotlib to an image using keyword <code class="docutils literal notranslate"><span class="pre">cmap</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_raw</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_imshow_28_0.png" src="../_images/plot_types_imshow_28_0.png" />
+</div>
+</div>
+</section>
+<section id="Colorbar">
+<h3>Colorbar<a class="headerlink" href="#Colorbar" title="Link to this heading">#</a></h3>
+<p>We can also add a colorbar to the image showing the z-range with the keyword <code class="docutils literal notranslate"><span class="pre">cbar=True</span></code></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_raw</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_imshow_31_0.png" src="../_images/plot_types_imshow_31_0.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="Cropping">
+<h2>Cropping<a class="headerlink" href="#Cropping" title="Link to this heading">#</a></h2>
+<p>For both single and multi-channel images, we can crop (i.e., zoom in) the image by applying <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> limits. Note:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code> applies to the image columns</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code> applies to the image rows</p></li>
+<li><p>image data follows the common convention of starting with “row 0” at the top of the image → <code class="docutils literal notranslate"><span class="pre">y</span></code> values increase from top to bottom</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_raw</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">xmin</span><span class="o">=</span><span class="mi">750</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mi">1100</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">tick_labels_major</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_imshow_34_0.png" src="../_images/plot_types_imshow_34_0.png" />
+</div>
+</div>
+<p>..caution:: Private eyes</p>
+<p>They’re watching you</p>
+<p>They see your every move</p>
+<p>Zooming can be achieved by changing the <code class="docutils literal notranslate"><span class="pre">ax_size</span></code> values for the cropped image. We can also add axes labels:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_rgb</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">xmin</span><span class="o">=</span><span class="mi">1400</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mi">1850</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="mi">750</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mf">2E20</span><span class="p">,</span> <span class="n">tick_labels_major</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">label_x</span><span class="o">=</span><span class="s1">&#39;Cat hook pixels&#39;</span><span class="p">,</span> <span class="n">label_y</span><span class="o">=</span><span class="s1">&#39;Image Rows&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_imshow_37_0.png" src="../_images/plot_types_imshow_37_0.png" />
+</div>
+</div>
+<p>..note:: If a crop limit exceeds the actual dimensions of the image, the min or max value is automatically used instead</p>
+</section>
+<section id="Contrast-stretching">
+<h2>Contrast stretching<a class="headerlink" href="#Contrast-stretching" title="Link to this heading">#</a></h2>
+<p>This section applies only to single-channel image data</p>
+<p>In some cases (such as RAW image sensor data analysis) it is helpful to adjust the colormap limits in order to “stretch” the contrast. This can be done via the <code class="docutils literal notranslate"><span class="pre">z</span></code> axis limits. In this example, we stretch +/-3 standard deviations from the mean pixel value.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># First calculate the mean and std to help define stretching limits</span>
+<span class="n">uu</span> <span class="o">=</span> <span class="n">img_raw</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">ss</span> <span class="o">=</span> <span class="n">img_raw</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+
+<span class="c1"># Plot with stretching</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_raw</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">zmin</span><span class="o">=</span><span class="n">uu</span><span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">ss</span><span class="p">,</span> <span class="n">zmax</span><span class="o">=</span><span class="n">uu</span><span class="o">+</span><span class="mi">3</span><span class="o">*</span><span class="n">ss</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_imshow_41_0.png" src="../_images/plot_types_imshow_41_0.png" />
+</div>
+</div>
+<p>imshow plots in fivecentplots also provides a convenient kwarg called <code class="docutils literal notranslate"><span class="pre">stretch</span></code> which calculates a numerical multiplier of the standard deviation above and below the mean to set new z-limits (the same thing that was done manually above). <code class="docutils literal notranslate"><span class="pre">stretch</span></code> can be a single value of std dev which is interpreted as +/- that value or a 2-value list with the lower and higher std deviation respectively. First, we consider a +/- 4 sigma stretch as above:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_raw</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">stretch</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_imshow_43_0.png" src="../_images/plot_types_imshow_43_0.png" />
+</div>
+</div>
+<p>Now we show a single-sided stretch that applies a 3 * std dev increase to the upper z-limit:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_raw</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">stretch</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_imshow_45_0.png" src="../_images/plot_types_imshow_45_0.png" />
+</div>
+</div>
+</section>
+<section id="Width/Height-Ratio">
+<h2>Width/Height Ratio<a class="headerlink" href="#Width/Height-Ratio" title="Link to this heading">#</a></h2>
+<p>By default, fivecentplots will preserve the width to height ratio of the original image. However, this can be overriden if desired via the keyward <code class="docutils literal notranslate"><span class="pre">wh_ratio</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_raw</span><span class="p">,</span> <span class="n">wh_ratio</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_imshow_48_0.png" src="../_images/plot_types_imshow_48_0.png" />
+</div>
+</div>
+</section>
+<section id="Split-color-planes">
+<h2>Split color planes<a class="headerlink" href="#Split-color-planes" title="Link to this heading">#</a></h2>
+<p>This section applies only to single-channel image data</p>
+<p>When analyzing Bayer-type images, it is often useful to split the image data based on the color-filter array pattern used on the image sensor. fivecentplots provides a simple utility function to do this and <code class="docutils literal notranslate"><span class="pre">imshow</span></code> can be used to display the result. Consider the following image:</p>
+<p><img alt="889f2532a82147c99259b989bb3a45ea" src="https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg" /></p>
+<p>First we read the image from the world-wide web and convert into a Bayer-like RAW image (rough hack for the purposes of this example):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg&#39;</span>
+<span class="n">img_rgb_sp</span> <span class="o">=</span> <span class="n">imageio</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">img_raw_sp</span> <span class="o">=</span> <span class="n">fcp</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">rgb2bayer</span><span class="p">(</span><span class="n">img_rgb_sp</span><span class="p">)</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_raw_sp</span><span class="p">)</span>
+<span class="n">img_raw_sp</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_imshow_52_0.png" src="../_images/plot_types_imshow_52_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([[ 0,  0,  0, ..., 34,  1,  1],
+       [ 0, 32,  0, ...,  2, 67,  0],
+       [ 0,  0,  0, ..., 36,  1,  0],
+       ...,
+       [ 0,  0,  0, ...,  0,  7,  0],
+       [ 0,  0,  0, ...,  0,  7,  0],
+       [ 0,  0,  0, ...,  0,  7,  0]], dtype=uint8)
+</pre></div></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">fcp.imshow</span></code> has a built-in hook to separate RAW single-channel data into discrete color planes if the CFA pattern of the RAW data is supplied with the keyword <code class="docutils literal notranslate"><span class="pre">cfa</span></code>. This automatically creates a new grouping column for the data called “Plane”, which was can use to separate the color planes into discrete subplots for visualization.</p>
+<p>..note:: Only CFAs with a 2x2 grid of colors is supported</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_raw_sp</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span> <span class="n">cfa</span><span class="o">=</span><span class="s1">&#39;rggb&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;Plane&#39;</span><span class="p">,</span> <span class="n">ax_edge_width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ax_edge_color</span><span class="o">=</span><span class="s1">&#39;#555555&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_imshow_54_0.png" src="../_images/plot_types_imshow_54_0.png" />
+</div>
+</div>
+</section>
+<section id="Grouped-Images">
+<h2>Grouped Images<a class="headerlink" href="#Grouped-Images" title="Link to this heading">#</a></h2>
+<p>As explained in Section 2, to enable the powerful grouping / filtering / automatic-color-plane-splitting functionality of fivecentplots for sets of multiple images in an efficient manner, we cannot rely only on <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code>s. Instead, we use simple <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code>s for unique grouping information only and use a dictionary of <code class="docutils literal notranslate"><span class="pre">np.array</span></code>s to store the actual image data.</p>
+<section id="Simple-grouping-example">
+<h3>Simple grouping example<a class="headerlink" href="#Simple-grouping-example" title="Link to this heading">#</a></h3>
+<p>Let’s create a simple side-by-side of our beloved pirate cat with the same image’s inverse. First, we create a <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> with a basic text label to distinguish the two “cases” and a numeric index:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;case&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;this is Gary&#39;</span><span class="p">,</span> <span class="s1">&#39;this is inverse Gary&#39;</span><span class="p">]},</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>case</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>this is Gary</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>this is inverse Gary</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Next, we make a dictionary with two entries: (1) the original image and (2) the inverse image. Remember, that the dictionary keys must match the row indices of our <code class="docutils literal notranslate"><span class="pre">df</span></code> above:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">imgs</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">imgs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">img_rgb</span>
+<span class="n">imgs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">img_rgb</span> <span class="o">/</span> <span class="mi">255</span><span class="p">)</span> <span class="o">*</span> <span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">)</span>
+<span class="n">imgs</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{0: array([[[220, 221, 223],
+         [220, 221, 223],
+         [220, 221, 223],
+         ...,
+         [219, 220, 222],
+         [219, 220, 222],
+         [219, 220, 222]],
+
+        [[220, 221, 223],
+         [220, 221, 223],
+         [220, 221, 223],
+         ...,
+         [219, 220, 222],
+         [219, 220, 222],
+         [219, 220, 222]],
+
+        [[220, 221, 223],
+         [220, 221, 223],
+         [220, 221, 223],
+         ...,
+         [219, 220, 222],
+         [219, 220, 222],
+         [219, 220, 222]],
+
+        ...,
+
+        [[108,  95,  86],
+         [106,  93,  84],
+         [103,  90,  81],
+         ...,
+         [209, 211, 210],
+         [209, 211, 210],
+         [209, 211, 210]],
+
+        [[107,  94,  85],
+         [105,  92,  83],
+         [103,  90,  81],
+         ...,
+         [210, 212, 211],
+         [210, 212, 211],
+         [210, 212, 211]],
+
+        [[106,  93,  84],
+         [105,  92,  83],
+         [103,  90,  81],
+         ...,
+         [210, 212, 211],
+         [210, 212, 211],
+         [210, 212, 211]]], dtype=uint8),
+ 1: array([[[ 34,  33,  32],
+         [ 34,  33,  32],
+         [ 34,  33,  32],
+         ...,
+         [ 36,  34,  32],
+         [ 36,  34,  32],
+         [ 36,  34,  32]],
+
+        [[ 34,  33,  32],
+         [ 34,  33,  32],
+         [ 34,  33,  32],
+         ...,
+         [ 36,  34,  32],
+         [ 36,  34,  32],
+         [ 36,  34,  32]],
+
+        [[ 34,  33,  32],
+         [ 34,  33,  32],
+         [ 34,  33,  32],
+         ...,
+         [ 36,  34,  32],
+         [ 36,  34,  32],
+         [ 36,  34,  32]],
+
+        ...,
+
+        [[147, 160, 169],
+         [148, 162, 171],
+         [152, 164, 174],
+         ...,
+         [ 46,  44,  45],
+         [ 46,  44,  45],
+         [ 46,  44,  45]],
+
+        [[147, 161, 170],
+         [150, 163, 172],
+         [152, 164, 174],
+         ...,
+         [ 45,  42,  44],
+         [ 45,  42,  44],
+         [ 45,  42,  44]],
+
+        [[148, 162, 171],
+         [150, 163, 172],
+         [152, 164, 174],
+         ...,
+         [ 45,  42,  44],
+         [ 45,  42,  44],
+         [ 45,  42,  44]]], dtype=uint16)}
+</pre></div></div>
+</div>
+<p>Now we plot. Pass the grouping label <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> as the primary <code class="docutils literal notranslate"><span class="pre">arg</span></code> to <code class="docutils literal notranslate"><span class="pre">fcp.imshow</span></code> and the dictionary to the special <code class="docutils literal notranslate"><span class="pre">kwarg</span></code> called <code class="docutils literal notranslate"><span class="pre">imgs</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">imgs</span><span class="o">=</span><span class="n">imgs</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;case&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_imshow_63_0.png" src="../_images/plot_types_imshow_63_0.png" />
+</div>
+</div>
+</section>
+<section id="More-advanced-example">
+<h3>More advanced example<a class="headerlink" href="#More-advanced-example" title="Link to this heading">#</a></h3>
+<p>Let’s consider a more complicated example with multiple grouping factors using an ISO 12233 eSFR chart:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">base_img</span> <span class="o">=</span> <span class="n">imageio</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;https://www.imatest.com/wp-content/uploads/2011/11/new_ISO-12233_enh_wedges_3_2_sRGB.png&#39;</span><span class="p">)[</span><span class="mi">12</span><span class="p">:</span><span class="o">-</span><span class="mi">12</span><span class="p">,</span> <span class="mi">15</span><span class="p">:</span><span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">base_img</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_imshow_66_0.png" src="../_images/plot_types_imshow_66_0.png" />
+</div>
+</div>
+<p>Now we apply various combinations of Gaussian blur, random noise, and gain to the base image. For each iteration of our processing loop, we need to do two things:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pd.concat</span></code> a new row containing the <code class="docutils literal notranslate"><span class="pre">kernel</span></code>, <code class="docutils literal notranslate"><span class="pre">sigma</span></code>, and <code class="docutils literal notranslate"><span class="pre">gain</span></code> values. Initially, we ignore the row index but after the loop we use <code class="docutils literal notranslate"><span class="pre">df.reset_index()</span></code> to make a numerical index for each row</p></li>
+<li><p>transform the base image and store the result in an <code class="docutils literal notranslate"><span class="pre">imgs</span></code> dictionary with a numerical key</p></li>
+</ol>
+<p>which yields a data set of 32 images for plotting with <code class="docutils literal notranslate"><span class="pre">imshow</span></code>.</p>
+<p><p>Although the specifics of this example are a bit silly, one can readily see the power of fivecentplots for analyzing complex image processing experiments.</p>
+</p><div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+<span class="n">imgs</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">gain</span><span class="p">)</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">]):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;kernel&#39;</span><span class="p">:</span> <span class="n">kernel</span><span class="p">,</span> <span class="s1">&#39;sigma&#39;</span><span class="p">:</span> <span class="n">sigma</span><span class="p">,</span> <span class="s1">&#39;gain&#39;</span><span class="p">:</span> <span class="n">gain</span><span class="p">},</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
+    <span class="n">noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">base_img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">imgs</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">imgs</span><span class="p">)]</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">GaussianBlur</span><span class="p">((</span><span class="n">base_img</span> <span class="o">*</span> <span class="n">gain</span> <span class="o">+</span> <span class="n">noise</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span> <span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">kernel</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>index</th>
+      <th>kernel</th>
+      <th>sigma</th>
+      <th>gain</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>1</td>
+      <td>0.0</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0</td>
+      <td>1</td>
+      <td>0.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0</td>
+      <td>1</td>
+      <td>0.5</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0</td>
+      <td>1</td>
+      <td>0.5</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0</td>
+      <td>1</td>
+      <td>1.0</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0</td>
+      <td>1</td>
+      <td>1.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>0</td>
+      <td>1</td>
+      <td>2.0</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>0</td>
+      <td>1</td>
+      <td>2.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>0</td>
+      <td>3</td>
+      <td>0.0</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>0</td>
+      <td>3</td>
+      <td>0.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>0</td>
+      <td>3</td>
+      <td>0.5</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>0</td>
+      <td>3</td>
+      <td>0.5</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>0</td>
+      <td>3</td>
+      <td>1.0</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>0</td>
+      <td>3</td>
+      <td>1.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>0</td>
+      <td>3</td>
+      <td>2.0</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>0</td>
+      <td>3</td>
+      <td>2.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>0</td>
+      <td>5</td>
+      <td>0.0</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>0</td>
+      <td>5</td>
+      <td>0.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>0</td>
+      <td>5</td>
+      <td>0.5</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>0</td>
+      <td>5</td>
+      <td>0.5</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>0</td>
+      <td>5</td>
+      <td>1.0</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>0</td>
+      <td>5</td>
+      <td>1.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>0</td>
+      <td>5</td>
+      <td>2.0</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>0</td>
+      <td>5</td>
+      <td>2.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>0</td>
+      <td>7</td>
+      <td>0.0</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>0</td>
+      <td>7</td>
+      <td>0.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>0</td>
+      <td>7</td>
+      <td>0.5</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>0</td>
+      <td>7</td>
+      <td>0.5</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>0</td>
+      <td>7</td>
+      <td>1.0</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>0</td>
+      <td>7</td>
+      <td>1.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>0</td>
+      <td>7</td>
+      <td>2.0</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>0</td>
+      <td>7</td>
+      <td>2.0</td>
+      <td>1.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>First, we plot all combinations using the <code class="docutils literal notranslate"><span class="pre">kernel</span></code> value for each column of images, the <code class="docutils literal notranslate"><span class="pre">sigma</span></code> value for each row of images, and <code class="docutils literal notranslate"><span class="pre">gain</span></code> as the sole entry in <code class="docutils literal notranslate"><span class="pre">fig_groups</span></code> which yields a separate plot for each <code class="docutils literal notranslate"><span class="pre">gain</span></code> value. Notice that the saved filename is printed above each plot, designating the <code class="docutils literal notranslate"><span class="pre">gain</span></code> value used.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">imgs</span><span class="o">=</span><span class="n">imgs</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;kernel&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;sigma&#39;</span><span class="p">,</span> <span class="n">fig_groups</span><span class="o">=</span><span class="s1">&#39;gain&#39;</span><span class="p">,</span> <span class="n">print_filename</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-bold">Row by sigma by kernel where gain=0.5.png</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_imshow_70_1.png" src="../_images/plot_types_imshow_70_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-bold">Row by sigma by kernel where gain=1.0.png</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_imshow_70_3.png" src="../_images/plot_types_imshow_70_3.png" />
+</div>
+</div>
+<p>Let’s say we are interested in down selecting to only a few cases and zooming in to see the result. This can be accomplished as follows:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">imgs</span><span class="o">=</span><span class="n">imgs</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;kernel&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;sigma&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;gain==1 &amp; kernel &lt; 9 &amp; sigma in [0, 1]&#39;</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_imshow_72_0.png" src="../_images/plot_types_imshow_72_0.png" />
+</div>
+</div>
+<p>..note:: The above images are zoomed in automatically because our crop dimensions are smaller than the default value for <code class="docutils literal notranslate"><span class="pre">ax_size=[400,</span> <span class="pre">400]</span></code></p>
+</section>
+<section id="Wrap-reference">
+<h3>Wrap reference<a class="headerlink" href="#Wrap-reference" title="Link to this heading">#</a></h3>
+<p>Sometimes in image processing analysis, it is helpful to compare results with a reference image. When plotting multiple frame in a <code class="docutils literal notranslate"><span class="pre">wrap</span></code> plot configuration, reference images can be added as the first or last image in the group by passing a dictionary to the kwarg <code class="docutils literal notranslate"><span class="pre">wrap_reference</span></code>. This dictionary contains two keys, each with a single value:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Reference label name (str)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">np.array</span></code> containing image data</p></td>
+</tr>
+<tr class="row-odd"><td><p>‘position’ (optional)</p></td>
+<td><p>‘first’ (default) or ‘last’</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">imgs</span><span class="o">=</span><span class="n">imgs</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;kernel&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma&#39;</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;gain==1 &amp; kernel &lt; 9 &amp; sigma in [0, 1]&#39;</span><span class="p">,</span>
+           <span class="n">xmin</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+           <span class="n">wrap_reference</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;original&#39;</span><span class="p">:</span> <span class="n">base_img</span><span class="p">,</span> <span class="s1">&#39;position&#39;</span><span class="p">:</span> <span class="s1">&#39;first&#39;</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_imshow_76_0.png" src="../_images/plot_types_imshow_76_0.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="Pixel-accuracy">
+<h2>Pixel accuracy<a class="headerlink" href="#Pixel-accuracy" title="Link to this heading">#</a></h2>
+<p>The importance of pixel accuracy when rendering images through <code class="docutils literal notranslate"><span class="pre">fcp.imshow</span></code> depends on the application. In some cases, we may specifically not want pixel accuracy as it can make the rendered image quality look poor and pixelated. This section describes the options available to address this issue within fivecentplots.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+<section id="Preserving-pixel-values">
+<h3>Preserving pixel values<a class="headerlink" href="#Preserving-pixel-values" title="Link to this heading">#</a></h3>
+<p>Let’s create a very basic checkerboard image with only two pixel values, 0 and 255:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">40</span>
+<span class="n">checkerboard</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">],</span> <span class="p">[</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]),</span> <span class="p">(</span><span class="n">n</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="o">//</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">checkerboard</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([[  0, 255,   0, ..., 255,   0, 255],
+       [255,   0, 255, ...,   0, 255,   0],
+       [  0, 255,   0, ..., 255,   0, 255],
+       ...,
+       [255,   0, 255, ...,   0, 255,   0],
+       [  0, 255,   0, ..., 255,   0, 255],
+       [255,   0, 255, ...,   0, 255,   0]])
+</pre></div></div>
+</div>
+<p>fivecentplots will accurately display this pattern if the <code class="docutils literal notranslate"><span class="pre">ax_size</span></code> keyword matches the array size:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">checkerboard</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="n">checkerboard</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_imshow_84_0.png" src="../_images/plot_types_imshow_84_0.png" />
+</div>
+</div>
+<p>This is hard to visualize, but fortunately, we can size up the image and still preserve the pixel pattern:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">checkerboard</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_imshow_86_0.png" src="../_images/plot_types_imshow_86_0.png" />
+</div>
+</div>
+</section>
+<section id="Downsampling">
+<h3>Downsampling<a class="headerlink" href="#Downsampling" title="Link to this heading">#</a></h3>
+<p>If the requested <code class="docutils literal notranslate"><span class="pre">ax_size</span></code> is smaller than the image array size, the plotting backend (in this case <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code>) performs some downscaling which means the resulting image is no longer pixel accurate:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">checkerboard</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">17</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_imshow_89_0.png" src="../_images/plot_types_imshow_89_0.png" />
+</div>
+</div>
+<p>The above image is small but careful inspection shows that the black squares are not uniformly sized. We can illustrate this better by saving the images and reading them back, stripping off the plot figure border, and converting to grayscale:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">checkerboard</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;checkerboard_40.png&#39;</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">checkerboard</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">17</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;checkerboard_17.png&#39;</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">checkerboard_40</span> <span class="o">=</span> <span class="n">fcp</span><span class="o">.</span><span class="n">utl</span><span class="o">.</span><span class="n">img_grayscale</span><span class="p">(</span><span class="n">imageio</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;checkerboard_40.png&#39;</span><span class="p">)[</span><span class="mi">10</span><span class="p">:</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">:</span><span class="o">-</span><span class="mi">10</span><span class="p">],</span> <span class="n">bit_depth</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">checkerboard_17</span> <span class="o">=</span> <span class="n">fcp</span><span class="o">.</span><span class="n">utl</span><span class="o">.</span><span class="n">img_grayscale</span><span class="p">(</span><span class="n">imageio</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;checkerboard_17.png&#39;</span><span class="p">)[</span><span class="mi">10</span><span class="p">:</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">:</span><span class="o">-</span><span class="mi">10</span><span class="p">],</span> <span class="n">bit_depth</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>The original image:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">checkerboard_40</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([[  0, 243,   0, ..., 243,   0, 243],
+       [243,   0, 243, ...,   0, 243,   0],
+       [  0, 243,   0, ..., 243,   0, 243],
+       ...,
+       [243,   0, 243, ...,   0, 243,   0],
+       [  0, 243,   0, ..., 243,   0, 243],
+       [243,   0, 243, ...,   0, 243,   0]], dtype=uint16)
+</pre></div></div>
+</div>
+<p>And the shrunk image:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">checkerboard_17</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([[  0,   0,   0, 243, 243, 243,   0,   0, 243, 243, 243,   0,   0,
+          0, 243, 243, 243],
+       [  0,   0,   0, 243, 243, 243,   0,   0, 243, 243, 243,   0,   0,
+          0, 243, 243, 243],
+       [  0,   0,   0, 243, 243, 243,   0,   0, 243, 243, 243,   0,   0,
+          0, 243, 243, 243],
+       [243, 243, 243,   0,   0,   0, 243, 243,   0,   0,   0, 243, 243,
+        243,   0,   0,   0],
+       [243, 243, 243,   0,   0,   0, 243, 243,   0,   0,   0, 243, 243,
+        243,   0,   0,   0],
+       [243, 243, 243,   0,   0,   0, 243, 243,   0,   0,   0, 243, 243,
+        243,   0,   0,   0],
+       [  0,   0,   0, 243, 243, 243,   0,   0, 243, 243, 243,   0,   0,
+          0, 243, 243, 243],
+       [  0,   0,   0, 243, 243, 243,   0,   0, 243, 243, 243,   0,   0,
+          0, 243, 243, 243],
+       [243, 243, 243,   0,   0,   0, 243, 243,   0,   0,   0, 243, 243,
+        243,   0,   0,   0],
+       [243, 243, 243,   0,   0,   0, 243, 243,   0,   0,   0, 243, 243,
+        243,   0,   0,   0],
+       [243, 243, 243,   0,   0,   0, 243, 243,   0,   0,   0, 243, 243,
+        243,   0,   0,   0],
+       [  0,   0,   0, 243, 243, 243,   0,   0, 243, 243, 243,   0,   0,
+          0, 243, 243, 243],
+       [  0,   0,   0, 243, 243, 243,   0,   0, 243, 243, 243,   0,   0,
+          0, 243, 243, 243],
+       [  0,   0,   0, 243, 243, 243,   0,   0, 243, 243, 243,   0,   0,
+          0, 243, 243, 243],
+       [243, 243, 243,   0,   0,   0, 243, 243,   0,   0,   0, 243, 243,
+        243,   0,   0,   0],
+       [243, 243, 243,   0,   0,   0, 243, 243,   0,   0,   0, 243, 243,
+        243,   0,   0,   0],
+       [243, 243, 243,   0,   0,   0, 243, 243,   0,   0,   0, 243, 243,
+        243,   0,   0,   0]], dtype=uint16)
+</pre></div></div>
+</div>
+</section>
+<section id="Interpolation">
+<h3>Interpolation<a class="headerlink" href="#Interpolation" title="Link to this heading">#</a></h3>
+<p>With the <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> engine, fivecentplots supports any of the available interpolation schemes via the keyword <code class="docutils literal notranslate"><span class="pre">interp</span></code>. Here is our checkboard with a terrifically named interpolation scheme:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">checkerboard</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;catrom&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_imshow_98_0.png" src="../_images/plot_types_imshow_98_0.png" />
+</div>
+</div>
+<p>..note:: Interpolation can be helpful when plotting high-resolution color images that look pixelated</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="hist.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">hist</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="nq.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">nq</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Setup">Setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Input-data-format">Input data format</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Basic-image-display">Basic image display</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#RGB">RGB</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#RAW-/-Grayscale">RAW / Grayscale</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Colors">Colors</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Color-map">Color map</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Colorbar">Colorbar</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Cropping">Cropping</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Contrast-stretching">Contrast stretching</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Width/Height-Ratio">Width/Height Ratio</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Split-color-planes">Split color planes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Grouped-Images">Grouped Images</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Simple-grouping-example">Simple grouping example</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#More-advanced-example">More advanced example</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Wrap-reference">Wrap reference</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Pixel-accuracy">Pixel accuracy</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Preserving-pixel-values">Preserving pixel values</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Downsampling">Downsampling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Interpolation">Interpolation</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/plot_types/imshow.ipynb.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2012-2025.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

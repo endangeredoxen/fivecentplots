@@ -1,0 +1,802 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="dark">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Keyword Arguments &#8212; fivecentplots</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "dark";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "dark";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=ea406944" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=e167ab61"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'basics/keyword';</script>
+    <link rel="icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Grouping data" href="grouping.html" />
+    <link rel="prev" title="Layout and Elements" href="layout.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.6" />
+    <meta name="docbuild:last-update" content="May 12, 2025"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="dark">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-dark" alt="fivecentplots - Home"/>
+    <img src="../_static/logo.png" class="logo__image only-light pst-js-only" alt="fivecentplots - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Basics
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../plot_types/index.html">
+    Plot Types
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../engines/index.html">
+    Engines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://github.com/endangeredoxen/fivecentplots">
+    github
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Basics
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../plot_types/index.html">
+    Plot Types
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../engines/index.html">
+    Engines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/endangeredoxen/fivecentplots">
+    github
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layout.html">Layout and Elements</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Keyword Arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grouping.html">Grouping data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Basics</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Keyword Arguments</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="keyword-arguments">
+<h1>Keyword Arguments<a class="headerlink" href="#keyword-arguments" title="Link to this heading">#</a></h1>
+<section id="required-args">
+<h2>Required args<a class="headerlink" href="#required-args" title="Link to this heading">#</a></h2>
+<p>In general, all plot types in <strong>fivecentplots</strong> require input data in the form of a <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Arg</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>df</p></td>
+<td><p>pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code></p></td>
+<td><p>DataFrame containing all data to be plotted including grouping columns</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A few plot types that use 2D arrays of data where <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> column names are meaningless (like <code class="docutils literal notranslate"><span class="pre">`imshow`</span></code>) will
+also allow the user to directly use a <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>.  However, the grouping options in <strong>fivecentplots</strong>
+like <code class="docutils literal notranslate"><span class="pre">row</span></code> or <code class="docutils literal notranslate"><span class="pre">wrap</span></code> still require <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> inputs in order to gather the values from target grouping columns.</p>
+</div>
+</section>
+<section id="required-kwargs">
+<h2>Required kwargs<a class="headerlink" href="#required-kwargs" title="Link to this heading">#</a></h2>
+<p>With the singular exception of plotting 2D image data, all plot types require at least one column name to specify what
+data should be plotted.  These values are supplied as kwargs, not args, so that order of the arguments doesn’t matter.
+Even though these values are technically kwargs, the plot will fail if they are not defined.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Required?</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>x</p></td>
+<td><p>str
+or
+list of str</p></td>
+<td><p>Column name of the x-axis data (horizontal axis)</p></td>
+<td><p>all except:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">boxplot</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">imshow</span></code> (if using 2D array of data)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nq</span></code> (if using 2D array of data)</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>y</p></td>
+<td><p>str
+or
+list of str</p></td>
+<td><p>Column name of the y-axis data (vertical axis)</p></td>
+<td><p>all except:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">imshow</span></code> (if using 2D array of data)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nq</span></code> (if using 2D array of data)</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><p>z</p></td>
+<td><p>str</p></td>
+<td><p>Column name of the z-axis data</p></td>
+<td><p>only for contour and heatmap</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A full description of all required args is provided in the documentation for each plot type or in the <a class="reference external" href="api.html">API section</a></p>
+</div>
+</section>
+<section id="optional-kwargs">
+<h2>Optional kwargs<a class="headerlink" href="#optional-kwargs" title="Link to this heading">#</a></h2>
+<p>All characteristics of various <code class="docutils literal notranslate"><span class="pre">Element</span></code> objects in a plot (legend, axes, etc) and parameters related to the
+physical layout of these objects within the plot (whitespace, subplot grid layout) defined entirely by
+optional keyword arguments.  These kwargs can be specified in the plot function call or they can be pulled from a
+simple <a class="reference external" href="themes.html">theme file</a>. If the kwarg is not found in either of these locations, a built-in default value
+is used.</p>
+<p>Because the number of kwargs is vast, we will not outline all of them here.  However, we will give some general
+guidelines and refer the user to the <a class="reference external" href="api.html">full API</a> for specifics.</p>
+<section id="keyword-hierarchy">
+<h3>Keyword Hierarchy<a class="headerlink" href="#keyword-hierarchy" title="Link to this heading">#</a></h3>
+<p>Kwargs have the following order of priority:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>kwargs present in the function call (these override everything else)</p></li>
+<li><p>kwargs defined in the current theme file</p></li>
+<li><p>default kwargs hard-coded in the code</p></li>
+</ol>
+</div></blockquote>
+</section>
+<section id="nomenclature">
+<h3>Nomenclature<a class="headerlink" href="#nomenclature" title="Link to this heading">#</a></h3>
+<p>Keywords that access the attributes of an <code class="docutils literal notranslate"><span class="pre">Element</span></code> <em>typically</em> follow a specific formula:</p>
+<div class="admonition note">
+<p class="first admonition-title">Keyword Naming Scheme</p>
+<p class="last">&lt;element name&gt;_&lt;major|minor axis type (if any)&gt;_&lt;x|y|z axis (if any)&gt;_&lt;element attribute name&gt;</p>
+</div><p>Consider some examples:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p>Set the x label font color to red:</p>
+<blockquote>
+<div><p><strong>label_x_font_color = ‘#FF0000’</strong></p>
+</div></blockquote>
+</li>
+<li><p>Set the y-axis minor gridline width to 2 pixels:</p>
+<blockquote>
+<div><p><strong>grid_major_y_width = 2</strong></p>
+</div></blockquote>
+</li>
+<li><p>Set the axes edge color to black:</p>
+<blockquote>
+<div><p><strong>ax_edge_color = ‘#000000’</strong></p>
+</div></blockquote>
+</li>
+<li><p>Set the whisker color in a box plot:</p>
+<blockquote>
+<div><p><strong>box_whisker_color = #FF00FF</strong></p>
+</div></blockquote>
+</li>
+<li><p>Display the fit equation and rsq value of a line fit:</p>
+<blockquote>
+<div><p><strong>fit_eqn = True</strong>
+<strong>fit_rsq = True</strong></p>
+</div></blockquote>
+</li>
+<li><p>Set a different marker size just for the legend</p>
+<blockquote>
+<div><p><strong>legend_marker_size = 8</strong></p>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For convenience, there are a handful of keywords that allow a shorthand notation when
+defining them within the function call.  For example, if you are calling <code class="docutils literal notranslate"><span class="pre">fcp.boxplot</span></code>
+and want to convert the box to a violin, you can use either <code class="docutils literal notranslate"><span class="pre">box_violin=True</span></code>
+or <code class="docutils literal notranslate"><span class="pre">violin=True</span></code>.  Since it is obvious from the function call that these violins belong
+to this plot type, we allow the user to abbreviate.  However, the long form of such values
+is still required in theme files in case of overlap with other plot types.</p>
+</div>
+</section>
+<section id="getting-help">
+<h3>Getting Help<a class="headerlink" href="#getting-help" title="Link to this heading">#</a></h3>
+<p>Help regarding keywords is available by:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p><code class="docutils literal notranslate"><span class="pre">fcp.docs()</span></code>: loads the docs where you can find the API section</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">help(fcp.some_function_or_element)</span></code>: prints the args and kwargs that apply</p>
+<blockquote>
+<div><a class="reference internal image-reference" href="../_images/help.png"><img alt="../_images/help.png" src="../_images/help.png" style="width: 800px;" />
+</a>
+<p>To help with finding kwargs, <code class="docutils literal notranslate"><span class="pre">fcp.py</span></code> contains a number of dummy functions for various “elements”.  These functions
+have no actual function in the plotting, but exist solely to provide docstrings.  These include:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">axes</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cbar</span></code> (color bars)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">figure</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">grouping</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gridlines</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">labels</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">legend</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lines</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">markers</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ticks</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tick_labels</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ws</span></code> (whitespace)</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+</section>
+<section id="base-attributes">
+<h3>Base attributes<a class="headerlink" href="#base-attributes" title="Link to this heading">#</a></h3>
+<p>Most <code class="docutils literal notranslate"><span class="pre">Element</span></code> object contains a basic set of attributes which may or may not be used
+depending on the specifics of the element:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Category</p></th>
+<th class="head"><p>Keyword</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td rowspan="2"><p>Fill</p></td>
+<td><p>fill_alpha</p></td>
+<td><p>fill color opacity [0 (fully transparent) - 1 (opaque)]</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>fill_color</p></td>
+<td><p>fill color (hex color code)</p></td>
+<td><p>#ffffff</p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><p>Edges</p></td>
+<td><p>edge_alpha</p></td>
+<td><p>edge color opacity  [0 (fully transparent) - 1 (opaque)]</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>edge_width</p></td>
+<td><p>width in pixels of the element border</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-even"><td><p>edge_color</p></td>
+<td><p>edge color (hex color code)</p></td>
+<td><p>#ffffff</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="5"><p>Fonts</p></td>
+<td><p>font</p></td>
+<td><p>font name for element text</p></td>
+<td><p>sans-serif</p></td>
+</tr>
+<tr class="row-even"><td><p>font_color</p></td>
+<td><p>font color (hex color code)</p></td>
+<td><p>#000000</p></td>
+</tr>
+<tr class="row-odd"><td><p>font_size</p></td>
+<td><p>font size in pixels</p></td>
+<td><p>14</p></td>
+</tr>
+<tr class="row-even"><td><p>font_style</p></td>
+<td><p>font style [‘normal’, ‘italic’, ‘oblique’]</p></td>
+<td><p>normal</p></td>
+</tr>
+<tr class="row-odd"><td><p>font_weight</p></td>
+<td><p>font weight [‘light’, ‘normal’, ‘medium’, ‘semibold’, ‘bold’, ‘heavy’, ‘black’]</p></td>
+<td><p>normal</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><p>Lines</p></td>
+<td><p>alpha</p></td>
+<td><p>line opacity</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>color</p></td>
+<td><p>line color (hex color code)</p></td>
+<td><p>#000000</p></td>
+</tr>
+<tr class="row-even"><td><p>style</p></td>
+<td><p>line style [‘-’, ‘–’, ‘-.’, ‘:’]</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>width</p></td>
+<td><p>line width in pixels</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><p>Other</p></td>
+<td><p>on</p></td>
+<td><p>toggle visibility of the element</p></td>
+<td rowspan="3"><p>depends</p></td>
+</tr>
+<tr class="row-odd"><td><p>size</p></td>
+<td><p>[width, height] of the object</p></td>
+</tr>
+<tr class="row-even"><td><p>text</p></td>
+<td><p>label text associated with the object</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="layout.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Layout and Elements</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="grouping.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Grouping data</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#required-args">Required args</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#required-kwargs">Required kwargs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-kwargs">Optional kwargs</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#keyword-hierarchy">Keyword Hierarchy</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nomenclature">Nomenclature</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-help">Getting Help</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#base-attributes">Base attributes</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/basics/keyword.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2012-2025.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
