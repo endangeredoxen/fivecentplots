@@ -1041,6 +1041,7 @@ class BaseLayout:
         """
         self.fit = Element('fit', self.fcpp, kwargs,
                            on=True if kwargs.get('fit', False) else False,
+                           obj=self.obj_array,
                            color=utl.kwget(kwargs, self.fcpp, ['fit_color', 'fit_line_color'], '#000000'),
                            conf_band=utl.kwget(kwargs, self.fcpp, ['fit_conf_band', 'conf_band'], False),
                            edge_color='none',

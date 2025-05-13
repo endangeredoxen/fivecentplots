@@ -2098,7 +2098,7 @@ class Layout(BaseLayout):
                         xticks.obj[ir, ic - 1][-1].set_visible(False)
                     if utl.rectangle_overlap((xwl, xhl, xcl), (xwf, xhf, xcf)):
                         if self.tick_cleanup == 'shrink' and \
-                                not utl.rectangle_overlap((xwl / sf, xhl, xc), (xwf, xhf, xcf)):
+                                not utl.rectangle_overlap((xwl / sf, xhl, xcl), (xwf, xhf, xcf)):
                             xticks.obj[ir, ic - 1][-1].set_size(xticks.font_size / sf)
                         else:
                             # If self.tick_cleanup == 'remove' and the resized tick label would still overlap, remove it
@@ -4847,6 +4847,9 @@ class Layout(BaseLayout):
 
             if hasattr(obj.text, 'values'):
                 text_vals = obj.text.values
+            elif isinstance(obj.obj, np.ndarray) and \
+                    (isinstance(obj.obj[ir, ic], mpl.text.Text) or isinstance(obj.obj[ir, ic], list)):
+                text_vals = obj.obj[ir, ic]
             else:
                 text_vals = obj.obj
 
@@ -4907,7 +4910,7 @@ class Layout(BaseLayout):
                 if isinstance(txt, mpl.text.Text):
                     txt.set_transform(transform)
                     txt.set_position(position)
-                else:
+                elif obj.obj[ir, ic] is not None:
                     obj.obj[ir, ic][itext].set_transform(transform)
                     obj.obj[ir, ic][itext].set_position(position)
 

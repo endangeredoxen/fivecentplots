@@ -213,7 +213,10 @@ class ImShow(data.Data):
                 wrap_row[wrap_cols[icol]] = 'wrap_reference_999'  # special code to drop this later
             wrap_row['rows'] = self.wrap_reference[title].shape[0]
             wrap_row['cols'] = self.wrap_reference[title].shape[1]
-            wrap_row['channels'] = self.wrap_reference[title].shape[2]
+            if len(self.wrap_reference[title].shape) == 3:
+                wrap_row['channels'] = 3
+            else:
+                wrap_row['channels'] = 2
             wrap_row = wrap_row.fillna('')
             if position == 'last':
                 self.df_all = pd.concat([self.df_all, wrap_row])
