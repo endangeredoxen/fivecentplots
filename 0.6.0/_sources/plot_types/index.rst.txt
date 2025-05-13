@@ -61,7 +61,7 @@ Plot Types
             fcp.boxplot
         ^^^
 
-        vertical / horizontal / stacked bar charts, rolling means
+        JMP-style box plots with grouping labels and titles, statistical overlay lines and mean diamonds, violin plots
 
     .. grid-item-card::
         :img-top: ../source/_static/index-images/getting_started.svg
@@ -75,7 +75,7 @@ Plot Types
             fcp.contour
         ^^^
 
-        vertical / horizontal / stacked bar charts, rolling means
+        contour line maps with or without fill
 
     .. grid-item-card::
         :img-top: ../source/_static/index-images/getting_started.svg
@@ -89,7 +89,7 @@ Plot Types
             fcp.gantt
         ^^^
 
-        vertical / horizontal / stacked bar charts, rolling means
+        Say goodbye to MS project with python gantt charts; includes workstream groupings, dependency arrows, milestone markers, month / quarter / year axes labels,
 
     .. grid-item-card::
         :img-top: ../source/_static/index-images/getting_started.svg
@@ -103,7 +103,7 @@ Plot Types
             fcp.heatmap
         ^^^
 
-        vertical / horizontal / stacked bar charts, rolling means
+        categorical heatmaps with grouping options
 
     .. grid-item-card::
         :img-top: ../source/_static/index-images/getting_started.svg
@@ -117,7 +117,7 @@ Plot Types
             fcp.hist
         ^^^
 
-        vertical / horizontal / stacked bar charts, rolling means
+         simple bar like histograms, image histograms, kernel density estimation, PDF & CDF curves
 
     .. grid-item-card::
         :img-top: ../source/_static/index-images/getting_started.svg
@@ -131,7 +131,7 @@ Plot Types
             fcp.imshow
         ^^^
 
-        vertical / horizontal / stacked bar charts, rolling means
+        single-image viewing, multi-image mosaic creation, built-in contrast stretching options & Bayer color plane splitting
 
     .. grid-item-card::
         :img-top: ../source/_static/index-images/getting_started.svg
@@ -145,7 +145,7 @@ Plot Types
             fcp.nq
         ^^^
 
-        vertical / horizontal / stacked bar charts, rolling means
+        normal quantile plots for data sets and images (better for comparing distribution tails than histograms!)
 
     .. grid-item-card::
         :img-top: ../source/_static/index-images/getting_started.svg
@@ -159,4 +159,4 @@ Plot Types
             fcp.pie
         ^^^
 
-        vertical / horizontal / stacked bar charts, rolling means
+        basic pie charts for those pesky times when you need to talk to business people about continuing to fund your scientific research

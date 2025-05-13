@@ -983,7 +983,7 @@ Previous theme file found! Renaming to &#34;defaults_old.py&#34; and copying the
 <li><p><code class="docutils literal notranslate"><span class="pre">row</span></code> x <code class="docutils literal notranslate"><span class="pre">column</span></code>: a 2D grid of subplots based on two different DataFrame columns</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">wrap</span></code>: a 2D grid of subplots wrapped in sequence (based on one or more DataFrame columns)</p></li>
 </ul>
-<p>These grouped plots share a legend (if enabled) and will share common ranges unless sharing is explicity disabled</p>
+<p>These grouped plots share a legend (if enabled) and will share common ranges unless sharing is explicitly disabled</p>
 <section id="Row-plot">
 <h3>Row plot<a class="headerlink" href="#Row-plot" title="Link to this heading">#</a></h3>
 <p>Row plots create multiple subplots in a single column. Each unique value in the DataFrame column provided for keyword <code class="docutils literal notranslate"><span class="pre">row</span></code> creates a new row in the subplot grid. Plot order is defined alphabetically from top to bottom. Each row contains a row label indicating the unique value of the <code class="docutils literal notranslate"><span class="pre">row</span></code> column.</p>
@@ -1305,7 +1305,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 </section>
 <section id="Stat-lines">
 <h3>Stat lines<a class="headerlink" href="#Stat-lines" title="Link to this heading">#</a></h3>
-<p>If lines are enabled in an xy plot, they are drawn from point to point based on the order in which they appear in a DataFrame column. If multiple groups are included in the dataset and not separated by grouping or legending, the lines will circle back on each other (from the end of one group to the start of the next) as shown below:</p>
+<p>If lines are enabled in an xy plot, they are drawn from point to point based on the order in which they appear in a DataFrame column. If multiple groups are included in the dataset and not separated by grouping or legends, the lines will circle back on each other (from the end of one group to the start of the next) as shown below:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -1653,7 +1653,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 </section>
 <section id="More-complex-calculation">
 <h4>More complex calculation<a class="headerlink" href="#More-complex-calculation" title="Link to this heading">#</a></h4>
-<p>Now let’s use a 4-factor polynomial fit equation and add it as a reference line (notice that because we are not specifying an exisiting column in the DataFrame as the <code class="docutils literal notranslate"><span class="pre">ref_line</span></code> and we are not specifying <code class="docutils literal notranslate"><span class="pre">ref_line_legend_text</span></code>, the legend defaults to a generic label “Ref Line”):</p>
+<p>Now let’s use a 4-factor polynomial fit equation and add it as a reference line (notice that because we are not specifying an existing column in the DataFrame as the <code class="docutils literal notranslate"><span class="pre">ref_line</span></code> and we are not specifying <code class="docutils literal notranslate"><span class="pre">ref_line_legend_text</span></code>, the legend defaults to a generic label “Ref Line”):</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>

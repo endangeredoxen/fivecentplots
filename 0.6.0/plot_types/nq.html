@@ -439,7 +439,7 @@
 <p><code class="docutils literal notranslate"><span class="pre">fcp.nq</span></code> supports input data of two formats:</p>
 <ol class="arabic simple">
 <li><p>tabular data found in a <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> (with or without grouping columns)</p></li>
-<li><p>image data, either as a single <code class="docutils literal notranslate"><span class="pre">np.array</span></code> or a <code class="docutils literal notranslate"><span class="pre">dict</span></code> of <code class="docutils literal notranslate"><span class="pre">np.array</span></code>s with a <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> consisting of grouping information (see imshow documentation for a more detailed explaination of this format)</p></li>
+<li><p>image data, either as a single <code class="docutils literal notranslate"><span class="pre">np.array</span></code> or a <code class="docutils literal notranslate"><span class="pre">dict</span></code> of <code class="docutils literal notranslate"><span class="pre">np.array</span></code>s with a <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> consisting of grouping information (see imshow documentation for a more detailed explanation of this format)</p></li>
 </ol>
 </section>
 <section id="Background">
@@ -506,7 +506,7 @@ Warning: histograms of image data with float values is slow; consider using ints
 <h3>Outliers<a class="headerlink" href="#Outliers" title="Link to this heading">#</a></h3>
 <p>Now consider the real-life situation where our dataset contains outliers that are not normally distributed. Continuing with our image sensor example, these outliers are referred to as defect pixels. We’ll include both dark pixels (i.e., defect pixels that have low signal) and hot pixels (i.e., defect pixels with high signal) that are randomly placed outside of the normal distribution created above. Think “salt and pepper” noise…</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">img2</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -579,7 +579,7 @@ Warning: histograms of image data with float values is slow; consider using ints
 <h3>Comparing distributions<a class="headerlink" href="#Comparing-distributions" title="Link to this heading">#</a></h3>
 <p>Now we will demonstrate how the normal quantile plot allows us to better compare two distributions than simple histograms. Let’s create another image with a slightly different mean and noise profile and a different quantity (more than the last example) and range (lower than the last example) of defect pixels:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">img3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">])</span> <span class="o">*</span> <span class="mi">2</span><span class="o">**</span><span class="mi">12</span> <span class="o">/</span> <span class="mi">2</span>

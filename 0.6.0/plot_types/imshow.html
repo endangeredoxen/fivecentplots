@@ -511,7 +511,7 @@ fcp.imshow(img, **kwargs)
 </pre></div>
 </div>
 </li>
-<li><p>Option 2: image data is stored in a 2D <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> with interger labeled columns and integer labeled row indices → works for 2D grayscale/RAW only</p>
+<li><p>Option 2: image data is stored in a 2D <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> with integer labeled columns and integer labeled row indices → works for 2D grayscale/RAW only</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>img = pd.DataFrame(imageio.imread(&#39;some_image_file.png&#39;))  # pd.DataFrame
 fcp.imshow(img, **kwargs)
 </pre></div>
@@ -1304,7 +1304,7 @@ fcp.imshow(img, **kwargs)
 </section>
 <section id="Width/Height-Ratio">
 <h2>Width/Height Ratio<a class="headerlink" href="#Width/Height-Ratio" title="Link to this heading">#</a></h2>
-<p>By default, fivecentplots will preserve the width to height ratio of the original image. However, this can be overriden if desired via the keyward <code class="docutils literal notranslate"><span class="pre">wh_ratio</span></code>:</p>
+<p>By default, fivecentplots will preserve the width to height ratio of the original image. However, this can be overriden if desired via the keyword <code class="docutils literal notranslate"><span class="pre">wh_ratio</span></code>:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -1325,7 +1325,7 @@ fcp.imshow(img, **kwargs)
 <h2>Split color planes<a class="headerlink" href="#Split-color-planes" title="Link to this heading">#</a></h2>
 <p>This section applies only to single-channel image data</p>
 <p>When analyzing Bayer-type images, it is often useful to split the image data based on the color-filter array pattern used on the image sensor. fivecentplots provides a simple utility function to do this and <code class="docutils literal notranslate"><span class="pre">imshow</span></code> can be used to display the result. Consider the following image:</p>
-<p><img alt="889f2532a82147c99259b989bb3a45ea" src="https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg" /></p>
+<p><img alt="0e7f4199672b4a5da2bb40c79cfd576a" src="https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg" /></p>
 <p>First we read the image from the world-wide web and convert into a Bayer-like RAW image (rough hack for the purposes of this example):</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:

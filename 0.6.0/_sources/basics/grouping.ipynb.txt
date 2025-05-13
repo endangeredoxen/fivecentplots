@@ -136,7 +136,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 5,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -151,7 +151,7 @@
     }
    ],
    "source": [
-    "fcp.plot(df1[(df1.Substrate=='Si')&(df1['Target Wavelength']==450)&(df1['Boost Level']==0.2)&(df1['Temperature [C]']==25)&(df1['Die']=='(1,1)')], \n",
+    "fcp.plot(df1[(df1.Substrate=='Si')&(df1['Target Wavelength']==450)&(df1['Boost Level']==0.2)&(df1['Temperature [C]']==25)&(df1['Die']=='(1,1)')],\n",
     "         x='Voltage', y='I [A]')"
    ]
   },
@@ -276,7 +276,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 9,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -291,7 +291,7 @@
     }
    ],
    "source": [
-    "fcp.plot(df1, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], \n",
+    "fcp.plot(df1, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],\n",
     "         filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25')"
    ]
   },
@@ -306,12 +306,12 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "Legends are also useful when plotting more than one DataFrame column on the y axis <i>without a specific grouping column</i>. The legend shows automatically in this case to identify which data set belows to which DataFrame column, but can be disabled by setting `legend=False`:"
+    "Legends are also useful when plotting more than one DataFrame column on the y axis <i>without a specific grouping column</i>. The legend shows automatically in this case to identify which data set below to which DataFrame column, but can be disabled by setting `legend=False`:"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 10,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -326,7 +326,7 @@
     }
    ],
    "source": [
-    "fcp.plot(df1, x='Voltage', y=['I [A]', 'Voltage'], lines=False, \n",
+    "fcp.plot(df1, x='Voltage', y=['I [A]', 'Voltage'], lines=False,\n",
     "         filter='Substrate==\"Si\" & Target Wavelength==450 & Boost Level==0.2')"
    ]
   },
@@ -353,7 +353,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 11,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -368,7 +368,7 @@
     }
    ],
    "source": [
-    "fcp.plot(df1, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, \n",
+    "fcp.plot(df1, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True,\n",
     "         filter='Substrate==\"Si\" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die==\"(-1,2)\"')"
    ]
   },
@@ -388,7 +388,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 12,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -403,7 +403,7 @@
     }
    ],
    "source": [
-    "fcp.plot(df1, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, legend=True, \n",
+    "fcp.plot(df1, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, legend=True,\n",
     "         filter='Substrate==\"Si\" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die==\"(-1,2)\"')"
    ]
   },
@@ -423,7 +423,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 13,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -438,7 +438,7 @@
     }
    ],
    "source": [
-    "fcp.plot(df1, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, legend='Die', \n",
+    "fcp.plot(df1, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, legend='Die',\n",
     "         filter='Substrate==\"Si\" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die==\"(-1,2)\"')"
    ]
   },
@@ -496,7 +496,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 14,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -511,7 +511,7 @@
     }
    ],
    "source": [
-    "fcp.plot(df1, x='Voltage', y='I [A]', legend='Die', \n",
+    "fcp.plot(df1, x='Voltage', y='I [A]', legend='Die',\n",
     "         filter='Substrate==\"Si\" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25')"
    ]
   },
@@ -531,7 +531,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 15,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -546,7 +546,7 @@
     }
    ],
    "source": [
-    "fcp.plot(df1, x='Voltage', y='I [A]', legend='Die', \n",
+    "fcp.plot(df1, x='Voltage', y='I [A]', legend='Die',\n",
     "         filter='Substrate==\"Si\" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25', legend_location=2)"
    ]
   },
@@ -566,7 +566,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 16,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -584,7 +584,7 @@
     "df1.loc[df1.Die=='(1,1)', 'Long Legend'] = 'Sample #ABCDEFGHIJKLMNOPQRSTUVWXYZ'\n",
     "df1.loc[df1.Die=='(2,-1)', 'Long Legend'] = 'Sample #RUNFORYOURLIFEWITHME'\n",
     "df1.loc[df1.Die=='(-1,2)', 'Long Legend'] = 'Sample #THESKYISANEIGHBORHOOD!!!!!!!!!'\n",
-    "fcp.plot(df1, x='Voltage', y='I [A]', legend='Long Legend', \n",
+    "fcp.plot(df1, x='Voltage', y='I [A]', legend='Long Legend',\n",
     "         filter='Substrate==\"Si\" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25', legend_location='below')"
    ]
   },
@@ -632,7 +632,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 17,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -647,7 +647,7 @@
     }
    ],
    "source": [
-    "fcp.plot(df1, x='Voltage', y='I [A]', legend='Temperature [C]', \n",
+    "fcp.plot(df1, x='Voltage', y='I [A]', legend='Temperature [C]',\n",
     "         filter='Substrate==\"Si\" & Target Wavelength==450 & Boost Level==0.2')"
    ]
   },
@@ -662,7 +662,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 18,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -677,7 +677,7 @@
     }
    ],
    "source": [
-    "fcp.plot(df1, x='Voltage', y='I [A]', groups='Die', legend='Temperature [C]', \n",
+    "fcp.plot(df1, x='Voltage', y='I [A]', groups='Die', legend='Temperature [C]',\n",
     "         filter='Substrate==\"Si\" & Target Wavelength==450 & Boost Level==0.2')"
    ]
   },
@@ -690,7 +690,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 19,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -705,7 +705,7 @@
     }
    ],
    "source": [
-    "fcp.plot(df1, x='Voltage', y='I [A]', groups=['Die', 'Temperature [C]'], \n",
+    "fcp.plot(df1, x='Voltage', y='I [A]', groups=['Die', 'Temperature [C]'],\n",
     "         filter='Substrate==\"Si\" & Target Wavelength==450 & Boost Level==0.2')"
    ]
   },
@@ -766,7 +766,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 21,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -781,7 +781,7 @@
     }
    ],
    "source": [
-    "fcp.plot(df1, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]', \n",
+    "fcp.plot(df1, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',\n",
     "         ax_size=[225, 225], filter='Substrate==\"Si\" & Target Wavelength==450', label_rc_font_size=14)"
    ]
   },
@@ -801,7 +801,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 22,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -816,7 +816,7 @@
     }
    ],
    "source": [
-    "fcp.plot(df1, x='Voltage', y=['Voltage', 'I [A]'], legend='Die', col='Boost Level', row='y', ax_size=[225, 225], \n",
+    "fcp.plot(df1, x='Voltage', y=['Voltage', 'I [A]'], legend='Die', col='Boost Level', row='y', ax_size=[225, 225],\n",
     "         filter='Substrate==\"Si\" & Target Wavelength==450 & Temperature [C]==75', label_rc_font_size=14)"
    ]
   },
@@ -829,7 +829,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 23,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -844,7 +844,7 @@
     }
    ],
    "source": [
-    "fcp.plot(df1, x=['Voltage', 'I [A]'], y='Voltage', legend='Die', row='Boost Level', col='x', \n",
+    "fcp.plot(df1, x=['Voltage', 'I [A]'], y='Voltage', legend='Die', row='Boost Level', col='x',\n",
     "         ax_size=[225, 225], filter='Substrate==\"Si\" & Target Wavelength==450 & Temperature [C]==75', label_rc_font_size=14)"
    ]
   },
@@ -871,7 +871,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 24,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -886,7 +886,7 @@
     }
    ],
    "source": [
-    "fcp.plot(df1, x='Voltage', y='I [A]', legend='Die', wrap=['Temperature [C]', 'Boost Level'], \n",
+    "fcp.plot(df1, x='Voltage', y='I [A]', legend='Die', wrap=['Temperature [C]', 'Boost Level'],\n",
     "         ax_size=[225, 225], filter='Substrate==\"Si\" & Target Wavelength==450')"
    ]
   },
@@ -899,7 +899,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 25,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -914,7 +914,7 @@
     }
    ],
    "source": [
-    "fcp.plot(df1, x='Voltage', y='I [A]', legend='Die', wrap=['Temperature [C]', 'Boost Level'], \n",
+    "fcp.plot(df1, x='Voltage', y='I [A]', legend='Die', wrap=['Temperature [C]', 'Boost Level'],\n",
     "         ax_size=[225, 225], filter='Substrate==\"Si\" & Target Wavelength==450', ncol=2)"
    ]
   },
@@ -934,7 +934,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 26,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -949,7 +949,7 @@
     }
    ],
    "source": [
-    "fcp.plot(df1, x='Voltage', y=['I Set', 'I [A]'], legend='Die', wrap='y', groups=['Boost Level', 'Temperature [C]'], \n",
+    "fcp.plot(df1, x='Voltage', y=['I Set', 'I [A]'], legend='Die', wrap='y', groups=['Boost Level', 'Temperature [C]'],\n",
     "         ax_size=[325, 325], filter='Substrate==\"Si\" & Target Wavelength==450')"
    ]
   },
@@ -962,7 +962,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 27,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -977,8 +977,8 @@
     }
    ],
    "source": [
-    "fcp.plot(df1, x='Voltage', y=['I Set', 'I [A]'], legend='Die', wrap='y', groups=['Boost Level', 'Temperature [C]'], \n",
-    "         ax_size=[525, 170], filter='Substrate==\"Si\" & Target Wavelength==450', ncol=1, ws_row=0, \n",
+    "fcp.plot(df1, x='Voltage', y=['I Set', 'I [A]'], legend='Die', wrap='y', groups=['Boost Level', 'Temperature [C]'],\n",
+    "         ax_size=[525, 170], filter='Substrate==\"Si\" & Target Wavelength==450', ncol=1, ws_row=0,\n",
     "         separate_labels=False, separate_ticks=False)"
    ]
   },

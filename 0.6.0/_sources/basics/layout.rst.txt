@@ -33,7 +33,7 @@ Simple Layout Schematic
 -----------------------
 
 A schematic of a single-axis ``Layout`` (i.e., no grouping) is shown below.  The ``Layout`` will automatically
-adjust in size to accomodate the ``Element`` objects that have been enabled.  The whitespace between ``Element``
+adjust in size to accommodate the ``Element`` objects that have been enabled.  The whitespace between ``Element``
 objects can also be modified by the user by overriding the appropriate keywords.
 
 
@@ -75,7 +75,7 @@ section of the docs.
    * **box_mean_diamonds**:  Element object for mean diamond overlays on box plot
    * **box_range_lines**:  Element object for box plot range line styling
    * **box_stat_line**:  Element object for arbitrary stat line plot on box plot
-   * **box_whisker**:  Element object for bow wisker line styling
+   * **box_whisker**:  Element object for bow whisker line styling
    * **cbar**:  Element object for colorbar
    * **contour**:  Element object for contour plot
    * **fig**:  Element object for the figure

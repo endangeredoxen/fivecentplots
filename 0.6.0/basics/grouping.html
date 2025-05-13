@@ -481,7 +481,7 @@
 </div>
 <p>To isolate these data to particular subsets of interest we need to filter the original data set. Because our data comes from pandas DataFrames, this is fairly straight forward as shown below. However, depending on how our DataFrame columns are named, the syntax could get ugly quickly:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">[(</span><span class="n">df1</span><span class="o">.</span><span class="n">Substrate</span><span class="o">==</span><span class="s1">&#39;Si&#39;</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">df1</span><span class="p">[</span><span class="s1">&#39;Target Wavelength&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">450</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">df1</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">]</span><span class="o">==</span><span class="mf">0.2</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">df1</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">25</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">df1</span><span class="p">[</span><span class="s1">&#39;Die&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;(1,1)&#39;</span><span class="p">)],</span>
@@ -558,7 +558,7 @@
 <h3>Multiple legend columns<a class="headerlink" href="#Multiple-legend-columns" title="Link to this heading">#</a></h3>
 <p>We can also legend by multiple DataFrame columns. In this case, we pass a list of column names is passed to the <code class="docutils literal notranslate"><span class="pre">legend</span></code> keyword and get a result where the unique combination of values of each legend column is listed, separated by a pipe character (|):</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="s1">&#39;Substrate&#39;</span><span class="p">],</span>
@@ -576,9 +576,9 @@
 </section>
 <section id="Multiple-x-&amp;-y-values">
 <h3>Multiple x &amp; y values<a class="headerlink" href="#Multiple-x-&-y-values" title="Link to this heading">#</a></h3>
-<p>Legends are also useful when plotting more than one DataFrame column on the y axis without a specific grouping column. The legend shows automatically in this case to identify which data set belows to which DataFrame column, but can be disabled by setting <code class="docutils literal notranslate"><span class="pre">legend=False</span></code>:</p>
+<p>Legends are also useful when plotting more than one DataFrame column on the y axis without a specific grouping column. The legend shows automatically in this case to identify which data set below to which DataFrame column, but can be disabled by setting <code class="docutils literal notranslate"><span class="pre">legend=False</span></code>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="s1">&#39;Voltage&#39;</span><span class="p">],</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -600,7 +600,7 @@
 <section id="No-legend">
 <h4>No legend<a class="headerlink" href="#No-legend" title="Link to this heading">#</a></h4>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -620,7 +620,7 @@
 <h4>With legend<a class="headerlink" href="#With-legend" title="Link to this heading">#</a></h4>
 <p>Force the legend to show with kwarg <code class="docutils literal notranslate"><span class="pre">legend=True</span></code>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -640,7 +640,7 @@
 <h4>Legend by another column<a class="headerlink" href="#Legend-by-another-column" title="Link to this heading">#</a></h4>
 <p>Legend by the name of another DataFrame column (each value in the legend will also state if it is linked to the primary or secondary axis):</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
@@ -678,7 +678,7 @@
 <h4>Outside right<a class="headerlink" href="#Outside-right" title="Link to this heading">#</a></h4>
 <p>No <code class="docutils literal notranslate"><span class="pre">legend_location</span></code> is required to place the legend to the right of the axes area. This is the default for <strong>fivecentplots</strong>, completely eliminating the need for the complex syntax required to do this with other plotting solutions (like <code class="docutils literal notranslate"><span class="pre">bbox_to_anchor</span></code> with pure <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> code). “Everything… in its right place”</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
@@ -698,7 +698,7 @@
 <h4>Inside the plot<a class="headerlink" href="#Inside-the-plot" title="Link to this heading">#</a></h4>
 <p>Locations 1 through 10 will place the legend within the plot window. While this can result in a more compact figure, there is a also a significant risk that the legend will obscure the data in the plot. Care should be exercised when placing the legend inside the plot.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
@@ -718,7 +718,7 @@
 <h4>Below the plot<a class="headerlink" href="#Below-the-plot" title="Link to this heading">#</a></h4>
 <p>Long legend values can by annoying to deal with. If the legend is placed in the default location outside the axis, the figure size will have a large width. If the legend is placed within the axis window, it can extend longer than the axis itself. fivecentplots also provides the option of placing the legend “below” the plot to deal with this case:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df1</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df1</span><span class="o">.</span><span class="n">Die</span><span class="o">==</span><span class="s1">&#39;(1,1)&#39;</span><span class="p">,</span> <span class="s1">&#39;Long Legend&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Sample #ABCDEFGHIJKLMNOPQRSTUVWXYZ&#39;</span>
@@ -755,7 +755,7 @@
 <p>Some data sets contain multiple sets of similar data (think replicates of a measurement or a large quantity of parts in a production line). Consider the following example where we plot fake measurement data from a large sampling of parts with <code class="docutils literal notranslate"><span class="pre">lines</span></code> enabled. Notice how the line loops from the end of the data back to the beginning repeatedly. This occurs because the arrays used for the plot come from a DataFrame which has results for multiple parts concatenated together. Without any additional
 information provided, it is not possible to know if these data are from one part or multiple parts.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span>
@@ -776,7 +776,7 @@ information provided, it is not possible to know if these data are from one part
 <p>The <code class="docutils literal notranslate"><span class="pre">groups</span></code> keyword can also be combined with a legend from a different DataFrame column</p>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span>
@@ -793,7 +793,7 @@ information provided, it is not possible to know if these data are from one part
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">groups</span></code> also supports multiple column names. Here we remove “Temperature [C]” from the <code class="docutils literal notranslate"><span class="pre">legend</span></code> and add it to the list of <code class="docutils literal notranslate"><span class="pre">groups</span></code>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="s1">&#39;Temperature [C]&#39;</span><span class="p">],</span>
@@ -836,7 +836,7 @@ information provided, it is not possible to know if these data are from one part
 <p>For deeper analysis of our data, we can make a grid of subplots based on the unique values within DataFrame columns other than the <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> columns we are plotting. In this case, we remove the “Temperature [C]” and “Boost Level” columns from our <code class="docutils literal notranslate"><span class="pre">filter</span></code> and add them to the <code class="docutils literal notranslate"><span class="pre">row</span></code> and <code class="docutils literal notranslate"><span class="pre">column</span></code> kwargs, respectively. For our example data, there are three unique values of “Boost Level” and three unique values of “Temperature [C]” which leads to a 3x3 grid of subplots. Each row in the
 plot corresponds to one of the 3 unique values of “Temperature [C]”. Likewise, each column in the plot corresponds to one of the 3 unique values of “Boost Level”. The specific value in each row and column are shown in labels to the right and above of the subplots, respectively.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span>
@@ -856,7 +856,7 @@ plot corresponds to one of the 3 unique values of “Temperature [C]”. Likewis
 <h3>By x or y<a class="headerlink" href="#By-x-or-y" title="Link to this heading">#</a></h3>
 <p>Alternatively, we can use row and column grids to compare different <code class="docutils literal notranslate"><span class="pre">x</span></code> or <code class="docutils literal notranslate"><span class="pre">y</span></code> values. For example, we can plot two different DataFrame columns on our y-axis (one per row) by adding the keyword <code class="docutils literal notranslate"><span class="pre">row='y'</span></code>. Each column in this plot shares the same x-axis variable:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span>
@@ -873,7 +873,7 @@ plot corresponds to one of the 3 unique values of “Temperature [C]”. Likewis
 </div>
 <p>We can make a similar plot with common <code class="docutils literal notranslate"><span class="pre">row</span></code> values and different x-axes by setting <code class="docutils literal notranslate"><span class="pre">col='x'</span></code>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span>
@@ -897,7 +897,7 @@ plot corresponds to one of the 3 unique values of “Temperature [C]”. Likewis
 <p>The <code class="docutils literal notranslate"><span class="pre">wrap</span></code> keyword also allows us to create a grid of subplots. Unlike <code class="docutils literal notranslate"><span class="pre">row</span></code> and <code class="docutils literal notranslate"><span class="pre">col</span></code> plots, <code class="docutils literal notranslate"><span class="pre">wrap</span></code> plots simply “wrap” a series of data subsets, each with the unique values of one or more DataFrame, into a grid. There is no alignment of a common value across rows or column. Additionally, <code class="docutils literal notranslate"><span class="pre">wrap</span></code> plots remove the spacing and ticks between subplots by default for a tighter grid (this can be changed via keywords), axis sharing is forced (this cannot be changed), and the
 <code class="docutils literal notranslate"><span class="pre">row</span></code>|<code class="docutils literal notranslate"><span class="pre">column</span></code> value labels are condensed to a single label above each subplot:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> <span class="s1">&#39;Boost Level&#39;</span><span class="p">],</span>
@@ -914,7 +914,7 @@ plot corresponds to one of the 3 unique values of “Temperature [C]”. Likewis
 </div>
 <p>By default, <code class="docutils literal notranslate"><span class="pre">wrap</span></code> subplots will be arranged in a the closest thing to a square grid as possible. If the number of subplots does not match a perfectly square grid, the last row will have one or more empty spaces in the grid. To override the default grid size, use the keyword <code class="docutils literal notranslate"><span class="pre">ncol</span></code> to sets a custom number of columns. The number of rows will be automatically determined based on the total number of subplots:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> <span class="s1">&#39;Boost Level&#39;</span><span class="p">],</span>
@@ -935,7 +935,7 @@ plot corresponds to one of the 3 unique values of “Temperature [C]”. Likewis
 <p>We can also “wrap” by column names instead of unique column values. In this case we list the columns to plot in the <code class="docutils literal notranslate"><span class="pre">x</span></code> or <code class="docutils literal notranslate"><span class="pre">y</span></code> keywords as usual but we add <code class="docutils literal notranslate"><span class="pre">wrap='x'</span></code> or <code class="docutils literal notranslate"><span class="pre">wrap='y'</span></code> to the function call. This will create a unique subplot in a grid for each <code class="docutils literal notranslate"><span class="pre">wrap</span></code> value. Unlike the case above where we wrapped by unique values in a DataFrame column, when we wrap by “x” or “y” the plot will not have wrap labels and axis sharing can be overridden. As before, use <code class="docutils literal notranslate"><span class="pre">ncol</span></code> to override the
 default square grid.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;I Set&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="s1">&#39;Temperature [C]&#39;</span><span class="p">],</span>
@@ -952,7 +952,7 @@ default square grid.</p>
 </div>
 <p>Next, we replot the above data in an alternative style, with tick and label sharing disabled:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;I Set&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="s1">&#39;Temperature [C]&#39;</span><span class="p">],</span>

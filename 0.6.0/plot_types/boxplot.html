@@ -730,7 +730,7 @@ array([101, 106, 103])
 </div>
 <p>Styled:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span>
@@ -868,7 +868,7 @@ array([101, 106, 103])
 <h2>More grouping<a class="headerlink" href="#More-grouping" title="Link to this heading">#</a></h2>
 <section id="Legend">
 <h3>Legend<a class="headerlink" href="#Legend" title="Link to this heading">#</a></h3>
-<p>Boxplots also support legending for another level of data visualization:</p>
+<p>Boxplots also support legends for another level of data visualization:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -961,7 +961,7 @@ array([101, 106, 103])
 </div>
 <p>Alternatively, we can wrap multiple <code class="docutils literal notranslate"><span class="pre">y</span></code> column values and create a unique subplot for each column:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make a new y column</span>
@@ -982,7 +982,7 @@ array([101, 106, 103])
 </div>
 <p>Or if we disable y-axis range sharing:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="s1">&#39;Value*2&#39;</span><span class="p">],</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">,</span> <span class="s1">&#39;Region&#39;</span><span class="p">],</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span>
@@ -1021,7 +1021,7 @@ array([101, 106, 103])
 </div>
 <p>Both long form and short form keywords are available: i.e., <code class="docutils literal notranslate"><span class="pre">box_grand_mean_ATTRIBUTE</span></code> or <code class="docutils literal notranslate"><span class="pre">grand_mean_ATTRIBUTE</span></code></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">grand_mean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -1155,7 +1155,7 @@ array([101, 106, 103])
 </section>
 <section id="Violins">
 <h2>Violins<a class="headerlink" href="#Violins" title="Link to this heading">#</a></h2>
-<p>We can also plot distributions with violin plots that show kernal density estimates of the data. By default, these violin plots also contain a small boxes with whiskers to indicate Q1, Q3, 1.5 * IQR, and the median of the distribution (the white point). Discrete data points are disabled by default but can be turned on with the keyword <code class="docutils literal notranslate"><span class="pre">violin_markers=True</span></code> (default box style shamelessly appropriated from <code class="docutils literal notranslate"><span class="pre">seaborn</span></code>).</p>
+<p>We can also plot distributions with violin plots that show kernel density estimates of the data. By default, these violin plots also contain a small boxes with whiskers to indicate Q1, Q3, 1.5 * IQR, and the median of the distribution (the white point). Discrete data points are disabled by default but can be turned on with the keyword <code class="docutils literal notranslate"><span class="pre">violin_markers=True</span></code> (default box style shamelessly appropriated from <code class="docutils literal notranslate"><span class="pre">seaborn</span></code>).</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -1173,7 +1173,7 @@ array([101, 106, 103])
 </div>
 <p>We can change the style of the violin density profiles and the associated boxplot using keywords starting with <code class="docutils literal notranslate"><span class="pre">violin</span></code>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">violin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>

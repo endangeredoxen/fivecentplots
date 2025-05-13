@@ -527,7 +527,7 @@
 <p><code class="docutils literal notranslate"><span class="pre">fcp.hist</span></code> supports input data of two formats:</p>
 <ol class="arabic simple">
 <li><p>tabular data found in a <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> (with or without grouping columns)</p></li>
-<li><p>image data, either as a single <code class="docutils literal notranslate"><span class="pre">np.array</span></code> or a <code class="docutils literal notranslate"><span class="pre">dict</span></code> of <code class="docutils literal notranslate"><span class="pre">np.array</span></code>s with a <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> consisting of grouping information (see imshow documentation for a more detailed explaination of this format)</p></li>
+<li><p>image data, either as a single <code class="docutils literal notranslate"><span class="pre">np.array</span></code> or a <code class="docutils literal notranslate"><span class="pre">dict</span></code> of <code class="docutils literal notranslate"><span class="pre">np.array</span></code>s with a <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> consisting of grouping information (see imshow documentation for a more detailed explanation of this format)</p></li>
 </ol>
 </section>
 <section id="Simple-histogram">
@@ -635,7 +635,7 @@
 <h3>Wrap plot<a class="headerlink" href="#Wrap-plot" title="Link to this heading">#</a></h3>
 <p>First we wrap the data using a column from the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Region&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">250</span><span class="p">,</span> <span class="mi">250</span><span class="p">],</span> <span class="n">horizontal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -710,7 +710,7 @@
 <h3>Cumulative<a class="headerlink" href="#Cumulative" title="Link to this heading">#</a></h3>
 <p>Now we enable “cumulative” mode so that each subsequent bin contains the total number of counts from the previous bins:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">cumulative</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># or hist_cumulative to be more specific</span>
@@ -748,7 +748,7 @@
 <section id="Images">
 <h2>Images<a class="headerlink" href="#Images" title="Link to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">fcp.hist</span></code> is a powerful tool for data analysis of RAW and color images in image sensor / camera engineering activities. By default, image histograms are automatically converted to line plots with a histogram bin for each digital code from <code class="docutils literal notranslate"><span class="pre">0</span></code> to <code class="docutils literal notranslate"><span class="pre">2**bit_depth</span> <span class="pre">-</span> <span class="pre">1</span></code>. Additional options are also provided to split RAW images by color-filter array (CFA) pattern and color images by channel.</p>
-<p>..warning:: For images with high bit-depth and thus a very high number of bins, user of <code class="docutils literal notranslate"><span class="pre">np.histogram</span></code> can be slow. However, if the image data is of interger data type, fivecentplots will use <code class="docutils literal notranslate"><span class="pre">np.bincount</span></code> which is insanely faster. Therefore, we recommend using integer-type image data wherever possible</p>
+<p>..warning:: For images with high bit-depth and thus a very high number of bins, user of <code class="docutils literal notranslate"><span class="pre">np.histogram</span></code> can be slow. However, if the image data is of integer data type, fivecentplots will use <code class="docutils literal notranslate"><span class="pre">np.bincount</span></code> which is insanely faster. Therefore, we recommend using integer-type image data wherever possible</p>
 <section id="RAW">
 <h3>RAW<a class="headerlink" href="#RAW" title="Link to this heading">#</a></h3>
 <p>First, consider a simple example of a 300x300 gray patch with all pixel values near the mid-level of a 16-bit camera with no color-filter array.</p>
@@ -810,7 +810,7 @@ array([[511, 511, 511, ..., 511, 511, 511],
 </div>
 <p>Now let’s multiplying our patch by a 2D Gaussian to approximate lens shading:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">300</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">300</span><span class="p">))</span>
@@ -906,7 +906,7 @@ array([[511, 511, 511, ..., 511, 511, 511],
 </div>
 <p>However, if we specify the CFA via the keyword <code class="docutils literal notranslate"><span class="pre">cfa</span></code>, a new column in the grouping data named “Plane” is created. We can then legend by this color plane. Notice in this example that the “gr” and “gb” pixels overlap.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">img_rgb</span><span class="p">,</span> <span class="n">markers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Plane&#39;</span><span class="p">,</span> <span class="n">cfa</span><span class="o">=</span><span class="s1">&#39;grbg&#39;</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mi">260</span><span class="p">,</span>
@@ -952,7 +952,7 @@ array([[511, 511, 511, ..., 511, 511, 511],
 <img alt="../_images/plot_types_hist_70_0.png" src="../_images/plot_types_hist_70_0.png" />
 </div>
 </div>
-<p>Again, invoking the <code class="docutils literal notranslate"><span class="pre">cfa</span></code> keyword with legending we get the following:</p>
+<p>Again, invoking the <code class="docutils literal notranslate"><span class="pre">cfa</span></code> keyword with legends we get the following:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
