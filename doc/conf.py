@@ -46,6 +46,7 @@ extensions = [
     'sphinx_copybutton',
     'sphinx_design',
     'nbsphinx',
+    'sphinxcontrib.spelling'
 ]
 
 #napoleon_custom_sections = [('Required', 'params_style')]#[('Required Keyword Args', 'params_style'), ('Optional Keyword Args', 'params_style')]

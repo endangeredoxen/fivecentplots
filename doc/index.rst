@@ -242,7 +242,7 @@ Consider one possible approach to generate a very similar plot using pure **matp
    plt.show()
 
 This example is obviously a bit contrived as you could simplify things by modifying `rc_params`
-or eliminating some of the specific style elments used here, but the general idea should be
+or eliminating some of the specific style elements used here, but the general idea should be
 clear:  **fivecentplots** can reduce the barrier to generate complex plots.
 
 .. raw:: html
