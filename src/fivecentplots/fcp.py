@@ -1323,7 +1323,8 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
                                     df_deps.loc[df_deps[data.y[0]] == item, '_is_workstream'].iloc[0] == 1:
                                 continue
                             # Update max_collision
-                            max_collision = max(max_collision, df_deps.loc[df_deps[data.y[0]] == item, data.x[1]].iloc[0])
+                            max_collision = \
+                                max(max_collision, df_deps.loc[df_deps[data.y[0]] == item, data.x[1]].iloc[0])
                     is_milestone_start = False
                     if val[data.x[0]] == val[data.x[1]]:
                         is_milestone_start = True
