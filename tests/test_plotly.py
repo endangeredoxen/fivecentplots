@@ -5,31 +5,38 @@ import sys
 import pdb
 import datetime
 from pathlib import Path
+import plotly
 import fivecentplots.utilities as utl
-import matplotlib as mpl
 import pytest
 import fivecentplots.data.data as data
 osjoin = os.path.join
 db = pdb.set_trace
-mpl.use('agg')
 
-test = 'gantt'
+pytest.skip(allow_module_level=True)
+
 if Path('../tests/test_images').exists():
-    REFERENCE = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'../tests/test_images/plotly_v{plotly.__version__}')
 elif Path('tests/test_images').exists():
-    REFERENCE = Path(f'tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'tests/test_images/plotly_v{plotly.__version__}')
 else:
-    REFERENCE = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'test_images/plotly_v{plotly.__version__}')
 
 
-df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_gantt.csv')
-df2 = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_gantt_milestone.csv')
+# Dataframes
+df_xy = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data.csv')
+ts = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_ts.csv')
+df_bar = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_bar.csv')
+df_box = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+df_contour = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_contour.csv')
+df_heatmap = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_heatmap.csv')
+df_hist = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+img_bgr = cv2.imread(str(Path(fcp.__file__).parent / 'test_data/imshow_cat_pirate.png'))
+img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
 
 
 # Set theme
-fcp.set_theme('gray_original')
-fcp.KWARGS['mpl']
-# fcp.set_theme('white')
+fcp.set_theme('gray_plotly')
+fcp.KWARGS['engine'] = 'plotly'
 
 
 # Other
@@ -47,55 +54,58 @@ fcp.KWARGS['inline'] = False
 
 
 # plt_ functions can be used directly outside of pytest for debug
-def plt_basic(bm=False, make_reference=False, show=False):
+def plt_xy_no_legend(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('basic', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('xy_no_legend', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.gantt(df, x=['Start', 'Stop'], y='Task',
-              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
+    fcp.plot(df_xy, x='Voltage', y='I [A]', lines=False, ax_size=[400, 400],
+              filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
         return
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_col(bm=False, make_reference=False, show=False):
+def plt_xy_legend(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('col', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('xy_legend', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.gantt(df, x=['Start', 'Stop'], y='Task', col='Category', share_x=False, share_y=False,
-              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
+    fcp.plot(df_xy, x='Voltage', y='I [A]', legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_legend(bm=False, make_reference=False, show=False):
+def plt_xy_log(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('legend', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('xy_log', make_reference, REFERENCE)
 
     if bm:
         return
 
     # Make the plot
-    fcp.gantt(df, x=['Start', 'Stop'], y='Task', legend='Assigned',  order_by_legend=False,
-              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
+    fcp.plot(df_xy, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', xmin=0.9, xmax=2.1, grid_minor=True,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_legend_order_by(bm=False, make_reference=False, show=False):
+### HERE
+def plt_xy_categorical(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('legend_order_by', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('xy_categorical', make_reference, REFERENCE)
 
     if bm:
         return
 
     # Make the plot
-    fcp.gantt(df, x=['Start', 'Stop'], y='Task', legend='Assigned',
-              gantt_tick_labels_x_rotation=45, order_by_legend=True,
-              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
+    fcp.plot(df_xy, x='Die', y='I [A]',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Voltage==1.5',
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 

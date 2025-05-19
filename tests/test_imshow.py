@@ -57,6 +57,7 @@ for i in range(0, 6):
 
 # Set theme
 fcp.set_theme('gray_original')
+fcp.KWARGS['mpl']
 # fcp.set_theme('white')
 
 

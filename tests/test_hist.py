@@ -32,6 +32,7 @@ img_cat = utl.img_grayscale_deprecated(img_cat_orig)
 
 # Set theme
 fcp.set_theme('gray_original')
+fcp.KWARGS['mpl']
 # fcp.set_theme('white')
 
 

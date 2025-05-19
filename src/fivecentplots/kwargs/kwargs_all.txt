@@ -374,6 +374,7 @@ gantt_workstreams_label_font_weight
 gantt_workstreams_label_padding
 gantt_workstreams_label_size
 gantt_workstreams_location
+gantt_workstreams_match_bar_color
 gantt_workstreams_order
 gantt_workstreams_rotation
 gantt_workstreams_style
@@ -725,6 +726,7 @@ markers_fill_alpha
 markers_fill_color
 markers_size
 markers_zorder
+match_bar_color
 mean_diamonds
 mean_diamonds_alpha
 mean_diamonds_edge_color
@@ -1486,6 +1488,7 @@ workstreams_label_padding
 workstreams_label_rotation
 workstreams_label_size
 workstreams_location
+workstreams_match_bar_color
 workstreams_order
 workstreams_title
 workstreams_title_

@@ -1140,6 +1140,7 @@ class BaseLayout:
                     text=[],
                     )
 
+        location = utl.kwget(kwargs, self.fcpp,  ['gantt_workstreams_location', 'workstreams_location'], 'left')
         gantt_workstreams = \
             Element('gantt.workstreams', self.fcpp, kwargs,
                     on=True if utl.kwget(kwargs, self.fcpp,
@@ -1160,18 +1161,18 @@ class BaseLayout:
                                          ['gantt_workstreams_label_font_color', 'workstreams_label_font_color'],
                                          '#ffffff'),
                     font_size=utl.kwget(kwargs, self.fcpp,
-                                        ['gantt_workstreams_label_font_size', 'workstreams_label_font_size'], 16),
+                                        ['gantt_workstreams_label_font_size', 'workstreams_label_font_size'],
+                                        11 if location == 'inline' else 13),
                     font_style=utl.kwget(kwargs, self.fcpp,
                                          ['gantt_workstreams_label_font_style', 'workstreams_label_font_style'],
                                          'normal'),
                     font_weight=utl.kwget(kwargs, self.fcpp,
                                           ['gantt_workstreams_label_font_weight', 'workstreams_label_font_weight'],
-                                          'bold'),
+                                          'normal' if location == 'inline' else 'bold'),
                     highlight_row=utl.kwget(kwargs, self.fcpp,
                                             ['gantt_workstreams_highlight_row', 'workstreams_highlight_row'],
                                             True),
-                    location=utl.kwget(kwargs, self.fcpp,  # left, right, inline
-                                       ['gantt_workstreams_location', 'workstreams_location'], 'left'),
+                    location=location,  # left, right, inline
                     match_bar_color=utl.kwget(kwargs, self.fcpp,
                                               ['gantt_workstreams_match_bar_color',
                                                'workstreams_match_bar_color',
@@ -1185,6 +1186,7 @@ class BaseLayout:
                     size=utl.kwget(kwargs, self.fcpp,
                                    ['gantt_workstreams_label_size', 'workstreams_label_size'], 30),
                     )
+
         if not isinstance(gantt_workstreams.size, list):
             gantt_workstreams._size = [gantt_workstreams.size, 0]  # use size_orig b/c on = False
 
@@ -1213,7 +1215,8 @@ class BaseLayout:
                                          ['gantt_workstreams_title_font_color', 'workstreams_title_font_color'],
                                          '#ffffff'),
                     font_size=utl.kwget(kwargs, self.fcpp,
-                                        ['gantt_workstreams_title_font_size', 'workstreams_title_font_size'], 16),
+                                        ['gantt_workstreams_title_font_size', 'workstreams_title_font_size'],
+                                        12 if location == 'inline' else 16),
                     font_style=utl.kwget(kwargs, self.fcpp,
                                          ['gantt_workstreams_title_font_style', 'workstreams_title_font_style'],
                                          'normal'),
@@ -1228,6 +1231,7 @@ class BaseLayout:
                     size=utl.kwget(kwargs, self.fcpp, ['gantt_workstreams_title_size', 'workstreams_title_size'], 30),
                     text=utl.kwget(kwargs, self.fcpp, ['gantt_workstreams_title', 'workstreams_title'], 'Workstreams'),
                     )
+
         if not isinstance(gantt_workstreams_title.size, list):
             gantt_workstreams_title._size = [gantt_workstreams_title.size, self.axes.size[1]]
 
@@ -1243,19 +1247,18 @@ class BaseLayout:
                     date_type=utl.kwget(kwargs, self.fcpp, ['gantt_date_type', 'date_type'], []),
                     dependencies=utl.kwget(kwargs, self.fcpp, ['gantt_dependencies', 'dependencies'], 'Dependency'),
                     edge_color=utl.kwget(
-                       kwargs, self.fcpp, ['gantt_edge_color', 'bar_edge_color'], copy.copy(self.color_list)),
+                        kwargs, self.fcpp, ['gantt_edge_color', 'bar_edge_color'], copy.copy(self.color_list)),
                     edge_width=utl.kwget(kwargs, self.fcpp, ['gantt_edge_width', 'bar_edge_width'], 0),
                     fill_alpha=utl.kwget(kwargs, self.fcpp, ['gantt_fill_alpha', 'bar_fill_alpha'], 0.75),
                     fill_color=utl.kwget(
-                       kwargs, self.fcpp, ['gantt_fill_color', 'bar_fill_color'], copy.copy(self.color_list)),
+                        kwargs, self.fcpp, ['gantt_fill_color', 'bar_fill_color'], copy.copy(self.color_list)),
                     height=utl.kwget(kwargs, self.fcpp, ['gantt_height', 'bar_height'], 0.8),
                     label_x=utl.kwget(kwargs, self.fcpp, 'gantt_label_x', kwargs.get('gantt_label_x', '')),
                     labels_as_yticks=utl.kwget(
-                       kwargs, self.fcpp, ['gantt_labels_as_yticks', 'labels_as_yticks'], True),
+                        kwargs, self.fcpp, ['gantt_labels_as_yticks', 'labels_as_yticks'], True),
                     label_boxes=utl.kwget(kwargs, self.fcpp, ['gantt_label_boxes', 'label_boxes'], False),
                     milestone=utl.kwget(kwargs, self.fcpp, ['gantt_milestones', 'milestones'], 'Milestone'),
-                    milestone_marker=utl.kwget(kwargs, self.fcpp, ['gantt_milestone_marker', 'milestone_marker'],
-                                               'D'),
+                    milestone_marker=utl.kwget(kwargs, self.fcpp, ['gantt_milestone_marker', 'milestone_marker'], 'D'),
                     milestone_text=gantt_milestone_text,
                     months=copy.copy(self.obj_array),
                     order_by_legend=utl.kwget(kwargs, self.fcpp, ['gantt_order_by_legend', 'order_by_legend'],
@@ -1272,6 +1275,13 @@ class BaseLayout:
                     )
         self.gantt.DATE_TYPES = ['year', 'quarter', 'month', 'week', 'quarter-year', 'month-year']  # not linked to data
         self.gantt.date_type = utl.validate_list(self.gantt.date_type)
+
+        # Update y-tick labels with workstream props
+        if self.gantt.workstreams.on and self.gantt.workstreams.location == 'inline' and self.gantt.labels_as_yticks:
+            self.tick_labels_major_y.font = self.gantt.workstreams.font
+            self.tick_labels_major_y.font_size = self.gantt.workstreams.font_size
+            self.tick_labels_major_y.font_style = self.gantt.workstreams.font_style
+            self.tick_labels_major_y.font_weight = self.gantt.workstreams.font_weight
 
         # Bar labels
         if self.gantt.bar_labels is not None or not self.gantt.labels_as_yticks:
@@ -1350,10 +1360,9 @@ class BaseLayout:
         ### Adjust some style parameters based on user inputs  # noqa
         # x-ticks default to bottom unless a date_type is specified
         if not any(f in self.gantt.date_type for f in self.gantt.DATE_TYPES) \
-                and 'date_location' not in kwargs \
-                and 'gantt_date_location' not in kwargs:
+                and utl.kwget(kwargs, self.fcpp, ['gantt_date_location', 'date_location'], 'nada') == 'nada':
             self.gantt.date_location = 'bottom'
-        else:
+        elif utl.kwget(kwargs, self.fcpp, ['gantt_date_location', 'date_location'], 'nada') == 'nada':
             self.gantt.date_location = 'top'
 
         # x-grid uses major for no date type or else minor

@@ -1254,7 +1254,9 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
     if layout.gantt.milestone in df_rc.columns:
         xvals = df_rc.loc[df_rc[layout.gantt.milestone].isna(), data.x].values
     else:
-        xvals = df_rc[data.x].values
+        start = df_rc[cols + data.x].groupby(cols, sort=False).min()[data.x[0]].values
+        stop = df_rc[cols + data.x].groupby(cols, sort=False).max()[data.x[1]].values
+        xvals = np.column_stack((start, stop))
 
     bar_labels = None
     if layout.gantt.bar_labels is not None:
@@ -1262,9 +1264,10 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
         # whether or not the entry has a dependency
         if layout.gantt.milestone in df_rc.columns:
             vals = df_rc.loc[df_rc[layout.gantt.milestone].isna(), layout.gantt.bar_labels.columns].values
-            bar_labels = [' | '. join(f) for f in vals]
         else:
-            bar_labels = [' | '. join(f) for f in df_rc[layout.gantt.bar_labels.columns].values]
+            sub = df_rc[data.y + layout.gantt.bar_labels.columns].drop_duplicates(keep='first')
+            vals = sub[layout.gantt.bar_labels.columns].values
+        bar_labels = [' | '. join(f) for f in vals]
 
     # Update the x-axis ranges (preserve user-defined xmax even if it cuts off labels)
     user_xmax = True if data.xmax[utl.plot_num(ir, ic, layout.ncol)] is not None else False
@@ -1282,16 +1285,21 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
     # Connect dependencies with arrows
     if layout.gantt.dependencies in df_rc.columns:
         processed_deps = []
-        for irow, row in df_rc.iterrows():
+        df_deps = df_rc.copy()
+        if data.ranges['xmin'][ir, ic] is not None:
+            df_deps = df_deps.loc[df_deps[data.x[0]] >= data.ranges['xmin'][ir, ic]]
+        if data.ranges['xmax'][ir, ic] is not None:
+            df_deps = df_deps.loc[df_deps[data.x[1]] <= data.ranges['xmax'][ir, ic]]
+        for irow, row in df_deps.iterrows():
             if str(row[layout.gantt.dependencies]) == 'nan':
                 continue
             if not isinstance(row[layout.gantt.dependencies], list):
                 continue
             for dep in row[layout.gantt.dependencies]:
                 # Try dependency column first, then milestone column
-                sub = df_rc.loc[(df_rc[data.y[0]] == dep)]
+                sub = df_deps.loc[(df_deps[data.y[0]] == dep)]
                 if len(sub) == 0:
-                    sub = df_rc.loc[(df_rc[data.milestone] == dep)]
+                    sub = df_deps.loc[(df_deps[data.milestone] == dep)]
                 if len(sub) == 0:
                     continue
                 if data.ranges['xmin'][ir, ic] is not None:
@@ -1307,15 +1315,15 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
                     max_collision = val[data.x[1]]
                     for idx in range(min(start_idx, end_idx), max(start_idx, end_idx)):
                         item = yvals[idx][0]
-                        min_collision = min(min_collision, df_rc.loc[df_rc[data.y[0]] == item, data.x[0]].iloc[0])
-                        if df_rc.loc[df_rc[data.y[0]] == item, data.x[0]].iloc[0] < val[data.x[1]]:
+                        min_collision = min(min_collision, df_deps.loc[df_deps[data.y[0]] == item, data.x[0]].iloc[0])
+                        if df_deps.loc[df_deps[data.y[0]] == item, data.x[0]].iloc[0] < val[data.x[1]]:
                             # Skip workstream rows
                             if layout.gantt.workstreams.on and \
                                     layout.gantt.workstreams.location == 'inline' and \
-                                    df_rc.loc[df_rc[data.y[0]] == item, '_is_workstream'].iloc[0] == 1:
+                                    df_deps.loc[df_deps[data.y[0]] == item, '_is_workstream'].iloc[0] == 1:
                                 continue
                             # Update max_collision
-                            max_collision = max(max_collision, df_rc.loc[df_rc[data.y[0]] == item, data.x[1]].iloc[0])
+                            max_collision = max(max_collision, df_deps.loc[df_deps[data.y[0]] == item, data.x[1]].iloc[0])
                     is_milestone_start = False
                     if val[data.x[0]] == val[data.x[1]]:
                         is_milestone_start = True
@@ -1359,7 +1367,7 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
             layout.add_label(ir, ic, layout.gantt.workstreams_title, layout.gantt.workstreams_title.text)
 
     elif layout.gantt.workstreams.on and layout.gantt.workstreams.location == 'inline':
-        pass
+        pass  # address within plotting engine
     else:
         layout.gantt.workstreams.on = False
 

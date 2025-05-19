@@ -1782,10 +1782,10 @@ class Layout(BaseLayout):
         # imshow ax adjustment
         if self.name == 'imshow' and getattr(data, 'wh_ratio'):
             if data.wh_ratio >= 1:
-                self.axes.size[1] = self.axes.size[0] / data.wh_ratio
+                self.axes.size[1] = np.round(self.axes.size[0] / data.wh_ratio)
                 self.label_row.size[1] = self.axes.size[1]
             else:
-                self.axes.size[0] = self.axes.size[1] * data.wh_ratio
+                self.axes.size[0] = np.round(self.axes.size[1] * data.wh_ratio)
                 self.label_col.size[0] = self.axes.size[0]
                 self.label_wrap.size[0] = self.axes.size[0]
 
@@ -2132,7 +2132,9 @@ class Layout(BaseLayout):
                 for irow, row, in xbboxm.iterrows():
                     xticksm.obj[ir, ic][irow].set_visible(row.visible)
 
-            if len(yticks_size_all) > 0:
+            # Leave overlappint yticks for gantt workstreams
+            if len(yticks_size_all) > 0 and \
+                    not (self.gantt.on and self.gantt.workstreams.on and self.gantt.labels_as_yticks):
                 ybbox = df_tick(yticks, yticks_size_all, 'y')
                 ybbox = hide_overlaps(yticks, ybbox, ir, ic)
             if len(yticksm_size_all) > 0:
@@ -2671,52 +2673,56 @@ class Layout(BaseLayout):
                     new_xmax = max(new_xmax, mdates.date2num(row[x[1]]) + w_mdate)
 
                 # Add milestone text
-                if self.gantt.milestone in row and str(row['Milestone']) not in \
+                if self.gantt.milestone in row and str(row[self.gantt.milestone]) not in \
                         [None, np.nan, 'nan', pd.NaT, 'NaT', 'N/A', 'n/a', 'Nan', 'NAN', 'NaN', '', 'None'] \
                         and self.gantt.milestone_text.on:
 
-                    # Add text and position to the milestone text element object
-                    self.gantt.milestone_text.text += [row['Milestone']]
-                    self.gantt.milestone_text.position += [(row[x[0]], yi)]
+                    # Check if milestone fits in the date range
+                    milestone_date = row[data.x[0]]
+                    if milestone_date >= data.ranges['xmin'][ir, ic] and milestone_date <= data.ranges['xmax'][ir, ic]:
+                        # Add text and position to the milestone text element object
+                        self.gantt.milestone_text.text += [row[self.gantt.milestone]]
+                        self.gantt.milestone_text.position += [(row[x[0]], yi)]
 
-                    # Predict the milestone label size (no current support for multiple font types)
-                    txt_size = utl.get_text_dimensions(row['Milestone'],  # units == pixels
-                                                       self.gantt.milestone_text.font,
-                                                       self.gantt.milestone_text.font_size,
-                                                       self.gantt.milestone_text.font_style,
-                                                       self.gantt.milestone_text.font_weight)
+                        # Predict the milestone label size (no current support for multiple font types)
+                        txt_size = utl.get_text_dimensions(row[self.gantt.milestone],  # units == pixels
+                                                           self.gantt.milestone_text.font,
+                                                           self.gantt.milestone_text.font_size,
+                                                           self.gantt.milestone_text.font_style,
+                                                           self.gantt.milestone_text.font_weight)
 
-                    # Update xmax range value for labels that go beyond the axes range
-                    xmin, xmax = ax.get_xlim()
-                    if self.gantt.milestone_text.location == 'top':
-                        txt_xs_px = txt_size[0] / 2
-                        w_px = 0
-                    else:
-                        txt_xs_px = txt_size[0]
-                        w_px = self.gantt.milestone_marker_size  # units == pixels
-                    if not self.gantt.auto_expand:
-                        txt_xs = self._pixel_to_mdate(self.axes.size[0], xmin, xmax, txt_xs_px + w_px)
-                        if (mdates.date2num(row[x[1]]) + txt_xs) > xmax:
-                            xmax_xs = (mdates.date2num(row[x[1]]) + txt_xs)
+                        # Update xmax range value for labels that go beyond the axes range
+                        xmin, xmax = ax.get_xlim()
+                        if self.gantt.milestone_text.location == 'top':
+                            txt_xs_px = txt_size[0] / 2
+                            w_px = 0
                         else:
-                            xmax_xs = 0
-                        new_xmax = max(new_xmax, xmax_xs)
-                    elif self.gantt.auto_expand and data.xmax[utl.plot_num(ir, ic, self.ncol)] is None:
-                        self.axes.size[0] += txt_xs_px
-                        txt_xs = self._pixel_to_mdate(self.axes.size[0], xmin, xmax, txt_xs_px)
-                        if (mdates.date2num(row[x[0]]) + txt_xs) > xmax:
-                            xmax_xs = (mdates.date2num(row[x[1]]) + txt_xs)
-                        else:
-                            xmax_xs = 0
-                        new_xmax = max(new_xmax, xmax_xs)
+                            txt_xs_px = txt_size[0]
+                            w_px = self.gantt.milestone_marker_size  # units == pixels
+                        if not self.gantt.auto_expand:
+                            txt_xs = self._pixel_to_mdate(self.axes.size[0], xmin, xmax, txt_xs_px + w_px)
+                            if (mdates.date2num(row[x[1]]) + txt_xs) > xmax:
+                                xmax_xs = (mdates.date2num(row[x[1]]) + txt_xs)
+                            else:
+                                xmax_xs = 0
+                            new_xmax = max(new_xmax, xmax_xs)
+                        elif self.gantt.auto_expand and data.xmax[utl.plot_num(ir, ic, self.ncol)] is None:
+                            self.axes.size[0] += txt_xs_px
+                            txt_xs = self._pixel_to_mdate(self.axes.size[0], xmin, xmax, txt_xs_px)
+                            if (mdates.date2num(row[x[0]]) + txt_xs) > xmax:
+                                xmax_xs = (mdates.date2num(row[x[1]]) + txt_xs)
+                            else:
+                                xmax_xs = 0
+                            new_xmax = max(new_xmax, xmax_xs)
 
             # Workstream bracket
             elif self.gantt.workstreams.location == 'inline' and row[self.gantt.workstreams.column] == row[data.y[0]]:
+                xmin, xmax = ax.get_xlim()
+
                 # Highlight the workstream title row
                 if self.gantt.workstreams.highlight_row:
                     # Because the axes width is indeterminate, we need to use a long bar to ensure the highlight
                     # continues after resizing
-                    xmin, xmax = ax.get_xlim()
                     ax.fill_between([xmin, 100000], yi - 0.5, yi + 0.5,
                                     facecolor=self.gantt.workstreams_title.fill_color[0],
                                     edgecolor=self.gantt.workstreams_title.edge_color[0],
@@ -2789,7 +2795,8 @@ class Layout(BaseLayout):
                 if xvals[itxt][1] == xvals[itxt][0]:
                     # Discrete milestone
                     xoffset += self.gantt.milestone_marker_size * pixel_2_mdate
-                if len(data.df_rc.loc[data.df_rc[data.y[0]] == yvals[itxt][0], 'Milestone'].dropna()) > 0:
+                if self.gantt.milestone in data.df_rc.columns and \
+                        len(data.df_rc.loc[data.df_rc[data.y[0]] == yvals[itxt][0], self.gantt.milestone].dropna()) > 0:
                     # Milestone on a bar
                     xoffset += self.gantt.milestone_marker_size * pixel_2_mdate
                 txt.set_position((mdates.num2date(mdates.date2num(pos[0]) + xoffset), pos[1] - yoffset))
@@ -3895,8 +3902,7 @@ class Layout(BaseLayout):
                                      )
                         rotation = getattr(self, f'tick_labels_{mm}_{ax}{lab}').rotation
                         for text in getattr(axes[ia], f'get_{ax}ticklabels')(which=mm):
-                            if rotation != 0:
-                                text.set_rotation(rotation)
+                            text.set_rotation(rotation)
                             text.set_fontproperties(ticks_font)
                             text.set_bbox(style)
 
@@ -5246,11 +5252,18 @@ class Layout(BaseLayout):
                     else:
                         inline_workstreams = None
 
-                    # Position tick labels
+                    # Update workstream title tick marks labels
+                    ticks_font = \
+                        font_manager.FontProperties(family=self.gantt.workstreams_title.font,
+                                                    size=self.gantt.workstreams_title.font_size,
+                                                    style=self.gantt.workstreams_title.font_style,
+                                                    weight=self.gantt.workstreams_title.font_weight)
+
+                    # Position tick labels (font properties set with self.tick_labels_major_y in set_axes_ticks)
                     for iytl, ytl in enumerate(yticklabs):
                         fill_color = '#ffffff'
                         if inline_workstreams is not None and ytl.get_text() in inline_workstreams:
-                            ytl.set_weight('bold')
+                            ytl.set_fontproperties(ticks_font)
                             if self.gantt.workstreams.highlight_row:
                                 fill_color = '#eeeeee'
 
