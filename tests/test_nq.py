@@ -27,7 +27,6 @@ img_cat = utl.img_grayscale_deprecated(img_cat_orig)
 
 # Set theme
 fcp.set_theme('gray_original')
-fcp.KWARGS['mpl']
 
 
 # Other
@@ -42,6 +41,7 @@ def show_all(only_fails=True, start=None):
 SHOW = False
 fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
+fcp.KWARGS['engine'] = 'mpl'
 
 
 def test_nq(make_reference=False, show=False):

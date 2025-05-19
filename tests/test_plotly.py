@@ -51,6 +51,7 @@ def show_all(only_fails=True, start=None):
 SHOW = False
 fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
+fcp.KWARGS['engine'] = 'mpl'
 
 
 # plt_ functions can be used directly outside of pytest for debug

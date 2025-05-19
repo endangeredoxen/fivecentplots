@@ -27,7 +27,6 @@ img_cat = utl.img_grayscale_deprecated(imageio.imread(Path(fcp.__file__).parent 
 
 # Set theme
 fcp.set_theme('gray_original')
-fcp.KWARGS['mpl']
 # fcp.set_theme('white')
 
 
@@ -43,6 +42,7 @@ def show_all(only_fails=True, start=None):
 SHOW = False
 fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
+fcp.KWARGS['engine'] = 'mpl'
 
 
 # plt_ functions can be used directly outside of pytest for debug

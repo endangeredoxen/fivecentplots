@@ -23,7 +23,6 @@ df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data.csv')
 
 # Set theme
 fcp.set_theme('gray_original')
-fcp.KWARGS['mpl']
 # fcp.set_theme('white')
 
 
@@ -39,6 +38,7 @@ def show_all(only_fails=True, start=None):
 SHOW = False
 fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
+fcp.KWARGS['engine'] = 'mpl'
 
 
 def test_alpha(make_reference=False, show=False):
@@ -414,7 +414,6 @@ def test_theme_white_fly(make_reference=False, show=False):
 
     # Make the plot
     fcp.set_theme('gray_original')
-fcp.KWARGS['mpl']
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], theme='white',
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              filename=name.with_suffix('.png'))
@@ -428,7 +427,6 @@ def test_theme_gray(make_reference=False, show=False):
 
     # Make the plot
     fcp.set_theme('gray_original')
-fcp.KWARGS['mpl']
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              filename=name.with_suffix('.png'))
