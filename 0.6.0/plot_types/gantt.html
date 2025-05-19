@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=e167ab61"></script>
+    <script src="../_static/documentation_options.js?v=8fa8b3e9"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.6" />
-    <meta name="docbuild:last-update" content="May 12, 2025"/>
+    <meta name="docbuild:last-update" content="May 19, 2025"/>
   </head>
   
   
@@ -408,19 +408,31 @@
 <h1>gantt charts<a class="headerlink" href="#gantt-charts" title="Link to this heading">#</a></h1>
 <p>This section describes various options available for gantt charts in <strong>fivecentplots</strong></p>
 <p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/api/gantt.html#gantt">See the full API </a></p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Gantt charts are only currently available when using the <code class="docutils literal notranslate"><span class="pre">mpl</span></code> plotting engine</p>
+</div>
 <section id="Setup">
 <h2>Setup<a class="headerlink" href="#Setup" title="Link to this heading">#</a></h2>
 <p>Import packages:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">fivecentplots</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fcp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+</pre></div>
+</div>
+</div>
+<p>Optionally set the design theme (skipping here and using default):</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
-<span class="o">%</span><span class="k">autoreload</span> 2
-<span class="kn">import</span><span class="w"> </span><span class="nn">fivecentplots</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fcp</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">set_theme</span><span class="p">(</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<span class="c1"># fcp.set_theme(&#39;white&#39;)</span>
 </pre></div>
 </div>
 </div>
@@ -429,22 +441,57 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-The autoreload extension is already loaded. To reload it, use:
-  %reload_ext autoreload
+Previous theme file found! Renaming to &#34;defaults_old.py&#34; and copying theme &#34;gray&#34;...done!
 </pre></div></div>
 </div>
-<p>Read some made-up Gantt chart data for the recording schedule of one of the greatest albums of one of the greatest bands:</p>
+</section>
+<section id="Basic-chart">
+<h2>Basic chart<a class="headerlink" href="#Basic-chart" title="Link to this heading">#</a></h2>
+<p>The simplest Gantt chart available in <strong>fivecentplots</strong> is essentially a horizontal bar chart in which each row represents a task and the bar length represents a data range. Gantt charts support all <strong>fivecentplots</strong> grouping options to enable deeper insight into work tasks.</p>
+<p>The following arguments are required to generate a Gantt chart:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">df</span></code>: a <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> containing date-bound tasks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: two column names:</p>
+<ol class="arabic simple">
+<li><p>the start date column name</p></li>
+<li><p>the end date column name</p></li>
+</ol>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: a task name</p></li>
+</ul>
+<p>The input <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> can come from a csv file, an excel sheet, or even manually via a <code class="docutils literal notranslate"><span class="pre">StringIO</span></code> object as shown in the example below.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[275]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;test_data/fake_data_gantt.csv&#39;</span><span class="p">)</span>
-<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">StringIO</span>
+<span class="n">gantt_data</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Task,Assigned,Start,Stop,Category</span>
+<span class="sd">Record drums,Taylor,2010-09-01,2010-09-05,Recording</span>
+<span class="sd">Record bass,Nate,2010-09-04,2010-09-06,Recording</span>
+<span class="sd">Record rhythm guitar,Pat,2010-09-06,2010-09-08,Recording</span>
+<span class="sd">Record rhythm guitar,Dave,2010-09-06,2010-09-08,Recording</span>
+<span class="sd">Record lead guitar,Chris,2010-09-07,2010-09-09,Recording</span>
+<span class="sd">Record keys,Rami,2010-09-07,2010-09-09,Recording</span>
+<span class="sd">Record lead vocals,Dave,2010-09-09,2010-09-11,Recording</span>
+<span class="sd">Record backup vocals,Chris,2010-09-11,2010-09-12,Recording</span>
+<span class="sd">Record backup vocals,Taylor,2010-09-11,2010-09-12,Recording</span>
+<span class="sd">Guitar overdubs,Pat,2010-09-11,2010-09-12,Recording</span>
+<span class="sd">Guitar overdubs,Chris,2010-09-11,2010-09-12,Recording</span>
+<span class="sd">Production,Butch,2010-09-12,2010-09-16,Post</span>
+<span class="sd">Mixing,Alan,2010-09-16,2010-09-20,Post</span>
+<span class="sd">Mastering,Joe,2010-09-21,2010-09-25,Post</span>
+<span class="sd">Mastering,Emily,2010-09-21,2010-09-25,Post</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="p">)</span>
+<span class="n">df_basic</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">gantt_data</span><span class="p">)</span>
+<span class="n">df_basic</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[275]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -518,25 +565,11 @@ The autoreload extension is already loaded. To reload it, use:
 </table>
 </div></div>
 </div>
-<p>Optionally set the design theme (skipping here and using default):</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[276]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#fcp.set_theme(&#39;gray&#39;)</span>
-<span class="c1">#fcp.set_theme(&#39;white&#39;)</span>
-</pre></div>
-</div>
-</div>
-</section>
-<section id="Basic-chart">
-<h2>Basic chart<a class="headerlink" href="#Basic-chart" title="Link to this heading">#</a></h2>
-<p>We create a basic Gantt chart showing tasks across a time axis specified by start and stop column containing <code class="docutils literal notranslate"><span class="pre">Datetime</span></code> values:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[277]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df_basic</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -566,7 +599,7 @@ The autoreload extension is already loaded. To reload it, use:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Assigned&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">gantt_tick_labels_x_rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df_basic</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Assigned&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">gantt_tick_labels_x_rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -582,7 +615,7 @@ The autoreload extension is already loaded. To reload it, use:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Assigned&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">gantt_tick_labels_x_rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">order_by_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df_basic</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Assigned&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">gantt_tick_labels_x_rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">order_by_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -598,41 +631,18 @@ The autoreload extension is already loaded. To reload it, use:
 <h3>Row/column plot<a class="headerlink" href="#Row/column-plot" title="Link to this heading">#</a></h3>
 <p>Row grouping (<code class="docutils literal notranslate"><span class="pre">share_y</span></code> is automatically disabled):</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[418]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Category&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">400</span><span class="p">,</span> <span class="mi">240</span><span class="p">])</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df_basic</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Category&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">400</span><span class="p">,</span> <span class="mi">240</span><span class="p">])</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Text(0, 0, &#39;Category=Post&#39;)
-&gt; <span class="ansi-green-fg">/Users/steve/Code/fivecentplots/src/fivecentplots/engines/mpl.py</span>(3350)<span class="ansi-cyan-fg">set_axes_rc_labels</span><span class="ansi-blue-fg">()</span>
-<span class="ansi-green-fg">   3348 </span>
-<span class="ansi-green-fg">   3349 </span><span class="ansi-red-fg">        </span><span class="ansi-red-fg"># Col/wrap labels</span>
-<span class="ansi-green-fg">-&gt; 3350 </span><span class="ansi-red-fg">        </span><span class="ansi-green-fg">if</span> <span class="ansi-blue-fg">(</span>ir <span class="ansi-blue-fg">==</span> <span class="ansi-cyan-fg">0</span> <span class="ansi-green-fg">and</span> self<span class="ansi-blue-fg">.</span>label_col<span class="ansi-blue-fg">.</span>on<span class="ansi-blue-fg">)</span> <span class="ansi-green-fg">or</span> self<span class="ansi-blue-fg">.</span>label_wrap<span class="ansi-blue-fg">.</span>on<span class="ansi-blue-fg">:</span>
-<span class="ansi-green-fg">   3351 </span><span class="ansi-red-fg">            </span><span class="ansi-green-fg">if</span> self<span class="ansi-blue-fg">.</span>label_wrap<span class="ansi-blue-fg">.</span>on<span class="ansi-blue-fg">:</span>
-<span class="ansi-green-fg">   3352 </span><span class="ansi-red-fg">                </span><span class="ansi-green-fg">if</span> <span class="ansi-green-fg">not</span> self<span class="ansi-blue-fg">.</span>label_wrap<span class="ansi-blue-fg">.</span>values_only<span class="ansi-blue-fg">:</span>
-
-Text(0, 0, &#39;Category=Recording&#39;)
-&gt; <span class="ansi-green-fg">/Users/steve/Code/fivecentplots/src/fivecentplots/engines/mpl.py</span>(3350)<span class="ansi-cyan-fg">set_axes_rc_labels</span><span class="ansi-blue-fg">()</span>
-<span class="ansi-green-fg">   3348 </span>
-<span class="ansi-green-fg">   3349 </span><span class="ansi-red-fg">        </span><span class="ansi-red-fg"># Col/wrap labels</span>
-<span class="ansi-green-fg">-&gt; 3350 </span><span class="ansi-red-fg">        </span><span class="ansi-green-fg">if</span> <span class="ansi-blue-fg">(</span>ir <span class="ansi-blue-fg">==</span> <span class="ansi-cyan-fg">0</span> <span class="ansi-green-fg">and</span> self<span class="ansi-blue-fg">.</span>label_col<span class="ansi-blue-fg">.</span>on<span class="ansi-blue-fg">)</span> <span class="ansi-green-fg">or</span> self<span class="ansi-blue-fg">.</span>label_wrap<span class="ansi-blue-fg">.</span>on<span class="ansi-blue-fg">:</span>
-<span class="ansi-green-fg">   3351 </span><span class="ansi-red-fg">            </span><span class="ansi-green-fg">if</span> self<span class="ansi-blue-fg">.</span>label_wrap<span class="ansi-blue-fg">.</span>on<span class="ansi-blue-fg">:</span>
-<span class="ansi-green-fg">   3352 </span><span class="ansi-red-fg">                </span><span class="ansi-green-fg">if</span> <span class="ansi-green-fg">not</span> self<span class="ansi-blue-fg">.</span>label_wrap<span class="ansi-blue-fg">.</span>values_only<span class="ansi-blue-fg">:</span>
-
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/plot_types_gantt_23_1.png" src="../_images/plot_types_gantt_23_1.png" />
+<img alt="../_images/plot_types_gantt_23_0.png" src="../_images/plot_types_gantt_23_0.png" />
 </div>
 </div>
 <p>Column grouping (<code class="docutils literal notranslate"><span class="pre">share_y</span></code> is automatically disabled):</p>
@@ -640,7 +650,7 @@ Text(0, 0, &#39;Category=Recording&#39;)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Category&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">400</span><span class="p">,</span> <span class="mi">240</span><span class="p">])</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df_basic</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Category&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">400</span><span class="p">,</span> <span class="mi">240</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -659,7 +669,7 @@ Text(0, 0, &#39;Category=Recording&#39;)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;Category&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">400</span><span class="p">,</span> <span class="mi">240</span><span class="p">])</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df_basic</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;Category&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">400</span><span class="p">,</span> <span class="mi">240</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -672,66 +682,16 @@ Text(0, 0, &#39;Category=Recording&#39;)
 </div>
 </section>
 </section>
-<section id="Styling">
-<h2>Styling<a class="headerlink" href="#Styling" title="Link to this heading">#</a></h2>
-<p>Default style:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/plot_types_gantt_31_0.png" src="../_images/plot_types_gantt_31_0.png" />
-</div>
-</div>
-<p>Now with various style modifications:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">color_by_bar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-          <span class="n">gantt_edge_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">gantt_edge_color</span><span class="o">=</span><span class="s1">&#39;#555555&#39;</span><span class="p">,</span> <span class="n">gantt_height</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">gantt_fill_alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/plot_types_gantt_33_0.png" src="../_images/plot_types_gantt_33_0.png" />
-</div>
-</div>
-</section>
-<section id="Sorting">
-<h2>Sorting<a class="headerlink" href="#Sorting" title="Link to this heading">#</a></h2>
-<p>By default, the sorting order of tasks is “descending” from top to bottom by date. We can flip that behavior with the keyword <code class="docutils literal notranslate"><span class="pre">sort='ascending'</span></code>:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;ascending&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/plot_types_gantt_36_0.png" src="../_images/plot_types_gantt_36_0.png" />
-</div>
-</div>
+<section id="Better-Gantts">
+<h2>Better Gantts<a class="headerlink" href="#Better-Gantts" title="Link to this heading">#</a></h2>
+<p>While the basic Gantt chart works for displaying simple task lists, Gantt charts can be more powerful when they graphically show dependencies, group by user workstreams, denote milestones, and provide better date range demarcation. As of v0.6, <strong>fivecentplots</strong> provides these updated features when using the <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> engine.</p>
+<p>First, load a new data set with a richer set of project details:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;test_data/fake_data_gantt_milestone.csv&#39;</span><span class="p">)</span>
-<span class="n">df</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -763,6 +723,7 @@ Text(0, 0, &#39;Category=Recording&#39;)
       <th>Workstream</th>
       <th>Description</th>
       <th>Owner</th>
+      <th>Jira Epic</th>
       <th>Start date</th>
       <th>End date</th>
       <th>Duration</th>
@@ -778,6 +739,7 @@ Text(0, 0, &#39;Category=Recording&#39;)
       <td>Design</td>
       <td>Pixel layout</td>
       <td>Gary Garrison</td>
+      <td>CRP-1013</td>
       <td>01-01-2025</td>
       <td>NaN</td>
       <td>2w</td>
@@ -791,6 +753,7 @@ Text(0, 0, &#39;Category=Recording&#39;)
       <td>Design</td>
       <td>Periphery circuits</td>
       <td>Andy Anderson</td>
+      <td>CRP-1013</td>
       <td>01-20-2025</td>
       <td>03-31-2025</td>
       <td>NaN</td>
@@ -804,6 +767,7 @@ Text(0, 0, &#39;Category=Recording&#39;)
       <td>Design</td>
       <td>TCAD simulation</td>
       <td>Sam Samuelson</td>
+      <td>CRP-1013</td>
       <td>02-22-2025</td>
       <td>NaN</td>
       <td>10d</td>
@@ -817,6 +781,7 @@ Text(0, 0, &#39;Category=Recording&#39;)
       <td>Design</td>
       <td>Initial tape out</td>
       <td>Amber Amberly</td>
+      <td>CRP-1013</td>
       <td>02-22-2025</td>
       <td>03-15-2025</td>
       <td>NaN</td>
@@ -830,273 +795,801 @@ Text(0, 0, &#39;Category=Recording&#39;)
       <td>Design</td>
       <td>Finalize tape out</td>
       <td>Amber Amberly</td>
+      <td>CRP-1013</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>1.5m</td>
       <td>NaN</td>
       <td>Pixel layout; Periphery circuits</td>
     </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Most keywords used for advanced Gannt chart creation support both a long and short form. The short-form is ideal for ad-hoc plot creation, but the long-form, which simply prepends the keyword with <code class="docutils literal notranslate"><span class="pre">gantt_</span></code> could be useful to avoid keyword collisions within custom theme files.</p>
+<ul class="simple">
+<li><p>Short-form example: <code class="docutils literal notranslate"><span class="pre">workstreams_location</span></code></p></li>
+<li><p>Long-form example: <code class="docutils literal notranslate"><span class="pre">gantt_workstreams_location</span></code></p></li>
+</ul>
+<section id="Dates">
+<h3>Dates<a class="headerlink" href="#Dates" title="Link to this heading">#</a></h3>
+<p>All Gantt charts in <strong>fivecentplots</strong> require a starting date and and ending date. However, several options are provided for viewing these ranges within the plot:</p>
+<ul class="simple">
+<li><p>Basic:</p>
+<ul>
+<li><p>simple string at each x-tick mark</p></li>
+<li><p>by default, the tick label is rotated 90 degrees</p></li>
+<li><p>date label tick range automatically determined based on the xmin to xmax range</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">date_location</span></code> can be at the top or bottom of the plot (“bottom” by default)</p></li>
+</ul>
+</li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start date&#39;</span><span class="p">,</span> <span class="s1">&#39;End date&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span>
+          <span class="n">xmin</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2025</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">xmax</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2025</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">31</span><span class="p">),</span>
+          <span class="n">workstreams</span><span class="o">=</span><span class="s1">&#39;Workstream&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">900</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_gantt_35_0.png" src="../_images/plot_types_gantt_35_0.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>Date range labels:</p>
+<ul>
+<li><p>specified using keyword <code class="docutils literal notranslate"><span class="pre">date_type</span></code> (or <code class="docutils literal notranslate"><span class="pre">gantt_date_type</span></code>)</p></li>
+<li><p>add a series of rectangular labels that span specific date ranges</p></li>
+<li><p>can combine one more more <em>unique</em> label periods</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">date_location</span></code> is always on top of the plot</p></li>
+<li><p>options include: ‘year’, ‘quarter’, ‘month’, ‘week’, ‘quarter-year’, ‘month-year’</p></li>
+</ul>
+</li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start date&#39;</span><span class="p">,</span> <span class="s1">&#39;End date&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span>
+          <span class="n">date_type</span><span class="o">=</span><span class="s1">&#39;month-year&#39;</span><span class="p">,</span>
+          <span class="n">xmin</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2025</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">xmax</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2025</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span>
+          <span class="n">workstreams</span><span class="o">=</span><span class="s1">&#39;Workstream&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">900</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_gantt_37_0.png" src="../_images/plot_types_gantt_37_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start date&#39;</span><span class="p">,</span> <span class="s1">&#39;End date&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span>
+          <span class="n">date_type</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;quarter&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;week&#39;</span><span class="p">],</span>
+          <span class="n">xmin</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2025</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+          <span class="n">xmax</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2025</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+          <span class="n">workstreams</span><span class="o">=</span><span class="s1">&#39;Workstream&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">900</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_gantt_38_0.png" src="../_images/plot_types_gantt_38_0.png" />
+</div>
+</div>
+</section>
+<section id="Duration">
+<h3>Duration<a class="headerlink" href="#Duration" title="Link to this heading">#</a></h3>
+<p>As mentioned above, all entries in a Gannt chart require a start and end date. For convenience, <strong>fivecentplots</strong> allows you to specify a start date and <em>duration</em> in lieu of an actual end date. Consider the first entry in our example chart:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Quarter</th>
+      <th>Priority</th>
+      <th>Workstream</th>
+      <th>Description</th>
+      <th>Owner</th>
+      <th>Jira Epic</th>
+      <th>Start date</th>
+      <th>End date</th>
+      <th>Duration</th>
+      <th>Milestone</th>
+      <th>Dependency</th>
+    </tr>
+  </thead>
+  <tbody>
     <tr>
-      <th>5</th>
-      <td>2025-Q2</td>
+      <th>0</th>
+      <td>2025-Q1</td>
       <td>P0</td>
       <td>Design</td>
+      <td>Pixel layout</td>
+      <td>Gary Garrison</td>
+      <td>CRP-1013</td>
+      <td>01-01-2025</td>
+      <td>NaN</td>
+      <td>2w</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>No specific end date is listed, but the “Duration” column indicates a task time of “2w” or two weeks. <strong>fivecentplots</strong> computes the actual end date and plots accordingly:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start date&#39;</span><span class="p">,</span> <span class="s1">&#39;End date&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span>
+          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Workstream==&quot;Design&quot;&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">900</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_gantt_43_0.png" src="../_images/plot_types_gantt_43_0.png" />
+</div>
+</div>
+<p>The following durations are supported:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'w'</span></code> = weeks</p>
+<ul>
+<li><p>can be an integer or a fraction (ex: <code class="docutils literal notranslate"><span class="pre">'1.5w'</span></code>)</p></li>
+<li><p>assumes full weeks of 7 days and does not account for weekends</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'m'</span></code> = months</p>
+<ul>
+<li><p>can be an integer or a fraction (ex: <code class="docutils literal notranslate"><span class="pre">'2.2m'</span></code>)</p></li>
+<li><p>assumes a month is 30 days and does not account for weekends</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'d'</span></code> = days</p>
+<ul>
+<li><p>only integers allowed</p></li>
+<li><p>assumes only actual business days (disable with <code class="docutils literal notranslate"><span class="pre">business_days=False</span></code>)</p></li>
+<li><p>assumes no work on US holidays (disable with <code class="docutils literal notranslate"><span class="pre">us_holidays=False</span></code>)</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="Workstreams">
+<h3>Workstreams<a class="headerlink" href="#Workstreams" title="Link to this heading">#</a></h3>
+<p>A “workstream” is a group of related tasks within an overall project. Workstream values are specified within a column of the DataFrame similar to how <code class="docutils literal notranslate"><span class="pre">legend</span></code> values are specified, meaning each row of data that is part of a given workstream has a common value within a column that is identified using the kwarg <code class="docutils literal notranslate"><span class="pre">workstreams</span></code>. By default, workstream label values and the workstreams title will appear to the left of the Gantt chart with formatting similar to that of a <code class="docutils literal notranslate"><span class="pre">wrap</span></code> plot.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start date&#39;</span><span class="p">,</span> <span class="s1">&#39;End date&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="n">gantt_date_type</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;quarter-year&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">],</span>
+          <span class="n">workstreams</span><span class="o">=</span><span class="s1">&#39;Workstream&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">900</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_gantt_47_0.png" src="../_images/plot_types_gantt_47_0.png" />
+</div>
+</div>
+<p>Font and color properties of the workstreams labels and titles are accessible using <code class="docutils literal notranslate"><span class="pre">workstreams_label_xxx</span></code> or <code class="docutils literal notranslate"><span class="pre">workstreams_title_xxx</span></code>, respectively. An additional shortcut is provided, if you want to match the workstreams labels with the bar color; set <code class="docutils literal notranslate"><span class="pre">match_bar_color=True</span></code></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start date&#39;</span><span class="p">,</span> <span class="s1">&#39;End date&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="n">gantt_date_type</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;quarter-year&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">],</span>
+          <span class="n">workstreams</span><span class="o">=</span><span class="s1">&#39;Workstream&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">900</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">match_bar_color</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_gantt_49_0.png" src="../_images/plot_types_gantt_49_0.png" />
+</div>
+</div>
+<p>Additionally, keyword <code class="docutils literal notranslate"><span class="pre">workstreams_location</span></code> can set the position of the labels on the <code class="docutils literal notranslate"><span class="pre">left</span></code> (see above), <code class="docutils literal notranslate"><span class="pre">right</span></code>, or <code class="docutils literal notranslate"><span class="pre">inline</span></code> (see below). When using the <code class="docutils literal notranslate"><span class="pre">inline</span></code> location, <code class="docutils literal notranslate"><span class="pre">workstreams_brackets</span></code> which display the full duration of all tasks in the workstream and <code class="docutils literal notranslate"><span class="pre">workstreams_highlight_row</span></code> which colors the workstream title row are automatically enabled.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When workstream labels and titles are used in place of y-tick labels, automatic removal of overlapping tick labels is disabled. If you change font sizes of these elements, you may also need to change the vertical height of your plot to accommodate the increased size as shown below</p>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start date&#39;</span><span class="p">,</span> <span class="s1">&#39;End date&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="n">gantt_date_type</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;quarter-year&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">],</span>
+          <span class="n">workstreams</span><span class="o">=</span><span class="s1">&#39;Workstream&#39;</span><span class="p">,</span> <span class="n">workstreams_location</span><span class="o">=</span><span class="s1">&#39;inline&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">900</span><span class="p">,</span> <span class="mi">800</span><span class="p">],</span>
+          <span class="n">workstreams_label_font_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">workstreams_label_font_style</span><span class="o">=</span><span class="s1">&#39;italic&#39;</span><span class="p">,</span>
+          <span class="n">workstreams_title_font_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">workstreams_title_font_weight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_gantt_52_0.png" src="../_images/plot_types_gantt_52_0.png" />
+</div>
+</div>
+</section>
+<section id="Today">
+<h3>Today<a class="headerlink" href="#Today" title="Link to this heading">#</a></h3>
+<p>Besides being the greatest day Billy Corgan has ever known, “today” can be shown on the Gantt chart:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start date&#39;</span><span class="p">,</span> <span class="s1">&#39;End date&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="n">gantt_date_type</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;quarter-year&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">],</span>
+          <span class="n">workstreams</span><span class="o">=</span><span class="s1">&#39;Workstream&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">900</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">today</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_gantt_55_0.png" src="../_images/plot_types_gantt_55_0.png" />
+</div>
+</div>
+<p>By default, the <code class="docutils literal notranslate"><span class="pre">today</span></code> line and label elements will be placed according to <code class="docutils literal notranslate"><span class="pre">datetime.datetime.now()</span></code>. This can be customized using keywords beginning with <code class="docutils literal notranslate"><span class="pre">today_</span></code>. Lastly, the <code class="docutils literal notranslate"><span class="pre">today</span></code> label will always appear on the opposite side of the dates.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start date&#39;</span><span class="p">,</span> <span class="s1">&#39;End date&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span>
+          <span class="n">workstreams</span><span class="o">=</span><span class="s1">&#39;Workstream&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">900</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span>
+          <span class="n">today</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">today_style</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">today_color</span><span class="o">=</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">,</span>
+          <span class="n">today_fill_color</span><span class="o">=</span><span class="s1">&#39;#00AABB&#39;</span><span class="p">,</span> <span class="n">today_edge_color</span><span class="o">=</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">,</span> <span class="n">today_text</span><span class="o">=</span><span class="s1">&#39;Happy New Year!&#39;</span><span class="p">,</span>
+          <span class="n">today_font</span><span class="o">=</span><span class="s1">&#39;Comic Sans MS&#39;</span><span class="p">,</span> <span class="n">today_font_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">today_font_weight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_gantt_57_0.png" src="../_images/plot_types_gantt_57_0.png" />
+</div>
+</div>
+</section>
+<section id="Bar-labels">
+<h3>Bar labels<a class="headerlink" href="#Bar-labels" title="Link to this heading">#</a></h3>
+<p>It is often convenient to display labels at the end of each bar on the Gantt chart which convey additional information about the task at hand. This can be accomplished by passing one or more column names from the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> into keyword <code class="docutils literal notranslate"><span class="pre">bar_labels</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start date&#39;</span><span class="p">,</span> <span class="s1">&#39;End date&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span>
+          <span class="n">bar_labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Owner&#39;</span><span class="p">,</span> <span class="s1">&#39;Jira Epic&#39;</span><span class="p">],</span>
+          <span class="n">gantt_date_type</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;quarter-year&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">],</span> <span class="n">workstreams</span><span class="o">=</span><span class="s1">&#39;Workstream&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">900</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_gantt_60_0.png" src="../_images/plot_types_gantt_60_0.png" />
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The Gantt chart width will automatically increase to accommodate the width of the bar labels, unless you have specified a value for <code class="docutils literal notranslate"><span class="pre">xmin</span></code> or <code class="docutils literal notranslate"><span class="pre">xmax</span></code></p>
+</div>
+</section>
+<section id="Milestones">
+<h3>Milestones<a class="headerlink" href="#Milestones" title="Link to this heading">#</a></h3>
+<p>A “milestone” is a special point in time with zero duration (i.e., start date = end date) and are rendered on the Gantt chart as diamonds. Any item in the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> with a start date and no end date or duration is treated as a milestone. If an additional column of milestone labels is provided, an accompanying label is added adjacent to the diamond. For our example, there are 3 milestones (rows, 5, 10, 15), but only 2 have a label (rows 10, 15):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Start date&#39;</span><span class="p">,</span> <span class="s1">&#39;End date&#39;</span><span class="p">,</span> <span class="s1">&#39;Duration&#39;</span><span class="p">,</span> <span class="s1">&#39;Milestone&#39;</span><span class="p">]]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Description</th>
+      <th>Start date</th>
+      <th>End date</th>
+      <th>Duration</th>
+      <th>Milestone</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Pixel layout</td>
+      <td>01-01-2025</td>
+      <td>NaN</td>
+      <td>2w</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Periphery circuits</td>
+      <td>01-20-2025</td>
+      <td>03-31-2025</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>TCAD simulation</td>
+      <td>02-22-2025</td>
+      <td>NaN</td>
+      <td>10d</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Initial tape out</td>
+      <td>02-22-2025</td>
+      <td>03-15-2025</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Finalize tape out</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.5m</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>5</th>
       <td>Deliver tape out</td>
-      <td>Amber Amberly</td>
       <td>05-30-2025</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>Finalize tape out</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>2025-Q2</td>
-      <td>P1</td>
-      <td>Fab</td>
       <td>Test chip</td>
-      <td>Karthik Sweeny</td>
       <td>03-01-2025</td>
       <td>04-15-2025</td>
-      <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>2025-Q3</td>
-      <td>P0</td>
-      <td>Fab</td>
       <td>Alpha samples</td>
-      <td>Karthik Sweeny</td>
       <td>06-30-2025</td>
       <td>09-15-2025</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>Deliver tape out</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>2025-Q3</td>
-      <td>P0</td>
-      <td>Fab</td>
       <td>Beta samples</td>
-      <td>Karthik Sweeny</td>
       <td>10-01-2025</td>
       <td>02-15-2026</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>Alpha samples</td>
     </tr>
     <tr>
       <th>9</th>
-      <td>2025-Q2</td>
-      <td>P0</td>
-      <td>Test</td>
       <td>Test chip eval</td>
-      <td>Denvyr Loud</td>
       <td>04-15-2025</td>
       <td>05-15-2025</td>
-      <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
     </tr>
     <tr>
       <th>10</th>
-      <td>2025-Q2</td>
-      <td>P0</td>
-      <td>Test</td>
       <td>Test chip eval</td>
-      <td>Denvyr Loud</td>
       <td>05-15-2025</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>Decide pixel</td>
-      <td>NaN</td>
     </tr>
     <tr>
       <th>11</th>
-      <td>2025-Q4</td>
-      <td>P0</td>
-      <td>Test</td>
       <td>Alpha sample testing</td>
-      <td>Denvyr Loud</td>
       <td>09-15-2025</td>
       <td>12-15-2025</td>
-      <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
     </tr>
     <tr>
       <th>12</th>
-      <td>2025-Q2</td>
-      <td>P4</td>
-      <td>Marketing</td>
       <td>Lie about performance</td>
-      <td>Harry Harrison</td>
       <td>05-15-2025</td>
       <td>06-30-2025</td>
-      <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
     </tr>
     <tr>
       <th>13</th>
-      <td>2025-Q3</td>
-      <td>P4</td>
-      <td>Marketing</td>
       <td>Lie about schedule</td>
-      <td>Harry Harrison</td>
       <td>07-15-2025</td>
       <td>12-30-2025</td>
-      <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
     </tr>
     <tr>
       <th>14</th>
-      <td>2025-Q4</td>
-      <td>P4</td>
-      <td>Marketing</td>
       <td>Stress engineers about schedule</td>
-      <td>Harry Harrison</td>
       <td>01-15-2026</td>
       <td>12-20-2026</td>
-      <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
     </tr>
     <tr>
       <th>15</th>
-      <td>2025-Q4</td>
-      <td>P4</td>
-      <td>Marketing</td>
+      <td>Stress engineers about schedule</td>
+      <td>12-20-2026</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Get fat bonuses</td>
+    </tr>
+    <tr>
+      <th>16</th>
       <td>Deliver beta samples</td>
-      <td>Harry Harrison</td>
       <td>12-30-2026</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>Beta samples</td>
     </tr>
   </tbody>
 </table>
 </div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[566]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start date&#39;</span><span class="p">,</span> <span class="s1">&#39;End date&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="c1">#legend=&#39;Owner&#39;,</span>
-          <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">date_type</span><span class="o">=</span><span class="s1">&#39;quarter&#39;</span><span class="p">,</span> <span class="n">workstreams</span><span class="o">=</span><span class="s1">&#39;Workstream&#39;</span><span class="p">,</span>
-          <span class="n">labels_as_yticks</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="c1">#workstreams_title=False,</span>
-          <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">workstreams_label_font_size</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span><span class="c1">#, today=False)</span>
-<br/></pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&gt; <span class="ansi-green-fg">/Users/steve/Code/fivecentplots/src/fivecentplots/engines/mpl.py</span>(1248)<span class="ansi-cyan-fg">add_text</span><span class="ansi-blue-fg">()</span>
-<span class="ansi-green-fg">   1246 </span>
-<span class="ansi-green-fg">   1247 </span><span class="ansi-red-fg">            </span><span class="ansi-red-fg"># Update element with the actual object reference</span>
-<span class="ansi-green-fg">-&gt; 1248 </span><span class="ansi-red-fg">            </span><span class="ansi-green-fg">if</span> element <span class="ansi-green-fg">and</span> track_element<span class="ansi-blue-fg">:</span>
-<span class="ansi-green-fg">   1249 </span><span class="ansi-red-fg">                </span><span class="ansi-green-fg">if</span> el<span class="ansi-blue-fg">.</span>obj <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-fg">   1250 </span><span class="ansi-red-fg">                    </span>el<span class="ansi-blue-fg">.</span>obj <span class="ansi-blue-fg">=</span> text_obj
-
-&#39;Alpha sample testing&#39;
-(np.datetime64(&#39;2025-12-15T00:00:00.000000000&#39;), 0)
-(np.datetime64(&#39;2025-12-15T00:00:00.000000000&#39;), 0)
-datetime.timedelta(days=1)
-*** TypeError: unsupported operand type(s) for +: &#39;int&#39; and &#39;datetime.timedelta&#39;
-np.datetime64(&#39;2025-12-15T00:00:00.000000000&#39;)
-np.datetime64(&#39;2025-12-15T00:00:00.000000000&#39;)
-datetime.timedelta(days=1)
-*** TypeError: unsupported operand type(s) for +: &#39;int&#39; and &#39;datetime.timedelta&#39;
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/plot_types_gantt_38_1.png" src="../_images/plot_types_gantt_38_1.png" />
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[113]:
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start date&#39;</span><span class="p">,</span> <span class="s1">&#39;End date&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="n">milestones</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+          <span class="n">gantt_date_type</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;quarter-year&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">],</span> <span class="n">workstreams</span><span class="o">=</span><span class="s1">&#39;Workstream&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">900</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
 </pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start date&#39;</span><span class="p">,</span> <span class="s1">&#39;End date&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="c1">#legend=&#39;Owner&#39;,</span>
-          <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">date_type</span><span class="o">=</span><span class="s1">&#39;quarter&#39;</span><span class="p">,</span> <span class="n">workstreams</span><span class="o">=</span><span class="s1">&#39;Workstream&#39;</span><span class="p">,</span>
-          <span class="c1">#workstreams_title=False,</span>
-          <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">workstreams_label_font_size</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span><span class="c1">#, today=False)</span>
-<br/></pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<div class="highlight"><pre>
-Warning: the following kwargs are not supported:
-    - date_type
-    - workstreams
-    - workstreams_label_font_size
-</pre></div></div>
+<img alt="../_images/plot_types_gantt_65_0.png" src="../_images/plot_types_gantt_65_0.png" />
 </div>
-<p>legend position is wrong period. but tick size doesn’t fully translate when moved to the top, must be some other tick_param</p>
+</div>
+</section>
+<section id="Dependencies">
+<h3>Dependencies<a class="headerlink" href="#Dependencies" title="Link to this heading">#</a></h3>
+<p>Dependencies between tasks can be visually indicated using arrows between the end of the first task to the start of the dependent task. This is accomplished by specifying one or more test in a “Dependency” column within the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>. If the dependent task has multiple predecessors, separate them by a semicolon in the proper cell (see row 4 below):</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;test_data/fake_data_gantt_milestone.csv&#39;</span><span class="p">)</span>
-<span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start date&#39;</span><span class="p">,</span> <span class="s1">&#39;End date&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span>
-          <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">900</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span>
-          <span class="c1"># legend=&#39;Owner&#39;,</span>
-          <span class="n">date_type</span><span class="o">=</span><span class="s1">&#39;quarter&#39;</span><span class="p">,</span>
-          <span class="n">workstreams</span><span class="o">=</span><span class="s1">&#39;Workstream&#39;</span><span class="p">,</span>
-          <span class="c1"># bar_labels=&#39;Owner&#39;,</span>
-          <span class="c1"># today=datetime.datetime(2026, 3, 6),</span>
-          <span class="c1"># today_text=&#39;Start&#39;,</span>
-          <span class="c1">#xmin=datetime.datetime(2025, 6, 15),</span>
-          <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-          <span class="n">xmax</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2027</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-          <span class="n">workstreams_label_font_size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
-          <span class="n">milestone_text_location</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span>
-          <span class="n">workstreams_match_bar_color</span><span class="o">=</span><span class="kc">True</span>
-          <span class="p">)</span>
-<span class="c1"># XMAX NOT WORKING MANUALLY OR WITH</span>
-<br/></pre></div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Dependency&#39;</span><span class="p">]]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Description</th>
+      <th>Dependency</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Pixel layout</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Periphery circuits</td>
+      <td>Pixel layout</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>TCAD simulation</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Initial tape out</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Finalize tape out</td>
+      <td>Pixel layout; Periphery circuits</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Deliver tape out</td>
+      <td>Finalize tape out</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Test chip</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Alpha samples</td>
+      <td>Deliver tape out</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Beta samples</td>
+      <td>Alpha samples</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Test chip eval</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>Test chip eval</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>Alpha sample testing</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>Lie about performance</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>Lie about schedule</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>Stress engineers about schedule</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>Stress engineers about schedule</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>Deliver beta samples</td>
+      <td>Beta samples</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p><strong>fivecentplots</strong> automatically checks for a column named “Dependency” but this can be overriden using keyword <code class="docutils literal notranslate"><span class="pre">dependencies</span></code> (or <code class="docutils literal notranslate"><span class="pre">gantt_dependencies</span></code>). Alternatively, these lines can be disabled by setting this column name to <code class="docutils literal notranslate"><span class="pre">False</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start date&#39;</span><span class="p">,</span> <span class="s1">&#39;End date&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+          <span class="n">gantt_date_type</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;quarter-year&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">],</span> <span class="n">workstreams</span><span class="o">=</span><span class="s1">&#39;Workstream&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">900</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
+</pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-Warning: The following kwargs are not supported:
-    - milestone_text_location
-    - workstreams_match_bar_color
-</pre></div></div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_gantt_70_0.png" src="../_images/plot_types_gantt_70_0.png" />
 </div>
+</div>
+<p>When linking dependent tasks, it is permissible to leave the dependent tasks “Start date” cell empty. <strong>fivecentplots</strong> will automatically determine this date based on the end date of the predecessor tasks. In our example chart, “Finalize tape out” depends on both “Pixel layout” and “Periphery circuits”. “Pixel layout” finishes before “Periphery circuits” so in the actual plot we see that the start date of “Finalize tape out” matches the end date of that row:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[514]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="s1">&#39;Milestone&#39;</span><span class="p">]</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Start date&#39;</span><span class="p">,</span> <span class="s1">&#39;End date&#39;</span><span class="p">,</span> <span class="s1">&#39;Duration&#39;</span><span class="p">,</span> <span class="s1">&#39;Dependency&#39;</span><span class="p">]]</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[514]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Description</th>
+      <th>Start date</th>
+      <th>End date</th>
+      <th>Duration</th>
+      <th>Dependency</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Pixel layout</td>
+      <td>01-01-2025</td>
+      <td>NaN</td>
+      <td>2w</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Periphery circuits</td>
+      <td>01-20-2025</td>
+      <td>03-31-2025</td>
+      <td>NaN</td>
+      <td>Pixel layout</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Finalize tape out</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.5m</td>
+      <td>Pixel layout; Periphery circuits</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start date&#39;</span><span class="p">,</span> <span class="s1">&#39;End date&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span>
+          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Workstream==&quot;Design&quot;&#39;</span><span class="p">,</span>
+          <span class="n">gantt_date_type</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;quarter-year&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">],</span> <span class="n">workstreams</span><span class="o">=</span><span class="s1">&#39;Workstream&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">900</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area docutils container">
-<div class="highlight"><pre>
-&#39;Decide\\npixel&#39;
-</pre></div></div>
+<img alt="../_images/plot_types_gantt_73_0.png" src="../_images/plot_types_gantt_73_0.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="Styling">
+<h2>Styling<a class="headerlink" href="#Styling" title="Link to this heading">#</a></h2>
+<p>Various style options are available for the Gantt bars themselves (note that <code class="docutils literal notranslate"><span class="pre">gantt_height</span></code> is a relative height where a value of 1 means it fills the full height between tick marks):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df_basic</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">color_by</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span>
+          <span class="n">gantt_edge_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">gantt_edge_color</span><span class="o">=</span><span class="s1">&#39;#555555&#39;</span><span class="p">,</span> <span class="n">gantt_height</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+          <span class="n">gantt_fill_alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_gantt_76_0.png" src="../_images/plot_types_gantt_76_0.png" />
+</div>
+</div>
+</section>
+<section id="Sorting">
+<h2>Sorting<a class="headerlink" href="#Sorting" title="Link to this heading">#</a></h2>
+<p>By default, the sorting order of tasks is “descending” from top to bottom by date. We can flip that behavior with the keyword <code class="docutils literal notranslate"><span class="pre">sort='ascending'</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df_basic</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;ascending&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/plot_types_gantt_79_0.png" src="../_images/plot_types_gantt_79_0.png" />
+</div>
 </div>
 </section>
 </section>
@@ -1154,6 +1647,16 @@ Warning: The following kwargs are not supported:
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Legends">Legends</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Row/column-plot">Row/column plot</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Wrap-plot">Wrap plot</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Better-Gantts">Better Gantts</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Dates">Dates</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Duration">Duration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Workstreams">Workstreams</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Today">Today</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Bar-labels">Bar labels</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Milestones">Milestones</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Dependencies">Dependencies</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Styling">Styling</a></li>
