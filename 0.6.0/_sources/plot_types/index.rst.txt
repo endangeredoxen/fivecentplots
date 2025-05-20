@@ -114,10 +114,10 @@ Plot Types
             :color: primary
             :click-parent:
 
-            fcp.hist
+            **fcp.hist**
         ^^^
 
-         simple bar like histograms, image histograms, kernel density estimation, PDF & CDF curves
+        simple bar like histograms, image histograms, kernel density estimation, PDF & CDF curves
 
     .. grid-item-card::
         :img-top: ../source/_static/index-images/getting_started.svg

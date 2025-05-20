@@ -249,7 +249,7 @@ clear:  **fivecentplots** can reduce the barrier to generate complex plots.
 
    <br>
 
-What if we wanted to do the same plot in raw **bokeh** or **plotly** code?  Well, we'd need to learn an entirely
+What if we wanted to do the same plot using code for **plotly** or **bokeh**?  Well, we'd need to learn an entirely
 different API!  But with **fivecentplots** we can just change the kwarg defining the plotting engine
 (``engine``) and we are all set:
 
@@ -258,9 +258,11 @@ different API!  But with **fivecentplots** we can just change the kwarg defining
    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', ax_size=[225, 225], share_y=False,
             filter='Substrate=="Si" & Target Wavelength==450 & Temperature [C]==25',
             ref_line=df['Voltage'], ref_line_legend_text='y==x', ref_line_style='--',
-            xmin=0, xmax=1.7, ymin=[0, 0, 0], ymax=[1.3, 1.7, 5.2], engine='bokeh')
+            xmin=0, xmax=1.7, ymin=[0, 0, 0], ymax=[1.3, 1.7, 5.2], engine='plotly')
 
-.. image:: _static/images/syntax_bokeh.png
+.. raw:: html
+
+   <iframe src="_static/plotly_index.html" style="height:375px;width:930px;border:none;overflow:hidden;"></iframe>
 
 
 .. note:: As of v0.6 **matplotlib** has the richest available plotting feature set.  **plotly** supports most plot
@@ -272,47 +274,45 @@ different API!  But with **fivecentplots** we can just change the kwarg defining
 Refer to the topics on the sidebar for more details on plot types and options.
 
 
-Basics
-------
+Contents
+--------
 
-Information about using, configuration, and customizing this theme.
+* `Basics: <basics/index.html>`_ installation, basic figure construction, introduction to `Element` objects, data grouping, etc
 
 .. toctree::
    :maxdepth: 2
+   :hidden:
 
    basics/index
 
-Plot Types
-----------
 
-Information about the community behind this theme and how you can contribute.
+* `Plot types: <plot_types/index.html>`_ tutorials on various plot types supported by **fivecentplots**
 
 .. toctree::
    :maxdepth: 2
+   :hidden:
 
    plot_types/index
 
-Engines
--------
-
-Several example pages to demonstrate the functionality of this theme when used alongside other Sphinx extensions.
+* `Engines: <engines/index.html>`_ description of how to use different plotting engines (matplotlib, bokeh, plotly) with **fivecentplots**
 
 .. toctree::
    :maxdepth: 2
+   :hidden:
 
    engines/index
+
+* `Changelog <changelog.html>`_
 
 .. toctree::
    :hidden:
 
    changelog
 
-API
----
-
-The content of the exposed `pydata_sphinx_theme` API.
+* `API: <api/index.html>`_ description of various keyword arguments supported by **fivecentplots**
 
 .. toctree::
    :maxdepth: 2
+   :hidden:
 
    api/index

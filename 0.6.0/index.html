@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=ea406944" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=54d11772" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -173,23 +173,6 @@
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-external" href="https://github.com/endangeredoxen/fivecentplots">
-    github
-  </a>
-</li>
-
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -209,13 +192,21 @@
         </div>
       
       
-        <div class="navbar-item">
-
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button></div>
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/endangeredoxen/fivecentplots" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
       
     </div>
     
@@ -299,13 +290,6 @@
   </a>
 </li>
 
-
-<li class="nav-item ">
-  <a class="nav-link nav-external" href="https://github.com/endangeredoxen/fivecentplots">
-    github
-  </a>
-</li>
-
   </ul>
 </nav></div>
           
@@ -316,13 +300,21 @@
     
       <div class="sidebar-header-items__end">
         
-          <div class="navbar-item">
-
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button></div>
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/endangeredoxen/fivecentplots" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
         
       </div>
     
@@ -573,89 +565,48 @@ within <strong>pandas</strong> DataFrames.</p>
 <p>This example is obviously a bit contrived as you could simplify things by modifying <cite>rc_params</cite>
 or eliminating some of the specific style elements used here, but the general idea should be
 clear:  <strong>fivecentplots</strong> can reduce the barrier to generate complex plots.</p>
-<br><p>What if we wanted to do the same plot in raw <strong>bokeh</strong> or <strong>plotly</strong> code?  Well, we’d need to learn an entirely
+<br><p>What if we wanted to do the same plot using code for <strong>plotly</strong> or <strong>bokeh</strong>?  Well, we’d need to learn an entirely
 different API!  But with <strong>fivecentplots</strong> we can just change the kwarg defining the plotting engine
 (<code class="docutils literal notranslate"><span class="pre">engine</span></code>) and we are all set:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="n">share_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
          <span class="n">ref_line</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">],</span> <span class="n">ref_line_legend_text</span><span class="o">=</span><span class="s1">&#39;y==x&#39;</span><span class="p">,</span> <span class="n">ref_line_style</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span>
-         <span class="n">xmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mf">1.7</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ymax</span><span class="o">=</span><span class="p">[</span><span class="mf">1.3</span><span class="p">,</span> <span class="mf">1.7</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">],</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;bokeh&#39;</span><span class="p">)</span>
+         <span class="n">xmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mf">1.7</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ymax</span><span class="o">=</span><span class="p">[</span><span class="mf">1.3</span><span class="p">,</span> <span class="mf">1.7</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">],</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;plotly&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/syntax_bokeh.png" src="_images/syntax_bokeh.png" />
-<div class="admonition note">
+<iframe src="_static/plotly_index.html" style="height:375px;width:930px;border:none;overflow:hidden;"></iframe><div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>As of v0.6 <strong>matplotlib</strong> has the richest available plotting feature set.  <strong>plotly</strong> supports most plot
 types and many of the same style features.  <strong>bokeh</strong> support is limited to only scatter plots at this
 time.</p>
 </div>
 <p>Refer to the topics on the sidebar for more details on plot types and options.</p>
-<section id="basics">
-<h2>Basics<a class="headerlink" href="#basics" title="Link to this heading">#</a></h2>
-<p>Information about using, configuration, and customizing this theme.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="basics/index.html">Basics</a></li>
+<section id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="basics/index.html">Basics:</a> installation, basic figure construction, introduction to <cite>Element</cite> objects, data grouping, etc</p></li>
 </ul>
-</div>
-</section>
-<section id="plot-types">
-<h2>Plot Types<a class="headerlink" href="#plot-types" title="Link to this heading">#</a></h2>
-<p>Information about the community behind this theme and how you can contribute.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="plot_types/index.html">Plot Types</a></li>
-</ul>
-</div>
-</section>
-<section id="engines">
-<h2>Engines<a class="headerlink" href="#engines" title="Link to this heading">#</a></h2>
-<p>Several example pages to demonstrate the functionality of this theme when used alongside other Sphinx extensions.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="engines/index.html">Engines</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="engines/index.html#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="engines/index.html#adding-new-engines">Adding New Engines</a></li>
-</ul>
-</li>
-</ul>
-</div>
 <div class="toctree-wrapper compound">
 </div>
-</section>
-<section id="api">
-<h2>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h2>
-<p>The content of the exposed <cite>pydata_sphinx_theme</cite> API.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="plot_types/index.html">Plot types:</a> tutorials on various plot types supported by <strong>fivecentplots</strong></p></li>
+</ul>
 <div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="api/index.html">API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/axes.html">axes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/bar.html">bar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/boxplot.html">boxplot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/cbar.html">cbar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/contour.html">contour</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/fcp.html">API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/figure.html">figure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gantt.html">gantt</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gridlines.html">gridlines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/grouping.html">grouping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/heatmap.html">heatmap</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/hist.html">hist</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/imshow.html">imshow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/labels.html">labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/legend.html">legend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/lines.html">lines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/markers.html">markers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/nq.html">nq</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/options.html">options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/pie.html">pie</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/plot.html">plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/tick_labels.html">tick_labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/ticks.html">ticks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/ws.html">ws</a></li>
+</div>
+<ul class="simple">
+<li><p><a class="reference external" href="engines/index.html">Engines:</a> description of how to use different plotting engines (matplotlib, bokeh, plotly) with <strong>fivecentplots</strong></p></li>
 </ul>
-</li>
+<div class="toctree-wrapper compound">
+</div>
+<ul class="simple">
+<li><p><a class="reference external" href="changelog.html">Changelog</a></p></li>
 </ul>
+<div class="toctree-wrapper compound">
+</div>
+<ul class="simple">
+<li><p><a class="reference external" href="api/index.html">API:</a> description of various keyword arguments supported by <strong>fivecentplots</strong></p></li>
+</ul>
+<div class="toctree-wrapper compound">
 </div>
 </section>
 </section>
@@ -698,12 +649,9 @@ time.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#basics">Basics</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-types">Plot Types</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#engines">Engines</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contents">Contents</a><ul class="nav section-nav flex-column">
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a></li>
 </ul>
   </nav></div>
 
