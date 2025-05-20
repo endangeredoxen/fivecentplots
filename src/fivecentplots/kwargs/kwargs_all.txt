@@ -20,12 +20,14 @@ ax_fill_alpha
 ax_fill_color
 ax_hlines
 ax_hlines_by_plot
+ax_hlines_label
 ax_hlines_zorder
 ax_limit_padding
 ax_scale
 ax_size
 ax_vlines
 ax_vlines_by_plot
+ax_vlines_label
 ax_vlines_zorder
 ax_zorder
 bar
@@ -121,6 +123,7 @@ box_marker_fill
 box_marker_fill_alpha
 box_marker_fill_color
 box_marker_size
+box_marker_type
 box_marker_zorder
 box_mean_diamonds
 box_mean_diamonds_alpha
@@ -316,6 +319,7 @@ gantt_milestone_text_font_color
 gantt_milestone_text_font_size
 gantt_milestone_text_font_style
 gantt_milestone_text_font_weight
+gantt_milestone_text_location
 gantt_milestone_text_rotation
 gantt_milestone_text_units
 gantt_milestone_text_zorder
@@ -421,6 +425,7 @@ grid_major_x_color
 grid_major_x_style
 grid_major_x_width
 grid_major_x_zorder
+grid_major_y
 grid_major_y2
 grid_major_y2_color
 grid_major_y2_style
@@ -446,18 +451,22 @@ grid_minor_color_z
 grid_minor_style
 grid_minor_width
 grid_minor_x
+grid_minor_x2
 grid_minor_x2_style
 grid_minor_x2_width
 grid_minor_x2_zorder
 grid_minor_x_style
 grid_minor_x_width
 grid_minor_x_zorder
+grid_minor_y
+grid_minor_y2
 grid_minor_y2_style
 grid_minor_y2_width
 grid_minor_y2_zorder
 grid_minor_y_style
 grid_minor_y_width
 grid_minor_y_zorder
+grid_minor_z
 grid_minor_z_style
 grid_minor_z_width
 grid_minor_z_zorder
@@ -744,6 +753,7 @@ milestone_text_font_color
 milestone_text_font_size
 milestone_text_font_style
 milestone_text_font_weight
+milestone_text_location
 milestone_text_rotation
 milestone_text_units
 milestones
@@ -1177,6 +1187,7 @@ tick_labels_z_zorder
 tick_length
 tick_width
 ticks
+ticks_color
 ticks_direction
 ticks_increment
 ticks_length
@@ -1184,6 +1195,7 @@ ticks_major
 ticks_major_direction
 ticks_major_increment
 ticks_major_length
+ticks_major_width
 ticks_major_x
 ticks_major_x2
 ticks_major_x2_alpha
