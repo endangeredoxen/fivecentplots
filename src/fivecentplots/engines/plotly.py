@@ -30,7 +30,7 @@ db = pdb.set_trace
 
 
 # More works is needed on markers as this set is rather limiting
-DEFAULT_MARKERS = ['circle', 'square', 'diamond', 'cross', 'x', 'triangle-up', 'pentagon', 'hexagram', 'star',
+DEFAULT_MARKERS = ['circle', 'square', 'diamond', 'cross-thin', 'x', 'triangle-up', 'pentagon', 'hexagram', 'star',
                    'hourglass', 'bowtie', 'asterisk', 'hash', 'y', 'line']
 HOLLOW_MARKERS = ['circle', 'square', 'triangle-up', 'diamond', 'pentagon', 'hexagram', 'star', 'hourglass', 'bowtie']
 
@@ -647,9 +647,9 @@ class Layout(BaseLayout):
                     else:
                         width = sub.index[jj + 1] - sub.index[jj]
                     if jj == 0:
-                        longest = max(data.indices[ii], key=len)
+                        longest = max(data.indices.astype(str)[ii], key=len)
                         size_label = \
-                            utl.get_text_dimensions(str(longest), box_lab.font, box_lab.font_size, box_lab.font_style,
+                            utl.get_text_dimensions(longest, box_lab.font, box_lab.font_size, box_lab.font_style,
                                                     box_lab.font_weight, box_lab.rotation, dpi=self.dpi)
                         box_lab.size = [np.ceil(width), max(box_lab.height, size_label[1] + 8)]  # 4 * 2 == padding
 
@@ -880,7 +880,7 @@ class Layout(BaseLayout):
             if self.legend.text is None:
                 title_dim = [0, 0]
             else:
-                title_dim = utl.get_text_dimensions(self.legend.text, self.legend.font, self.legend.title_font_size,
+                title_dim = utl.get_text_dimensions(self.legend.text, self.legend.font, self.legend.title.font_size,
                                                     self.legend.font_style, self.legend.font_weight, dpi=self.dpi)
 
             # Add width for the marker part of the legend and padding with axes (based off empirical measurements)
@@ -904,7 +904,7 @@ class Layout(BaseLayout):
                      traceorder='normal',
                      title=dict(text=self.legend.text,
                                 font=dict(family=self.legend.font,
-                                          size=self.legend.title_font_size,
+                                          size=self.legend.title.font_size,
                                           color='black')),
                      font=dict(
                          family=self.legend.font,
@@ -2354,7 +2354,7 @@ class Layout(BaseLayout):
 
             texts = self.fig.obj['layout']['annotations']
             for text in texts:
-                if (self.fit.obj is None or text not in self.fit.obj[ir, ic]) and \
+                if (self.fit.obj is None or self.fit.obj[ir, ic] is None or text not in self.fit.obj[ir, ic]) and \
                         (self.text.obj[ir, ic] is None or text not in self.text.obj[ir, ic]):
                     continue
                 if isinstance(text['x'], str):
@@ -2452,7 +2452,7 @@ class Layout(BaseLayout):
     def update_markers(self):
         """Update the marker list to valid option for new engine."""
         mm = {'o': 'circle',
-              '+': 'cross',
+              '+': 'cross-thin',
               's': 'square',
               'd': 'diamond',
               'x': 'x',
@@ -2478,6 +2478,7 @@ class Layout(BaseLayout):
               r'\gamma': 'hexagon2',
               r'\sigma': 'circle-dot',
               r'\star': 'square-dot',
+              'cross': 'cross-thin',
               }
 
         for imarker, marker in enumerate(self.markers.type.values):

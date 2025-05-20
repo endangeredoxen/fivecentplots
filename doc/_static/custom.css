@@ -18,6 +18,7 @@ h4{
 }
 .intro-gallery{
    margin-bottom: 24px;
+   margin-left: auto;
    max-height: 190px;
 }
 .intro-text{
@@ -67,6 +68,8 @@ div.header {
 html[data-theme="dark"]{
    /* --pst-color-background: #121212; */
    /*--pst-color-link: #ffc107; */
+   --pst-color-primary: #a5b5d1;
+   --pst-color-secondary: #d1a82c;
 
 }
 html[data-theme="dark"] div.header{
@@ -93,6 +96,7 @@ div.contain {
    text-align: left;
    font-family: 'Lato', sans-serif;
    font-size: 16px;
+   padding-right: 20px;
 }
 .flex-container {
    display: flex;
@@ -143,6 +147,7 @@ div.nboutput.container div.output_area img{
 .sd-btn-primary, .sd-btn-outline-primary:hover, .sd-btn-outline-primary:focus{
    background-color: #4f5c71 !important;
    border-color: #4f5c71 !important;
+   font-weight: bold !important;
    /* color: #eeeeee !important; */
 }
 .sd-btn-primary:hover{

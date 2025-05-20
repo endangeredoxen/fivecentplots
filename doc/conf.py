@@ -141,11 +141,20 @@ html_theme_options = {
         "image_light": "_static/images/logo.png",
         "image_dark": "_static/images/logo.png",
     },
-    "external_links": [
-        {"name": "github", "url": "https://github.com/endangeredoxen/fivecentplots"},
-    ],
     "show_nav_level": 2,
     "navbar_align": "left",
+    "navbar_start": ["navbar-logo"],
+    "navbar_end": ["navbar-icon-links"],
+    "header_links_before_dropdown": 8,
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/endangeredoxen/fivecentplots",
+            "icon": "fab fa-github",
+            "type": "fontawesome",
+        }],
+    "footer_start": ["copyright", "sphinx-version"],
+    "footer_end": ["theme-version"]
     # "switcher": {
     #     "json_url": "https://raw.githubusercontent.com/endangeredoxen/fivecentplots/refs/heads/gh-pages/switcher.json",
     # }
