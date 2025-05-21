@@ -154,3 +154,9 @@ div.nboutput.container div.output_area img{
    background-color: #818fa6 !important;
    border-color: #4f5c71 !important;
 }
+html[data-theme=dark] .bd-content .nboutput .output_area .widget-subarea, html[data-theme=dark] .bd-content .nboutput .output_area.rendered_html:not(:has(table.dataframe)){
+   background-color: #14181e !important;
+}
+.plotly-graph-div {
+    margin: auto;
+}
