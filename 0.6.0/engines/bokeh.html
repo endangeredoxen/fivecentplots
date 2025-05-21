@@ -31,11 +31,11 @@
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css?v=7f9a90b1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=54d11772" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=bf42448e" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -61,7 +61,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.6" />
-    <meta name="docbuild:last-update" content="May 19, 2025"/>
+    <meta name="docbuild:last-update" content="May 20, 2025"/>
   </head>
   
   
@@ -396,28 +396,44 @@
 <h2>Setup<a class="headerlink" href="#Setup" title="Link to this heading">#</a></h2>
 <p>First-time setup:</p>
 <p><code class="docutils literal notranslate"><span class="pre">bokeh</span></code> is not currently part of the default pacakge requirements for fcp so it is not automatically installed. For inline usage:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<p>pip install bokeh</p>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">bokeh</span>
+</pre></div>
+</div>
+</div>
 <p>Switching engines:</p>
 <p>Since <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> is the default plotting engine in <strong>fivecentplots</strong>, the user must manually invoke the <code class="docutils literal notranslate"><span class="pre">bokeh</span></code> engine. This can be done on a per-plot basis via the <code class="docutils literal notranslate"><span class="pre">engine</span></code> kwarg or by updating the global kwargs so the change persists within the users current interactive environment</p>
 <p>Per-plot:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<p>fcp.plot(df, x=’x’, y=’y’, engine=’bokeh’)</p>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;bokeh&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <p>Global:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<p>fcp.KWARGS[‘engine’] = ‘bokeh’</p>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">KWARGS</span><span class="p">[</span><span class="s1">&#39;engine&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;bokeh&#39;</span>
+</pre></div>
+</div>
+</div>
 <p>Themes:</p>
 <p>Due to differences between plotting libraries, it was found that the default <strong>fivecentplots</strong> theme files were not ideal in <code class="docutils literal notranslate"><span class="pre">bokeh</span></code>. It is also therefore recommended to update to a <code class="docutils literal notranslate"><span class="pre">bokeh</span></code>-specific theme when using this engine:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<p>fcp.set_theme(‘gray_bokeh’)</p>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">set_theme</span><span class="p">(</span><span class="s1">&#39;gray_bokeh&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <p>Maturity:</p>
 <p><code class="docutils literal notranslate"><span class="pre">bokeh</span></code> support for <strong>fivecentplots</strong> is currently limited to basic x-y scatter plots. This could be extended further in the future if a developer decides to take on the project.</p>
 <p>Import packages</p>
