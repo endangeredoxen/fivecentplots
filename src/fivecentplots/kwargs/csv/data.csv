@@ -1,0 +1,3 @@
+Keyword,Data Type,Description,Default,Example
+auto_scale,bool,Auto-scale the plot ranges,True,ranges.html#Primary-axes-only
+ax_limit_padding,float,"Padding in percentage added to min/max ranges based on data range (i.e., xmin = xmin - (xmax - xmin) * ax_limit_padding)",0.05,None

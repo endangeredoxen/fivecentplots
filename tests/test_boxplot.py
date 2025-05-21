@@ -4,20 +4,28 @@ import os
 import sys
 import pdb
 from pathlib import Path
+import pytest
 import fivecentplots.utilities as utl
 import matplotlib as mpl
-import inspect
 import numpy as np
 osjoin = os.path.join
 db = pdb.set_trace
+mpl.use('agg')
+
+
+@pytest.fixture(scope="module", autouse=True)
+def get_ready(request):
+    fcp.set_theme('gray_original')
+    fcp.KWARGS['engine'] = 'mpl'
+
 
 test = 'boxplot'
 if Path('../tests/test_images').exists():
-    MASTER = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 elif Path('tests/test_images').exists():
-    MASTER = Path(f'tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 else:
-    MASTER = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
@@ -28,295 +36,123 @@ seaborn_url = r'https://raw.githubusercontent.com/mwaskom/seaborn-data/master'
 df_crash = pd.read_csv(seaborn_url + '/car_crashes.csv')
 
 # Set theme
-fcp.set_theme('gray')
+fcp.set_theme('gray_original')
 # fcp.set_theme('white')
 
 
 # Other
+def make_all(start=None, stop=None):
+    utl.unit_test_make_all(REFERENCE, sys.modules[__name__], start=start, stop=stop)
+
+
+def show_all(only_fails=True, start=None):
+    utl.unit_test_show_all(only_fails, REFERENCE, sys.modules[__name__], start=start)
+
+
 SHOW = False
 fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
-
-
-def make_all():
-    """
-    Remake all test master images
-    """
-
-    if not MASTER.exists():
-        os.makedirs(MASTER)
-    members = inspect.getmembers(sys.modules[__name__])
-    members = [f for f in members if 'plt_' in f[0]]
-    for member in members:
-        print('Running %s...' % member[0], end='')
-        member[1](master=True)
-        print('done!')
-
-
-def show_all(only_fails=True):
-    """
-    Run the show=True option on all plt functions
-    """
-
-    if not MASTER.exists():
-        os.makedirs(MASTER)
-    members = inspect.getmembers(sys.modules[__name__])
-    members = [f for f in members if 'plt_' in f[0]]
-    for member in members:
-        print('Running %s...' % member[0], end='')
-        if only_fails:
-            try:
-                member[1]()
-            except AssertionError:
-                member[1](show=True)
-                db()
-        else:
-            member[1](show=True)
-            db()
+fcp.KWARGS['engine'] = 'mpl'
 
 
 # plt_ functions can be used directly outside of pytest for debug
-def plt_simple(bm=False, master=False, remove=True, show=False):
+def plt_grand_means(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'simple_master') if master else 'simple'
+    name = utl.unit_test_get_img_name('grand_means', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.boxplot(df, y='Value', show=SHOW, tick_labels_minor=True, grid_minor=True,
-                filename=name + '.png', save=not bm, inline=False, jitter=False)
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, grand_mean=True, grand_median=True,
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_grid_column(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('grid_column', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], col='Region', show=SHOW, ax_size=[300, 300],
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
 
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
+    if not show:
+        utl.unit_test_measure_axes_cols(name, 59, 302, 2)
+        utl.unit_test_measure_margin(name, 59, 120, left=79, right=81, bottom=10, alias=True)
+        utl.unit_test_measure_margin(name, 59, 120, top=10, alias=False)
 
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_simple_legend(bm=False, master=False, remove=True, show=False):
+def plt_grid_row(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'simple_legend_master') if master else 'simple_legend'
+    name = utl.unit_test_get_img_name('grid_row', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.boxplot(df, y='Value', show=SHOW, tick_labels_minor=True, grid_minor=True, legend='Batch',
-                filename=name + '.png', save=not bm, inline=False, jitter=False)
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], row='Region', show=SHOW, ax_size=[300, 300],
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
 
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
+    if not show:
+        utl.unit_test_measure_axes_rows(name, 260, 302, 2)
+        utl.unit_test_measure_margin(name, 80, 120, left=79, top=13, bottom=10, alias=True)
+        utl.unit_test_measure_margin(name, 80, 120, right=41, alias=False)
 
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_one_group(bm=False, master=False, remove=True, show=False):
+def plt_grid_wrap(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'one_group_master') if master else 'one_group'
+    name = utl.unit_test_get_img_name('grid_wrap', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', ymin='q0', ymax='q100',
-                show=SHOW, filename=name + '.png', save=not bm, inline=False, jitter=False, box_stat_line='q50',
-                box_group_label_font_size=24)  # font size is wrong!
+    fcp.boxplot(df, y='Value', groups=['Sample', 'Region'], wrap='Batch', show=SHOW, ax_size=[300, 300],
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_group_single(bm=False, master=False, remove=True, show=False):
+def plt_grid_wrap_y(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'group_single_master') if master else 'group_single'
+    name = utl.unit_test_get_img_name('grid_y', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.boxplot(df, y='Value', groups='Batch', show=SHOW, box_whisker=False, box_group_title_font_size=24,
-                filename=name + '.png', save=not bm, inline=False, jitter=False)
+    df['Value*2'] = 2 * df['Value']
+    fcp.boxplot(df, y=['Value', 'Value*2'], groups=['Batch', 'Sample', 'Region'], wrap='y', show=SHOW,
+                ax_size=[300, 300],
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_group_multiple(bm=False, master=False, remove=True, show=False):
+def plt_grid_wrap_y_no_share(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'group_multiple_master') if master else 'group_multiple'
+    name = utl.unit_test_get_img_name('grid_y-no-share', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW,
-                filename=name + '.png', save=not bm, inline=False, jitter=False)
+    df['Value*2'] = 2 * df['Value']
+    fcp.boxplot(df, y=['Value', 'Value*2'], groups=['Batch', 'Sample', 'Region'], wrap='y', show=SHOW,
+                ax_size=[300, 300], share_y=False,
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_group_multiple_nan(bm=False, master=False, remove=True, show=False):
+def plt_group_auto_size(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'group_multiple_nan_master') if master else 'group_multiple_nan'
-
-    # Make the plot
-    df['Test'] = np.nan
-    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample', 'Test'], show=SHOW,
-                filename=name + '.png', save=not bm, inline=False, jitter=False, box_stat_line='q0.5')
-
-    if bm:
-        return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
-
-
-def plt_group_legend(bm=False, master=False, remove=True, show=False):
-
-    name = osjoin(MASTER, 'group_legend_master') if master else 'group_legend'
-
-    # Make the plot
-    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], legend='Region', show=SHOW,
-                filename=name + '.png', save=not bm, inline=False, jitter=False)
-
-    if bm:
-        return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
-
-
-def plt_group_legend_lots(bm=False, master=False, remove=True, show=False):
-
-    name = osjoin(MASTER, 'group_legend_lots_master') if master else 'group_legend_lots'
-
-    # Make the plot
-    fcp.boxplot(df2, y='Value', groups=['Batch', 'Sample'], legend='Lots of Values', show=SHOW,
-                filename=name + '.png', save=not bm, inline=False, jitter=False, legend_edge_color='#000000')
-
-    if bm:
-        return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
-
-
-def plt_group_long(bm=False, master=False, remove=True, show=False):
-
-    name = osjoin(MASTER, 'group_long_master') if master else 'group_long'
-
-    # Make the plot
-    df2 = df.copy()
-    df2['This is a really long way to say show me your ID sucka'] = df['ID'] * 2
-    fcp.boxplot(df2, y='Value', groups=['Batch', 'This is a really long way to say show me your ID sucka', 'Sample'],
-                show=SHOW, filename=name + '.png', save=not bm, inline=False, jitter=False)
-
-    if bm:
-        return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
-
-
-def plt_group_auto_size(bm=False, master=False, remove=True, show=False):
-
-    name = osjoin(MASTER, 'group_auto_size_master') if master else 'group_auto_size'
+    name = utl.unit_test_get_img_name('group_auto_size', make_reference, REFERENCE)
 
     # Make the plot
     df2 = df.copy()
@@ -335,29 +171,45 @@ def plt_group_auto_size(bm=False, master=False, remove=True, show=False):
     df4.loc[df4.Sample == 2, 'Sample'] = 11
     df4 = pd.concat([df4, df3, df2, df])
     fcp.boxplot(df4, y='Value', groups=['Batch', 'ID', 'Sample'],  ax_size='auto', label_y_fill_color='#ff0000',
-                show=SHOW, filename=name + '.png', save=not bm, inline=False, jitter=False)
+                show=SHOW, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
-    # Compare with master
-    if master:
+
+def plt_group_auto_size_90(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('group_auto_size_90', make_reference, REFERENCE)
+
+    # Make the plot
+    df2 = df.copy()
+    df2.Value *= 2
+    df2.loc[df2.Sample == 1, 'Sample'] = 4
+    df2.loc[df2.Sample == 2, 'Sample'] = 5
+    df2.loc[df2.Sample == 3, 'Sample'] = 6
+    df3 = df.copy()
+    df3.Value *= 3
+    df3.loc[df3.Sample == 1, 'Sample'] = 7
+    df3.loc[df3.Sample == 2, 'Sample'] = 8
+    df3.loc[df3.Sample == 3, 'Sample'] = 9
+    df4 = df.copy()
+    df4.Value *= 4
+    df4.loc[df4.Sample == 1, 'Sample'] = 10
+    df4.loc[df4.Sample == 2, 'Sample'] = 11
+    df4 = pd.concat([df4, df3, df2, df])
+    fcp.boxplot(df4, y='Value', groups=['Batch', 'ID', 'Sample'],  ax_size='auto', label_y_fill_color='#ff0000',
+                show=SHOW, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False,
+                box_group_label_rotation=90)
+
+    if bm:
         return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_group_auto_size_wrap(bm=False, master=False, remove=True, show=False):
+def plt_group_auto_size_wrap(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'group_auto_size_wrap_master') if master else 'group_auto_size_wrap'
+    name = utl.unit_test_get_img_name('group_auto_size_wrap', make_reference, REFERENCE)
 
     # Make the plot
     df2 = df.copy()
@@ -376,531 +228,338 @@ def plt_group_auto_size_wrap(bm=False, master=False, remove=True, show=False):
     df4.loc[df4.Sample == 2, 'Sample'] = 11
     df4 = pd.concat([df4, df3, df2, df])
     fcp.boxplot(df4, y='Value', wrap='Batch', groups=['ID', 'Sample'],  ax_size='auto',
-                show=SHOW, filename=name + '.png', save=not bm, inline=False, jitter=False)
+                label_wrap_fill_color='#ff0000', label_wrap_edge_color='#0000ff', label_wrap_edge_width=5,
+                show=SHOW, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False,
+                ax_edge_width=7, ax_edge_color='#03333d', filter='Batch != 106',
+                title_wrap_edge_width=3, title_wrap_edge_color='#afa500')
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_group_auto_size_crash_simple(bm=False, master=False, remove=True, show=False):
+def plt_group_auto_size_crash_simple(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'group_auto_size_crash_simple_master') if master else 'group_auto_size_crash_simple'
+    name = utl.unit_test_get_img_name('group_auto_size_crash_simple', make_reference, REFERENCE)
 
     # Make the plot
     cc = pd.melt(df_crash, id_vars='abbrev', value_vars=['speeding', 'alcohol', 'not_distracted', 'no_previous'],
                  var_name='cause', value_name='accidents')
     fcp.boxplot(cc, y='accidents', groups='cause', ax_size='auto',
-                show=SHOW, filename=name + '.png', save=not bm, inline=False, jitter=False)
+                show=SHOW, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_group_auto_size_crash_complex(bm=False, master=False, remove=True, show=False):
+def plt_group_auto_size_crash_complex(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'group_auto_size_crash_complex_master') if master else 'group_auto_size_crash_complex'
+    name = utl.unit_test_get_img_name('group_auto_size_crash_complex', make_reference, REFERENCE)
 
     # Make the plot
     cc = pd.melt(df_crash, id_vars='abbrev', value_vars=['speeding', 'alcohol', 'not_distracted', 'no_previous'],
                  var_name='cause', value_name='accidents')
     fcp.boxplot(cc, y='accidents', groups=['abbrev'], row='cause', label_y_fill_color='#ff0000', share_y=False,
-                show=SHOW, filename=name + '.png', save=not bm, inline=False, jitter=False, ax_size='auto')
+                show=SHOW, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False, ax_size='auto')
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_grid_column(bm=False, master=False, remove=True, show=False):
+def plt_group_legend(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'grid_column_master') if master else 'grid_column'
+    name = utl.unit_test_get_img_name('group_legend', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], col='Region', show=SHOW, ax_size=[300, 300],
-                filename=name + '.png', save=not bm, inline=False, jitter=False)
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], legend='Region', show=SHOW,
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_grid_row(bm=False, master=False, remove=True, show=False):
+def plt_group_legend_lots(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'grid_row_master') if master else 'grid_row'
+    name = utl.unit_test_get_img_name('group_legend_lots', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], row='Region', show=SHOW, ax_size=[300, 300],
-                filename=name + '.png', save=not bm, inline=False, jitter=False)
+    fcp.boxplot(df2, y='Value', groups=['Batch', 'Sample'], legend='Lots of Values', show=SHOW,
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False, legend_edge_color='#000000')
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_grid_wrap(bm=False, master=False, remove=True, show=False):
+def plt_group_long(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'grid_wrap_master') if master else 'grid_wrap'
+    name = utl.unit_test_get_img_name('group_long', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.boxplot(df, y='Value', groups=['Sample', 'Region'], wrap='Batch', show=SHOW, ax_size=[300, 300],
-                filename=name + '.png', save=not bm, inline=False, jitter=False)
+    df2 = df.copy()
+    df2['This is a really long way to say show me your ID sucka'] = df['ID'] * 2
+    fcp.boxplot(df2, y='Value', groups=['Batch', 'This is a really long way to say show me your ID sucka', 'Sample'],
+                show=SHOW, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_grid_wrap_y(bm=False, master=False, remove=True, show=False):
+def plt_group_means(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'grid_y_master') if master else 'grid_y'
-
-    # Make the plot
-    df['Value*2'] = 2 * df['Value']
-    fcp.boxplot(df, y=['Value', 'Value*2'], groups=['Batch', 'Sample', 'Region'], wrap='y', show=SHOW,
-                ax_size=[300, 300],
-                filename=name + '.png', save=not bm, inline=False, jitter=False)
-
-    if bm:
-        return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
-
-
-def plt_grid_wrap_y_no_share(bm=False, master=False, remove=True, show=False):
-
-    name = osjoin(MASTER, 'grid_y-no-share_master') if master else 'grid_y-no-share'
-
-    # Make the plot
-    df['Value*2'] = 2 * df['Value']
-    fcp.boxplot(df, y=['Value', 'Value*2'], groups=['Batch', 'Sample', 'Region'], wrap='y', show=SHOW,
-                ax_size=[300, 300], share_y=False,
-                filename=name + '.png', save=not bm, inline=False, jitter=False)
-
-    if bm:
-        return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
-
-
-def plt_grand_means(bm=False, master=False, remove=True, show=False):
-
-    name = osjoin(MASTER, 'grand_means_master') if master else 'grand_means'
-
-    # Make the plot
-    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, grand_mean=True, grand_median=True,
-                filename=name + '.png', save=not bm, inline=False, jitter=False)
-
-    if bm:
-        return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
-
-
-def plt_group_means(bm=False, master=False, remove=True, show=False):
-
-    name = osjoin(MASTER, 'group_means_master') if master else 'group_means'
+    name = utl.unit_test_get_img_name('group_means', make_reference, REFERENCE)
 
     # Make the plot
     fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, group_means=True,
-                filename=name + '.png', save=not bm, inline=False, jitter=False)
+                ax_edge_width=1, box_group_label_edge_width=1,
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
 
-    # Compare with master
-    if master:
+    if not show:
+        utl.unit_test_measure_margin(name, 20, 300, left=79, right=81, bottom=10, top=12, alias=True)
+
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_group_multiple(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('group_multiple', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample', 'Region'], show=SHOW,
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
+
+    if bm:
         return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_mean_diamonds(bm=False, master=False, remove=True, show=False):
+def plt_group_multiple_nan(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'mean_diamonds_master') if master else 'mean_diamonds'
+    name = utl.unit_test_get_img_name('group_multiple_nan', make_reference, REFERENCE)
+
+    # Make the plot
+    df['Test'] = np.nan
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample', 'Test'], show=SHOW,
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False, box_stat_line='q0.5')
+
+    if bm:
+        return
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_group_single(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('group_single', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.boxplot(df, y='Value', groups='Batch', show=SHOW, box_whisker=False, box_group_title_font_size=24,
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False,
+                box_group_label_edge_color='#0000ff')
+
+    if bm:
+        return
+
+    if not show:
+        utl.unit_test_measure_margin(name, 50, 190, left=79, bottom=10, top=12, right=106, alias=True)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_mean_diamonds(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('mean_diamonds', make_reference, REFERENCE)
 
     # Make the plot
     fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, mean_diamonds=True, conf_coeff=0.95,
-                filename=name + '.png', save=not bm, inline=False, jitter=False)
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_mean_diamonds_filled(bm=False, master=False, remove=True, show=False):
+def plt_mean_diamonds_filled(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'mean_diamonds_filled_master') if master else 'mean_diamonds_filled'
+    name = utl.unit_test_get_img_name('mean_diamonds_filled', make_reference, REFERENCE)
 
     # Make the plot
     fcp.boxplot(df, y='Value', groups=['Batch'], show=SHOW, mean_diamonds=True, conf_coeff=0.95,
-                filename=name + '.png', save=not bm, inline=False, jitter=False,
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False,
                 mean_diamonds_fill_color='#ff0000', mean_diamonds_edge_color='#0000ff')
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_violin(bm=False, master=False, remove=True, show=False):
+def plt_one_group(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'violin_master') if master else 'violin'
+    name = utl.unit_test_get_img_name('one_group', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, violin=True,
-                filename=name + '.png', save=not bm, inline=False)
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', ymin='q0', ymax='q100',
+                show=SHOW, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False,
+                box_stat_line='q50', box_group_label_font_size=24)
+
+    if bm:
+        return
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_simple(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('simple', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.boxplot(df, y='Value', show=SHOW, tick_labels_minor=True, grid_minor=True,
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
 
-    # Compare with master
-    if master:
+    if not show:
+        utl.unit_test_measure_margin(name, 20, 150, left=80, bottom=10, top=12, right=10, alias=True)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_simple_groups_none(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('simple_groups_none', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.boxplot(df, y='Value', show=SHOW, tick_labels_minor=True, grid_minor=True, groups=None,
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
+
+    if bm:
         return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_violin_styled(bm=False, master=False, remove=True, show=False):
+def plt_simple_legend(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'violin_styled_master') if master else 'violin_styled'
+    name = utl.unit_test_get_img_name('simple_legend', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.boxplot(df, y='Value', show=SHOW, tick_labels_minor=True, grid_minor=True, legend='Batch',
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_violin(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('violin', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, violin=True,
+                filename=name.with_suffix('.png'), save=not bm, inline=False)
+
+    if bm:
+        return
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_violin_styled(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('violin_styled', make_reference, REFERENCE)
 
     # Make the plot
     fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, violin=True,
                 violin_fill_color='#eaef1a', violin_fill_alpha=1, violin_edge_color='#555555', violin_edge_width=2,
                 violin_box_color='#ffffff', violin_whisker_color='#ff0000',
                 violin_median_marker='+', violin_median_color='#00ffff', violin_median_size=10,
-                filename=name + '.png', save=not bm, inline=False)
+                filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_violin_box_off(bm=False, master=False, remove=True, show=False):
+def plt_violin_box_off(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'violin_box_off_master') if master else 'violin_box_off'
+    name = utl.unit_test_get_img_name('violin_box_off', make_reference, REFERENCE)
 
     # Make the plot
     fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW,
                 violin=True, violin_box_on=False, violin_markers=True, jitter=False,
-                filename=name + '.png', save=not bm, inline=False)
+                filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_stat_mean(bm=False, master=False, remove=True, show=False):
+def plt_stat_mean(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'stat_mean_master') if master else 'stat_mean'
+    name = utl.unit_test_get_img_name('stat_mean', make_reference, REFERENCE)
 
     # Make the plot
     fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, box_stat_line='mean', ax_size=[300, 300],
-                filename=name + '.png', save=not bm, inline=False, jitter=False)
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_stat_median(bm=False, master=False, remove=True, show=False):
+def plt_stat_median(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'stat_median_master') if master else 'stat_median'
+    name = utl.unit_test_get_img_name('stat_median', make_reference, REFERENCE)
 
     # Make the plot
     fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, box_stat_line='median', ax_size=[300, 300],
-                filename=name + '.png', save=not bm, inline=False, jitter=False)
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_stat_std_dev(bm=False, master=False, remove=True, show=False):
+def plt_stat_std_dev(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'stat_std-dev_master') if master else 'stat_std-dev'
+    name = utl.unit_test_get_img_name('stat_std-dev', make_reference, REFERENCE)
 
     # Make the plot
     fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, box_stat_line='std', ax_size=[300, 300],
-                filename=name + '.png', save=not bm, inline=False, jitter=False)
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_dividers(bm=False, master=False, remove=True, show=False):
+def plt_dividers(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'dividers_master') if master else 'dividers'
+    name = utl.unit_test_get_img_name('dividers', make_reference, REFERENCE)
 
     # Make the plot
     fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, box_divider=False, ax_size=[300, 300],
-                filename=name + '.png', save=not bm, inline=False, jitter=False)
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_range_lines(bm=False, master=False, remove=True, show=False):
+def plt_range_lines(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'range_lines_master') if master else 'range_lines'
+    name = utl.unit_test_get_img_name('range_lines', make_reference, REFERENCE)
 
     # Make the plot
     fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, box_range_lines=False, ax_size=[300, 300],
-                filename=name + '.png', save=not bm, inline=False, jitter=False)
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 # test_ functions call plt_ funcs 2x:
@@ -909,6 +568,11 @@ def plt_range_lines(bm=False, master=False, remove=True, show=False):
 def test_simple(benchmark):
     plt_simple()
     benchmark(plt_simple, True)
+
+
+def test_simple_groups_none(benchmark):
+    plt_simple_groups_none()
+    benchmark(plt_simple_groups_none, True)
 
 
 def test_simple_legend(benchmark):
@@ -949,6 +613,11 @@ def test_group_legend_lots(benchmark):
 def test_group_auto_size(benchmark):
     plt_group_auto_size()
     benchmark(plt_group_auto_size, True)
+
+
+def test_group_auto_size_90(benchmark):
+    plt_group_auto_size_90()
+    benchmark(plt_group_auto_size_90, True)
 
 
 def test_group_auto_size_wrap(benchmark):

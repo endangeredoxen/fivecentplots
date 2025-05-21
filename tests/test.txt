@@ -1,0 +1,190 @@
+def test_bar_grouping(benchmark):
+    plt_bar_grouping()
+    benchmark(plt_bar_grouping, True)
+
+
+def test_bar_legend(benchmark):
+    plt_bar_legend()
+    benchmark(plt_bar_legend, True)
+
+
+def test_bar_simple(benchmark):
+    plt_bar_simple()
+    benchmark(plt_bar_simple, True)
+
+
+def test_bar_stacked(benchmark):
+    plt_bar_stacked()
+    benchmark(plt_bar_stacked, True)
+
+
+def test_box_basic(benchmark):
+    plt_box_basic()
+    benchmark(plt_box_basic, True)
+
+
+def test_box_grouping(benchmark):
+    plt_box_grouping()
+    benchmark(plt_box_grouping, True)
+
+
+def test_box_legend(benchmark):
+    plt_box_legend()
+    benchmark(plt_box_legend, True)
+
+
+def test_box_violin(benchmark):
+    plt_box_violin()
+    benchmark(plt_box_violin, True)
+
+
+def test_contour_basic(benchmark):
+    plt_contour_basic()
+    benchmark(plt_contour_basic, True)
+
+
+def test_contour_grid_fill(benchmark):
+    plt_contour_grid_fill()
+    benchmark(plt_contour_grid_fill, True)
+
+
+def test_contour_points(benchmark):
+    plt_contour_points()
+    benchmark(plt_contour_points, True)
+
+
+def test_heatmap_basic(benchmark):
+    plt_heatmap_basic()
+    benchmark(plt_heatmap_basic, True)
+
+
+def test_hist_basic(benchmark):
+    plt_hist_basic()
+    benchmark(plt_hist_basic, True)
+
+
+def test_hist_image(benchmark):
+    plt_hist_image()
+    benchmark(plt_hist_image, True)
+
+
+def test_hist_kde(benchmark):
+    plt_hist_kde()
+    benchmark(plt_hist_kde, True)
+
+
+def test_imshow_grid(benchmark):
+    plt_imshow_grid()
+    benchmark(plt_imshow_grid, True)
+
+
+def test_imshow_raw(benchmark):
+    plt_imshow_raw()
+    benchmark(plt_imshow_raw, True)
+
+
+def test_imshow_rgb(benchmark):
+    plt_imshow_rgb()
+    benchmark(plt_imshow_rgb, True)
+
+
+def test_nq_basic(benchmark):
+    plt_nq_basic()
+    benchmark(plt_nq_basic, True)
+
+
+def test_nq_image(benchmark):
+    plt_nq_image()
+    benchmark(plt_nq_image, True)
+
+
+def test_pie_basic(benchmark):
+    plt_pie_basic()
+    benchmark(plt_pie_basic, True)
+
+
+def test_pie_legend(benchmark):
+    plt_pie_legend()
+    benchmark(plt_pie_legend, True)
+
+
+def test_xy_axhvlines(benchmark):
+    plt_xy_axhvlines()
+    benchmark(plt_xy_axhvlines, True)
+
+
+def test_xy_categorical(benchmark):
+    plt_xy_categorical()
+    benchmark(plt_xy_categorical, True)
+
+
+def test_xy_col(benchmark):
+    plt_xy_col()
+    benchmark(plt_xy_col, True)
+
+
+def test_xy_conf_int(benchmark):
+    plt_xy_conf_int()
+    benchmark(plt_xy_conf_int, True)
+
+
+def test_xy_control_limits(benchmark):
+    plt_xy_control_limits()
+    benchmark(plt_xy_control_limits, True)
+
+
+def test_xy_fit(benchmark):
+    plt_xy_fit()
+    benchmark(plt_xy_fit, True)
+
+
+def test_xy_legend(benchmark):
+    plt_xy_legend()
+    benchmark(plt_xy_legend, True)
+
+
+def test_xy_log(benchmark):
+    plt_xy_log()
+    benchmark(plt_xy_log, True)
+
+
+def test_xy_multiple(benchmark):
+    plt_xy_multiple()
+    benchmark(plt_xy_multiple, True)
+
+
+def test_xy_no_legend(benchmark):
+    plt_xy_no_legend()
+    benchmark(plt_xy_no_legend, True)
+
+
+def test_xy_ref_line(benchmark):
+    plt_xy_ref_line()
+    benchmark(plt_xy_ref_line, True)
+
+
+def test_xy_row(benchmark):
+    plt_xy_row()
+    benchmark(plt_xy_row, True)
+
+
+def test_xy_row_col(benchmark):
+    plt_xy_row_col()
+    benchmark(plt_xy_row_col, True)
+
+
+def test_xy_secondary(benchmark):
+    plt_xy_secondary()
+    benchmark(plt_xy_secondary, True)
+
+
+def test_xy_stat_line(benchmark):
+    plt_xy_stat_line()
+    benchmark(plt_xy_stat_line, True)
+
+
+def test_xy_wrap(benchmark):
+    plt_xy_wrap()
+    benchmark(plt_xy_wrap, True)
+
+

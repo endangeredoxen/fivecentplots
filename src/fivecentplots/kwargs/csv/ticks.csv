@@ -1,49 +1,26 @@
 Keyword,Data Type,Description,Default,Example
-ticks_major,boolean,Enable/disable major x-axis and y-axis tick marks,True,ticks.html#Tick-marks
-ticks_major_direction,str,Point tick marks 'in' or 'out' from the axes area,'in',ticks.html#Tick-style
-ticks_major_increment,float,Specify the spacing of major tick marks,None,ticks.html#Tick-increment
-ticks_major_length,float,Specify the length of the major tick marks in pixels,6.2,ticks.html#Tick-style
-ticks_major_width,float,Specify the width of the major tick marks in pixels,2.2,ticks.html#Tick-style
-ticks_major_x,boolean,Enable/disable major x-axis tick marks,True,ticks.html#Tick-marks
-ticks_major_x2,boolean,Enable/disable secondary-axis major x-axis tick marks,True,ticks.html#Tick-marks
-ticks_major_y,boolean,Enable/disable major y-axis tick marks,True,ticks.html#Tick-marks
-ticks_major_y2,boolean,Enable/disable secondary-axis major y-axis tick marks,True,ticks.html#Tick-marks
-ticks_major_alpha,str,Transparency-axis value for major tick marks between 0-1,1,ticks.html#Tick-marks
-ticks_major_x_alpha,str,Transparency-axis value for major x-axis tickslines between 0-1,1,ticks.html#Tick-marks
-ticks_major_x2_alpha,str,Transparency-axis value for secondary-axis major x-axis tick marks between 0-1,1,ticks.html#Tick-marks
-ticks_major_y_alpha,str,Transparency-axis value for major y-axis tick marks between 0-1,1,ticks.html#Tick-marks
-ticks_major_y2_alpha,str,Transparency-axis value for secondary-axis major y-axis tick marks between 0-1,1,ticks.html#Tick-marks
-ticks_major_color,str,Hex-axis color string for x-axis and y-axis major tick marks,#ffffff,ticks.html#Tick-marks
-ticks_major_x_color,str,Hex-axis color string for x-axis major tick marks,#ffffff,ticks.html#Tick-marks
-ticks_major_x2_color,str,Hex-axis color string for secondary-axis x-axis major tick marks,#ffffff,ticks.html#Tick-marks
-ticks_major_y_color,str,Hex-axis color string for y-axis major tick marks,#ffffff,ticks.html#Tick-marks
-ticks_major_y2_color,str,Hex-axis color string for secondary-axis y-axis major tick marks,#ffffff,ticks.html#Tick-marks
-ticks_major_width,float,Major tickline width in pixels (float ok),1.3,ticks.html#Tick-marks
-ticks_major_x_width,float,Major x-axis tickline width in pixels (float ok),1.3,ticks.html#Tick-marks
-ticks_major_x2_width,float,Major secondary x-axis tickline width in pixels (float ok),1.3,ticks.html#Tick-marks
-ticks_major_y_width,float,Major y-axis tickline width in pixels (float ok),1.3,ticks.html#Tick-marks
-ticks_major_y2_width,float,Major secondary y-axis tickline width in pixels (float ok),1.3,ticks.html#Tick-marks
-ticks_minor,boolean,Enable/disable minor x-axis and y-axis tick marks,True,ticks.html#Tick-marks
-ticks_minor_direction,str,Point tick marks 'in' or 'out' from the axes area,'in',ticks.html#Tick-style
-ticks_minor_length,float,Specify the length of the minor tick marks in pixels,0.67 * ticks_major_length,ticks.html#Tick-style
-ticks_minor_number,float,Specify the number of minor tick marks,None,ticks.html#Tick-increment
-ticks_minor_width,float,Specify the width of the minor tick marks in pixels,0.6 * ticks_major_width,ticks.html#Tick-style
-ticks_minor_x,boolean,Enable/disable minor x-axis tick marks,True,ticks.html#Tick-marks
-ticks_minor_x2,boolean,Enable/disable secondary-axis minor x-axis tick marks,True,ticks.html#Tick-marks
-ticks_minor_y,boolean,Enable/disable minor y-axis tick marks,True,ticks.html#Tick-marks
-ticks_minor_y2,boolean,Enable/disable secondary-axis minor y-axis tick marks,True,ticks.html#Tick-marks
-ticks_minor_alpha,str,Transparency-axis value for minor tick marks between 0-1,1,ticks.html#Tick-marks
-ticks_minor_x_alpha,str,Transparency-axis value for minor x-axis tick marks between 0-1,1,ticks.html#Tick-marks
-ticks_minor_x2_alpha,str,Transparency-axis value for secondary-axis minor x-axis tick marks between 0-1,1,ticks.html#Tick-marks
-ticks_minor_y_alpha,str,Transparency-axis value for minor y-axis tick marks between 0-1,1,ticks.html#Tick-marks
-ticks_minor_y2_alpha,str,Transparency-axis value for secondary-axis minor y-axis tick marks between 0-1,1,ticks.html#Tick-marks
-ticks_minor_color,str,Hex-axis color string for x-axis and y-axis minor tick marks,#ffffff,ticks.html#Tick-marks
-ticks_minor_x_color,str,Hex-axis color string for x-axis minor tick marks,#ffffff,ticks.html#Tick-marks
-ticks_minor_x2_color,str,Hex-axis color string for secondary-axis x-axis minor tick marks,#ffffff,ticks.html#Tick-marks
-ticks_minor_y_color,str,Hex-axis color string for y-axis minor tick marks,#ffffff,ticks.html#Tick-marks
-ticks_minor_y2_color,str,Hex-axis color string for secondary-axis y-axis minor tick marks,#ffffff,ticks.html#Tick-marks
-ticks_minor_width,float,minor tickline width in pixels (float ok),0.5,ticks.html#Tick-marks
-ticks_minor_x_width,float,minor x-axis tickline width in pixels (float ok),0.5,ticks.html#Tick-marks
-ticks_minor_x2_width,float,minor secondary x-axis tickline width in pixels (float ok),0.5,ticks.html#Tick-marks
-ticks_minor_y_width,float,minor y-axis tickline width in pixels (float ok),0.5,ticks.html#Tick-marks
-ticks_minor_y2_width,float,minor secondary y-axis tickline width in pixels (float ok),0.5,ticks.html#Tick-marks
+ticks_[major|minor],boolean,"Enable/disable major or minor tick marks; if no axis label is provided, setting is applied to all axes",True,ticks.html#Tick-marks
+ticks_[major|minor]_[x|x2|y|y2|z],boolean,Enable/disable major or minor tick marks for a specific axis,True,ticks.html#Tick-marks
+ticks_[x|x2|y|y2|z],boolean,Enable/disable major and minor tick marks for a specific axis,True,ticks.html#Tick-marks
+ticks_[major|minor]_direction,str,Point tick marks 'in' or 'out' from the axes area for all axes,'in',ticks.html#Tick-style
+ticks_[major|minor]_[x|x2|y|y2|z]_direction,str,Point tick marks 'in' or 'out' from the axes area for a specific axis,'in',ticks.html#Tick-style
+ticks_[x|x2|y|y2|z]_direction,str,Point major and minor tick marks 'in' or 'out' from the axes area for a specific axis,'in',ticks.html#Tick-style
+ticks_[major|minor]_increment,float,Specify the spacing of major or minor tick marks for all axes,None,ticks.html#Tick-increment
+ticks_[major|minor]_[x|x2|y|y2|z]_increment,float,Specify the spacing of major or minor tick marks for a specific axis,None,ticks.html#Tick-increment
+ticks_[x|x2|y|y2|z]_increment,float,Specify the major and minor spacing of major or minor tick marks for a specific axis,None,ticks.html#Tick-increment
+ticks_[major|minor]_length,float,Specify the length of the major or minor tick marks in pixels for all axes,6.2,ticks.html#Tick-style
+ticks_[major|minor]_[x|x2|y|y2|z]_length,float,Specify the length of the major or minor tick marks in pixels for a specific axis,6.2,ticks.html#Tick-style
+ticks_[x|x2|y|y2|z]_length,float,Specify the length of the major and minor tick marks in pixels for a specific axis,6.2,ticks.html#Tick-style
+ticks_[major|minor]_width,float,Specify the width of the major or minor tick marks in pixels for all axes,2.2,ticks.html#Tick-style
+ticks_[major|minor]_[x|x2|y|y2|z]_width,float,Specify the width of the major or minor tick marks in pixels for a specific axis,2.2,ticks.html#Tick-style
+ticks_[x|x2|y|y2|z]_width,float,Specify the width of the major and minor tick marks in pixels for a specific axis,2.2,ticks.html#Tick-style
+ticks_[major|minor]_alpha,str,Transparency-axis value for major or minor tick marks between 0-1 for all axes,1,ticks.html#Tick-marks
+ticks_[major|minor]_[x|x2|y|y2|z]_alpha,str,Transparency-axis value for major or minor tick lines between 0-1 for a specific axis,1,ticks.html#Tick-marks
+ticks_[x|x2|y|y2|z]_alpha,str,Transparency-axis value for major and minor tick lines between 0-1 for a specific axis,1,ticks.html#Tick-marks
+ticks_[major|minor]_color,str,Hex-axis color string for x-axis and y-axis major or minor tick marks for all axes,#ffffff,ticks.html#Tick-marks
+ticks_[major|minor]_[x|x2|y|y2|z]_color,str,Hex-axis color string for x-axis major or minor tick marks for a specific axis,#ffffff,ticks.html#Tick-marks
+ticks_[x|x2|y|y2|z]_color,str,Hex-axis color string for x-axis major and minor tick marks for a specific axis,#ffffff,ticks.html#Tick-marks
+ticks_[major|minor]_width,float,major or minor tickline width in pixels for all axes (float ok),1.3,ticks.html#Tick-marks
+ticks_[major|minor]_[x|x2|y|y2|z]_width,float,major or minor x-axis tickline width in pixels for a specific axis (float ok),1.3,ticks.html#Tick-marks
+ticks_[x|x2|y|y2|z]_width,float,Major and minor x-axis tickline width in pixels for a specific axis (float ok),1.3,ticks.html#Tick-marks
+auto_tick_threshold,list[float],Threshold levels to determine if ticks should use scientific notation,"[1e-6,1e6]",None

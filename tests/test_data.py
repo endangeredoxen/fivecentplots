@@ -53,6 +53,8 @@ def test_DataError():
     with pytest.raises(data.DataError):
         df_gantt['Stop2'] = 'hi'
         fcp.gantt(df_gantt, x=['Start', 'Stop2'], y='Task')
+    with pytest.raises(data.DataError):
+        fcp.plot(df, x='Voltage', y='I [A]', xmin=3000, xmax=300)
 
 
 def test_GroupingError():

@@ -8,6 +8,11 @@ db = pdb.set_trace
 
 
 class Box(data.Data):
+    name = 'box'
+    req = ['y']
+    opt = []
+    url = 'boxplot.html'
+
     def __init__(self, **kwargs):
         """Boxplot-specific Data class to deal with operations applied to the
         input data (i.e., non-plotting operations)
@@ -15,14 +20,13 @@ class Box(data.Data):
         Args:
             kwargs: user-defined keyword args
         """
-        name = 'box'
-        req = ['y']
-        opt = []
+        super().__init__(self.name, self.req, self.opt, **kwargs)
 
-        super().__init__(name, req, opt, **kwargs)
+        self.axs_on = ['x', 'y']  # x still exists but is covered up by label boxes
 
     def _get_groups(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Return the groupby keys of a DataFrame
+        """
+        Return the groupby keys of a DataFrame
 
         Args:
             df: input DataFrame
@@ -33,8 +37,8 @@ class Box(data.Data):
         return pd.DataFrame(df.groupby(self.groups).groups.keys())
 
     def get_box_index_changes(self):
-        """Make a DataFrame that shows when groups vals change; used for grouping
-        labels
+        """
+        Make a DataFrame that shows when groups vals change; used for grouping labels
 
         Args:
             df (pd.DataFrame): grouping values
@@ -48,7 +52,7 @@ class Box(data.Data):
             for group in self.groups:
                 if len(self.df_rc[group].dropna()) == 0:
                     self.groups.remove(group)
-                    print('Column "%s" for at least one subplot is all NaN and will be excluded from plot' % group)
+                    print(f'Column "{group}" for at least one subplot is all NaN and will be excluded from plot')
 
         # Get the changes df
         if self.groups is None or self.groups == []:
@@ -79,37 +83,20 @@ class Box(data.Data):
                 else:
                     self.changes.loc[i, col] = 1
 
-    def get_rc_subset(self):
-        """Override of parent method to subset the data by the row/col/wrap values.
+    def _range_overrides(self, ir: int, ic: int, df_rc: pd.DataFrame):
+        """Modify boxplot ranges.
 
-        Yields:
+        Args:
             ir: subplot row index
             ic: subplot column index
-            row/col data subset
+            df_rc: data subset
         """
-        for ir in range(0, self.nrow):
-            for ic in range(0, self.ncol):
-                self.df_rc = self._subset(ir, ic)
-
-                # Plot specific subsetting
-                self._subset_modify(ir, ic, self.df_rc)
-
-                # Deal with empty dfs
-                if len(self.df_rc) == 0:
-                    self.df_rc = pd.DataFrame()
-
-                # Get boxplot changes DataFrame
-                if 'box' in self.name and len(self.df_rc) > 0:
-                    if (self.groups is not None and self.groups != []) and len(self.df_rc.groupby(self.groups)) == 0:
-                        continue
-                    self.get_box_index_changes()
-                    self.ranges[ir, ic]['xmin'] = 0.5
-                    self.ranges[ir, ic]['xmax'] = len(self.changes) + 0.5
-
-                # Yield the subset
-                yield ir, ic, self.df_rc
-
-        self.df_sub = None
+        if (self.groups is not None and self.groups != []) and \
+                self.df_rc.groupby(self.groups, dropna=False).ngroups == 0:
+            return
+        self.get_box_index_changes()
+        self.ranges['xmin'][ir, ic] = 0.5
+        self.ranges['xmax'][ir, ic] = len(self.changes) + 0.5
 
     def _subset_modify(self, ir: int, ic: int, df: pd.DataFrame) -> pd.DataFrame:
         """Modify the subset to deal with share x axis range.
@@ -122,6 +109,10 @@ class Box(data.Data):
         Returns:
             modified DataFrame subset
         """
+        # Don't do anything for axes sharing if just one subplot
+        if self.nrow == 1 and self.ncol == 1:
+            return df
+
         if self.share_x and self.groups is not None and len(df) > 0:
             df1 = self._get_groups(self.df_all)
             df2 = self._get_groups(df)

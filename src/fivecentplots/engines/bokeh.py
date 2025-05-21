@@ -2,7 +2,7 @@ import pandas as pd
 import pdb
 import numpy as np
 from .. import utilities as utl
-from . layout import LOGX, LOGY, BaseLayout
+from . layout import LOGX, LOGY, BaseLayout, RepeatedList, Element
 from .. import data
 import warnings
 import bokeh.plotting as bp
@@ -35,6 +35,13 @@ DASHES = {'-': 'solid',
           'dashdot': 'dashdot'}
 
 
+DEFAULT_MARKERS = ['circle', 'cross', 'square', 'x', 'diamond', 'asterisk', 'inverted_triangle', 'y',
+                   'star', 'plus', 'dash', 'dot', 'square_pin', 'triangle_pin', 'circle_cross', 'square_cross',
+                   'diamond_cross', 'circle_x', 'square_x', 'circle_y', 'circle_dot', 'square_dot', 'diamond_dot',
+                   'triangle_dot', 'hex_dot', 'star_dot',
+                   ]
+
+
 def fill_alpha(hexstr):
     """Break an 8-digit hex string into a hex color and a fractional alpha value."""
     if len(hexstr) == 6:
@@ -44,25 +51,13 @@ def fill_alpha(hexstr):
 
 
 def format_marker(fig, marker):
-    """Format the marker string to mathtext."""
-    markers = {'o': fig.circle,
-               'circle': fig.circle,
-               '+': fig.cross,
-               'cross': fig.cross,
-               's': fig.square,
-               'square': fig.square,
-               'x': fig.x,
-               'd': fig.diamond,
-               'diamond': fig.diamond,
-               't': fig.triangle,
-               'triangle': fig.triangle}
-
-    return markers[marker]
+    """Get the marker function."""
+    return getattr(fig, marker)
 
 
 class Layout(BaseLayout):
     def __init__(self, data: 'data.Data', defaults: list = [], **kwargs):  # noqa F821
-        """Layout attributes and methods for matplotlib Figure.
+        """Layout attributes and methods for bokeh Figure.
 
         Args:
             data: fcp Data object
@@ -70,8 +65,7 @@ class Layout(BaseLayout):
             kwargs: input args from user
         """
         # Set the layout engine
-        global ENGINE
-        ENGINE = 'bokeh'
+        self.engine = 'bokeh'
 
         # Inherit the base layout properties
         super().__init__(data, defaults, **kwargs)
@@ -80,6 +74,21 @@ class Layout(BaseLayout):
         if not kwargs.get('save_ext'):
             kwargs['save_ext'] = '.html'
         self.kwargs = kwargs
+        self.update_markers()
+
+        # Engine-specific kwargs
+        location = utl.kwget(kwargs, self.fcpp, 'toolbar_location', 'below')
+        self.toolbar = Element('toolbar', self.fcpp, kwargs,
+                               on=True if location else None,
+                               location=location,
+                               sticky=utl.kwget(kwargs, self.fcpp, ['toolbar_sticky', 'sticky'], True),
+                               tools=utl.kwget(kwargs, self.fcpp, ['toolbar_tools', 'tools'],
+                                               'pan,wheel_zoom,box_zoom,reset'),
+                               # active_zoom=utl.kwget(kwargs, self.fcpp, 'toolbar_active_zoom', 'wheel_zoom,box_zoom')
+                               )
+
+        # Check for unsupported kwargs
+        # unsupported = []
 
     def add_box_labels(self, ir: int, ic: int, data):
         """Add box group labels and titles (JMP style).
@@ -90,6 +99,17 @@ class Layout(BaseLayout):
             data: fcp Data object
         """
         pass
+
+    def add_fills(self, ir: int, ic: int, df: pd.DataFrame, data: 'Data'):  # noqa: F821
+        """Add rectangular fills to the plot.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            df: current data
+            data: fcp Data object
+
+        """
 
     def add_hvlines(self, ir: int, ic: int, df: [pd.DataFrame, None] = None):
         """Add horizontal/vertical lines.
@@ -143,14 +163,23 @@ class Layout(BaseLayout):
         if not self.legend.on or len(self.legend.values) == 0:
             return
 
-        x = 0
-        y = self.ncol - 1
-        tt = list(self.legend.values.items())
-        tt = [f for f in tt if f[0] != 'NaN']
-        title = self.axes.obj[x, y].circle(0, 0, size=0.00000001, color=None)
-        tt = [(self.legend.text, [title])] + tt
+        title = self.axes.obj[0, -1].circle(0, 0, size=1.00000001, color=None)
+        tt = [(self.legend.text, [title])]
+        for irow, row in self.legend.values.iterrows():
+            if row['Key'] == 'NaN':
+                continue
+            tt += [(row['Key'], [row['Curve']])]
         legend = bm.Legend(items=tt, location='top_right')
-        self.axes.obj[x, y].add_layout(legend, 'right')
+
+        # Style the legend
+        legend.border_line_width = self.legend.edge_width
+        legend.border_line_color = self.legend.edge_color[0]
+        legend.border_line_alpha = self.legend.edge_alpha
+        legend.label_text_font_size = f'{self.legend.font_size}px'
+        legend.title_text_font_size = f'{self.legend.font_size}px'  # could separate this parameter in future
+
+        # Add the legend
+        self.axes.obj[0, -1].add_layout(legend, 'right')
 
     def add_text(self, ir: int, ic: int, text: [str, None] = None,
                  element: [str, None] = None, offsetx: int = 0,
@@ -170,72 +199,6 @@ class Layout(BaseLayout):
         """
         pass
 
-    def _get_element_sizes(self, data: 'data.Data'):
-        """Calculate the actual rendered size of select elements by pre-plotting
-        them.  This is needed to correctly adjust the figure dimensions.
-
-        Args:
-            data: fcp Data object
-
-        Returns:
-            updated version of `data`
-        """
-        # Add label size
-        self.label_x.size = \
-            utl.get_text_dimensions(self.label_x.text, **self.make_kw_dict(self.label_x))
-        self.label_y.size += \
-            utl.get_text_dimensions(self.label_y.text, **self.make_kw_dict(self.label_y))
-
-        # Ticks (rough)
-        xlab = '%s.0' % int(data.ranges[0, 0]['xmax'])
-        ylab = '%s.0' % int(data.ranges[0, 0]['ymax'])
-        self.tick_labels_major_x.size = \
-            utl.get_text_dimensions(xlab, **self.make_kw_dict(self.tick_labels_major_x))
-        self.tick_labels_major_y.size += \
-            utl.get_text_dimensions(ylab, **self.make_kw_dict(self.tick_labels_major_y))
-
-        # title
-        if self.title.text is not None:
-            self.title.size = \
-                utl.get_text_dimensions(self.title.text, **self.make_kw_dict(self.title))
-
-        # rc labels
-        for ir in range(0, self.nrow):
-            for ic in range(0, self.ncol):
-                if self.label_row.text is not None:
-                    text = '%s=%s' % (self.label_row.text, self.label_row.values[ir])
-                    self.label_row.size[1] = \
-                        max(self.label_row.size[1],
-                            utl.get_text_dimensions(text, **self.make_kw_dict(self.label_row))[1])
-                if self.label_col.text is not None:
-                    text = '%s=%s' % (self.label_col.text, self.label_col.values[ir])
-                    self.label_col.size[1] = \
-                        max(self.label_col.size[1],
-                            utl.get_text_dimensions(text, **self.make_kw_dict(self.label_col))[1])
-
-        # Legend
-        if data.legend_vals is None:
-            return data
-
-        # Get approx legend size
-        name_size = 0
-        for name in data.legend_vals['names']:
-            name_size = max(name_size, utl.get_text_dimensions(str(name), **self.make_kw_dict(self.legend))[0])
-
-        if self.legend.on:
-            self.legend.size = [10 + 20 + 5 + name_size + 10, 0]
-
-        return data
-
-    def _get_figure_size(self, data: 'data.Data', **kwargs):
-        """Determine the size of the mpl figure canvas in pixels and inches.
-
-        Args:
-            data: Data object
-            kwargs: user-defined keyword args
-        """
-        self.axes.size[0] += self.legend.size[0]
-
     def make_figure(self, data: 'data.Data', **kwargs):
         """Make the figure and axes objects.
 
@@ -243,38 +206,35 @@ class Layout(BaseLayout):
             data: fcp Data object
             **kwargs: input args from user
         """
-        self._update_from_data(data)
-        self._update_wrap(data, kwargs)
-        self._set_label_text(data)
-        data = self._get_element_sizes(data)
-
         self.axes.obj = np.array([[None] * self.ncol] * self.nrow)
+        self.label_col.obj = np.array([None] * self.ncol)
+        self.label_wrap.obj = np.array([[None] * self.ncol] * self.nrow)
+        self.label_row.obj = np.array([None] * self.nrow)
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
-                x_scale, y_scale = self._set_axes_scale2(ir, ic)
-                x_size, y_size = self.axes.size
-                # legend
-                if ir == 0 and ic == self.ncol - 1:
-                    x_size += self.legend.size[0]
-                # rc labels
-                y_size += self.label_col.size[1]
-                # axes labels
-                if ir == 0 and ic == 0:
-                    x_size += self.label_x.size[1] + 15
-                if ir == self.nrow - 1:
-                    y_size += self.label_y.size[1] + 15
-                # ticks (separate out to label and ticks later)
-                x_size += self.tick_labels_major_x.size[0] + 15
-                y_size += self.tick_labels_major_y.size[0] + 15
-                # title
-                y_size += self.title.size[0]
+                x_type, y_type = self._set_axes_type(ir, ic, data)
+                x_range, y_range = self._set_axes_custom_range(ir, ic, data)
+                self.axes.obj[ir, ic] = bp.figure(x_axis_type=x_type,
+                                                  y_axis_type=y_type,
+                                                  frame_width=self.axes.size[0],  # sizing is so easy! thank you bokeh
+                                                  frame_height=self.axes.size[1],
+                                                  tools=self.toolbar.tools,
+                                                  toolbar_sticky=self.toolbar.sticky,
+                                                  )
+                if self.label_row.on:
+                    self.label_row.obj[ir] = bm.Title()
+                if self.label_col.on:
+                    self.label_col.obj[ic] = bm.Title()
+                if self.label_wrap.on:
+                    self.label_wrap.obj[ir, ic] = bm.Title()
 
-                self.axes.obj[ir, ic] = bp.figure(plot_width=int(x_size),
-                                                  plot_height=int(y_size),
-                                                  x_axis_type=x_scale,
-                                                  y_axis_type=y_scale)
-
-        self.axes.visible = np.array([[True] * self.ncol] * self.nrow)
+                # Twinning
+                if self.axes.twin_x:
+                    self.axes.obj[ir, ic].extra_y_ranges = {'y2': bm.Range1d(start=0, end=1)}
+                    self.axes.obj[ir, ic].add_layout(bm.LinearAxis(y_range_name='y2'), 'right')
+                elif self.axes.twin_y:
+                    self.axes.obj[ir, ic].extra_x_ranges = {'x2': bm.Range1d(start=0, end=1)}
+                    self.axes.obj[ir, ic].add_layout(bm.LinearAxis(x_range_name='x2'), 'above')
 
         return data
 
@@ -479,11 +439,20 @@ class Layout(BaseLayout):
 
         if not line_type:
             line_type = self.lines
+            line_type_name = 'lines'
         else:
+            line_type_name = line_type
             line_type = getattr(self, line_type)
 
         # TWINNING
-        # Insert here
+        if self.axes.twin_x and twin:
+            y_range_name = 'y2'
+        else:
+            y_range_name = 'default'
+        if self.axes.twin_y and twin:
+            x_range_name = 'x2'
+        else:
+            x_range_name = 'default'
 
         # Make the points
         points = None
@@ -501,12 +470,17 @@ class Layout(BaseLayout):
                                 line_color=ecolor,
                                 line_alpha=ealpha,
                                 size=self.markers.size[iline],
+                                x_range_name=x_range_name,
+                                y_range_name=y_range_name,
                                 )
             else:
                 points = marker(df[x], df[y],
                                 color=line_type.color[iline],
                                 linestyle=line_type.style[iline],
-                                linewidth=line_type.width[iline])
+                                linewidth=line_type.width[iline],
+                                x_range_name=x_range_name,
+                                y_range_name=y_range_name,
+                                )
 
         # Make the line
         lines = None
@@ -515,15 +489,20 @@ class Layout(BaseLayout):
                                                color=line_type.color[iline][0:7],
                                                line_dash=DASHES[line_type.style[iline]],
                                                line_width=line_type.width[iline],
+                                               x_range_name=x_range_name,
+                                               y_range_name=y_range_name,
                                                )
 
         # Add a reference to the line to self.lines
-        if leg_name is not None:
-            leg_vals = []
-            if self.markers.on and not marker_disable:
-                leg_vals += [points]
-            if line_type.on:
-                leg_vals += [lines]
+        if self.legend.location == 0:
+            if ir == 0 and ic == self.ncol - 1:
+                self.legend.add_value(leg_name, points if points is not None else lines, line_type_name)
+        elif leg_name is not None and leg_name not in list(self.legend.values['Key']):
+            self.legend.add_value(leg_name, points if points is not None else lines, line_type_name)
+
+    def restore(self):
+        """Undo changes to default plotting library parameters."""
+        pass
 
     def save(self, filename: str, idx: int = 0):
         """Save a plot window.
@@ -554,11 +533,17 @@ class Layout(BaseLayout):
             ic: subplot column index
 
         """
-        axes = self._get_axes()
-
-        fill, alpha = fill_alpha(axes[0].fill_color[utl.plot_num(ir, ic, self.ncol)])
+        # Set the axes fill colors
+        fill, alpha = fill_alpha(self.axes.fill_color[utl.plot_num(ir, ic, self.ncol)])
         self.axes.obj[ir, ic].background_fill_color = fill
         self.axes.obj[ir, ic].background_fill_alpha = alpha
+
+        # Set the axes edge colors (not sure how to handle the top and right spines)
+        self.axes.obj[ir, ic].outline_line_color = self.axes.edge_color[0]
+        if self.axes.spine_bottom:
+            self.axes.obj[ir, ic].xaxis.axis_line_color = self.axes.edge_color[0]
+        if self.axes.spine_left:
+            self.axes.obj[ir, ic].yaxis.axis_line_color = self.axes.edge_color[0]
 
     def set_axes_grid_lines(self, ir: int, ic: int):
         """Style the grid lines and toggle visibility.
@@ -582,16 +567,26 @@ class Layout(BaseLayout):
             grid.minor_grid_line_width = self.grid_minor.width[0]
             grid.minor_grid_line_dash = DASHES[self.grid_minor.style[0]]
 
-    def set_axes_labels(self, ir: int, ic: int):
+        # Twinning -- may not be possible
+
+    def set_axes_labels(self, ir: int, ic: int, data: 'Data'):  # noqa: F821
         """Set the axes labels.
 
         Args:
             ir: subplot row index
             ic: subplot column index
+            data: fcp.data object
 
         """
-        axis = ['x', 'y']  # x2', 'y', 'y2', 'z']
+        axis = ['x', 'y', 'x2', 'y2']  # , 'z']
         for ax in axis:
+            # Twinning
+            if ax == 'x2' and not self.axes.twin_y:
+                continue
+            if ax == 'y2' and not self.axes.twin_x:
+                continue
+
+            # Get the label
             label = getattr(self, 'label_%s' % ax)
             if not label.on:
                 continue
@@ -601,8 +596,6 @@ class Layout(BaseLayout):
                 labeltext = label.text
             if isinstance(label.text, list):
                 labeltext = label.text[ic + ir * self.ncol]
-
-            # Twinning?
 
             # Toggle label visibility
             if not self.separate_labels:
@@ -618,12 +611,15 @@ class Layout(BaseLayout):
                     continue
 
             lkwargs = self.make_kw_dict(label)
-            laxis = getattr(self.axes.obj[ir, ic], '%saxis' % ax)
+            if ax == 'y2' or ax == 'x2':
+                laxis = self.axes.obj[ir, ic].axis[-1]
+            else:
+                laxis = getattr(self.axes.obj[ir, ic], '%saxis' % ax)
             laxis.axis_label = labeltext
             laxis.axis_label_text_font = lkwargs['font']
             laxis.axis_label_text_font_size = '%spt' % lkwargs['font_size']
             laxis.axis_label_text_color = lkwargs['font_color']
-            laxis.axis_label_text_font_style = lkwargs['font_style']
+            laxis.axis_label_text_font_style = lkwargs['font_style']  # no way to do bold and italic?
 
     def set_axes_ranges(self, ir: int, ic: int, ranges: dict):
         """Set the axes ranges.
@@ -634,7 +630,25 @@ class Layout(BaseLayout):
             ranges: min/max axes limits for each axis
 
         """
-        pass
+        if self.name in ['heatmap', 'pie']:  # skip these plot types
+            return
+
+        if 'xmin' in ranges and ranges['xmin'][ir, ic] is not None:
+            self.axes.obj[ir, ic].x_range.start = ranges['xmin'][ir, ic]
+        if 'x2min' in ranges and ranges['x2min'][ir, ic] is not None:
+            self.axes.obj[ir, ic].extra_x_ranges['x2'].start = ranges['x2min'][ir, ic]
+        if 'xmax' in ranges and ranges['xmax'][ir, ic] is not None:
+            self.axes.obj[ir, ic].x_range.end = ranges['xmax'][ir, ic]
+        if 'x2max' in ranges and ranges['x2max'][ir, ic] is not None:
+            self.axes.obj[ir, ic].extra_x_ranges['x2'].end = ranges['x2max'][ir, ic]
+        if 'ymin' in ranges and ranges['ymin'][ir, ic] is not None:
+            self.axes.obj[ir, ic].y_range.start = ranges['ymin'][ir, ic]
+        if 'y2min' in ranges and ranges['y2min'][ir, ic] is not None:
+            self.axes.obj[ir, ic].extra_y_ranges['y2'].start = ranges['y2min'][ir, ic]
+        if 'ymax' in ranges and ranges['ymax'][ir, ic] is not None:
+            self.axes.obj[ir, ic].y_range.end = ranges['ymax'][ir, ic]
+        if 'y2max' in ranges and ranges['y2max'][ir, ic] is not None:
+            self.axes.obj[ir, ic].extra_y_ranges['y2'].end = ranges['y2max'][ir, ic]
 
     def set_axes_rc_labels(self, ir: int, ic: int):
         """Add the row/column label boxes and wrap titles.
@@ -644,52 +658,100 @@ class Layout(BaseLayout):
             ic: subplot column index
 
         """
-        title = self.axes.obj[ir, ic].title
-
         # Row labels
         if ic == self.ncol - 1 and self.label_row.on and not self.label_wrap.on:
-            title.text = ' %s=%s ' % (self.label_row.text, self.label_row.values[ir])
+            title = self.label_row.obj[ir]
+            title.text = f'{self.label_row.text}={self.label_row.values[ir]}'
             title.align = self.label_row.align
             title.text_color = self.label_row.font_color
             title.text_font_size = '%spt' % self.label_row.font_size
             title.background_fill_alpha = self.label_row.fill_alpha
             title.background_fill_color = self.label_row.fill_color[0][0:7]
+            self.axes.obj[ir, ic].add_layout(title, 'right')
 
         # Col/wrap labels
-        if (ir == 0 and self.label_col.on) or self.label_wrap.on:
-            title.text = ' %s=%s ' % (self.label_col.text, self.label_col.values[ic])
+        if (ir == 0 and self.label_col.on):
+            title = self.label_col.obj[ic]
+            title.text = f'{self.label_col.text}={self.label_col.values[ic]}'
             title.align = self.label_col.align
             title.text_color = self.label_col.font_color
             title.text_font_size = '%spt' % self.label_col.font_size
             title.background_fill_alpha = self.label_col.fill_alpha
             title.background_fill_color = self.label_col.fill_color[0][0:7]
+            self.axes.obj[ir, ic].add_layout(title, 'above')
 
-    def set_axes_scale(self, ir, ic):
-        pass
+        # Wrap labels
+        if self.label_wrap.on:
+            title = self.label_wrap.obj[ir, ic]
+            title.text = ' | '.join([str(f) for f in utl.validate_list(self.label_wrap.values[ir * self.ncol + ic])])
+            title.align = self.label_wrap.align
+            title.text_color = self.label_wrap.font_color
+            title.text_font_size = '%spt' % self.label_wrap.font_size
+            title.background_fill_alpha = self.label_wrap.fill_alpha
+            title.background_fill_color = self.label_wrap.fill_color[0][0:7]
+            self.axes.obj[ir, ic].add_layout(title, 'above')
 
-    def _set_axes_scale2(self, ir, ic):
+    def set_axes_scale(self, ir: int, ic: int):
         """
-        This appears to need to happen at instantiation of the figure
+        This needs to happen at instantiation of the figure element, see _set_axes_type
         """
 
+    def _set_axes_custom_range(self, ir: int, ic: int, data):
+        """
+        Customize the range of the plot.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            data: Data object
+
+        Returns:
+            x-axis range
+            y-axis range
+        """
+        # how do we know the subset ranges???
+        x_range, y_range = None, None
+
+        return x_range, y_range
+
+    def _set_axes_type(self, ir: int, ic: int, data):
+        """
+        Determine the axes type ('linear', 'log', 'datetime').
+
+        This needs to happen at instantiation of the figure
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            data: Data object
+
+        Returns:
+            x-axis type
+            y-axis type
+        """
         if str(self.axes.scale).lower() in LOGX:
-            x_scale = 'log'
+            x_type = 'log'
+        elif data.df_all[data.x[0]].dtype == 'datetime64[ns]':
+            x_type = 'datetime'
         # elif str(ax.scale).lower() in SYMLOGX:
         #     ax.obj[ir, ic].set_xscale('symlog')
         # elif str(ax.scale).lower() in LOGITX:
         #     ax.obj[ir, ic].set_xscale('logit')
         else:
-            x_scale = 'linear'
+            x_type = 'linear'
+
         if str(self.axes.scale).lower() in LOGY:
-            y_scale = 'log'
+            y_type = 'log'
+        elif data.df_all[data.y[0]].dtype == 'datetime64[ns]':
+            y_type = 'datetime'
         # elif str(ax.scale).lower() in SYMLOGY:
         #     ax.obj[ir, ic].set_yscale('symlog')
         # elif str(ax.scale).lower() in LOGITY:
         #     ax.obj[ir, ic].set_yscale('logit')
         else:
-            y_scale = 'linear'
+            y_type = 'linear'
 
-        return x_scale, y_scale
+        return x_type, y_type
 
     def set_axes_ticks(self, ir: int, ic: int):
         """Configure the axes tick marks.
@@ -699,24 +761,48 @@ class Layout(BaseLayout):
             ic: subplot column index
 
         """
-        self.axes.obj[ir, ic].xaxis.major_label_text_font_size = \
-            '%spt' % self.tick_labels_major.font_size
-        self.axes.obj[ir, ic].yaxis.major_label_text_font_size = \
-            '%spt' % self.tick_labels_major.font_size
+        for mm in ['major', 'minor']:
+            for xy in ['x', 'y']:
+                ax = getattr(self.axes.obj[ir, ic], f'{xy}axis')
+                if mm == 'major':
+                    # tick label font
+                    setattr(ax, f'{mm}_label_text_font_size',
+                            '%spt' % getattr(self, f'tick_labels_{mm}_{xy}').font_size)
+                # tick line color
+                setattr(ax, f'{mm}_tick_line_color', getattr(self, f'ticks_{mm}_{xy}').color[0])
+                # tick line width
+                setattr(ax, f'{mm}_tick_line_width', int(getattr(self, f'ticks_{mm}_{xy}').size[1]))
+                # tick line style
+                # tick direction
+                if getattr(self, f'ticks_{mm}').direction == 'in':
+                    setattr(ax, f'{mm}_tick_in', int(getattr(self, f'ticks_{mm}_{xy}').size[0]))
+                    setattr(ax, f'{mm}_tick_out', 0)
+                else:
+                    setattr(ax, f'{mm}_tick_out', int(getattr(self, f'ticks_{mm}_{xy}').size[0]))
+                    setattr(ax, f'{mm}_tick_in', 0)
 
     def set_figure_final_layout(self, data, **kwargs):
-        pass
+        key_len = max(self.legend.values['Key'].apply(lambda x: len(x) if x else 0))
+        self.legend.size[0] = 30 + max(utl.validate_list(self.markers.sizes)) + 10 + key_len
 
     def set_figure_title(self):
         """Set a figure title."""
+        title = self.axes.obj[0, 0].title
+
         if self.title.on:
-            title = self.axes.obj[0, 0].title
-            title.text = self.title.text
-            title.align = self.title.align
-            title.text_color = self.title.font_color
-            title.text_font_size = '%spt' % self.title.font_size
-            title.background_fill_alpha = self.title.fill_alpha
-            title.background_fill_color = self.title.fill_color[0][0:7]
+            tt = self.title
+            title.text = tt.text
+        elif self.title_wrap.on:
+            tt = self.title_wrap
+            self.title.text = tt.text
+        else:
+            return
+
+        title.align = tt.align
+        title.text_color = tt.font_color
+        title.text_font_size = '%spt' % tt.font_size
+        title.background_fill_alpha = tt.fill_alpha
+        title.background_fill_color = tt.fill_color[0][0:7]
 
     def show(self, filename=None):
         """Display the plot window.
@@ -735,8 +821,35 @@ class Layout(BaseLayout):
             if 'zmqshell.ZMQInteractiveShell' in app and not bs.curstate().notebook:
                 bp.output_notebook()
 
-            bp.show(bl.gridplot(self.axes.obj.flatten(), ncols=self.ncol))
+            plots = bl.gridplot(list(self.axes.obj.flatten()), ncols=self.ncol, toolbar_location=self.toolbar.location)
+            # plots.toolbar.active_multi = self.toolbar.active_zoom
+
+            if self.title_wrap.on:
+                # Bokeh doesn't support suptitles so need to add a custom Div above the plot for the wrap title
+                css = 'text-align: left;\n'
+                css += f'color: {self.title_wrap.font_color};\n'
+                css += f'font-size: {self.title_wrap.font_size}px;\n'
+                css += f'font-weight: {self.title_wrap.font_weight};\n'
+                css += f'font-style: {self.title_wrap.font_style};\n'
+                # add other css props here
+                text = '<style type="text/css"> .title_wrap {' + css + '}</style><div class="title_wrap">'
+                text += f'{self.title_wrap.text}</div>'
+                title = bm.Div(text=text)
+                bp.show(bl.column(title, plots))
+            else:
+                bp.show(plots)
 
         # other
         else:
             utl.show_file(filename)
+
+    def update_markers(self):
+        """Update the marker list to valid option for bokeh."""
+
+        if 'marker_type' in self.kwargs.keys():
+            marker_list = self.kwargs['marker_type']
+        elif self.kwargs.get('markers') not in [None, True]:
+            marker_list = utl.validate_list(self.kwargs.get('markers'))
+        else:
+            marker_list = utl.validate_list(DEFAULT_MARKERS)
+        self.markers.type = RepeatedList(marker_list, 'markers')

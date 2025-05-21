@@ -2,11 +2,16 @@ from . import data
 import pdb
 import pandas as pd
 from .. import utilities
+import numpy.typing as npt
+from typing import Union
 utl = utilities
 db = pdb.set_trace
 
 
 class Bar(data.Data):
+    name = 'bar'
+    url = 'barplot.html'
+
     def __init__(self, **kwargs):
         """Barplot-specific Data class to deal with operations applied to the
         input data (i.e., non-plotting operations)
@@ -14,8 +19,6 @@ class Bar(data.Data):
         Args:
             kwargs: user-defined keyword args
         """
-        name = 'bar'
-
         # Check for bad ranges
         horizontal = utl.kwget(kwargs, kwargs.get('fcpp', {}),
                                ['bar_horizontal', 'horizontal'], kwargs.get('horizontal', False))
@@ -32,7 +35,7 @@ class Bar(data.Data):
             if 'xmin' in kwargs or 'xmin' in kwargs:
                 raise data.RangeError('x-limits not allowed for bar plot!')
 
-        super().__init__(name, **kwargs)
+        super().__init__(self.name, **kwargs)
 
         # overrides
         self.horizontal = horizontal
@@ -41,8 +44,7 @@ class Bar(data.Data):
             self.error_bars = True
 
     def _filter_data(self, kwargs):
-        """Apply an optional filter to the data but allow showing of all groups
-        with kwarg `show_all_groups`
+        """Apply an optional filter to the data but allow showing of all groups with kwarg `show_all_groups`
 
         Args:
             kwargs: user-defined keyword args
@@ -66,57 +68,54 @@ class Bar(data.Data):
                 temp[self.y[0]] = 0
             self.df_all = pd.concat([self.df_all, temp]).reset_index(drop=True)
 
-    def _get_data_ranges(self):
-        """Barplot-specific data range calculator by subplot."""
-        # First get any user defined range values and apply optional auto scaling
-        df_fig = self.df_fig.copy()  # use temporarily for setting ranges
-        self._get_data_ranges_user_defined()
-        df_fig = self._get_auto_scale(df_fig)
+    def _get_auto_scale(self,
+                        data_set: Union[pd.DataFrame, npt.NDArray],
+                        plot_num: int) -> Union[pd.DataFrame, npt.NDArray]:
+        """Auto-scale the plot data.  For Bar, sum up by group first.
 
-        for ir, ic, plot_num in self._get_subplot_index():
-            # y-axis
-            groupby = self.x + self._groupers
-            df_rc = self._subset(ir, ic)
+        Args:
+            df: either self.df_fig or self.df_rc
+            plot_num: plot number
 
-            if len(df_rc) == 0:
-                self._add_ranges_none(ir, ic)
-                break
-            if self.share_y and ir == 0 and ic == 0:
-                df_rc = df_fig
-            elif self.share_row:
-                df_rc = df_fig[df_fig[self.row[0]] == self.row_vals[ir]].copy()
-            elif self.share_col:
-                df_rc = df_fig[df_fig[self.col[0]] == self.col_vals[ic]].copy()
-            elif self.share_y and ir > 0 or ic > 0:
-                self._add_range(ir, ic, 'y', 'min', self.ranges[0, 0]['ymin'])
-                self._add_range(ir, ic, 'y', 'max', self.ranges[0, 0]['ymax'])
-                continue
+        Returns:
+            updated df with potentially reduced range of data
+        """
+        # Sum up by group
+        if self.stacked:
+            data_sum = data_set.groupby(self.x).sum(numeric_only=True)
+        else:
+            data_sum = data_set.groupby(self.x + self._groupers).sum(numeric_only=True)
 
-            # sum along the bar groups
-            yy = df_rc.groupby(groupby).sum()[self.y[0]].reset_index()
-
-            # add error bar std dev
-            if self.error_bars:
-                yys = df_rc.groupby(groupby).std()[self.y[0]].reset_index()
-                yy[self.y[0]] += yys[self.y[0]]
-
-            # stacked case
+        # Add error bar range
+        if self.error_bars:
             if self.stacked:
-                yy = yy.groupby(self.x[0]).sum()
-
-            # get the ranges
-            vals = self._get_data_range('y', yy, plot_num)
-            if any(yy[self.y[0]].values < 0):
-                self._add_range(ir, ic, 'y', 'min', vals[0])
+                yys = data_set.groupby(self.x).std(numeric_only=True)
             else:
-                self._add_range(ir, ic, 'y', 'min', 0)
-            self._add_range(ir, ic, 'y', 'max', vals[1])
+                yys = data_set.groupby(self.x + self._groupers).std(numeric_only=True)
+            data_plus = data_sum.copy()
+            data_plus[self.y] += yys[self.y]
+            data_minus = data_sum.copy()
+            data_minus[self.y] -= yys[self.y]
+            data_sum = pd.concat([data_plus, data_minus])
 
-        for ir, ic, plot_num in self._get_subplot_index():
-            # other axes
-            self._add_range(ir, ic, 'x', 'min', None)
-            self._add_range(ir, ic, 'x2', 'min', None)
-            self._add_range(ir, ic, 'y2', 'min', None)
-            self._add_range(ir, ic, 'x', 'max', None)
-            self._add_range(ir, ic, 'x2', 'max', None)
-            self._add_range(ir, ic, 'y2', 'max', None)
+        # Run the usual range algorithm
+        return data.Data._get_auto_scale(self, data_sum, plot_num)
+
+    def _get_data_range(self, ax: str, data_set: Union[pd.DataFrame, npt.NDArray], plot_num: int) -> tuple:
+        """Determine the min/max values for a given axis based on user inputs. Modification for Bar
+
+        Args:
+            ax: name of the axis ('x', 'y', etc)
+            data_set: data to use for range calculation
+            plot_num: index number of the current subplot
+
+        Returns:
+            min, max tuple
+        """
+        vmin, vmax = data.Data._get_data_range(self, ax, data_set, plot_num)
+
+        # Set ymin = 0 unless data or user require a negative value
+        if ax == 'y' and vmin < 0 and data_set[self.y].values.min() >= 0 and self.ymin[plot_num] is None:
+            vmin = 0
+
+        return vmin, vmax

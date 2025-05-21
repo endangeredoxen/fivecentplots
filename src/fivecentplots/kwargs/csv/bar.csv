@@ -1,6 +1,6 @@
 Keyword,Data Type,Description,Default,Example
-bar_align,str,If ‘center’ aligns center of bar to x-axis value; if ‘edge’ aligns the left edge of the bar to the x-axis value,‘center’ ,None
-bar_color_by_bar|color_by_bar,bool,Color each bar differently,False,`color by bar <barplot.html#Color-by-bar>`_
+bar_align|align,str,If ‘center’ aligns center of bar to x-axis value; if ‘edge’ aligns the left edge of the bar to the x-axis value,‘center’ ,None
+bar_color_by|color_by,str|None,Color each bar differently based on a grouping criterion,'bar',`color by bar <barplot.html#Color-by-bar>`_
 bar_edge_color,str,Hex color string for the edge of the bar,fcp.DEFAULT_COLORS,None
 bar_edge_width,float,Width of the edge of the bar in pixels,0,None
 bar_error_bars|error_bars,bool,Display error bars on each bar,False,`error bars <barplot.html#Error-bars>`_

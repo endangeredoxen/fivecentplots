@@ -6,12 +6,12 @@ db = pdb.set_trace
 
 
 class YourPlot(data.Data):
+    name = ''
+    req = []
+    opt = []
+
     def __init__(self, **kwargs):
 
-        name = ''
-        req = []
-        opt = []
-
-        super().__init__(name, req, opt, **kwargs)
+        super().__init__(self.name, self.req, self.opt, **kwargs)
 
         # overrides

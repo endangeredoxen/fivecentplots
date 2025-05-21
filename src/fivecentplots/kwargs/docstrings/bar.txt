@@ -1,22 +1,23 @@
         bar_align (str): If ‘center’ aligns center of bar to x-axis value; if ‘edge’ aligns the left edge of the bar to
           the x-axis value. Defaults to ‘center’ .
-        bar_color_by_bar|color_by_bar (bool): Color each bar differently. Defaults to False. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.4/barplot.html#Color-by-bar
+        bar_color_by|color_by (bool): Color each bar differently based on a grouping criterion.
+          Defaults to 'bar'. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/barplot.html#Color-by-bar
         bar_edge_color (str): Hex color string for the edge of the bar. Defaults to fcp.DEFAULT_COLORS.
         bar_edge_width (float): Width of the edge of the bar in pixels. Defaults to 0.
         bar_error_bars|error_bars (bool): Display error bars on each bar. Defaults to False. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.4/barplot.html#Error-bars
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/barplot.html#Error-bars
         bar_error_color|error_color (str): Hex color string of the error bar lines. Defaults to #555555.
         bar_fill_alpha (float): Transparency value for the bars between 0-1. Defaults to 0.75.
         bar_fill_color (str): Hex color string of the bar fill . Defaults to fcp.DEFAULT_COLORS.
         bar_horizontal|horizontal (bool): Display bars horizontally. Defaults to False. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.4/barplot.html#Horizontal-bars
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/barplot.html#Horizontal-bars
         bar_rolling|bar_rolling_mean|rolling|rolling_mean (int): Rolling mean window size [enables this curve]. No
-          default. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/barplot.html#Rolling-mean
+          default. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/barplot.html#Rolling-mean
         bar_stacked|stacked (bool): Stack bars of a given group . Defaults to False. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.4/barplot.html#Stacked
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/barplot.html#Stacked
         bar_width (float): Set the fractional width of the bars between 0-1. Defaults to 0.8.
         rolling_mean_line_color (str): Hex color string for the rolling mean line. Defaults to fcp.DEFAULT_COLORS.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/barplot.html#Custom-line-style
+          Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/barplot.html#Custom-line-style
         rolling_mean_line_width (int): Width for the rolling mean line in pixels. Defaults to 2. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.4/barplot.html#Custom-line-style
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/barplot.html#Custom-line-style

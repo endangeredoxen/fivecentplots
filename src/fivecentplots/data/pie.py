@@ -8,6 +8,11 @@ db = pdb.set_trace
 
 
 class Pie(data.Data):
+    name = 'pie'
+    req = ['x', 'y']
+    opt = []
+    url = 'pie.html'
+
     def __init__(self, **kwargs):
         """Pie-specific Data class to deal with operations applied to the
         input data (i.e., non-plotting operations)
@@ -15,11 +20,7 @@ class Pie(data.Data):
         Args:
             kwargs: user-defined keyword args
         """
-        name = 'pie'
-        req = ['x', 'y']
-        opt = []
-
-        super().__init__(name, req, opt, **kwargs)
+        super().__init__(self.name, self.req, self.opt, **kwargs)
 
         # check for invalid axis options
         vals = ['twin_x', 'twin_y']
@@ -39,18 +40,18 @@ class Pie(data.Data):
 
     def _get_data_ranges(self):
         """Pie-specific data range calculator by subplot."""
-        for ir, ic, plot_num in self._get_subplot_index():
-            self.ranges[ir, ic]['xmin'] = -1
-            self.ranges[ir, ic]['xmax'] = 1
-            self.ranges[ir, ic]['ymin'] = -1
-            self.ranges[ir, ic]['ymax'] = 1
+        for ir, ic, plot_num in self.get_subplot_index():
+            self.ranges['xmin'][ir, ic] = -1
+            self.ranges['xmax'][ir, ic] = 1
+            self.ranges['ymin'][ir, ic] = -1
+            self.ranges['ymax'][ir, ic] = 1
 
-            self.ranges[ir, ic]['x2min'] = None
-            self.ranges[ir, ic]['x2max'] = None
-            self.ranges[ir, ic]['y2min'] = None
-            self.ranges[ir, ic]['y2max'] = None
-            self.ranges[ir, ic]['zmin'] = None
-            self.ranges[ir, ic]['zmax'] = None
+            self.ranges['x2min'][ir, ic] = None
+            self.ranges['x2max'][ir, ic] = None
+            self.ranges['y2min'][ir, ic] = None
+            self.ranges['y2max'][ir, ic] = None
+            self.ranges['zmin'][ir, ic] = None
+            self.ranges['zmax'][ir, ic] = None
 
     def _get_legend_groupings(self, df: pd.DataFrame):
         """Determine the legend groupings.

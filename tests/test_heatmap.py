@@ -1,5 +1,5 @@
 import pytest
-import imageio
+import imageio.v3 as imageio
 import fivecentplots as fcp
 import pandas as pd
 import os
@@ -9,260 +9,157 @@ from pathlib import Path
 import fivecentplots.data.data as data
 import fivecentplots.utilities as utl
 import matplotlib as mpl
-import inspect
 osjoin = os.path.join
 db = pdb.set_trace
+mpl.use('agg')
+
+
+@pytest.fixture(scope="module", autouse=True)
+def get_ready(request):
+    fcp.set_theme('gray_original')
+    fcp.KWARGS['engine'] = 'mpl'
+
 
 test = 'heatmap'
 if Path('../tests/test_images').exists():
-    MASTER = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 elif Path('tests/test_images').exists():
-    MASTER = Path(f'tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 else:
-    MASTER = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_heatmap.csv')
-img_cat = utl.img_grayscale(imageio.imread(Path(fcp.__file__).parent / 'test_data/imshow_cat_pirate.png'))
+img_cat = utl.img_grayscale_deprecated(imageio.imread(Path(fcp.__file__).parent / 'test_data/imshow_cat_pirate.png'))
 
 # Set theme
-fcp.set_theme('gray')
+fcp.set_theme('gray_original')
 # fcp.set_theme('white')
 
+
 # Other
+def make_all(start=None, stop=None):
+    utl.unit_test_make_all(REFERENCE, sys.modules[__name__], start=start, stop=stop)
+
+
+def show_all(only_fails=True, start=None):
+    utl.unit_test_show_all(only_fails, REFERENCE, sys.modules[__name__], start=start)
+
+
 SHOW = False
 fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
-
-
-def make_all():
-    """
-    Remake all test master images
-    """
-
-    if not MASTER.exists():
-        os.makedirs(MASTER)
-    members = inspect.getmembers(sys.modules[__name__])
-    members = [f for f in members if 'plt_' in f[0]]
-    for member in members:
-        print('Running %s...' % member[0], end='')
-        member[1](master=True)
-        print('done!')
-
-
-def show_all(only_fails=True):
-    """
-    Remake all test master images
-    """
-
-    if not MASTER.exists():
-        os.makedirs(MASTER)
-    members = inspect.getmembers(sys.modules[__name__])
-    members = [f for f in members if 'plt_' in f[0]]
-    for member in members:
-        print('Running %s...' % member[0], end='')
-        if only_fails:
-            try:
-                member[1]()
-            except AssertionError:
-                member[1](show=True)
-                db()
-        else:
-            member[1](show=True)
-            db()
+fcp.KWARGS['engine'] = 'mpl'
 
 
 # plt_ functions can be used directly outside of pytest for debug
-def plt_cat_no_label(bm=False, master=False, remove=True, show=False):
+def plt_cat_cell_size(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'cat_no_label_master') if master else 'cat_no_label'
-
-    # Make the plot
-    fcp.heatmap(df, x='Category', y='Player', z='Average', cbar=True, show=SHOW,
-                filename=name + '.png', save=not bm, inline=False)
-
-    if bm:
-        return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
-
-
-def plt_cat_label(bm=False, master=False, remove=True, show=False):
-
-    name = osjoin(MASTER, 'cat_label_master') if master else 'cat_label'
-
-    # Make the plot
-    fcp.heatmap(df, x='Category', y='Player', z='Average', cbar=True, data_labels=True,
-                heatmap_font_color='#aaaaaa', show=SHOW, tick_labels_major_y_edge_width=0,
-                ws_ticks_ax=5, filename=name + '.png', save=not bm, inline=False)
-
-    if bm:
-        return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
-
-
-def plt_cat_cell_size(bm=False, master=False, remove=True, show=False):
-
-    name = osjoin(MASTER, 'cat_cell_size_master') if master else 'cat_cell_size'
+    name = utl.unit_test_get_img_name('cat_cell_size', make_reference, REFERENCE)
 
     # Make the plot
     fcp.heatmap(df, x='Category', y='Player', z='Average', cbar=True, data_labels=True,
                 heatmap_font_color='#aaaaaa', show=SHOW, tick_labels_major_y_edge_width=0,
                 ws_ticks_ax=5, cell_size=100,
-                filename=name + '.png', save=not bm, inline=False)
+                filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
         return
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
-    # Compare with master
-    if master:
+
+def plt_cat_no_label(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('cat_no_label', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.heatmap(df, x='Category', y='Player', z='Average', cbar=True, show=SHOW,
+                filename=name.with_suffix('.png'), save=not bm, inline=False)
+
+    if bm:
         return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_cat_non_uniform(bm=False, master=False, remove=True, show=False):
+def plt_cat_label(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'cat_non-uniform_master') if master else 'cat_non-uniform'
+    name = utl.unit_test_get_img_name('cat_label', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.heatmap(df, x='Category', y='Player', z='Average', cbar=True, data_labels=True,
+                heatmap_font_color='#aaaaaa', show=SHOW, tick_labels_major_y_edge_width=0,
+                ws_ticks_ax=5, filename=name.with_suffix('.png'), save=not bm, inline=False)
+
+    if bm:
+        return
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_cat_non_uniform(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('cat_non-uniform', make_reference, REFERENCE)
 
     # Make the plot
     df2 = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_contour.csv')
     fcp.heatmap(df2, x='X', y='Y', z='Value', row='Batch', col='Experiment',
                 cbar=True, show=SHOW, share_z=True, ax_size=[400, 400],
                 data_labels=False, label_rc_font_size=12, filter='Batch==103', cmap='viridis',
-                filename=name + '.png', save=not bm, inline=False)
+                filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_heatmap(bm=False, master=False, remove=True, show=False):
+def plt_heatmap(bm=False, make_reference=False, show=False):
+    print('deprecated: plt_heatmap')
+    return
 
-    name = osjoin(MASTER, 'heatmap_master') if master else 'heatmap'
+    name = utl.unit_test_get_img_name('heatmap', make_reference, REFERENCE)
 
     # Make the plot
     fcp.heatmap(img_cat, cmap='inferno', cbar=True, ax_size=[600, 600],
-                filename=name + '.png', save=not bm, inline=False)
+                filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_heatmap_stretched(bm=False, master=False, remove=True, show=False):
+def plt_heatmap_stretched(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'heatmap_stretched_master') if master else 'heatmap_stretched'
+    print('deprecated: plt_heatmap_stretched')
+    return
+
+    name = utl.unit_test_get_img_name('heatmap_stretched', make_reference, REFERENCE)
 
     # Make the plot
     uu = img_cat.stack().mean()
     ss = img_cat.stack().std()
     fcp.heatmap(img_cat, cmap='inferno', cbar=True, ax_size=[600, 600],
                 zmin=uu - 3 * ss, zmax=uu + 3 * ss,
-                filename=name + '.png', save=not bm, inline=False)
+                filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_heatmap_zoomed(bm=False, master=False, remove=True, show=False):
+def plt_heatmap_zoomed(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'heatmap_zoomed_master') if master else 'heatmap_zoomed'
+    print('deprecated: plt_heatmap_zoomed')
+    return
+
+    name = utl.unit_test_get_img_name('heatmap_zoomed', make_reference, REFERENCE)
 
     # Make the plot
     fcp.heatmap(img_cat, cmap='inferno', cbar=True, ax_size=[600, 600], xmin=700, xmax=1100,
                 ymin=300, ymax=400,
-                filename=name + '.png', save=not bm, inline=False)
+                filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 # test_ functions call plt_ funcs 2x:
@@ -288,16 +185,19 @@ def test_cat_non_uniform(benchmark):
     benchmark(plt_cat_non_uniform, True)
 
 
+@pytest.mark.skip(reason="deprecated; use imshow")
 def test_heatmap(benchmark):
     plt_heatmap()
     benchmark(plt_heatmap, True)
 
 
+@pytest.mark.skip(reason="deprecated; use imshow")
 def test_heatmap_stretched(benchmark):
     plt_heatmap_stretched()
     benchmark(plt_heatmap_stretched, True)
 
 
+@pytest.mark.skip(reason="deprecated; use imshow")
 def test_heatmap_zoomed(benchmark):
     plt_heatmap_zoomed()
     benchmark(plt_heatmap_zoomed, True)

@@ -1,8 +1,12 @@
 # fivecentplots
 
+*v0.6 released!*
+
 ![Tests](https://github.com/endangeredoxen/fivecentplots/actions/workflows/tests.yml/badge.svg)
 
-![intro_plot](https://endangeredoxen.github.io/fivecentplots/0.5.4/_images/index.png)
+*A Python Plotting Analgesic*
+
+![intro_plot](https://endangeredoxen.github.io/fivecentplots/0.6.0/_static/images/index.png)
 
 *Install the latest version:*
 `pip install fivecentplots`
@@ -10,27 +14,31 @@
 *Read the docs at:*
 https://endangeredoxen.github.io/fivecentplots
 
-## Why another Python plotting library?
-There is no shortage of quality plotting libraries in Python. While basic plots can be easy, complex plots with custom styling and formatting often involve mastery of a daunting API and many lines of code. This complexity is discouraging to new/casual Python users and may lead them to abandon Python in favor of more comfortable, albeit inferior, plotting tools like Excel.
+## Another Python plotting library, really??
+There is no shortage of quality plotting libraries in Python.  Basic plots with default styling are
+often easy, but acheiving complex figures with subplots, legends, overlays, and custom styling can
+require a mastery of a daunting API and many lines of code.  This complexity is discouraging to the new/casual Python
+user and can lead them to abandon Python in favor of more comfortable, albeit inferior, plotting tools like Excel.
 
-**fivecentplots** simplifies the API required to generate complex plots, specifically for data in pandas DataFrames.
+**fivecentplots** exists to drastically simplify the API required to generate complex plots, specifically for data
+within **pandas** DataFrames.
 
 ## Advantages of fivecentplots
 ### Ease of Use
 
-* Plots require a single function call with no additional lines of code
-* All style, formatting, and grouping is determined using optional keyword arguments or a simple "theme" file
-* Data come from DataFrames and can be accessed by simple column names
+* Plots are generated from a **single function call**
+* Plot contents and design **defined by optional keyword arguments** with defaults in a simple "theme" file
+* **Simple data access** using DataFrame column names and text-based filtering
 
 ### The Power of Kwargs
 
-* All colors, sizes, marker themes, grouping options, etc. can be defined by optional keyword arguments in a single function call
-* Repeated kwargs can also be pulled from a simple theme file
-* All the complexity of a plotting library's API is managed behind the scenes, simplifying the user's life
+* Colors, sizes, marker styles, subplot grouping, you name it--**everything is defined by keyword arguments**
+* Keyword names follow a **basic naming convention** (ex: `legend_title_font_size` defines the font size of the legend title)
+* **Behind the scenes**, keywords translated into the complex code / API of the underlying plotting package (like `matplotlib`)
 
 ### JMP, JMP
 
-* With **pandas**, statistical analysis in Python rivals or surpasses that of commercial software packages like JMP. However, JMP has some useful plotting options that are tedious to create in Python. fivencentplots makes it easy to create:
+* pandas enables statistical analysis in Python comparable to that of commercial software packages like JMP. However, JMP offers easy creation of many useful charts that are tedious to create in Python.  **fivencentplots solves this**, making it easy to create:
 
     * JMP-style variability gauge charts
     * Grouped overlay plots
@@ -38,24 +46,17 @@ There is no shortage of quality plotting libraries in Python. While basic plots 
 
 ### Interchangeable Plot Engines
 
-* **fivecentplots** can wrap any plotting "engine" (or library) with the same API
-* Getting the same plot from say **matplotlib** or **bokeh** is as easy as chaning one kwarg in the exact same function call (more development is needed here, but conceptually it works)
+* Need a high-quality static image in `matplotlib` style?  No problem!  Prefer an interactive web plot from `plotly`? No problem! **fivecentplots can wrap any plotting "engine"** (or package)
+* Most importantly, **fivecentplots maintains the same API** regardless of plotting library. The same function call invoked for `matplotlib` can be used for `plotly`--no need to learn a new syntax and API
 
-### Automation
+**And even more...read the docs**
 
-* Automated bulk plotting is available in fivecentplots using ini-style config files instead of explicit function calls
-* This feature is very useful for production environments with standardized measurement data so users do not have to manually create line-health plots
-
-### Matplotlib sizing
-
-* When using matplotlib as the plotting engine, >fivecentplots shifts the sizing paradigm so the user can define the plot area size instead of the entire figure size
-* Plots can now have consistent and controllable plotting area sizes and do not get squished to accomodate other elements (such as labels and legends) in the figure.
 
 ## Example
 
 Consider the following plot of some fake current vs voltage data contained in a dummy DataFrame, ``df``:
 
-![plot](https://endangeredoxen.github.io/fivecentplots/0.5.4/_images/syntax.png)
+![plot](https://endangeredoxen.github.io/fivecentplots/0.6.0/_images/syntax.png)
 
 Using fivecentplots, we need a single function call with the appropriate keyword arguments:
 
@@ -73,7 +74,7 @@ import matplotlib.pylab as plt
 import matplotlib
 import natsort
 
-# Filter the dataframe to get the subset of interest
+# Filter the DataFrame to get the subset of interest
 df_sub = df[(df.Substrate=="Si")&(df['Target Wavelength']==450)&(df['Temperature [C]']==25)]
 
 # Set some defaults
@@ -139,7 +140,7 @@ plt.show()
 
 This example is obviously a bit contrived as you could simplify things by modifying rc_params or eliminating some of the specific style elments used here, but the general idea should be clear: fivecentplots can reduce the barrier to generate complex plots.
 
-What if we wanted to do the same plot in raw bokeh code? Well, we’d need to learn an entirely different API! But with fivecentplots we can just change the kwarg defining the plotting engine (engine) and we are all set:
+What if we wanted to do the same plot using code for `plotly` or `bokeh`?  Well, we'd need to learn an entirely different API!  But with **fivecentplots** we can just change the kwarg defining the plotting engine (`engine`) and we are all set:
 
 ```python
 fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', ax_size=[225, 225], share_y=False,
@@ -148,4 +149,4 @@ fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', ax_size=[2
          xmin=0, xmax=1.7, ymin=[0, 0, 0], ymax=[1.3, 1.7, 5.2], engine='bokeh')
 ```
 
-![bokeh](https://endangeredoxen.github.io/fivecentplots/0.5.4/_images/syntax_bokeh.png)
+![bokeh](https://endangeredoxen.github.io/fivecentplots/0.6.0/_images/syntax_bokeh.png)

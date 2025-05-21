@@ -3,182 +3,98 @@ import pandas as pd
 import os
 import sys
 import pdb
+import datetime
 from pathlib import Path
+import pytest
 import fivecentplots.utilities as utl
 import matplotlib as mpl
-import inspect
+import fivecentplots.data.data as data
 osjoin = os.path.join
 db = pdb.set_trace
+mpl.use('agg')
+
+
+@pytest.fixture(scope="module", autouse=True)
+def get_ready(request):
+    fcp.set_theme('gray_original')
+    fcp.KWARGS['engine'] = 'mpl'
+
 
 test = 'gantt'
 if Path('../tests/test_images').exists():
-    MASTER = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 elif Path('tests/test_images').exists():
-    MASTER = Path(f'tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 else:
-    MASTER = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 
 
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_gantt.csv')
+df2 = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_gantt_milestone.csv')
 
 
 # Set theme
-fcp.set_theme('gray')
+fcp.set_theme('gray_original')
 # fcp.set_theme('white')
 
+
 # Other
+def make_all(start=None, stop=None):
+    utl.unit_test_make_all(REFERENCE, sys.modules[__name__], start=start, stop=stop)
+
+
+def show_all(only_fails=True, start=None):
+    utl.unit_test_show_all(only_fails, REFERENCE, sys.modules[__name__], start=start)
+
+
 SHOW = False
 fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
-
-
-def make_all():
-    """
-    Remake all test master images
-    """
-
-    if not MASTER.exists():
-        os.makedirs(MASTER)
-    members = inspect.getmembers(sys.modules[__name__])
-    members = [f for f in members if 'plt_' in f[0]]
-    for member in members:
-        print('Running %s...' % member[0], end='')
-        member[1](master=True)
-        print('done!')
-
-
-def show_all(only_fails=True):
-    """
-    Remake all test master images
-    """
-
-    if not MASTER.exists():
-        os.makedirs(MASTER)
-    members = inspect.getmembers(sys.modules[__name__])
-    members = [f for f in members if 'plt_' in f[0]]
-    for member in members:
-        print('Running %s...' % member[0], end='')
-        if only_fails:
-            try:
-                member[1]()
-            except AssertionError:
-                member[1](show=True)
-                db()
-        else:
-            member[1](show=True)
-            db()
+fcp.KWARGS['engine'] = 'mpl'
 
 
 # plt_ functions can be used directly outside of pytest for debug
-def plt_basic(bm=False, master=False, remove=True, show=False):
+def plt_basic(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'basic_master') if master else 'basic'
-
-    # Make the plot
-    fcp.gantt(df, x=['Start', 'Stop'], y='Task',
-              filename=name + '.png', save=not bm, inline=False, ax_size=[600, 400])
-
-    if bm:
-        return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
-
-
-def plt_sort_ascending(bm=False, master=False, remove=True, show=False):
-
-    name = osjoin(MASTER, 'sort_ascending_master') if master else 'sort_ascending'
-
-    # Make the plot
-    fcp.gantt(df, x=['Start', 'Stop'], y='Task', sort='ascending',
-              filename=name + '.png', save=not bm, inline=False, ax_size=[600, 400])
-
-    if bm:
-        return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
-
-
-def plt_style(bm=False, master=False, remove=True, show=False):
-
-    name = osjoin(MASTER, 'style_master') if master else 'style'
+    name = utl.unit_test_get_img_name('basic', make_reference, REFERENCE)
 
     # Make the plot
     fcp.gantt(df, x=['Start', 'Stop'], y='Task',
-              color_by_bar=True, gantt_edge_width=2, gantt_edge_color='#555555',
-              gantt_height=0.2, gantt_fill_alpha=1,
-              filename=name + '.png', save=not bm, inline=False, ax_size=[600, 400])
+              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
 
     if bm:
         return
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
-    # Compare with master
-    if master:
+
+def plt_col(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('col', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.gantt(df, x=['Start', 'Stop'], y='Task', col='Category', share_x=False, share_y=False,
+              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
+    if bm:
         return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_legend(bm=False, master=False, remove=True, show=False):
+def plt_legend(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'legend_master') if master else 'legend'
+    name = utl.unit_test_get_img_name('legend', make_reference, REFERENCE)
 
     if bm:
         return
 
     # Make the plot
-    fcp.gantt(df, x=['Start', 'Stop'], y='Task', legend='Assigned',
-              filename=name + '.png', save=not bm, inline=False, ax_size=[600, 400])
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    fcp.gantt(df, x=['Start', 'Stop'], y='Task', legend='Assigned',  order_by_legend=False,
+              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_legend_order_by(bm=False, master=False, remove=True, show=False):
+def plt_legend_order_by(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'legend_order_by_master') if master else 'legend_order_by'
+    name = utl.unit_test_get_img_name('legend_order_by', make_reference, REFERENCE)
 
     if bm:
         return
@@ -186,127 +102,227 @@ def plt_legend_order_by(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.gantt(df, x=['Start', 'Stop'], y='Task', legend='Assigned',
               gantt_tick_labels_x_rotation=45, order_by_legend=True,
-              filename=name + '.png', save=not bm, inline=False, ax_size=[600, 400])
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_row(bm=False, master=False, remove=True, show=False):
+def plt_rc_missing(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'row_master') if master else 'row'
-
-    if bm:
-        return
-
-    # Make the plot
-    fcp.gantt(df, x=['Start', 'Stop'], y='Task', row='Category',
-              filename=name + '.png', save=not bm, inline=False, ax_size=[600, 400])
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
-
-
-def plt_col(bm=False, master=False, remove=True, show=False):
-
-    name = osjoin(MASTER, 'col_master') if master else 'col'
-
-    if bm:
-        return
-
-    # Make the plot
-    fcp.gantt(df, x=['Start', 'Stop'], y='Task', col='Category', share_x=False,
-              filename=name + '.png', save=not bm, inline=False, ax_size=[600, 400])
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
-
-
-def plt_rc_missing(bm=False, master=False, remove=True, show=False):
-
-    name = osjoin(MASTER, 'rc_missing_master') if master else 'rc_missing'
+    name = utl.unit_test_get_img_name('rc_missing', make_reference, REFERENCE)
 
     # Make the plot
     df['Temp'] = 'Boom'
     df.loc[5:, 'Temp'] = 'Boom2'
-    fcp.gantt(df, x=['Start', 'Stop'], y='Task', row='Category', col='Temp',
-              filename=name + '.png', save=not bm, inline=False, ax_size=[600, 400])
+    fcp.gantt(df, x=['Start', 'Stop'], y='Task', row='Category', col='Temp', share_y=False,
+              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_wrap(bm=False, master=False, remove=True, show=False):
+def plt_row(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'wrap_master') if master else 'wrap'
+    name = utl.unit_test_get_img_name('row', make_reference, REFERENCE)
 
     if bm:
         return
 
     # Make the plot
-    fcp.gantt(df, x=['Start', 'Stop'], y='Task', wrap='Category',
-              filename=name + '.png', save=not bm, inline=False, ax_size=[600, 400])
+    fcp.gantt(df, x=['Start', 'Stop'], y='Task', row='Category', share_y=False,
+              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
-    # Compare with master
-    if master:
+
+def plt_sort_ascending(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('sort_ascending', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.gantt(df, x=['Start', 'Stop'], y='Task', sort='ascending', label_y=True,
+              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
+
+    if bm:
         return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
-        assert not compare
+
+def plt_style(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('style', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.gantt(df, x=['Start', 'Stop'], y='Task',
+              color_by='bar', gantt_edge_width=2, gantt_edge_color='#555555',
+              gantt_height=0.2, gantt_fill_alpha=1, grid_major_y=False,
+              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
+
+    if bm:
+        return
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_wrap(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('wrap', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.gantt(df, x=['Start', 'Stop'], y='Task', wrap='Category',
+              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
+
+    if bm:
+        return
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_bar_labels(bm=False, make_reference=False, show=False):
+
+    # Make the plots
+    name = utl.unit_test_get_img_name('bar_labels_user_xmax', make_reference, REFERENCE)
+    fcp.gantt(df2, x=['Start date', 'End date'], y='Description', bar_labels='Description',
+              xmax=datetime.datetime(2025, 6, 15),
+              workstreams='Workstream', workstreams_label_font_size=12,
+              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
+    if bm:
+        return
+
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+    name = utl.unit_test_get_img_name('bar_labels_auto_expand', make_reference, REFERENCE)
+    fcp.gantt(df2, x=['Start date', 'End date'], y='Description', bar_labels='Description',
+              workstreams='Workstream', workstreams_label_font_size=12,
+              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+    name = utl.unit_test_get_img_name('bar_labels_no_expand_no_xmax', make_reference, REFERENCE)
+    fcp.gantt(df2, x=['Start date', 'End date'], y='Description', bar_labels='Description',
+              auto_expand=False, workstreams='Workstream', workstreams_label_font_size=12,
+              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_milestones_location(bm=False, make_reference=False, show=False):
+
+    locs = [
+            'top',
+            'right'
+            ]
+
+    # Make the plot
+    for loc in locs:
+        name = utl.unit_test_get_img_name(f'milestones_location_{loc}_no_expand', make_reference, REFERENCE)
+        fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
+                  xmax=datetime.datetime(2025, 6, 15), milestone_text_location=loc, auto_expand=False,
+                  workstreams='Workstream', workstreams_label_font_size=10,
+                  workstreams_title_font_size=13, filename=name.with_suffix('.png'), save=not bm, inline=False,
+                  ax_size=[900, 400])
+
+        if bm:
+            return
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+        name = utl.unit_test_get_img_name(f'milestones_location_{loc}_expand', make_reference, REFERENCE)
+        fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
+                  milestone_text_location=loc, auto_expand=True,
+                  workstreams='Workstream', workstreams_label_font_size=10,
+                  workstreams_title_font_size=13, filename=name.with_suffix('.png'), save=not bm, inline=False,
+                  ax_size=[900, 400])
+
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_today(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('today', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.gantt(df2, x=['Start date', 'End date'], y='Description', today=datetime.datetime(2026, 3, 6),
+              today_text='Giddie up', today_color='#ff0000', today_style='--', today_fill_color='#00ff00',
+              workstreams='Workstream', workstreams_label_font_size=12, dependencies=False,
+              milestone_text=False,
+              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
+
+    if bm:
+        return
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_workstreams_date_type(bm=False, make_reference=False, show=False):
+
+    kw = {
+          'clean': {},
+          'date_min': {'xmin': datetime.datetime(2025, 12, 10)},
+          'date_max': {'xmax': datetime.datetime(2026, 3, 10)},
+          'one_month': {'xmin': datetime.datetime(2026, 1, 5), 'xmax': datetime.datetime(2026, 1, 29)},
+    }
+    plots = [
+             ['week'],
+             ['month'],
+             ['quarter'],
+             ['year'],
+             ['month-year'],
+             ['week', 'month-year', 'quarter'],
+             ['quarter-year'],
+             ['quarter-year', 'month'],
+             ['week', 'month'],
+             ['week', 'quarter'],
+             ['week', 'year'],
+             ['week', 'month', 'quarter'],
+             ['week', 'month', 'year'],
+             ['week', 'month', 'quarter', 'year'],
+             ['month', 'quarter'],
+             ['month', 'year'],
+             ['quarter', 'year'],
+             ['month', 'quarter', 'year'],
+    ]
+
+    for plot in plots:
+        for k, v in kw.items():
+            name = utl.unit_test_get_img_name(f'workstreams_date_type_{"_".join(plot)}_{k}', make_reference, REFERENCE)
+            fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
+                      date_type=plot, workstreams='Workstream', workstreams_label_font_size=12,
+                      filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[1200, 400], **v)
+            if bm:
+                return
+            utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+    # Bad date type errors ADD OTHERS
+    name = Path('error')
+    with pytest.raises(data.DataError):
+        fcp.gantt(df2, x=['Start date', 'End date'], y='Description', bar_labels='Owner',
+                  date_type='dance', workstreams='Workstream', workstreams_label_font_size=12,
+                  filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
+
+    with pytest.raises(data.DataError):
+        fcp.gantt(df2, x=['Start date', 'End date'], y='Description', bar_labels='Owner',
+                  date_type=['quarter-year', 'year'], workstreams='Workstream', workstreams_label_font_size=12,
+                  filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
+
+    with pytest.raises(data.DataError):
+        fcp.gantt(df2, x=['Start date', 'End date'], y='Description', bar_labels='Owner',
+                  date_type=['month-year', 'quarter-year'], workstreams='Workstream', workstreams_label_font_size=12,
+                  filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
+
+
+def plt_workstreams_location(bm=False, make_reference=False, show=False):
+
+    locs = [
+            'left',
+            'right',
+            'inline'
+            ]
+
+    # Make the plot
+    for loc in locs:
+        name = utl.unit_test_get_img_name(f'workstreams_location_{loc}', make_reference, REFERENCE)
+        fcp.gantt(df2, x=['Start date', 'End date'], y='Description', gantt_date_type=['quarter-year', 'month'],
+                  workstreams='Workstream', workstreams_location=loc, workstreams_label_font_size=10,
+                  workstreams_title_font_size=13, filename=name.with_suffix('.png'), save=not bm, inline=False,
+                  ax_size=[900, 400], match_bar_color=True if loc == 'right' else False)
+
+        if bm:
+            return
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 # test_ functions call plt_ funcs 2x:
@@ -355,6 +371,31 @@ def test_rc_missing(benchmark):
 def test_wrap(benchmark):
     plt_wrap()
     benchmark(plt_wrap, True)
+
+
+def test_bar_labels(benchmark):
+    plt_bar_labels()
+    benchmark(plt_bar_labels, True)
+
+
+def test_milestones_location(benchmark):
+    plt_milestones_location()
+    benchmark(plt_milestones_location, True)
+
+
+def test_today(benchmark):
+    plt_today()
+    benchmark(plt_today, True)
+
+
+def test_workstreams_date_type(benchmark):
+    plt_workstreams_date_type()
+    benchmark(plt_workstreams_date_type, True)
+
+
+def test_workstreams_location(benchmark):
+    plt_workstreams_location()
+    benchmark(plt_workstreams_location, True)
 
 
 if __name__ == '__main__':

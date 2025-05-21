@@ -1,0 +1,18 @@
+Quarter,Priority,Workstream,Description,Owner,Jira Epic,Start date,End date,Duration,Milestone,Dependency
+2025-Q1,P0,Design,Pixel layout,Gary Garrison,CRP-1013,01-01-2025,,2w,,
+2025-Q1,P0,Design,Periphery circuits,Andy Anderson,CRP-1013,01-20-2025,03-31-2025,,,Pixel layout
+2025-Q1,P1,Design,TCAD simulation,Sam Samuelson,CRP-1013,02-22-2025,,10d,,
+2025-Q1,P2,Design,Initial tape out,Amber Amberly,CRP-1013,02-22-2025,03-15-2025,,,
+2025-Q2,P0,Design,Finalize tape out,Amber Amberly,CRP-1013,,,1.5m,,Pixel layout; Periphery circuits
+2025-Q2,P0,Design,Deliver tape out,Amber Amberly,CRP-1013,05-30-2025,,,,Finalize tape out
+2025-Q2,P1,Fab,Test chip,Karthik Sweeny,CRP-1022,03-01-2025,04-15-2025,,,
+2025-Q3,P0,Fab,Alpha samples,Karthik Sweeny,CRP-1022,06-30-2025,09-15-2025,,,Deliver tape out
+2025-Q3,P0,Fab,Beta samples,Karthik Sweeny,CRP-1022,10-01-2025,02-15-2026,,,Alpha samples
+2025-Q2,P0,Test,Test chip eval,Denvyr Loud,CRP-1047,04-15-2025,05-15-2025,,,
+2025-Q2,P0,Test,Test chip eval,Denvyr Loud,CRP-1047,05-15-2025,,,Decide pixel,
+2025-Q4,P0,Test,Alpha sample testing,Denvyr Loud,CRP-1047,09-15-2025,12-15-2025,,,
+2025-Q2,P4,Marketing,Lie about performance,Harry Harrison,CRP-666,05-15-2025,06-30-2025,,,
+2025-Q3,P4,Marketing,Lie about schedule,Harry Harrison,CRP-666,07-15-2025,12-30-2025,,,
+2025-Q4,P4,Marketing,Stress engineers about schedule,Harry Harrison,CRP-666,01-15-2026,12-20-2026,,,
+2025-Q4,P4,Marketing,Stress engineers about schedule,Harry Harrison,CRP-666,12-20-2026,,,Get fat bonuses,
+2025-Q4,P4,Marketing,Deliver beta samples,Harry Harrison,CRP-666,12-30-2026,,,,Beta samples

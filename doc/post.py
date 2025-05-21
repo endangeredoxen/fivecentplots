@@ -18,11 +18,15 @@ print('Cleaning ipynb files...')
 
 # get the names of the ipynb files
 cur_dir = Path(__file__).parent.absolute()
-ipynb = [Path(f).stem + '.html' for f in os.listdir(cur_dir) if '.ipynb' in f and 'check' not in f]
+subfolders = [f for f in cur_dir.iterdir() if f.is_dir()]
+ipynb = []
+for sub in subfolders:
+    ipynb += [sub.parent / '_build/html' / sub.stem / (Path(f).stem + '.html')
+              for f in os.listdir(sub) if '.ipynb' in f and 'check' not in f]
 regex = r'\[[0-9][0-9]?\]:'
 
 for nb in ipynb:
-    with open(cur_dir / '_build/html' / nb, 'r') as input:
+    with open(nb, 'r') as input:
         # remove in/out numbers
         ff = input.read()
 
@@ -40,13 +44,18 @@ for nb in ipynb:
         url = '<a' + ff[api:stop].split('<a')[1] + 'See the full API </a>'
         ff = ff[:api] + url + ff[ff[api:].find('/a>') + api + 3:]
 
+    # write output
     with open(cur_dir / '_build/html' / nb, 'w') as output:
         output.write(ff)
 
 # COPY SPECIAL IMAGES
 print('Copying special images...')
 images = {'_build/html/_images':
-          ['_static/images/index.png']
+          ['_static/images/intro_xy.png',
+           '_static/images/intro_box.png',
+           '_static/images/intro_gantt.png',
+           '_static/images/intro_imshow.png',
+          ]
 }
 
 for k, v in images.items():
