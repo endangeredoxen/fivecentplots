@@ -149,4 +149,4 @@ fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', ax_size=[2
          xmin=0, xmax=1.7, ymin=[0, 0, 0], ymax=[1.3, 1.7, 5.2], engine='bokeh')
 ```
 
-![bokeh](https://endangeredoxen.github.io/fivecentplots/0.6.0/_images/syntax_bokeh.png)
+![bokeh](https://endangeredoxen.github.io/fivecentplots/0.6.0/_static/images/syntax_bokeh.png)
