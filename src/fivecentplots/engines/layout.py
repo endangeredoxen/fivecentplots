@@ -26,11 +26,6 @@ warnings.filterwarnings("ignore", "invalid value encountered in double_scalars")
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
-DEFAULT_MARKERS = ['o', '+', 's', 'x', 'd', 'Z', '^', 'Y', 'v', r'\infty',
-                   r'\#', r'<', u'\u2B21', u'\u263A', '>', u'\u29C6', r'\$',
-                   u'\u2B14', u'\u2B1A', u'\u25A6', u'\u229E', u'\u22A0',
-                   u'\u22A1', u'\u20DF', r'\gamma', r'\sigma', r'\star', ]
-
 LEGEND_LOCATION = defaultdict(int,
                               {'outside': 0,  # always "best" outside of the damn plot
                                'upper right': 1, 1: 1,
@@ -58,6 +53,8 @@ LOG_ALLY = LOGY + SYMLOGY + LOGITY
 
 
 class BaseLayout:
+    DEFAULT_MARKERS = ['*']  # dummy marker; override in derived classes
+
     def __init__(self, data: 'Data', defaults: list = [], **kwargs):  # noqa F821
         """Generic layout properties class
 
@@ -842,7 +839,11 @@ class BaseLayout:
             elif 'box_marker_type' in self.fcpp.keys():
                 self.markers.type = RepeatedList(self.fcpp['box_marker_type'], 'marker_type')
             elif not self.legend._on:
-                self.markers.type = RepeatedList('o', 'marker_type')
+                if hasattr(self, 'default_box_marker'):
+                    mm = self.default_box_marker  # should be defined in the derived engine class
+                else:
+                    mm = 'o'
+                self.markers.type = RepeatedList(mm, 'marker_type')
 
             # convert some attributes to RepeatedList
             vals = ['size', 'edge_width', 'edge_color', 'fill_color']
@@ -1850,7 +1851,7 @@ class BaseLayout:
         elif kwargs.get('markers') not in [None, True]:
             marker_list = utl.validate_list(kwargs.get('markers'))
         else:
-            marker_list = utl.validate_list(DEFAULT_MARKERS)
+            marker_list = utl.validate_list(self.DEFAULT_MARKERS)
         markers = RepeatedList(marker_list, 'markers')
         marker_edge_color = utl.kwget(kwargs, self.fcpp, ['marker_edge_color', 'markers_edge_color'], self.color_list)
         marker_fill_color = utl.kwget(kwargs, self.fcpp, ['marker_fill_color', 'markers_fill_color'], self.color_list)

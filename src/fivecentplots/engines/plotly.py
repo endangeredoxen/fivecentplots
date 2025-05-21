@@ -29,12 +29,6 @@ warnings.filterwarnings("ignore", "invalid value encountered in double_scalars")
 db = pdb.set_trace
 
 
-# More works is needed on markers as this set is rather limiting
-DEFAULT_MARKERS = ['circle', 'square', 'diamond', 'cross-thin', 'x', 'triangle-up', 'pentagon', 'hexagram', 'star',
-                   'hourglass', 'bowtie', 'asterisk', 'hash', 'y', 'line']
-HOLLOW_MARKERS = ['circle', 'square', 'triangle-up', 'diamond', 'pentagon', 'hexagram', 'star', 'hourglass', 'bowtie']
-
-
 def guess_tick_labels(min_val, max_val, axes_size_px, is_horizontal=True, font_size_pt=12,
                       log_scale=False, use_scientific_notation=True):
     """
@@ -154,6 +148,12 @@ def guess_tick_labels(min_val, max_val, axes_size_px, is_horizontal=True, font_s
 
 
 class Layout(BaseLayout):
+    DEFAULT_MARKERS = ['circle', 'cross-thin', 'square', 'x', 'diamond', 'y-left', 'triangle-up', 'y-down',
+                       'triangle-down', 'bowtie', 'hash', 'triangle-left', 'hexagram', 'star', 'triangle-right',
+                       'pentagon', 'octagon', 'hourglass', 'triangle-ne', 'triangle-se', 'triangle-sw', 'triangle-nw',
+                       'asterisk', 'hash', 'hexagon2', 'circle-dot', 'square-dot', 'cross-thin', 'line']
+    HOLLOW_MARKERS = ['circle', 'square', 'triangle-up', 'diamond', 'pentagon', 'hexagram', 'star',
+                      'hourglass', 'bowtie']
     def __init__(self, data: 'data.Data', defaults: list = [], **kwargs):  # noqa F821
         """Layout attributes and methods for new engine Figure.
 
@@ -165,14 +165,14 @@ class Layout(BaseLayout):
         # Set the layout engine
         self.engine = 'plotly'
 
+        # Add some defaults
+        self.default_box_marker = 'circle'
+
         # Inherit the base layout properties
         super().__init__(data, defaults, **kwargs)
-        self.engine = 'plotly'
 
         # Update kwargs
         self.kwargs = kwargs
-        if self.markers.on:
-            self.update_markers()
 
         # Engine-specific "update_layout" keywords; store in one dict to minimize calls to "update_layout"
         self.ul = {}
@@ -242,19 +242,6 @@ class Layout(BaseLayout):
     def _box_label_heights(self):
         """Calculate the box label height."""
         return max(self.box_group_label.heights)
-        # lab = self.box_group_label
-        # labt = self.box_group_title
-        # if len(lab.size_all) == 0:
-        #     return np.array(0)
-
-        # # Determine the box group label row heights and account for edge overlaps
-        # heights = lab.size_all_bg.groupby('ii').max()['height']  # contains edge width
-
-        # # Determine the box group title heights
-        # heightst = labt.size_all_bg.groupby('ii').max()['height']  # contains edge width
-
-        # # Get the largest of labels and titles
-        # return np.maximum(heights, heightst)
 
     @property
     def _cbar_width(self) -> float:
@@ -436,20 +423,11 @@ class Layout(BaseLayout):
         ww = self.axes.size[0] + self.axes.edge_width + self._labtick_y2
         if self.label_row.on:
             ww += self._row_label_width
-        # if self.legend.on:
-        #     ww += self.ws_ax_leg
         if self.cbar.on:
             ww += self.ws_ax_fig
 
         # yaxis
         hh = self.fig.size[1] - self._top - self._bottom  # probably need to fix for secondary x
-
-        # # account for subplots
-        # w *= self.ncol
-        # w += self.ws_col * (self.ncol - 1)
-
-        # h *= self.nrow
-        # h += self.ws_row * (self.nrow - 1)
 
         return ww, hh
 
@@ -472,9 +450,6 @@ class Layout(BaseLayout):
             w_total += self.ws_ax_fig
         if self.box_group_title.on:
             w_total += self.box_group_title.size[0]
-
-        # Height with subplots
-        # h_total = hh * self.nrow + self.ws_row * (self.nrow - 1)
 
         # left xaxis domain
         x0 = (ww + self.axes.edge_width + self.ws_col) * ic / w_total
@@ -1870,7 +1845,7 @@ class Layout(BaseLayout):
             mode = 'markers'
 
         # Set marker type
-        if self.markers.on and self.markers.type[iline] in HOLLOW_MARKERS and not marker_disable:
+        if self.markers.on and self.markers.type[iline] in self.HOLLOW_MARKERS and not marker_disable:
             marker_symbol = self.markers.type[iline] + ('-open' if not self.markers.filled else '')
         elif not marker_disable:
             marker_symbol = self.markers.type[iline]
@@ -2448,40 +2423,3 @@ class Layout(BaseLayout):
 
             # pio.renderers.default = 'iframe'  # not sure about this
             self.fig.obj.show(config=config)
-
-    def update_markers(self):
-        """Update the marker list to valid option for new engine."""
-        mm = {'o': 'circle',
-              '+': 'cross-thin',
-              's': 'square',
-              'd': 'diamond',
-              'x': 'x',
-              'Z': 'y-left',
-              '^': 'triangle-up',
-              'Y': 'y-down',
-              'v': 'triangle-down',
-              r'\infty': 'bowtie',
-              r'\#': 'hash',
-              r'<': 'triangle-left',
-              u'\u2B21': 'hexagram',
-              u'\u263A': 'star',
-              '>': 'triangle-right',
-              u'\u29C6': 'pentagon',
-              r'\$': 'octagon',
-              u'\u2B14': 'hourglass',
-              u'\u2B1A': 'triangle-ne',
-              u'\u25A6': 'triangle-se',
-              u'\u229E': 'triangle-sw',
-              u'\u22A0': 'triangle-nw',
-              u'\u22A1': 'asterisk',
-              u'\u20DF': 'hash',
-              r'\gamma': 'hexagon2',
-              r'\sigma': 'circle-dot',
-              r'\star': 'square-dot',
-              'cross': 'cross-thin',
-              }
-
-        for imarker, marker in enumerate(self.markers.type.values):
-            if marker in mm.values():
-                continue
-            self.markers.type.values[imarker] = mm[marker]

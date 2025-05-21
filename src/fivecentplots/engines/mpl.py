@@ -45,6 +45,10 @@ FONT_LIST = font_manager.get_font_names()
 db = pdb.set_trace
 TICK_OVL_MAX = 1.15  # maximum allowed overlap for tick labels in float pixels
 ROTATE_90_OFFSET_X = 0  # spacing offset for 90 deg rotated axes labels
+DEFAULT_MARKERS = ['o', '+', 's', 'x', 'd', 'Z', '^', 'Y', 'v', r'\infty',
+                   r'\#', r'<', u'\u2B21', u'\u263A', '>', u'\u29C6', r'\$',
+                   u'\u2B14', u'\u2B1A', u'\u25A6', u'\u229E', u'\u22A0',
+                   u'\u22A1', u'\u20DF', r'\gamma', r'\sigma', r'\star', ]
 
 
 def approx_gte(x: float, y: float):
@@ -410,6 +414,9 @@ def select_minor_ticks(majors, minors):
 
 
 class Layout(BaseLayout):
+    DEFAULT_MARKERS = ['o', '+', 's', 'x', 'd', 'Z', '^', 'Y', 'v', r'\infty', r'\#', r'<', u'\u2B21', u'\u263A', '>',
+                       u'\u29C6', r'\$', u'\u2B14', u'\u2B1A', u'\u25A6', u'\u229E', u'\u22A0', u'\u22A1', u'\u20DF',
+                       r'\gamma', r'\sigma', r'\star', ]
 
     def __init__(self, data: 'Data', defaults: list = [], **kwargs):  # noqa: F821
         """Layout attributes and methods for matplotlib Figure.
@@ -422,6 +429,7 @@ class Layout(BaseLayout):
         # Set the layout engine
         self.engine = 'mpl'
         self.font_warning = []
+        self.default_box_marker = 'o'
 
         # Set tick style to classic if using fcp tick_cleanup (default)
         if kwargs.get('tick_cleanup', True):

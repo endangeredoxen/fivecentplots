@@ -4,11 +4,19 @@ import os
 import sys
 import pdb
 from pathlib import Path
+import pytest
 import fivecentplots.utilities as utl
 import matplotlib as mpl
 osjoin = os.path.join
 db = pdb.set_trace
 mpl.use('agg')
+
+
+@pytest.fixture(scope="module", autouse=True)
+def get_ready(request):
+    fcp.set_theme('gray_original')
+    fcp.KWARGS['engine'] = 'mpl'
+
 
 test = 'misc'
 if Path('../tests/test_images').exists():
@@ -23,7 +31,6 @@ df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data.csv')
 
 # Set theme
 fcp.set_theme('gray_original')
-# fcp.set_theme('white')
 
 
 # Other

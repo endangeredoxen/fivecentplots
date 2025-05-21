@@ -3,12 +3,20 @@ import pandas as pd
 import os
 import sys
 import pdb
+import pytest
 from pathlib import Path
 import fivecentplots.utilities as utl
 import matplotlib as mpl
 osjoin = os.path.join
 db = pdb.set_trace
 mpl.use('agg')
+
+
+@pytest.fixture(scope="module", autouse=True)
+def setup():
+    fcp.set_theme('gray_original')
+    fcp.KWARGS['engine'] = 'mpl'
+
 
 test = 'styles'
 if Path('../tests/test_images').exists():

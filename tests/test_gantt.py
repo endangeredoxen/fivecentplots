@@ -5,13 +5,20 @@ import sys
 import pdb
 import datetime
 from pathlib import Path
+import pytest
 import fivecentplots.utilities as utl
 import matplotlib as mpl
-import pytest
 import fivecentplots.data.data as data
 osjoin = os.path.join
 db = pdb.set_trace
 mpl.use('agg')
+
+
+@pytest.fixture(scope="module", autouse=True)
+def get_ready(request):
+    fcp.set_theme('gray_original')
+    fcp.KWARGS['engine'] = 'mpl'
+
 
 test = 'gantt'
 if Path('../tests/test_images').exists():

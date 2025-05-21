@@ -3,14 +3,12 @@ import pandas as pd
 import os
 import sys
 import pdb
-import datetime
 from pathlib import Path
 import plotly
 import matplotlib as mpl
 import fivecentplots.utilities as utl
 import pytest
 import imageio.v3 as imageio
-import fivecentplots.data.data as data
 osjoin = os.path.join
 db = pdb.set_trace
 
@@ -18,11 +16,10 @@ if mpl.__version__ == '3.6.3':
     pytest.skip(allow_module_level=True)
 
 
-@pytest.fixture(scope="module", autouse=True) # Or scope="function" if needed per test
+@pytest.fixture(scope="module", autouse=True)
 def get_ready_plotly(request):
     fcp.set_theme('gray_plotly')
     fcp.KWARGS['engine'] = 'plotly'
-
 
 
 if Path('../tests/test_images').exists():
@@ -71,7 +68,7 @@ def plt_xy_no_legend(bm=False, make_reference=False, show=False):
 
     # Make the plot
     fcp.plot(df_xy, x='Voltage', y='I [A]', lines=False, ax_size=[400, 400],
-              filename=name.with_suffix('.png'), save=not bm, inline=False)
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
         return
@@ -433,7 +430,7 @@ def plt_contour_grid_fill(bm=False, make_reference=False, show=False):
 
     # Make the plot
     fcp.contour(df_contour, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
-                cbar=False, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250,250],
+                cbar=False, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250, 250],
                 label_rc_font_size=12, levels=40,
                 filename=name.with_suffix('.png'), save=not bm, inline=False)
 

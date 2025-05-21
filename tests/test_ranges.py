@@ -4,12 +4,20 @@ import pandas as pd
 import os
 import sys
 import pdb
+import pytest
 from pathlib import Path
 import fivecentplots.utilities as utl
 import matplotlib as mpl
 osjoin = os.path.join
 db = pdb.set_trace
 mpl.use('agg')
+
+
+@pytest.fixture(scope="module", autouse=True)
+def get_ready(request):
+    fcp.set_theme('gray_original')
+    fcp.KWARGS['engine'] = 'mpl'
+
 
 test = 'ranges'
 if Path('../tests/test_images').exists():
@@ -81,8 +89,9 @@ def test_default(make_reference=False, show=False):
     # Make the plot
     sub = df[(df.Substrate == 'Si') & (df['Target Wavelength'] == 450)
              & (df['Boost Level'] == 0.2) & (df['Temperature [C]'] == 25)]
-    fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', show=SHOW,
+    fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', show=SHOW, shit=True,
              filename=name.with_suffix('.png'))
+
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 

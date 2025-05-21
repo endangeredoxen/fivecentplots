@@ -4,12 +4,20 @@ import os
 import sys
 import pdb
 from pathlib import Path
+import pytest
 import fivecentplots.utilities as utl
 import matplotlib as mpl
 import numpy as np
 osjoin = os.path.join
 db = pdb.set_trace
 mpl.use('agg')
+
+
+@pytest.fixture(scope="module", autouse=True)
+def get_ready(request):
+    fcp.set_theme('gray_original')
+    fcp.KWARGS['engine'] = 'mpl'
+
 
 test = 'boxplot'
 if Path('../tests/test_images').exists():

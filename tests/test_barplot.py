@@ -12,6 +12,13 @@ osjoin = os.path.join
 db = pdb.set_trace
 mpl.use('agg')
 
+
+@pytest.fixture(scope="module", autouse=True)
+def get_ready(request):
+    fcp.set_theme('gray_original')
+    fcp.KWARGS['engine'] = 'mpl'
+
+
 test = 'barplot'
 if Path('../tests/test_images').exists():
     REFERENCE = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'

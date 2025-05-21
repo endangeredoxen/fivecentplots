@@ -4,6 +4,7 @@ import os
 import sys
 import pdb
 from pathlib import Path
+import pytest
 import fivecentplots.utilities as utl
 import matplotlib as mpl
 import imageio.v3 as imageio
@@ -11,6 +12,13 @@ import imageio.v3 as imageio
 osjoin = os.path.join
 db = pdb.set_trace
 mpl.use('agg')
+
+
+@pytest.fixture(scope="module", autouse=True)
+def get_ready(request):
+    fcp.set_theme('gray_original')
+    fcp.KWARGS['engine'] = 'mpl'
+
 
 test = 'imshow'
 if Path('../tests/test_images').exists():
