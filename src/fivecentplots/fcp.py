@@ -81,8 +81,9 @@ def bar(df, **kwargs):
         df (pandas.DataFrame): DataFrame containing data to plot
 
     Keyword Args:
-        x (str): x-axis column name [REQUIRED]
-        y (str): y-axis column name [REQUIRED]
+        REQUIRED:
+        x (str): x-axis column name
+        y (str): y-axis column name
         bar_align (str): If ‘center’ aligns center of bar to x-axis value; if ‘edge’ aligns the left edge of the bar to
           the x-axis value. Defaults to ‘center’ .
         bar_color_by|color_by (None, str): Color each bar differently based on a grouping criterion.
@@ -130,7 +131,8 @@ def boxplot(df, **kwargs):
         df (pandas.DataFrame): DataFrame containing data to plot
 
     Keyword Args:
-        y (str): y-axis column name contining the box plot data [REQUIRED]
+        REQUIRED:
+        y (str): y-axis column name contining the box plot data
         BASIC:
         box_divider (bool): Toggle box divider visibility. Defaults to True. Example:
           https://endangeredoxen.github.io/fivecentplots/0.6.0/boxplot.html#Dividers
@@ -263,9 +265,10 @@ def contour(df, **kwargs):
         df (DataFrame): DataFrame containing data to plot
 
     Keyword Args:
-        x (str): x-axis column name [REQUIRED]
-        y (str): y-axis column name [REQUIRED]
-        z (str): z-axis column name [REQUIRED]
+        REQUIRED:
+        x (str): x-axis column name
+        y (str): y-axis column name
+        z (str): z-axis column name
         BASIC:
         cmap (str): Name of a color map . Defaults to inferno. Example:
           https://endangeredoxen.github.io/fivecentplots/0.6.0/contour.html#Filled-contour
@@ -311,10 +314,12 @@ def gantt(df, **kwargs):
         df (DataFrame): DataFrame containing data to plot
 
     Keyword Args:
-        x (list): two x-axis column names containing Datetime values [REQUIRED]
+        REQUIRED:
+        x (list): two x-axis column names containing Datetime values
             - 1) the start time for each item in the Gantt chart
             - 2) the stop time for each item in the Gantt chart
-        y (str): y-axis column name [REQUIRED]
+        y (str): y-axis column name
+        BASIC:
         gantt_color_by|color_by (None, str): Color grouping column. Defaults to 'bar'. Example:
           https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Styling
         gantt_edge_color (str): Hex color string for the edge of the Gantt bars. Defaults to fcp.DEFAULT_COLORS.
@@ -357,9 +362,10 @@ def heatmap(df, **kwargs):
         df (DataFrame): DataFrame containing data to plot
 
     Keyword Args:
-        x (str): x-axis column name [REQUIRED]
-        y (str): y-axis column name [REQUIRED]
-        z (str): z-axis column name [REQUIRED]
+        REQUIRED:
+        x (str): x-axis column name
+        y (str): y-axis column name
+        z (str): z-axis column name
         BASIC:
         cell_size (int): Width of a heatmap cell in pixels. Defaults to 60. Example:
           https://endangeredoxen.github.io/fivecentplots/0.6.0/heatmap.html#Cell-size
@@ -414,7 +420,9 @@ def hist(df, **kwargs):
             [when passing a numpy array it is automatically converted to a DataFrame]
 
     Keyword Args:
-        x (str): x-axis column name (i.e., the "value" column from which "counts" are calculated) [REQUIRED]
+        REQUIRED:
+        x (str): x-axis column name (i.e., the "value" column from which "counts" are calculated)
+        BASIC:
         bars (bool): Toggle between bars or a line plot for the counts (True=bars enabled, False=use line).  Defaults
           to True unless 2D image then False
         cdf (bool): Convert the histogram into a cumulative distribution plot. Defaults to False. Example:
@@ -643,8 +651,10 @@ def pie(df, **kwargs):
         df (DataFrame): DataFrame containing data to plot
 
     Keyword Args:
-        x (str): x-axis column name with categorical data [REQUIRED]
-        y (str): y-axis column name with values [REQUIRED]
+        REQUIRED:
+        x (str): x-axis column name with categorical data
+        y (str): y-axis column name with values
+        BASIC:
         pie_colors|colors (str|list): Wedge fill colors. Defaults to fcp.DEFAULT_COLORS. Example:
           https://endangeredoxen.github.io/fivecentplots/0.6.0/pie.html#colors
         pie_counter_clock|counter_clock (bool): Places wedges in a counter-clockwise fashion. Defaults to False.

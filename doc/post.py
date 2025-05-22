@@ -85,8 +85,8 @@ for k, v in images.items():
 print('Adjusting api pages...')
 keys = ['LINES', 'MARKERS', 'CONTROL_LIMITS', 'CONFIDENCE_INTERVALS', 'FIT',
         'REFERENCE_LINES', 'STAT_LINES', 'AXES_LABELS', 'RC_LABELS', 'CALCULATION', 'COLOR_BAR',
-        'GROUPING_TEXT', 'DIAMONDS', 'VIOLINS', 'BASIC',
-        'AX_</strong><strong>[</strong><strong>H</strong><strong>|</strong><strong>V</strong><strong>]</strong><strong>LINES']
+        'GROUPING_TEXT', 'DIAMONDS', 'VIOLINS', 'BASIC', 'REQUIRED', 'ROLLING MEAN',
+        'AX_</strong><strong>[</strong><strong>H</strong><strong>|</strong><strong>V</strong><strong>]</strong><strong>LINES']  # noqa
 color_str = ''
 for color in DEFAULT_COLORS[0:12]:
     color_str += f'<span id="rectangle" style="height: 12px; width: 12px; background-color:{color};' \
@@ -103,13 +103,18 @@ for ff in files:
         continue
 
     # replace kwarg grouping headers
+    offset = 20
+    hr = f'<hr style="margin-left:-{offset}px; margin-top:20px; margin-bottom:10px">'
     for key in keys:
-        kk = f'<li><p><strong>{key}</strong> – </p></li>'
+        kk = f'<li><p><strong>{key}</strong></p></li>'
         idx = html.find(kk)
         if idx == -1:
             continue
-        kk_new = f'<p style="color:{DEFAULT_COLORS[0]}"><strong>{key}</strong>: </p>'
-        html = html.replace(kk, f'<hr style="margin-top:10px; margin-bottom:10px">{kk_new}')
+        kk_new = f'<p style="color:{DEFAULT_COLORS[0]}; margin-left:-{offset}px"><strong>{key}</strong>: </p>'
+        if key != 'REQUIRED':
+            html = html.replace(kk, f'{hr}{kk_new}')
+        else:
+            html = html.replace(kk, f'{kk_new}')
 
     # format required
     required = [m.span() for m in re.finditer('\[REQUIRED\]', html)]
@@ -142,6 +147,9 @@ for ff in files:
     # change default colors
     if 'Defaults to fcp.DEFAULT_COLORS' in html and color_str not in html:
         html = html.replace('Defaults to fcp.DEFAULT_COLORS.', f'<br>Defaults to fcp.DEFAULT_COLORS {color_str}.')
+
+    # examples: update block quote local style
+    html = html.replace('<blockquote>', '<blockquote style="border-left: 0px">')
 
     # write back the file
     with open(api_filepath / ff, 'w') as output:

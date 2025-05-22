@@ -439,7 +439,7 @@ def kw_print(kw, width=120):
                 str(row['Description']) + default + '. Example: %s' % row['Example']
 
         kwstr += textwrap.fill(line, width, initial_indent=indent,
-                               subsequent_indent=indent + '  ')
+                               subsequent_indent=indent + '    ')
         kwstr += '\n'
 
     kwstr = kwstr.replace('`', '')
@@ -642,7 +642,11 @@ if __name__ == '__main__':
 
     kw = make_docstrings()
 
-    bar = kw_print(kw['bar'])
+    bar = \
+        kw_header('BASIC',  indent=' ' * 8) + \
+        kw_print(kw['bar']) + \
+        kw_header('ROLLING MEAN') + \
+        kw_print(kw['bar_rolling'])
 
     boxplot = \
         kw_header('BASIC',  indent=' ' * 8) + \
