@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=9830fc1a" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=0a832b7a" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -58,7 +58,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.6" />
-    <meta name="docbuild:last-update" content="May 21, 2025"/>
+    <meta name="docbuild:last-update" content="May 22, 2025"/>
   </head>
   
   
@@ -328,33 +328,6 @@
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cbar.html">cbar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="fcp.html">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="axes.html">axes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bar.html">bar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="boxplot.html">boxplot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cbar.html">cbar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l2"><a class="reference internal" href="figure.html">figure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gantt.html">gantt</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gridlines.html">gridlines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="grouping.html">grouping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="heatmap.html">heatmap</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hist.html">hist</a></li>
-<li class="toctree-l2"><a class="reference internal" href="imshow.html">imshow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="labels.html">labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="legend.html">legend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ticks.html">ticks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="titles.html">title</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ws.html">ws</a></li>
-</ul>
-</details></li>
 <li class="toctree-l1"><a class="reference internal" href="figure.html">figure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gridlines.html">gridlines</a></li>
@@ -416,9 +389,6 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">API</a></li>
     
-    
-    <li class="breadcrumb-item"><a href="fcp.html" class="nav-link">API</a></li>
-    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">options</span></li>
   </ul>
 </nav>
@@ -442,43 +412,32 @@
 <dt class="sig sig-object py" id="fivecentplots.fcp.options">
 <span class="sig-prename descclassname"><span class="pre">fcp.</span></span><span class="sig-name descname"><span class="pre">options</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.options" title="Link to this definition">#</a></dt>
 <dd><p>Dummy function to return the API for other control options with <cite>help()</cite> (not used directly for plotting).</p>
-<dl>
-<dt>Keyword Args:</dt><dd><dl class="simple">
-<dt>RGGB (list): Color scheme for RGGB channel data so lines and markers match CFA type. Defaults to None. /dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/hist.html#RGB">More details</a></p>
-</dd>
-</dl>
-<p>DEFAULT_COLORS (list): Default color scheme used for lines and markers (from colors.py). Defaults to None.
-engine (str): Specify the plotting engine {‘mpl’, ‘bokeh’}. Defaults to ‘mpl’. /p>
-<blockquote>
-<div><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/layout.html#engine">More details</a></p>
-</div></blockquote>
-<dl class="simple">
-<dt>filename (str): Name of the saved image (with or without path and/or extension). Defaults to Automatic name</dt><dd><p>based on conditions with extention ‘.png’. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/grouping.html#figure-plots">More details</a></p>
-</dd>
-<dt>filepath (str): Name of the directory to save images (convenient if you want to use the default naming but save</dt><dd><p>in a different directory. Defaults to current directory.</p>
-</dd>
-<dt>HIST (dict): Shortcut of useful kwargs to format hist plots {‘ax_scale’: ‘logy’, ‘markers’: False, ‘line_width’:</dt><dd><p>2, ‘preset’: ‘HIST’}. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/hist.html#fcp.HIST">More details</a></p>
-</dd>
-<dt>hold (bool): For interactive plotting with matplotlib, keeps the previous plots enabled when creating a new</dt><dd><p>plot with fcp; otherwise, previous plots are closed with each new fcp plot.  Defaults to False.</p>
-</dd>
-<dt>inline (boolean): Flag to display the rendered plot in the native plotting viewer or jupyter notebook</dt><dd><p>(convenient to disable if doing automated batch plotting). Defaults to True.</p>
-</dd>
-<dt>print_filename (boolean): Print the output filename. Defaults to False. /dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/grouping.html#figure-plots">More details</a></p>
-</dd>
-</dl>
-<p>return_filename (boolean): Return the output filename. Defaults to False.
-save (boolean): Save the plot to disc. Defaults to False.
-save_data (boolean): Save the DataFrame subset that is created and used by a given plot. Defaults to False.
-save_ext (str): Set the file extension of saved plots to determine the format. Defaults to depends on plotting</p>
-<blockquote>
-<div><p>engine {‘mpl’: ‘.png’, ‘bokeh’: ‘.html’}.</p>
-</div></blockquote>
-<p>show (str): Show the saved plot image using the default image viewer of the host PC. Defaults to False.
-theme (str): Select a theme file for the current plot only. Defaults to None. /p>
-<blockquote>
-<div><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#On-the-fly">More details</a></p>
-</div></blockquote>
-<p>timer (boolean): Debug feature to get a time log for each step in the plotting process. Defaults to False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>RGGB</strong> (<em>list</em>) – Color scheme for RGGB channel data so lines and markers match CFA type. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/hist.html#RGB">More details</a></p></li>
+<li><p><strong>DEFAULT_COLORS</strong> (<em>list</em>) – Default color scheme used for lines and markers (from colors.py). Defaults to None.</p></li>
+<li><p><strong>engine</strong> (<em>str</em>) – Specify the plotting engine {‘mpl’, ‘bokeh’}. Defaults to ‘mpl’. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/layout.html#engine">More details</a></p></li>
+<li><p><strong>filename</strong> (<em>str</em>) – Name of the saved image (with or without path and/or extension). Defaults to Automatic name
+based on conditions with extention ‘.png’. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/grouping.html#figure-plots">More details</a></p></li>
+<li><p><strong>filepath</strong> (<em>str</em>) – Name of the directory to save images (convenient if you want to use the default naming but save
+in a different directory. Defaults to current directory.</p></li>
+<li><p><strong>HIST</strong> (<em>dict</em>) – Shortcut of useful kwargs to format hist plots {‘ax_scale’: ‘logy’, ‘markers’: False, ‘line_width’:
+2, ‘preset’: ‘HIST’}. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/hist.html#fcp.HIST">More details</a></p></li>
+<li><p><strong>hold</strong> (<em>bool</em>) – For interactive plotting with matplotlib, keeps the previous plots enabled when creating a new
+plot with fcp; otherwise, previous plots are closed with each new fcp plot.  Defaults to False.</p></li>
+<li><p><strong>inline</strong> (<em>boolean</em>) – Flag to display the rendered plot in the native plotting viewer or jupyter notebook
+(convenient to disable if doing automated batch plotting). Defaults to True.</p></li>
+<li><p><strong>print_filename</strong> (<em>boolean</em>) – Print the output filename. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/grouping.html#figure-plots">More details</a></p></li>
+<li><p><strong>return_filename</strong> (<em>boolean</em>) – Return the output filename. Defaults to False.</p></li>
+<li><p><strong>save</strong> (<em>boolean</em>) – Save the plot to disc. Defaults to False.</p></li>
+<li><p><strong>save_data</strong> (<em>boolean</em>) – Save the DataFrame subset that is created and used by a given plot. Defaults to False.</p></li>
+<li><p><strong>save_ext</strong> (<em>str</em>) – Set the file extension of saved plots to determine the format. Defaults to depends on plotting
+engine {‘mpl’: ‘.png’, ‘bokeh’: ‘.html’}.</p></li>
+<li><p><strong>show</strong> (<em>str</em>) – Show the saved plot image using the default image viewer of the host PC. Defaults to False.</p></li>
+<li><p><strong>theme</strong> (<em>str</em>) – Select a theme file for the current plot only. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#On-the-fly">More details</a></p></li>
+<li><p><strong>timer</strong> (<em>boolean</em>) – Debug feature to get a time log for each step in the plotting process. Defaults to False.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=9830fc1a" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=0a832b7a" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -58,7 +58,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.6" />
-    <meta name="docbuild:last-update" content="May 21, 2025"/>
+    <meta name="docbuild:last-update" content="May 22, 2025"/>
   </head>
   
   
@@ -328,33 +328,6 @@
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cbar.html">cbar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="fcp.html">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="axes.html">axes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bar.html">bar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="boxplot.html">boxplot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cbar.html">cbar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l2"><a class="reference internal" href="figure.html">figure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gantt.html">gantt</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gridlines.html">gridlines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="grouping.html">grouping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="heatmap.html">heatmap</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hist.html">hist</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">imshow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="labels.html">labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="legend.html">legend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
-<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ticks.html">ticks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="titles.html">title</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ws.html">ws</a></li>
-</ul>
-</details></li>
 <li class="toctree-l1"><a class="reference internal" href="figure.html">figure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gridlines.html">gridlines</a></li>
@@ -416,9 +389,6 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">API</a></li>
     
-    
-    <li class="breadcrumb-item"><a href="fcp.html" class="nav-link">API</a></li>
-    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">imshow</span></li>
   </ul>
 </nav>
@@ -442,9 +412,9 @@
 <dt class="sig sig-object py" id="fivecentplots.fcp.imshow">
 <span class="sig-prename descclassname"><span class="pre">fcp.</span></span><span class="sig-name descname"><span class="pre">imshow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.imshow" title="Link to this definition">#</a></dt>
 <dd><p>Image show plotting function.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><dl class="simple">
-<dt>df:</dt><dd><ul class="simple">
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> – <ul class="simple">
 <li><dl class="simple">
 <dt>Single image only:</dt><dd><ul>
 <li><p>2D numpy array of pixel data</p></li>
@@ -463,11 +433,11 @@
 </dl>
 </li>
 </ul>
+</p>
 </dd>
-</dl>
-</dd>
-<dt>Keyword Args:</dt><dd><dl class="simple">
-<dt>imgs:</dt><dd><ul class="simple">
+<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>imgs</strong> – <ul>
 <li><dl class="simple">
 <dt>Single image only:</dt><dd><ul>
 <li><p>Not defined or used</p></li>
@@ -483,23 +453,21 @@
 </dl>
 </li>
 </ul>
-</dd>
-<dt>cfa (str): Color-filter array pattern that is used to split data from a Bayer image into separate color planes.</dt><dd><p>Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/imshow.html#split-color-planes">More details</a></p>
-</dd>
-<dt>cmap (bool): Name of a color map to apply to the plot. Defaults to gray. /dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/imshow.html#color-maps">More details</a></p>
-</dd>
-<dt>imshow_interp|interp (str): imshow interpolation scheme [see matplotlib docs for more details]. Defaults to</dt><dd><p>‘none’.</p>
-</dd>
-<dt>stretch (float|list): Calculate “stretch” times the standard deviation above and below the mean to set new</dt><dd><p>z-limits. Can be a single value used as +/- limits or a two-value list for the lower/upper multiplier values.
-Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/imshow.html#Contrast-stretching">More details</a></p>
+</p></li>
+<li><p><strong>cfa</strong> (<em>str</em>) – Color-filter array pattern that is used to split data from a Bayer image into separate color planes.
+Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/imshow.html#split-color-planes">More details</a></p></li>
+<li><p><strong>cmap</strong> (<em>bool</em>) – Name of a color map to apply to the plot. Defaults to gray. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/imshow.html#color-maps">More details</a></p></li>
+<li><p><strong>imshow_interp</strong><strong>|</strong><strong>interp</strong> (<em>str</em>) – imshow interpolation scheme [see matplotlib docs for more details]. Defaults to
+‘none’.</p></li>
+<li><p><strong>stretch</strong> (<em>float</em><em>|</em><em>list</em>) – Calculate “stretch” times the standard deviation above and below the mean to set new
+z-limits. Can be a single value used as +/- limits or a two-value list for the lower/upper multiplier values.
+Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/imshow.html#Contrast-stretching">More details</a></p></li>
+</ul>
 </dd>
 </dl>
-</dd>
-</dl>
-<section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h2>
+<p class="rubric">Examples</p>
 <p>Basic:</p>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">fivecentplots</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fcp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -512,26 +480,25 @@ Defaults to None. <a class="reference external" href="https://endangeredoxen.git
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">])</span>
 </pre></div>
 </div>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><figure class="align-default">
 <img alt="../_images/example_imshow1.png" src="../_images/example_imshow1.png" />
 </figure>
 </div></blockquote>
 </div></blockquote>
 <p>With +/- 3 sigma contrast stretching:</p>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">uu</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ss</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">zmin</span><span class="o">=</span><span class="n">uu</span><span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">ss</span><span class="p">,</span> <span class="n">zmax</span><span class="o">=</span><span class="n">uu</span><span class="o">+</span><span class="mi">3</span><span class="o">*</span><span class="n">ss</span><span class="p">)</span>
 </pre></div>
 </div>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><figure class="align-default">
 <img alt="../_images/example_imshow2.png" src="../_images/example_imshow2.png" />
 </figure>
 </div></blockquote>
 </div></blockquote>
-</section>
 </dd></dl>
 
 </section>

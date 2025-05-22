@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=9830fc1a" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=0a832b7a" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -53,11 +53,11 @@
     <link rel="icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="title" href="titles.html" />
+    <link rel="prev" title="ticks" href="ticks.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.6" />
-    <meta name="docbuild:last-update" content="May 21, 2025"/>
+    <meta name="docbuild:last-update" content="May 22, 2025"/>
   </head>
   
   
@@ -327,33 +327,6 @@
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cbar.html">cbar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="fcp.html">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="axes.html">axes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bar.html">bar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="boxplot.html">boxplot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cbar.html">cbar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l2"><a class="reference internal" href="figure.html">figure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gantt.html">gantt</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gridlines.html">gridlines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="grouping.html">grouping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="heatmap.html">heatmap</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hist.html">hist</a></li>
-<li class="toctree-l2"><a class="reference internal" href="imshow.html">imshow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="labels.html">labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="legend.html">legend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
-<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ticks.html">ticks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="titles.html">title</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">ws</a></li>
-</ul>
-</details></li>
 <li class="toctree-l1"><a class="reference internal" href="figure.html">figure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gridlines.html">gridlines</a></li>
@@ -415,9 +388,6 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">API</a></li>
     
-    
-    <li class="breadcrumb-item"><a href="fcp.html" class="nav-link">API</a></li>
-    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">ws</span></li>
   </ul>
 </nav>
@@ -441,38 +411,35 @@
 <dt class="sig sig-object py" id="fivecentplots.fcp.ws">
 <span class="sig-prename descclassname"><span class="pre">fcp.</span></span><span class="sig-name descname"><span class="pre">ws</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.ws" title="Link to this definition">#</a></dt>
 <dd><p>Dummy function to return the white space API with <cite>help()</cite> (not used directly for plotting).</p>
-<dl>
-<dt>Keyword Args:</dt><dd><p>ws_ax_box_title (int): White space between axes edge and box plot titles. Defaults to 10.
-ws_ax_cbar (int): White space from right axes edge to left side of cbar. Defaults to 10.
-ws_ax_fig (int): White space right edge of axes to right edge of figure [if no legend present]. Defaults to 10.
-ws_ax_label_xs (int): Extra white space between axes and label when using separate labels. Defaults to 5.
-ws_ax_leg (int): White space from right edge of axes to left edge of legend [if present]. Defaults to 5.
-ws_col (int): White space between column subplots [ignored if tick labels or axes labels are present and wider</p>
-<blockquote>
-<div><p>than this]. Defaults to 30.</p>
-</div></blockquote>
-<p>ws_fig_ax (int): White space from left figure edge to axes left edge. Defaults to 10.
-ws_fig_label (int): White space between top of figure and x2 label [if present]. Defaults to 10.
-ws_fig_title (int): White space from top of figure to top of title [if present]. Defaults to 10.
-ws_label_col (int): White space from axes and col labels. Defaults to ws_label_rc.
-ws_label_fig (int): White space from bottom of x label to bottom of figure. Defaults to ws_fig_label.
-ws_label_rc (int): White space between axes and row &amp; col labels. Defaults to 10.
-ws_label_row (int): White space from axes to row labels. Defaults to ws_label_rc.
-ws_label_tick (int): White space from edge of axes label to edge of tick labels. Defaults to 10.
-ws_leg_fig (int): White space from right of legend in position 0 and figure right edge. Defaults to 10.
-ws_row (int): White space between row subplots [ignored if tick labels or axes labels are present and wider than</p>
-<blockquote>
-<div><p>this]. Defaults to 30.</p>
-</div></blockquote>
-<p>ws_tick_minimum (int): Minimum width for tick labels. Defaults to 10.
-ws_ticks_ax (int): White space from tick labels to edge of axes. Defaults to 5.
-ws_title_ax (int): White space bottom of title to top of axes. Defaults to 10.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ws_ax_box_title</strong> (<em>int</em>) – White space between axes edge and box plot titles. Defaults to 10.</p></li>
+<li><p><strong>ws_ax_cbar</strong> (<em>int</em>) – White space from right axes edge to left side of cbar. Defaults to 10.</p></li>
+<li><p><strong>ws_ax_fig</strong> (<em>int</em>) – White space right edge of axes to right edge of figure [if no legend present]. Defaults to 10.</p></li>
+<li><p><strong>ws_ax_label_xs</strong> (<em>int</em>) – Extra white space between axes and label when using separate labels. Defaults to 5.</p></li>
+<li><p><strong>ws_ax_leg</strong> (<em>int</em>) – White space from right edge of axes to left edge of legend [if present]. Defaults to 5.</p></li>
+<li><p><strong>ws_col</strong> (<em>int</em>) – White space between column subplots [ignored if tick labels or axes labels are present and wider
+than this]. Defaults to 30.</p></li>
+<li><p><strong>ws_fig_ax</strong> (<em>int</em>) – White space from left figure edge to axes left edge. Defaults to 10.</p></li>
+<li><p><strong>ws_fig_label</strong> (<em>int</em>) – White space between top of figure and x2 label [if present]. Defaults to 10.</p></li>
+<li><p><strong>ws_fig_title</strong> (<em>int</em>) – White space from top of figure to top of title [if present]. Defaults to 10.</p></li>
+<li><p><strong>ws_label_col</strong> (<em>int</em>) – White space from axes and col labels. Defaults to ws_label_rc.</p></li>
+<li><p><strong>ws_label_fig</strong> (<em>int</em>) – White space from bottom of x label to bottom of figure. Defaults to ws_fig_label.</p></li>
+<li><p><strong>ws_label_rc</strong> (<em>int</em>) – White space between axes and row &amp; col labels. Defaults to 10.</p></li>
+<li><p><strong>ws_label_row</strong> (<em>int</em>) – White space from axes to row labels. Defaults to ws_label_rc.</p></li>
+<li><p><strong>ws_label_tick</strong> (<em>int</em>) – White space from edge of axes label to edge of tick labels. Defaults to 10.</p></li>
+<li><p><strong>ws_leg_fig</strong> (<em>int</em>) – White space from right of legend in position 0 and figure right edge. Defaults to 10.</p></li>
+<li><p><strong>ws_row</strong> (<em>int</em>) – White space between row subplots [ignored if tick labels or axes labels are present and wider than
+this]. Defaults to 30.</p></li>
+<li><p><strong>ws_tick_minimum</strong> (<em>int</em>) – Minimum width for tick labels. Defaults to 10.</p></li>
+<li><p><strong>ws_ticks_ax</strong> (<em>int</em>) – White space from tick labels to edge of axes. Defaults to 5.</p></li>
+<li><p><strong>ws_title_ax</strong> (<em>int</em>) – White space bottom of title to top of axes. Defaults to 10.</p></li>
+</ul>
 </dd>
 </dl>
-<section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h2>
-<blockquote>
-<div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">fivecentplots</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fcp</span>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">fivecentplots</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fcp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;test_data&#39;</span> <span class="o">/</span> <span class="s1">&#39;fake_data.csv&#39;</span><span class="p">)</span>
@@ -482,13 +449,11 @@ ws_title_ax (int): White space bottom of title to top of axes. Defaults to 10.</
 <span class="go">             ws_col=100, ws_row=0, ws_ax_fig=250, ws_label_rc=30, ws_ticks_ax=25, ws_label_tick=25)</span>
 </pre></div>
 </div>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><figure class="align-default">
 <img alt="../_images/example_ws.png" src="../_images/example_ws.png" />
 </figure>
 </div></blockquote>
-</div></blockquote>
-</section>
 </dd></dl>
 
 </section>
@@ -504,12 +469,12 @@ ws_title_ax (int): White space bottom of title to top of axes. Defaults to 10.</
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="titles.html"
+       href="ticks.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">title</p>
+        <p class="prev-next-title">ticks</p>
       </div>
     </a>
 </div>

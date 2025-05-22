@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=9830fc1a" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=0a832b7a" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -58,7 +58,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.6" />
-    <meta name="docbuild:last-update" content="May 21, 2025"/>
+    <meta name="docbuild:last-update" content="May 22, 2025"/>
   </head>
   
   
@@ -328,33 +328,6 @@
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">cbar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="fcp.html">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="axes.html">axes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bar.html">bar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="boxplot.html">boxplot</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">cbar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l2"><a class="reference internal" href="figure.html">figure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gantt.html">gantt</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gridlines.html">gridlines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="grouping.html">grouping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="heatmap.html">heatmap</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hist.html">hist</a></li>
-<li class="toctree-l2"><a class="reference internal" href="imshow.html">imshow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="labels.html">labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="legend.html">legend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
-<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ticks.html">ticks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="titles.html">title</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ws.html">ws</a></li>
-</ul>
-</details></li>
 <li class="toctree-l1"><a class="reference internal" href="figure.html">figure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gridlines.html">gridlines</a></li>
@@ -439,31 +412,27 @@
 <dt class="sig sig-object py" id="fivecentplots.fcp.cbar">
 <span class="sig-prename descclassname"><span class="pre">fcp.</span></span><span class="sig-name descname"><span class="pre">cbar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.cbar" title="Link to this definition">#</a></dt>
 <dd><p>Dummy function to return the colorbar API with <cite>help()</cite> (not used directly for plotting).</p>
-<dl>
-<dt>Keyword Args:</dt><dd><dl class="simple">
-<dt>cbar (bool): Toggle colorbar on/off for contour and heatmap plots. Defaults to False. /dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/contour.html#Filled-contour">More details</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cbar</strong> (<em>bool</em>) – Toggle colorbar on/off for contour and heatmap plots. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/contour.html#Filled-contour">More details</a></p></li>
+<li><p><strong>size</strong> (<em>int</em>) – cbar width [height will match the height of the axes]. Defaults to 30.</p></li>
+</ul>
 </dd>
 </dl>
-<p>size (int): cbar width [height will match the height of the axes]. Defaults to 30.</p>
-</dd>
-</dl>
-<section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h2>
-<blockquote>
-<div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">fivecentplots</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fcp</span>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">fivecentplots</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fcp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;test_data/fake_data_contour.csv&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fcp</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cbar_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=-</span><span class="mi">4</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=-</span><span class="mi">4</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><figure class="align-default">
 <img alt="../_images/example_cbar.png" src="../_images/example_cbar.png" />
 </figure>
 </div></blockquote>
-</div></blockquote>
-</section>
 </dd></dl>
 
 </section>

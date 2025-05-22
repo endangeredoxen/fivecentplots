@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=9830fc1a" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=0a832b7a" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -53,12 +53,12 @@
     <link rel="icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="API" href="fcp.html" />
+    <link rel="next" title="figure" href="figure.html" />
     <link rel="prev" title="cbar" href="cbar.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.6" />
-    <meta name="docbuild:last-update" content="May 21, 2025"/>
+    <meta name="docbuild:last-update" content="May 22, 2025"/>
   </head>
   
   
@@ -328,33 +328,6 @@
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cbar.html">cbar</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">contour</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="fcp.html">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="axes.html">axes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bar.html">bar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="boxplot.html">boxplot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cbar.html">cbar</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">contour</a></li>
-<li class="toctree-l2"><a class="reference internal" href="figure.html">figure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gantt.html">gantt</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gridlines.html">gridlines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="grouping.html">grouping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="heatmap.html">heatmap</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hist.html">hist</a></li>
-<li class="toctree-l2"><a class="reference internal" href="imshow.html">imshow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="labels.html">labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="legend.html">legend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
-<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ticks.html">ticks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="titles.html">title</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ws.html">ws</a></li>
-</ul>
-</details></li>
 <li class="toctree-l1"><a class="reference internal" href="figure.html">figure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gridlines.html">gridlines</a></li>
@@ -439,54 +412,43 @@
 <dt class="sig sig-object py" id="fivecentplots.fcp.contour">
 <span class="sig-prename descclassname"><span class="pre">fcp.</span></span><span class="sig-name descname"><span class="pre">contour</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.contour" title="Link to this definition">#</a></dt>
 <dd><p>Contour plot module.</p>
-<dl>
-<dt>Args:</dt><dd><p>df (DataFrame): DataFrame containing data to plot</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>DataFrame</em>) – DataFrame containing data to plot</p>
 </dd>
-<dt>Keyword Args:</dt><dd><p>x (str): x-axis column name <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span>
-y (str): y-axis column name <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span>
-z (str): z-axis column name <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span>
-BASIC:
-cmap (str): Name of a color map . Defaults to inferno. /p>
-<blockquote>
-<div><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/contour.html#Filled-contour">More details</a></p>
-</div></blockquote>
-<dl class="simple">
-<dt>contour_width (float): Width of the contour lines. Defaults to 1. /dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/contour.html#Contour-lines">More details</a></p>
-</dd>
-<dt>filled (bool): Color area between contour lines. Defaults to True. /dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/contour.html#Filled-contour">More details</a></p>
-</dd>
-<dt>interp (str): Scipy interpolate.griddata method to make Z points {‘linear’, ‘nearest’, ‘cubic’}. Defaults to</dt><dd><p>‘cubic’. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/contour.html#Data-interpolation">More details</a></p>
-</dd>
-<dt>levels (int): Number of contour lines/levels to draw. Defaults to 20. /dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/contour.html#Contour-lines">More details</a></p>
-</dd>
-<dt>show_points (bool): Show points on top of the contour plot. Defaults to False. /dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/contour.html#Contour-points">More details</a></p>
-</dd>
-</dl>
-<p>COLOR_BAR:
-cbar (bool): Toggle colorbar on/off for contour and heatmap plots. Defaults to False. /p>
-<blockquote>
-<div><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/contour.html#Filled-contour">More details</a></p>
-</div></blockquote>
-<p>size (int): cbar width [height will match the height of the axes]. Defaults to 30.</p>
+<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<p style="color:#4b72b0; margin-left:-20px"><strong>REQUIRED</strong>: </p>
+<li><p><strong>x</strong> (<em>str</em>) – x-axis column name</p></li>
+<li><p><strong>y</strong> (<em>str</em>) – y-axis column name</p></li>
+<li><p><strong>z</strong> (<em>str</em>) – z-axis column name</p></li>
+<hr style="margin-left:-20px; margin-top:20px; margin-bottom:10px"><p style="color:#4b72b0; margin-left:-20px"><strong>BASIC</strong>: </p>
+<li><p><strong>cmap</strong> (<em>str</em>) – Name of a color map . Defaults to inferno. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/contour.html#Filled-contour">More details</a></p></li>
+<li><p><strong>contour_width</strong> (<em>float</em>) – Width of the contour lines. Defaults to 1. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/contour.html#Contour-lines">More details</a></p></li>
+<li><p><strong>filled</strong> (<em>bool</em>) – Color area between contour lines. Defaults to True. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/contour.html#Filled-contour">More details</a></p></li>
+<li><p><strong>interp</strong> (<em>str</em>) – Scipy interpolate.griddata method to make Z points {‘linear’, ‘nearest’, ‘cubic’}. Defaults to
+‘cubic’. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/contour.html#Data-interpolation">More details</a></p></li>
+<li><p><strong>levels</strong> (<em>int</em>) – Number of contour lines/levels to draw. Defaults to 20. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/contour.html#Contour-lines">More details</a></p></li>
+<li><p><strong>show_points</strong> (<em>bool</em>) – Show points on top of the contour plot. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/contour.html#Contour-points">More details</a></p></li>
+<hr style="margin-left:-20px; margin-top:20px; margin-bottom:10px"><p style="color:#4b72b0; margin-left:-20px"><strong>COLOR_BAR</strong>: </p>
+<li><p><strong>cbar</strong> (<em>bool</em>) – Toggle colorbar on/off for contour and heatmap plots. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/contour.html#Filled-contour">More details</a></p></li>
+<li><p><strong>size</strong> (<em>int</em>) – cbar width [height will match the height of the axes]. Defaults to 30.</p></li>
+</ul>
 </dd>
 </dl>
-<section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h2>
-<blockquote>
-<div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">fivecentplots</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fcp</span>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">fivecentplots</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fcp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;test_data/fake_data_contour.csv&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fcp</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cbar_size</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=-</span><span class="mi">4</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=-</span><span class="mi">4</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><figure class="align-default">
 <img alt="../_images/example_contour.png" src="../_images/example_contour.png" />
 </figure>
 </div></blockquote>
-</div></blockquote>
-</section>
 </dd></dl>
 
 </section>
@@ -511,11 +473,11 @@ cbar (bool): Toggle colorbar on/off for contour and heatmap plots. Defaults to F
       </div>
     </a>
     <a class="right-next"
-       href="fcp.html"
+       href="figure.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">API</p>
+        <p class="prev-next-title">figure</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

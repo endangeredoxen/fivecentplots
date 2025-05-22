@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=9830fc1a" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=0a832b7a" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -58,7 +58,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.6" />
-    <meta name="docbuild:last-update" content="May 21, 2025"/>
+    <meta name="docbuild:last-update" content="May 22, 2025"/>
   </head>
   
   
@@ -328,33 +328,6 @@
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cbar.html">cbar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="fcp.html">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="axes.html">axes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bar.html">bar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="boxplot.html">boxplot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cbar.html">cbar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l2"><a class="reference internal" href="figure.html">figure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gantt.html">gantt</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gridlines.html">gridlines</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">grouping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="heatmap.html">heatmap</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hist.html">hist</a></li>
-<li class="toctree-l2"><a class="reference internal" href="imshow.html">imshow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="labels.html">labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="legend.html">legend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
-<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ticks.html">ticks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="titles.html">title</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ws.html">ws</a></li>
-</ul>
-</details></li>
 <li class="toctree-l1"><a class="reference internal" href="figure.html">figure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gridlines.html">gridlines</a></li>
@@ -416,9 +389,6 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">API</a></li>
     
-    
-    <li class="breadcrumb-item"><a href="fcp.html" class="nav-link">API</a></li>
-    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">grouping</span></li>
   </ul>
 </nav>
@@ -442,26 +412,26 @@
 <dt class="sig sig-object py" id="fivecentplots.fcp.grouping">
 <span class="sig-prename descclassname"><span class="pre">fcp.</span></span><span class="sig-name descname"><span class="pre">grouping</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.grouping" title="Link to this definition">#</a></dt>
 <dd><p>Dummy function to return the grouping API with <cite>help()</cite> (not used directly for plotting).</p>
-<dl class="simple">
-<dt>Keyword Args:</dt><dd><dl class="simple">
-<dt>col (str): [1] name of DataFrame column for grouping into columns of subplots based on each unique value; or [2]</dt><dd><p>col=”x” with multiple values defined for “x” creates columns of subplots for each x-value. Defaults to None.</p>
-</dd>
-<dt>groups (str): for xy plot = name of DataFrame column that can be used to separate the data into unique groups so</dt><dd><p>plot lines do not circle back on themselves. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/grouping.html#xy-plots">More details</a></p>
-</dd>
-<dt>groups (str|list): for boxplot = name or list of names of DataFrame column(s) used to split the data into</dt><dd><p>separate boxes. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/grouping.html#boxplots">More details</a></p>
-</dd>
-<dt>row (str): [1] name of DataFrame column for grouping into rows of subplots based on each unique value; or [2]</dt><dd><p>row=”y” with multiple values defined for “y” creates rows of subplots for each y-value. Defaults to None.</p>
-</dd>
-<dt>wrap (str|list): [1] name or list of names of DataFrame column(s) for grouping into a grid of subplots; [2]</dt><dd><p>wrap=”x” with multiple values defined for “x” creates a grid of subplots for each x-value; or [3] wrap=”y”
-with multiple values defined for “y” creates a grid of subplots for each y-value. Defaults to None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>col</strong> (<em>str</em>) – [1] name of DataFrame column for grouping into columns of subplots based on each unique value; or [2]
+col=”x” with multiple values defined for “x” creates columns of subplots for each x-value. Defaults to None.</p></li>
+<li><p><strong>groups</strong> (<em>str</em><em>|</em><em>list</em>) – for xy plot = name of DataFrame column that can be used to separate the data into unique groups so
+plot lines do not circle back on themselves. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/grouping.html#xy-plots">More details</a></p></li>
+<li><p><strong>groups</strong> – for boxplot = name or list of names of DataFrame column(s) used to split the data into
+separate boxes. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/grouping.html#boxplots">More details</a></p></li>
+<li><p><strong>row</strong> (<em>str</em>) – [1] name of DataFrame column for grouping into rows of subplots based on each unique value; or [2]
+row=”y” with multiple values defined for “y” creates rows of subplots for each y-value. Defaults to None.</p></li>
+<li><p><strong>wrap</strong> (<em>str</em><em>|</em><em>list</em>) – [1] name or list of names of DataFrame column(s) for grouping into a grid of subplots; [2]
+wrap=”x” with multiple values defined for “x” creates a grid of subplots for each x-value; or [3] wrap=”y”
+with multiple values defined for “y” creates a grid of subplots for each y-value. Defaults to None.</p></li>
+</ul>
 </dd>
 </dl>
-</dd>
-</dl>
-<section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h2>
+<p class="rubric">Examples</p>
 <p>Row by column style:</p>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">fivecentplots</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fcp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -470,7 +440,7 @@ with multiple values defined for “y” creates a grid of subplots for each y-v
 <span class="go">             filter=&#39;Target Wavelength==450 &amp; Temperature [C]==25 &amp; Boost  Level==0.2&#39;, ax_size=[300, 250])</span>
 </pre></div>
 </div>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><figure class="align-default">
 <a class="reference internal image-reference" href="../_images/example_grouping1.png"><img alt="../_images/example_grouping1.png" src="../_images/example_grouping1.png" style="width: 1078px;" />
 </a>
@@ -478,7 +448,7 @@ with multiple values defined for “y” creates a grid of subplots for each y-v
 </div></blockquote>
 </div></blockquote>
 <p>Wrap style:</p>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">fivecentplots</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fcp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -487,7 +457,7 @@ with multiple values defined for “y” creates a grid of subplots for each y-v
 <span class="go">             filter=&#39;Target Wavelength==450 &amp; Temperature [C]==25 &amp; Boost  Level==0.2&#39;, ax_size=[300, 250])</span>
 </pre></div>
 </div>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><figure class="align-default">
 <a class="reference internal image-reference" href="../_images/example_grouping2.png"><img alt="../_images/example_grouping2.png" src="../_images/example_grouping2.png" style="width: 977px;" />
 </a>
@@ -495,7 +465,7 @@ with multiple values defined for “y” creates a grid of subplots for each y-v
 </div></blockquote>
 </div></blockquote>
 <p>Box plot:</p>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">fivecentplots</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fcp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -503,14 +473,13 @@ with multiple values defined for “y” creates a grid of subplots for each y-v
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><figure class="align-default">
 <a class="reference internal image-reference" href="../_images/example_grouping3.png"><img alt="../_images/example_grouping3.png" src="../_images/example_grouping3.png" style="width: 544px;" />
 </a>
 </figure>
 </div></blockquote>
 </div></blockquote>
-</section>
 </dd></dl>
 
 </section>

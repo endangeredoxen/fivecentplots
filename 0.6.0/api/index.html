@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=9830fc1a" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=0a832b7a" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -58,7 +58,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.6" />
-    <meta name="docbuild:last-update" content="May 21, 2025"/>
+    <meta name="docbuild:last-update" content="May 22, 2025"/>
   </head>
   
   
@@ -328,33 +328,6 @@
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cbar.html">cbar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="fcp.html">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="axes.html">axes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bar.html">bar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="boxplot.html">boxplot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cbar.html">cbar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l2"><a class="reference internal" href="figure.html">figure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gantt.html">gantt</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gridlines.html">gridlines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="grouping.html">grouping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="heatmap.html">heatmap</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hist.html">hist</a></li>
-<li class="toctree-l2"><a class="reference internal" href="imshow.html">imshow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="labels.html">labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="legend.html">legend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
-<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ticks.html">ticks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="titles.html">title</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ws.html">ws</a></li>
-</ul>
-</details></li>
 <li class="toctree-l1"><a class="reference internal" href="figure.html">figure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gridlines.html">gridlines</a></li>
@@ -432,128 +405,19 @@
                   
   <section id="api">
 <h1>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h1>
+<p><strong>fivecentplots</strong> is driven by keywords arguments or <strong>kwargs</strong>.  Kwargs for various plot types
+and <cite>Element</cite> objects, along with some examples of their usage, can be found using the list in
+the left sidebar.  The general usage pattern of kwargs is as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">valid_plot_type_name</span><span class="p">(</span><span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">keyword1</span><span class="o">=</span><span class="n">value1</span><span class="p">,</span> <span class="n">keyword2</span><span class="o">=</span><span class="n">value2</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>While the majority of kwargs are optional, each plot type has a small list of <em>required</em> kwargs.
+These are usually related to specifying the columns of data that should be plotted.  For example,
+the <cite>plot</cite> method used for XY scatter plotting requires that the <cite>x</cite> and <cite>y</cite> column names be specified.</p>
+</div>
 <div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="axes.html">axes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="axes.html#fivecentplots.fcp.axes"><code class="docutils literal notranslate"><span class="pre">fcp.axes()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="bar.html">bar</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="bar.html#fivecentplots.fcp.bar"><code class="docutils literal notranslate"><span class="pre">fcp.bar()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="boxplot.html#fivecentplots.fcp.boxplot"><code class="docutils literal notranslate"><span class="pre">fcp.boxplot()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="cbar.html">cbar</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="cbar.html#fivecentplots.fcp.cbar"><code class="docutils literal notranslate"><span class="pre">fcp.cbar()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="contour.html#fivecentplots.fcp.contour"><code class="docutils literal notranslate"><span class="pre">fcp.contour()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="fcp.html">API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="axes.html">axes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bar.html">bar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="boxplot.html">boxplot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cbar.html">cbar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l2"><a class="reference internal" href="figure.html">figure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gantt.html">gantt</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gridlines.html">gridlines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="grouping.html">grouping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="heatmap.html">heatmap</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hist.html">hist</a></li>
-<li class="toctree-l2"><a class="reference internal" href="imshow.html">imshow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="labels.html">labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="legend.html">legend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
-<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ticks.html">ticks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="titles.html">title</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ws.html">ws</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="figure.html">figure</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="figure.html#fivecentplots.fcp.figure"><code class="docutils literal notranslate"><span class="pre">fcp.figure()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="gantt.html#fivecentplots.fcp.gantt"><code class="docutils literal notranslate"><span class="pre">fcp.gantt()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="gridlines.html">gridlines</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="gridlines.html#fivecentplots.fcp.gridlines"><code class="docutils literal notranslate"><span class="pre">fcp.gridlines()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="grouping.html">grouping</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="grouping.html#fivecentplots.fcp.grouping"><code class="docutils literal notranslate"><span class="pre">fcp.grouping()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="heatmap.html#fivecentplots.fcp.heatmap"><code class="docutils literal notranslate"><span class="pre">fcp.heatmap()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="hist.html">hist</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="hist.html#fivecentplots.fcp.hist"><code class="docutils literal notranslate"><span class="pre">fcp.hist()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="imshow.html">imshow</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="imshow.html#fivecentplots.fcp.imshow"><code class="docutils literal notranslate"><span class="pre">fcp.imshow()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="labels.html">labels</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="labels.html#fivecentplots.fcp.labels"><code class="docutils literal notranslate"><span class="pre">fcp.labels()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="legend.html">legend</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="legend.html#fivecentplots.fcp.legend"><code class="docutils literal notranslate"><span class="pre">fcp.legend()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="lines.html">lines</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="lines.html#fivecentplots.fcp.lines"><code class="docutils literal notranslate"><span class="pre">fcp.lines()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="markers.html">markers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="markers.html#fivecentplots.fcp.markers"><code class="docutils literal notranslate"><span class="pre">fcp.markers()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="nq.html">nq</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="nq.html#fivecentplots.fcp.nq"><code class="docutils literal notranslate"><span class="pre">fcp.nq()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="options.html">options</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="options.html#fivecentplots.fcp.options"><code class="docutils literal notranslate"><span class="pre">fcp.options()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="pie.html">pie</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="pie.html#fivecentplots.fcp.pie"><code class="docutils literal notranslate"><span class="pre">fcp.pie()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="plot.html#fivecentplots.fcp.plot"><code class="docutils literal notranslate"><span class="pre">fcp.plot()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tick_labels.html">tick_labels</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tick_labels.html#fivecentplots.fcp.tick_labels"><code class="docutils literal notranslate"><span class="pre">fcp.tick_labels()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="ticks.html">ticks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="ticks.html#fivecentplots.fcp.ticks"><code class="docutils literal notranslate"><span class="pre">fcp.ticks()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="ws.html">ws</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="ws.html#fivecentplots.fcp.ws"><code class="docutils literal notranslate"><span class="pre">fcp.ws()</span></code></a></li>
-</ul>
-</li>
-</ul>
 </div>
 </section>
 

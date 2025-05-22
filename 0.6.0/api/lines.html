@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=9830fc1a" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=0a832b7a" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -58,7 +58,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.6" />
-    <meta name="docbuild:last-update" content="May 21, 2025"/>
+    <meta name="docbuild:last-update" content="May 22, 2025"/>
   </head>
   
   
@@ -328,33 +328,6 @@
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cbar.html">cbar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="fcp.html">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="axes.html">axes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bar.html">bar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="boxplot.html">boxplot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cbar.html">cbar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l2"><a class="reference internal" href="figure.html">figure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gantt.html">gantt</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gridlines.html">gridlines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="grouping.html">grouping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="heatmap.html">heatmap</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hist.html">hist</a></li>
-<li class="toctree-l2"><a class="reference internal" href="imshow.html">imshow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="labels.html">labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="legend.html">legend</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">lines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
-<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ticks.html">ticks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="titles.html">title</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ws.html">ws</a></li>
-</ul>
-</details></li>
 <li class="toctree-l1"><a class="reference internal" href="figure.html">figure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gridlines.html">gridlines</a></li>
@@ -416,9 +389,6 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">API</a></li>
     
-    
-    <li class="breadcrumb-item"><a href="fcp.html" class="nav-link">API</a></li>
-    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">lines</span></li>
   </ul>
 </nav>
@@ -442,27 +412,23 @@
 <dt class="sig sig-object py" id="fivecentplots.fcp.lines">
 <span class="sig-prename descclassname"><span class="pre">fcp.</span></span><span class="sig-name descname"><span class="pre">lines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.lines" title="Link to this definition">#</a></dt>
 <dd><p>Dummy function to return the lines API with <cite>help()</cite> (not used directly for plotting).</p>
-<dl class="simple">
-<dt>Keyword Args:</dt><dd><dl class="simple">
-<dt>cmap (str): Color map name (overrides all other color parameters). Defaults to None. /dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Colormap">More details</a></p>
-</dd>
-<dt>line_alpha (str|list): Transparency value for the line(s) between 0-1. Defaults to 1. /dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Line-styling">More details</a></p>
-</dd>
-<dt>line_color (str|list): Hex color string or list of hex color strings for the plot lines. Defaults to</dt><dd><p>fcp.DEFAULT_COLORS. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Line-styling">More details</a></p>
-</dd>
-<dt>line_style (str|list): Matplotlib string character for line style {‘-’; ‘–’; ‘-.’ ‘:’}. Defaults to ‘-‘.</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Line-styling">More details</a></p>
-</dd>
-<dt>line_width (int|list): Line width in pixels. Defaults to 1. /dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Line-styling">More details</a></p>
-</dd>
-<dt>lines (boolean): Enable/disable plotting of lines. Defaults to True. /dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/plot.html#Scatter">More details</a></p>
-</dd>
-</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cmap</strong> (<em>str</em>) – Color map name (overrides all other color parameters). Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Colormap">More details</a></p></li>
+<li><p><strong>line_alpha</strong> (<em>str</em><em>|</em><em>list</em>) – Transparency value for the line(s) between 0-1. Defaults to 1. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Line-styling">More details</a></p></li>
+<li><p><strong>line_color</strong> (<em>str</em><em>|</em><em>list</em>) – Hex color string or list of hex color strings for the plot lines. Defaults to
+fcp.DEFAULT_COLORS. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Line-styling">More details</a></p></li>
+<li><p><strong>line_style</strong> (<em>str</em><em>|</em><em>list</em>) – Matplotlib string character for line style {‘-’; ‘–’; ‘-.’ ‘:’}. Defaults to ‘-‘.
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Line-styling">More details</a></p></li>
+<li><p><strong>line_width</strong> (<em>int</em><em>|</em><em>list</em>) – Line width in pixels. Defaults to 1. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Line-styling">More details</a></p></li>
+<li><p><strong>lines</strong> (<em>boolean</em>) – Enable/disable plotting of lines. Defaults to True. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/plot.html#Scatter">More details</a></p></li>
+</ul>
 </dd>
 </dl>
-<section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h2>
+<p class="rubric">Examples</p>
 <p>All lines the same color:</p>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">fivecentplots</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fcp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -472,14 +438,14 @@
 <span class="go">             line_color=&#39;#000000&#39;, line_width=2)</span>
 </pre></div>
 </div>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><figure class="align-default">
 <img alt="../_images/example_lines1.png" src="../_images/example_lines1.png" />
 </figure>
 </div></blockquote>
 </div></blockquote>
 <p>Patterns of alternating custom color and style:</p>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">fivecentplots</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fcp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -489,14 +455,14 @@
 <span class="go">             line_color=[&#39;#AA00AA&#39;, &#39;#00AA00&#39;, &#39;#0000AA&#39;],  line_width=2, line_style=[&#39;-&#39;, &#39;--&#39;])</span>
 </pre></div>
 </div>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><figure class="align-default">
 <img alt="../_images/example_lines2.png" src="../_images/example_lines2.png" />
 </figure>
 </div></blockquote>
 </div></blockquote>
 <p>Use a colormap with alpha:</p>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">fivecentplots</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fcp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -506,14 +472,14 @@
 <span class="go">             cmap=&#39;viridis&#39;, lines_alpha=0.7)</span>
 </pre></div>
 </div>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><figure class="align-default">
 <img alt="../_images/example_lines3.png" src="../_images/example_lines3.png" />
 </figure>
 </div></blockquote>
 </div></blockquote>
 <p>No lines:</p>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">fivecentplots</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fcp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -523,13 +489,12 @@
 <span class="go">             lines=False)</span>
 </pre></div>
 </div>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><figure class="align-default">
 <img alt="../_images/example_lines4.png" src="../_images/example_lines4.png" />
 </figure>
 </div></blockquote>
 </div></blockquote>
-</section>
 </dd></dl>
 
 </section>

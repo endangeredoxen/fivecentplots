@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=9830fc1a" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=0a832b7a" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -58,7 +58,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.6" />
-    <meta name="docbuild:last-update" content="May 21, 2025"/>
+    <meta name="docbuild:last-update" content="May 22, 2025"/>
   </head>
   
   
@@ -328,33 +328,6 @@
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cbar.html">cbar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="fcp.html">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="axes.html">axes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bar.html">bar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="boxplot.html">boxplot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cbar.html">cbar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l2"><a class="reference internal" href="figure.html">figure</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">gantt</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gridlines.html">gridlines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="grouping.html">grouping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="heatmap.html">heatmap</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hist.html">hist</a></li>
-<li class="toctree-l2"><a class="reference internal" href="imshow.html">imshow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="labels.html">labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="legend.html">legend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
-<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ticks.html">ticks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="titles.html">title</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ws.html">ws</a></li>
-</ul>
-</details></li>
 <li class="toctree-l1"><a class="reference internal" href="figure.html">figure</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">gantt</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gridlines.html">gridlines</a></li>
@@ -416,9 +389,6 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">API</a></li>
     
-    
-    <li class="breadcrumb-item"><a href="fcp.html" class="nav-link">API</a></li>
-    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">gantt</span></li>
   </ul>
 </nav>
@@ -441,72 +411,51 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="fivecentplots.fcp.gantt">
 <span class="sig-prename descclassname"><span class="pre">fcp.</span></span><span class="sig-name descname"><span class="pre">gantt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.gantt" title="Link to this definition">#</a></dt>
-<dd><dl>
+<dd><dl class="simple">
 <dt>Gantt chart plotting function.  This plot is built off of a horizontal</dt><dd><p>implementation of <cite>fcp.bar</cite>.</p>
 </dd>
-<dt>Args:</dt><dd><p>df (DataFrame): DataFrame containing data to plot</p>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>DataFrame</em>) – DataFrame containing data to plot</p>
 </dd>
-<dt>Keyword Args:</dt><dd><dl class="simple">
-<dt>x (list): two x-axis column names containing Datetime values <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span></dt><dd><ul class="simple">
-<li><ol class="arabic simple">
-<li><p>the start time for each item in the Gantt chart</p></li>
-</ol>
-</li>
-<li><ol class="arabic simple" start="2">
-<li><p>the stop time for each item in the Gantt chart</p></li>
-</ol>
-</li>
+<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<p style="color:#4b72b0; margin-left:-20px"><strong>REQUIRED</strong>: </p>
+<li><p><strong>x</strong> (<em>list</em>) – two x-axis column names containing Datetime values
+- 1) the start time for each item in the Gantt chart
+- 2) the stop time for each item in the Gantt chart</p></li>
+<li><p><strong>y</strong> (<em>str</em>) – y-axis column name</p></li>
+<hr style="margin-left:-20px; margin-top:20px; margin-bottom:10px"><p style="color:#4b72b0; margin-left:-20px"><strong>BASIC</strong>: </p>
+<li><p><strong>gantt_color_by</strong><strong>|</strong><strong>color_by</strong> (<em>None</em><em>, </em><em>str</em>) – Color grouping column. Defaults to ‘bar’. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Styling">More details</a></p></li>
+<li><p><strong>gantt_edge_color</strong> (<em>str</em>) – Hex color string for the edge of the Gantt bars. <br>Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#b3b2b2;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8cd3c6;display:inline-block"></span>.
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Styling">More details</a></p></li>
+<li><p><strong>gantt_edge_width</strong> (<em>float</em>) – Width of the edge of the Gantt bars in pixels. Defaults to 0. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Styling">More details</a></p></li>
+<li><p><strong>gantt_fill_alpha</strong> (<em>int</em>) – Transparency value for the Gantt bars between 0-1. Defaults to 0.75. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Styling">More details</a></p></li>
+<li><p><strong>gantt_fill_color</strong> (<em>str</em>) – Hex color string of the Gantt bar fill . <br>Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#b3b2b2;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8cd3c6;display:inline-block"></span>.</p></li>
+<li><p><strong>gantt_height</strong><strong>|</strong><strong>height</strong> (<em>float</em>) – Set the fractional height of the Gantt bars between 0-1. Defaults to 0.9. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Styling">More details</a></p></li>
+<li><p><strong>gantt_label_x</strong> (<em>str</em>) – By default, x-axis labels are disabled for this plot type. Defaults to ‘’.</p></li>
+<li><p><strong>legend</strong> (<em>gantt_order_by_legend</em><em>|</em><em>order by</em>) – Order the y-axis values based on the sort order of the legend
+values [requires legend]. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Legends">More details</a></p></li>
+<li><p><strong>gantt_tick_labels_x_rotation</strong><strong>|</strong><strong>tick_labels_x_rotation</strong> (<em>int</em>) – Gantt-specific version of the this kwarg to ensure
+rotations are not applied globably to all plots from a theme file. Defaults to 90. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Legends">More details</a></p></li>
+<li><p><strong>sort</strong> (<em>str</em>) – Sort order for the Gantt bars {‘ascending’, ‘descending’}. Defaults to ‘descending’. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Sorting">More details</a></p></li>
 </ul>
 </dd>
 </dl>
-<p>y (str): y-axis column name <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span>
-gantt_color_by|color_by (None, str): Color grouping column. Defaults to ‘bar’. /p>
-<blockquote>
-<div><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Styling">More details</a></p>
-</div></blockquote>
-<dl class="simple">
-<dt>gantt_edge_color (str): Hex color string for the edge of the Gantt bars. <br>Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#b3b2b2;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8cd3c6;display:inline-block"></span>.</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Styling">More details</a></p>
-</dd>
-<dt>gantt_edge_width (float): Width of the edge of the Gantt bars in pixels. Defaults to 0. /dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Styling">More details</a></p>
-</dd>
-<dt>gantt_fill_alpha (int): Transparency value for the Gantt bars between 0-1. Defaults to 0.75. /dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Styling">More details</a></p>
-</dd>
-</dl>
-<p>gantt_fill_color (str): Hex color string of the Gantt bar fill . <br>Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#b3b2b2;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8cd3c6;display:inline-block"></span>.
-gantt_height|height (float): Set the fractional height of the Gantt bars between 0-1. Defaults to 0.9. /p>
-<blockquote>
-<div><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Styling">More details</a></p>
-</div></blockquote>
-<p>gantt_label_x (str): By default, x-axis labels are disabled for this plot type. Defaults to ‘’.
-gantt_order_by_legend|order by legend (bool): Order the y-axis values based on the sort order of the legend</p>
-<blockquote>
-<div><p>values [requires legend]. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Legends">More details</a></p>
-</div></blockquote>
-<dl class="simple">
-<dt>gantt_tick_labels_x_rotation|tick_labels_x_rotation (int): Gantt-specific version of the this kwarg to ensure</dt><dd><p>rotations are not applied globably to all plots from a theme file. Defaults to 90. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Legends">More details</a></p>
-</dd>
-<dt>sort (str): Sort order for the Gantt bars {‘ascending’, ‘descending’}. Defaults to ‘descending’. /dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Sorting">More details</a></p>
-</dd>
-</dl>
-</dd>
-</dl>
-<section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h2>
-<blockquote>
-<div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">fivecentplots</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fcp</span>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">fivecentplots</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fcp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;test_data/fake_data_gantt.csv&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
 </pre></div>
 </div>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><figure class="align-default">
 <img alt="../_images/example_gantt.png" src="../_images/example_gantt.png" />
 </figure>
 </div></blockquote>
-</div></blockquote>
-</section>
 </dd></dl>
 
 </section>

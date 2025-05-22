@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=9830fc1a" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=0a832b7a" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -58,7 +58,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.6" />
-    <meta name="docbuild:last-update" content="May 21, 2025"/>
+    <meta name="docbuild:last-update" content="May 22, 2025"/>
   </head>
   
   
@@ -328,33 +328,6 @@
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cbar.html">cbar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="fcp.html">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="axes.html">axes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bar.html">bar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="boxplot.html">boxplot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cbar.html">cbar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l2"><a class="reference internal" href="figure.html">figure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gantt.html">gantt</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gridlines.html">gridlines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="grouping.html">grouping</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">heatmap</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hist.html">hist</a></li>
-<li class="toctree-l2"><a class="reference internal" href="imshow.html">imshow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="labels.html">labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="legend.html">legend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
-<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ticks.html">ticks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="titles.html">title</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ws.html">ws</a></li>
-</ul>
-</details></li>
 <li class="toctree-l1"><a class="reference internal" href="figure.html">figure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gridlines.html">gridlines</a></li>
@@ -416,9 +389,6 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">API</a></li>
     
-    
-    <li class="breadcrumb-item"><a href="fcp.html" class="nav-link">API</a></li>
-    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">heatmap</span></li>
   </ul>
 </nav>
@@ -442,43 +412,35 @@
 <dt class="sig sig-object py" id="fivecentplots.fcp.heatmap">
 <span class="sig-prename descclassname"><span class="pre">fcp.</span></span><span class="sig-name descname"><span class="pre">heatmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.heatmap" title="Link to this definition">#</a></dt>
 <dd><p>Heatmap plot.</p>
-<dl>
-<dt>Args:</dt><dd><p>df (DataFrame): DataFrame containing data to plot</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>DataFrame</em>) – DataFrame containing data to plot</p>
 </dd>
-<dt>Keyword Args:</dt><dd><p>x (str): x-axis column name <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span>
-y (str): y-axis column name <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span>
-z (str): z-axis column name <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span>
-BASIC:
-cell_size (int): Width of a heatmap cell in pixels. Defaults to 60. /p>
-<blockquote>
-<div><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/heatmap.html#Cell-size">More details</a></p>
-</div></blockquote>
-<dl class="simple">
-<dt>cmap (bool): Name of a color map to apply to the plot. Defaults to inferno. /dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/heatmap.html#No-data-labels">More details</a></p>
-</dd>
-<dt>data_labels (bool): Toggle visibility of value text labels on the heatmap cells. Defaults to False. /dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/heatmap.html#With-data-labels">More details</a></p>
-</dd>
-</dl>
-<p>heatmap_edge_width (float): Width of the edges of the heat map cells. Defaults to 0.
-heatmap_font_color (str): Hex color string for the value label text. Defaults to #ffffff <span id="rectangle" style="height: 12px; width: 12px; background-color:#ffffff; border: 1px solid #cccccc; display:inline-block"></span>.
-heatmap_font_size (int): Font size of the value label text. Defaults to 12.
-heatmap_interp|interp (str): imshow interpolation scheme [see matplotlib docs for more details]. Defaults to</p>
-<blockquote>
-<div><p>‘none’.</p>
-</div></blockquote>
-<p>heatmap_rounding (int): Number of digits to round heatmap data labels.  Defaults to None.
-COLOR_BAR:
-cbar (bool): Toggle colorbar on/off for contour and heatmap plots. Defaults to False. /p>
-<blockquote>
-<div><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/contour.html#Filled-contour">More details</a></p>
-</div></blockquote>
-<p>size (int): cbar width [height will match the height of the axes]. Defaults to 30.</p>
+<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<p style="color:#4b72b0; margin-left:-20px"><strong>REQUIRED</strong>: </p>
+<li><p><strong>x</strong> (<em>str</em>) – x-axis column name</p></li>
+<li><p><strong>y</strong> (<em>str</em>) – y-axis column name</p></li>
+<li><p><strong>z</strong> (<em>str</em>) – z-axis column name</p></li>
+<hr style="margin-left:-20px; margin-top:20px; margin-bottom:10px"><p style="color:#4b72b0; margin-left:-20px"><strong>BASIC</strong>: </p>
+<li><p><strong>cell_size</strong> (<em>int</em>) – Width of a heatmap cell in pixels. Defaults to 60. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/heatmap.html#Cell-size">More details</a></p></li>
+<li><p><strong>cmap</strong> (<em>bool</em>) – Name of a color map to apply to the plot. Defaults to inferno. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/heatmap.html#No-data-labels">More details</a></p></li>
+<li><p><strong>data_labels</strong> (<em>bool</em>) – Toggle visibility of value text labels on the heatmap cells. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/heatmap.html#With-data-labels">More details</a></p></li>
+<li><p><strong>heatmap_edge_width</strong> (<em>float</em>) – Width of the edges of the heat map cells. Defaults to 0.</p></li>
+<li><p><strong>heatmap_font_color</strong> (<em>str</em>) – Hex color string for the value label text. Defaults to #ffffff <span id="rectangle" style="height: 12px; width: 12px; background-color:#ffffff; border: 1px solid #cccccc; display:inline-block"></span>.</p></li>
+<li><p><strong>heatmap_font_size</strong> (<em>int</em>) – Font size of the value label text. Defaults to 12.</p></li>
+<li><p><strong>heatmap_interp</strong><strong>|</strong><strong>interp</strong> (<em>str</em>) – imshow interpolation scheme [see matplotlib docs for more details]. Defaults to
+‘none’.</p></li>
+<li><p><strong>heatmap_rounding</strong> (<em>int</em>) – Number of digits to round heatmap data labels.  Defaults to None.</p></li>
+<hr style="margin-left:-20px; margin-top:20px; margin-bottom:10px"><p style="color:#4b72b0; margin-left:-20px"><strong>COLOR_BAR</strong>: </p>
+<li><p><strong>cbar</strong> (<em>bool</em>) – Toggle colorbar on/off for contour and heatmap plots. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/contour.html#Filled-contour">More details</a></p></li>
+<li><p><strong>size</strong> (<em>int</em>) – cbar width [height will match the height of the axes]. Defaults to 30.</p></li>
+</ul>
 </dd>
 </dl>
-<section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h2>
+<p class="rubric">Examples</p>
 <p>Categorical heatmap:</p>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">fivecentplots</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fcp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -486,14 +448,14 @@ cbar (bool): Toggle colorbar on/off for contour and heatmap plots. Defaults to F
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fcp</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Category&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Player&#39;</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="s1">&#39;Average&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><figure class="align-default">
 <img alt="../_images/example_heatmap1.png" src="../_images/example_heatmap1.png" />
 </figure>
 </div></blockquote>
 </div></blockquote>
 <p>Non-uniform numerical data:</p>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">fivecentplots</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fcp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -503,13 +465,12 @@ cbar (bool): Toggle colorbar on/off for contour and heatmap plots. Defaults to F
 <span class="go">                label_rc_font_size=12, filter=&#39;Batch==103&#39;, cmap=&#39;viridis&#39;)</span>
 </pre></div>
 </div>
-<blockquote>
+<blockquote style="border-left: 0px">
 <div><figure class="align-default">
 <img alt="../_images/example_heatmap2.png" src="../_images/example_heatmap2.png" />
 </figure>
 </div></blockquote>
 </div></blockquote>
-</section>
 </dd></dl>
 
 </section>
