@@ -158,6 +158,7 @@ within **pandas** DataFrames.
 Consider the following plot of some fake current vs voltage data contained in a dummy DataFrame, ``df``:
 
 .. image:: _static/images/syntax.png
+    :align: center
 
 |
 
@@ -262,7 +263,7 @@ different API!  But with **fivecentplots** we can just change the kwarg defining
 
 .. raw:: html
 
-   <iframe src="_static/plotly_index.html" style="height:375px;width:930px;border:none;overflow:hidden;"></iframe>
+   <div align="center"><iframe src="_static/plotly_index.html" style="height:375px;width:930px;border:none;overflow:hidden;"></iframe></div>
 
 
 .. note:: As of v0.6 **matplotlib** has the richest available plotting feature set.  **plotly** supports most plot

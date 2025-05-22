@@ -70,7 +70,7 @@ html[data-theme="dark"]{
    /*--pst-color-link: #ffc107; */
    --pst-color-primary: #a5b5d1;
    --pst-color-secondary: #d1a82c;
-
+   --pst-color-table-row-hover-bg: #58667e;
 }
 html[data-theme="dark"] div.header{
    background-color: #3e454f;
@@ -159,4 +159,20 @@ html[data-theme=dark] .bd-content .nboutput .output_area .widget-subarea, html[d
 }
 .plotly-graph-div {
     margin: auto;
+}
+.bk-Row {
+    margin: auto;
+}
+div.version {
+    padding-left: 4px;
+    padding-top: 1px;
+    padding-right: 4px;
+    font-weight: normal;
+    font-size: 14px;
+    color: #FFFFFF;
+    float: right;
+    border: solid 1px #485988;
+    background-color: #485988;
+    border-radius: 3px;
+    font-family: arial;
 }
