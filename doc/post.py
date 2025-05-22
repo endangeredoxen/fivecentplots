@@ -4,6 +4,7 @@ import pdb
 import re
 import json
 import shutil
+import fivecentplots as fcp
 cur_dir = Path(__file__).resolve().parent
 db = pdb.set_trace
 sys.path = [str(cur_dir.parent / 'src' / 'fivecentplots')] + sys.path
@@ -13,9 +14,27 @@ except ModuleNotFoundError:
     from .colors import DEFAULT_COLORS
 
 
+# MANUAL FILE CHANGES
+html_files = list(Path(cur_dir / '_build/html').rglob('*.html'))
+for hf in html_files:
+    # read the html files
+    with open(hf, 'r') as input:
+        html = input.read()
+
+    # check for previously modified files (must be fresh)
+    idx = html.find('<div class="navbar-item"><ul class="navbar-icon-links"')
+    if idx == -1:
+        continue
+
+    # add version number to navbar
+    html = html[:idx] + f'<div class="version">v{fcp.__version__}</div>' + html[idx:]
+
+    # write back the file
+    with open(hf, 'w') as output:
+        output.write(html)
+
 # CLEAN UP IPYNB FILES
 print('Cleaning ipynb files...')
-
 # get the names of the ipynb files
 cur_dir = Path(__file__).parent.absolute()
 subfolders = [f for f in cur_dir.iterdir() if f.is_dir()]

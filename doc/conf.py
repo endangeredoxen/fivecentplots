@@ -46,7 +46,7 @@ extensions = [
     'sphinx_copybutton',
     'sphinx_design',
     'nbsphinx',
-    'sphinxcontrib.spelling'
+    # 'sphinxcontrib.spelling'
 ]
 
 #napoleon_custom_sections = [('Required', 'params_style')]#[('Required Keyword Args', 'params_style'), ('Optional Keyword Args', 'params_style')]
@@ -148,11 +148,18 @@ html_theme_options = {
     "header_links_before_dropdown": 8,
     "icon_links": [
         {
+            "name": "version",
+            "url": "",
+            "icon": "",
+            "type": "fontawesome",
+        },
+        {
             "name": "GitHub",
             "url": "https://github.com/endangeredoxen/fivecentplots",
             "icon": "fab fa-github",
             "type": "fontawesome",
-        }],
+        },
+    ],
     "footer_start": ["copyright", "sphinx-version"],
     "footer_end": ["theme-version"]
     # "switcher": {
