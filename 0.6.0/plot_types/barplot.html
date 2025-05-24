@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>barplot &#8212; fivecentplots</title>
+    <title>bar &#8212; fivecentplots</title>
   
   
   
@@ -61,7 +61,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.6" />
-    <meta name="docbuild:last-update" content="May 22, 2025"/>
+    <meta name="docbuild:last-update" content="May 24, 2025"/>
   </head>
   
   
@@ -327,7 +327,7 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">barplot</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">bar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt charts</a></li>
@@ -379,7 +379,7 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">Plot Types</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">barplot</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">bar</span></li>
   </ul>
 </nav>
 </div>
@@ -396,8 +396,8 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="barplot">
-<h1>barplot<a class="headerlink" href="#barplot" title="Link to this heading">#</a></h1>
+  <section id="bar">
+<h1>bar<a class="headerlink" href="#bar" title="Link to this heading">#</a></h1>
 <p>This section describes various options available for bar charts in <strong>fivecentplots</strong></p>
 <p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.6.0/api/bar.html#bar">See the full API </a></p>
 <section id="Setup">
@@ -633,10 +633,14 @@
 <img alt="../_images/plot_types_barplot_13_0.png" src="../_images/plot_types_barplot_13_0.png" />
 </div>
 </div>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">filter</span></code> is applied to show only measurement “A” at 25C</p></li>
-<li><p>tick labels are rotated 90° for readability (<code class="docutils literal notranslate"><span class="pre">fcp.bar</span></code> does <strong>not</strong> currently have auto-rotation for long tick labels)</p></li>
-</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">filter</span></code> applied to show only measurement “A” at 25C</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>tick labels are rotated manually 90° for readability (unlike <code class="docutils literal notranslate"><span class="pre">fcp.heatmap</span></code>, <code class="docutils literal notranslate"><span class="pre">fcp.bar</span></code> does not apply auto-rotation for long tick labels</p>
+</div>
 </section>
 <section id="Horizontal-bars">
 <h3>Horizontal bars<a class="headerlink" href="#Horizontal-bars" title="Link to this heading">#</a></h3>
@@ -803,7 +807,7 @@
 <h3>Custom line style<a class="headerlink" href="#Custom-line-style" title="Link to this heading">#</a></h3>
 <p>The rolling mean curve style can be easily modified using standard kwargs for line plots with a <code class="docutils literal notranslate"><span class="pre">rolling_mean_</span></code> prefix. Markers can also be enabled using the <code class="docutils literal notranslate"><span class="pre">markers</span></code> element object:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;cases&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">800</span><span class="p">,</span> <span class="mi">500</span><span class="p">],</span> <span class="n">tick_labels_major_x_rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">rolling_mean</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
@@ -842,7 +846,7 @@
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">,</span> <span class="n">tick_labels_major_x_rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span>

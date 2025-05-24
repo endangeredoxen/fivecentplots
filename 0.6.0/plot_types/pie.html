@@ -61,7 +61,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.6" />
-    <meta name="docbuild:last-update" content="May 22, 2025"/>
+    <meta name="docbuild:last-update" content="May 24, 2025"/>
   </head>
   
   
@@ -327,7 +327,7 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barplot.html">bar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt charts</a></li>
@@ -558,7 +558,10 @@
 <img alt="../_images/plot_types_pie_17_0.png" src="../_images/plot_types_pie_17_0.png" />
 </div>
 </div>
-<p>..caution:: if <code class="docutils literal notranslate"><span class="pre">pie_inner_radius</span></code> is not explicitly set by keyword or in a theme file, it will be set to equal <code class="docutils literal notranslate"><span class="pre">radius</span></code>. Be mindful that if you have <code class="docutils literal notranslate"><span class="pre">pie_inner_radius</span></code> set in a custom theme file and then change only <code class="docutils literal notranslate"><span class="pre">pie_radius</span></code> you will get an unintended result!</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>if <code class="docutils literal notranslate"><span class="pre">pie_inner_radius</span></code> is not explicitly set by keyword or in a theme file, it will be set to equal <code class="docutils literal notranslate"><span class="pre">radius</span></code>. Be mindful that if you have <code class="docutils literal notranslate"><span class="pre">pie_inner_radius</span></code> set in a custom theme file and then change only <code class="docutils literal notranslate"><span class="pre">pie_radius</span></code> you will get an unintended result!</p>
+</div>
 </section>
 <section id="Grouping">
 <h2>Grouping<a class="headerlink" href="#Grouping" title="Link to this heading">#</a></h2>
@@ -627,7 +630,7 @@
 <p>Wedge labels can be positioned relative to the center of the pie using keyword <code class="docutils literal notranslate"><span class="pre">pie_label_distance</span></code>. All other font parameters are controlled using <code class="docutils literal notranslate"><span class="pre">pie_font_xxx</span></code> keywords (or the shorthand versions with drop “pie_”). The position is based on a bisection line through the center of the pie chart and the wedge.</p>
 <p>We can also change the rotation of the labels to follow the bisection line using keyword <code class="docutils literal notranslate"><span class="pre">pie_rotate_labels</span></code> (or <code class="docutils literal notranslate"><span class="pre">rotate_labels</span></code>).</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">,</span> <span class="n">pie_label_distance</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">pie_font_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
@@ -788,7 +791,7 @@
 <li><p>pie_edge_width (edge_width)</p></li>
 </ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">,</span>

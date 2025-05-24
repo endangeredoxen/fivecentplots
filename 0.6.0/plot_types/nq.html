@@ -61,7 +61,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.6" />
-    <meta name="docbuild:last-update" content="May 22, 2025"/>
+    <meta name="docbuild:last-update" content="May 24, 2025"/>
   </head>
   
   
@@ -327,7 +327,7 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barplot.html">bar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt charts</a></li>
@@ -808,7 +808,10 @@ Warning: histograms of image data with float values is slow; consider using ints
 <img alt="../_images/plot_types_nq_47_0.png" src="../_images/plot_types_nq_47_0.png" />
 </div>
 </div>
-<p>..warning:: Nothing that prevents you from supplying a meaningless number for <code class="docutils literal notranslate"><span class="pre">sigma</span></code>. For instance, if your dataset is small you may not have enough points to calculate +/-3 sigma accurately. The auto-calculation of sigma will handle this, but there is no validation on user-provided <code class="docutils literal notranslate"><span class="pre">sigma</span></code> values</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Nothing that prevents you from supplying a meaningless number for <code class="docutils literal notranslate"><span class="pre">sigma</span></code>. For instance, if your dataset is small you may not have enough points to calculate +/-3 sigma accurately. The auto-calculation of sigma will handle this, but there is no validation on user-provided <code class="docutils literal notranslate"><span class="pre">sigma</span></code> values</p>
+</div>
 </section>
 <section id="Custom-tail">
 <h3>Custom tail<a class="headerlink" href="#Custom-tail" title="Link to this heading">#</a></h3>
@@ -888,7 +891,10 @@ Warning: histograms of image data with float values is slow; consider using ints
 <img alt="../_images/plot_types_nq_61_0.png" src="../_images/plot_types_nq_61_0.png" />
 </div>
 </div>
-<p>..caution:: Don’t ever style a plot like this. Just don’t</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Don’t ever style a plot like this. Just don’t</p>
+</div>
 </section>
 </section>
 

@@ -664,7 +664,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "..warning:: Nothing that prevents you from supplying a meaningless number for `sigma`.  For instance, if your dataset is small you may not have enough points to calculate +/-3 sigma accurately.  The auto-calculation of sigma will handle this, but there is no validation on user-provided `sigma` values"
+    ".. warning:: Nothing that prevents you from supplying a meaningless number for `sigma`.  For instance, if your dataset is small you may not have enough points to calculate +/-3 sigma accurately.  The auto-calculation of sigma will handle this, but there is no validation on user-provided `sigma` values"
    ]
   },
   {
@@ -814,8 +814,13 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "..caution:: Don't ever style a plot like this.  Just don't"
+    ".. warning:: Don't ever style a plot like this.  Just don't"
    ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": []
   }
  ],
  "metadata": {

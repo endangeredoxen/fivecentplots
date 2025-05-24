@@ -640,7 +640,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "..note:: kwargs related to the primary axes are suffixed with `_x` or `_y`.  Keywords related to the secondary axis are suffixed with `_x2` and `_y2`"
+    ".. note:: kwargs related to the primary axes are suffixed with `_x` or `_y`.  Keywords related to the secondary axis are suffixed with `_x2` and `_y2`"
    ]
   },
   {

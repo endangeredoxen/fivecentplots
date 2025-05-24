@@ -61,7 +61,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.6" />
-    <meta name="docbuild:last-update" content="May 22, 2025"/>
+    <meta name="docbuild:last-update" content="May 24, 2025"/>
   </head>
   
   
@@ -327,7 +327,7 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barplot.html">bar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt charts</a></li>
@@ -517,17 +517,20 @@
 <img alt="../_images/plot_types_heatmap_13_0.png" src="../_images/plot_types_heatmap_13_0.png" />
 </div>
 </div>
-<p>..note:</p>
-<ol class="arabic simple">
-<li><p>Colorbars are enabled by default for heatmaps and must be intentionally disabled with <code class="docutils literal notranslate"><span class="pre">cbar=False</span></code> to remove</p></li>
-<li><p>Heatmaps the <code class="docutils literal notranslate"><span class="pre">x</span></code> tick labels are rotated 90° by default. This can be overridden via the keyword <code class="docutils literal notranslate"><span class="pre">tick_labels_major_x_rotation</span></code></p></li>
-</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Colorbars are enabled by default for heatmaps and must be intentionally disabled with <code class="docutils literal notranslate"><span class="pre">cbar=False</span></code> to remove</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>heatmaps with x-axis tick labels are rotated 90° by default. This can be overridden via the keyword <code class="docutils literal notranslate"><span class="pre">tick_labels_major_x_rotation</span></code></p>
+</div>
 </section>
 <section id="With-data-labels">
 <h3>With data labels<a class="headerlink" href="#With-data-labels" title="Link to this heading">#</a></h3>
 <p>Using keyword <code class="docutils literal notranslate"><span class="pre">data_labels=True</span></code> we can overlay the numerical value of the <code class="docutils literal notranslate"><span class="pre">z</span></code> column on top of the heatmap cells:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Category&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Player&#39;</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="s1">&#39;Average&#39;</span><span class="p">,</span> <span class="n">data_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -547,7 +550,7 @@
 <h3>Cell size<a class="headerlink" href="#Cell-size" title="Link to this heading">#</a></h3>
 <p>The size of the heatmap cell will default to a width of 60 pixels unless: (1) the keyword <code class="docutils literal notranslate"><span class="pre">heatmap_cell_size</span></code> (or <code class="docutils literal notranslate"><span class="pre">cell_size</span></code> when directly supplying the value to the function call) is specified; or (2) <code class="docutils literal notranslate"><span class="pre">ax_size</span></code> is explicitly defined:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Category&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Player&#39;</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="s1">&#39;Average&#39;</span><span class="p">,</span> <span class="n">data_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -562,7 +565,10 @@
 <img alt="../_images/plot_types_heatmap_20_0.png" src="../_images/plot_types_heatmap_20_0.png" />
 </div>
 </div>
-<p>..note:: Heatmap cells are always square with width = height</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Heatmap cells are always square with width = height</p>
+</div>
 </section>
 </section>
 <section id="Non-uniform-data">
@@ -578,7 +584,7 @@
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Experiment&#39;</span><span class="p">,</span>
@@ -594,7 +600,6 @@
 <img alt="../_images/plot_types_heatmap_25_0.png" src="../_images/plot_types_heatmap_25_0.png" />
 </div>
 </div>
-<p>..note:</p>
 <ol class="arabic simple">
 <li><p>any missing values get mapped as <code class="docutils literal notranslate"><span class="pre">nan</span></code> values are not not plotted</p></li>
 <li><p>the x-axis width is not 400px as specified by the keyword <code class="docutils literal notranslate"><span class="pre">ax_scale</span></code>. This occurs because the data set does not have as many values on the x-axis as on the y-axis. fivecentplots applies the axis size to the axis with the most items and scales the other axis accordingly</p></li>

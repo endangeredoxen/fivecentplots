@@ -262,7 +262,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "..caution:: if `pie_inner_radius` is not explicitly set by keyword or in a theme file, it will be set to equal `radius`.  Be mindful that if you have `pie_inner_radius` set in a custom theme file and then change only `pie_radius` you will get an unintended result!"
+    ".. caution:: if `pie_inner_radius` is not explicitly set by keyword or in a theme file, it will be set to equal `radius`.  Be mindful that if you have `pie_inner_radius` set in a custom theme file and then change only `pie_radius` you will get an unintended result!"
    ]
   },
   {
@@ -401,7 +401,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 3,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -416,7 +416,7 @@
     }
    ],
    "source": [
-    "fcp.pie(df, x='Liquid', y='pH', filter='Measurement==\"A\" & T [C]==25', pie_label_distance=0.5, pie_font_size=8, \n",
+    "fcp.pie(df, x='Liquid', y='pH', filter='Measurement==\"A\" & T [C]==25', pie_label_distance=0.5, pie_font_size=8,\n",
     "        pie_font_weight='heavy', font_color='#00FF00', rotate_labels=True)"
    ]
   },
@@ -671,7 +671,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 18,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -686,8 +686,8 @@
     }
    ],
    "source": [
-    "fcp.pie(df, x='Liquid', y='pH', filter='Measurement==\"A\" & T [C]==25', \n",
-    "        colors=['#FF0000', '#00FF00', '#0000FF', '#F0F0F0', '#0F0F0F'], \n",
+    "fcp.pie(df, x='Liquid', y='pH', filter='Measurement==\"A\" & T [C]==25',\n",
+    "        colors=['#FF0000', '#00FF00', '#0000FF', '#F0F0F0', '#0F0F0F'],\n",
     "        pie_edge_color='#FFFF00', pie_edge_style='--', pie_edge_width=3)"
    ]
   },

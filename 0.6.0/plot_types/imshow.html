@@ -61,7 +61,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.6" />
-    <meta name="docbuild:last-update" content="May 22, 2025"/>
+    <meta name="docbuild:last-update" content="May 24, 2025"/>
   </head>
   
   
@@ -327,7 +327,7 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barplot.html">bar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt charts</a></li>
@@ -403,7 +403,7 @@
 <section id="Setup">
 <h2>Setup<a class="headerlink" href="#Setup" title="Link to this heading">#</a></h2>
 <p>Import packages:</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
@@ -414,15 +414,6 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-The autoreload extension is already loaded. To reload it, use:
-  %reload_ext autoreload
-</pre></div></div>
 </div>
 <p>Load a completely ridiculous 8-bit RGB color test image as a <code class="docutils literal notranslate"><span class="pre">np.array</span></code>:</p>
 <div class="nbinput docutils container">
@@ -799,11 +790,10 @@ fcp.imshow(img, **kwargs)
 (1000, 2000, 3)
 </pre></div></div>
 </div>
-<p>..note:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>-  when specifying ``ax_size`` the aspect ratio of the original data will be preserved and the larger value between *actual* height or width will adopt the *specified* height or width
--  tick labels are disable by default for ``imshow`` (use ``tick_labels_major=True`` to enable)
-</pre></div>
-</div>
+<ul class="simple">
+<li><p>when specifying <code class="docutils literal notranslate"><span class="pre">ax_size</span></code> the aspect ratio of the original data will be preserved and the larger value between <em>actual</em> height or width will adopt the <em>specified</em> height or width</p></li>
+<li><p>tick labels are disable by default for <code class="docutils literal notranslate"><span class="pre">imshow</span></code> (use <code class="docutils literal notranslate"><span class="pre">tick_labels_major=True</span></code> to enable)</p></li>
+</ul>
 </section>
 <section id="RAW-/-Grayscale">
 <h3>RAW / Grayscale<a class="headerlink" href="#RAW-/-Grayscale" title="Link to this heading">#</a></h3>
@@ -1148,7 +1138,10 @@ fcp.imshow(img, **kwargs)
 <img alt="../_images/plot_types_imshow_22_0.png" src="../_images/plot_types_imshow_22_0.png" />
 </div>
 </div>
-<p>..note:: <code class="docutils literal notranslate"><span class="pre">imshow</span></code> uses the “gray” colormap by default for single-channel RAW images</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">imshow</span></code> uses the “gray” colormap by default for single-channel RAW images</p>
+</div>
 </section>
 </section>
 <section id="Colors">
@@ -1195,7 +1188,7 @@ fcp.imshow(img, **kwargs)
 </section>
 <section id="Cropping">
 <h2>Cropping<a class="headerlink" href="#Cropping" title="Link to this heading">#</a></h2>
-<p>For both single and multi-channel images, we can crop (i.e., zoom in) the image by applying <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> limits. Note:</p>
+<p>For both single and multi-channel images, we can crop (i.e., zoom in) the image by applying <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> limits. Note that:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">x</span></code> applies to the image columns</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">y</span></code> applies to the image rows</p></li>
@@ -1216,7 +1209,10 @@ fcp.imshow(img, **kwargs)
 <img alt="../_images/plot_types_imshow_34_0.png" src="../_images/plot_types_imshow_34_0.png" />
 </div>
 </div>
-<p>..caution:: Private eyes</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Private eyes</p>
+</div>
 <p>They’re watching you</p>
 <p>They see your every move</p>
 <p>Zooming can be achieved by changing the <code class="docutils literal notranslate"><span class="pre">ax_size</span></code> values for the cropped image. We can also add axes labels:</p>
@@ -1235,7 +1231,10 @@ fcp.imshow(img, **kwargs)
 <img alt="../_images/plot_types_imshow_37_0.png" src="../_images/plot_types_imshow_37_0.png" />
 </div>
 </div>
-<p>..note:: If a crop limit exceeds the actual dimensions of the image, the min or max value is automatically used instead</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If a crop limit exceeds the actual dimensions of the image, the min or max value is automatically used instead</p>
+</div>
 </section>
 <section id="Contrast-stretching">
 <h2>Contrast stretching<a class="headerlink" href="#Contrast-stretching" title="Link to this heading">#</a></h2>
@@ -1317,7 +1316,7 @@ fcp.imshow(img, **kwargs)
 <h2>Split color planes<a class="headerlink" href="#Split-color-planes" title="Link to this heading">#</a></h2>
 <p>This section applies only to single-channel image data</p>
 <p>When analyzing Bayer-type images, it is often useful to split the image data based on the color-filter array pattern used on the image sensor. fivecentplots provides a simple utility function to do this and <code class="docutils literal notranslate"><span class="pre">imshow</span></code> can be used to display the result. Consider the following image:</p>
-<p><img alt="5deaa31675d74d9aa3e27bcf4af57101" src="https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg" /></p>
+<p><img alt="1f68fdf65a39450d8f43e3de7500e175" src="https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg" /></p>
 <p>First we read the image from the world-wide web and convert into a Bayer-like RAW image (rough hack for the purposes of this example):</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
@@ -1353,7 +1352,10 @@ array([[ 0,  0,  0, ..., 34,  1,  1],
 </pre></div></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">fcp.imshow</span></code> has a built-in hook to separate RAW single-channel data into discrete color planes if the CFA pattern of the RAW data is supplied with the keyword <code class="docutils literal notranslate"><span class="pre">cfa</span></code>. This automatically creates a new grouping column for the data called “Plane”, which was can use to separate the color planes into discrete subplots for visualization.</p>
-<p>..note:: Only CFAs with a 2x2 grid of colors is supported</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only CFAs with a 2x2 grid of colors is supported</p>
+</div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -1913,7 +1915,10 @@ array([[ 0,  0,  0, ..., 34,  1,  1],
 <img alt="../_images/plot_types_imshow_72_0.png" src="../_images/plot_types_imshow_72_0.png" />
 </div>
 </div>
-<p>..note:: The above images are zoomed in automatically because our crop dimensions are smaller than the default value for <code class="docutils literal notranslate"><span class="pre">ax_size=[400,</span> <span class="pre">400]</span></code></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The above images are zoomed in automatically because our crop dimensions are smaller than the default value for <code class="docutils literal notranslate"><span class="pre">ax_size=[400,</span> <span class="pre">400]</span></code></p>
+</div>
 </section>
 <section id="Wrap-reference">
 <h3>Wrap reference<a class="headerlink" href="#Wrap-reference" title="Link to this heading">#</a></h3>
@@ -2149,7 +2154,10 @@ array([[  0,   0,   0, 243, 243, 243,   0,   0, 243, 243, 243,   0,   0,
 <img alt="../_images/plot_types_imshow_98_0.png" src="../_images/plot_types_imshow_98_0.png" />
 </div>
 </div>
-<p>..note:: Interpolation can be helpful when plotting high-resolution color images that look pixelated</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Interpolation can be helpful when plotting high-resolution color images that look pixelated</p>
+</div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>

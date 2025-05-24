@@ -1292,7 +1292,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "..warning:: Standard box styling attributes are ignored when adding the violin plot in order to maintain different default settings for regular box plots and violin plots in the same theme file"
+    ".. warning:: Standard box styling attributes are ignored when adding the violin plot in order to maintain different default settings for regular box plots and violin plots in the same theme file"
    ]
   },
   {

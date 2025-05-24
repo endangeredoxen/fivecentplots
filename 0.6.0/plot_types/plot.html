@@ -56,12 +56,12 @@
     <link rel="icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="barplot" href="barplot.html" />
+    <link rel="next" title="bar" href="barplot.html" />
     <link rel="prev" title="Plot Types" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.6" />
-    <meta name="docbuild:last-update" content="May 22, 2025"/>
+    <meta name="docbuild:last-update" content="May 24, 2025"/>
   </head>
   
   
@@ -327,7 +327,7 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">plot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barplot.html">bar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt charts</a></li>
@@ -809,7 +809,10 @@ Previous theme file found! Renaming to &#34;defaults_old.py&#34; and copying the
 <section id="Secondary-axes">
 <h2>Secondary axes<a class="headerlink" href="#Secondary-axes" title="Link to this heading">#</a></h2>
 <p>Secondary x- and y-axes can be added to an xy plot using the <code class="docutils literal notranslate"><span class="pre">twin_[x|y]</span></code> keyword. We must also provide an additional DataFrame column name for the alternate axes to the kwarg for the axis that is not twinned (i.e., <code class="docutils literal notranslate"><span class="pre">twin_x</span></code> means two column names are required for <code class="docutils literal notranslate"><span class="pre">y</span></code> and <code class="docutils literal notranslate"><span class="pre">twin_y</span></code> means two column names are required for <code class="docutils literal notranslate"><span class="pre">x</span></code>). Lines and markers will be colored to match the axis label. Grid lines default to the primary axis but secondary gridlines can also be enabled as shown below.</p>
-<p>..note:: kwargs related to the primary axes are suffixed with <code class="docutils literal notranslate"><span class="pre">_x</span></code> or <code class="docutils literal notranslate"><span class="pre">_y</span></code>. Keywords related to the secondary axis are suffixed with <code class="docutils literal notranslate"><span class="pre">_x2</span></code> and <code class="docutils literal notranslate"><span class="pre">_y2</span></code></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>kwargs related to the primary axes are suffixed with <code class="docutils literal notranslate"><span class="pre">_x</span></code> or <code class="docutils literal notranslate"><span class="pre">_y</span></code>. Keywords related to the secondary axis are suffixed with <code class="docutils literal notranslate"><span class="pre">_x2</span></code> and <code class="docutils literal notranslate"><span class="pre">_y2</span></code></p>
+</div>
 <section id="Shared-x-axis-(twin_x)">
 <h3>Shared x-axis (twin_x)<a class="headerlink" href="#Shared-x-axis-(twin_x)" title="Link to this heading">#</a></h3>
 <div class="nbinput docutils container">
@@ -1738,7 +1741,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">barplot</p>
+        <p class="prev-next-title">bar</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
