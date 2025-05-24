@@ -44,7 +44,7 @@ Plot Types
             :color: primary
             :click-parent:
 
-            fcp.barplot
+            fcp.bar
         ^^^
 
         vertical / horizontal / stacked bar charts, rolling means

@@ -16,6 +16,7 @@ except ModuleNotFoundError:
 
 # MANUAL FILE CHANGES
 html_files = list(Path(cur_dir / '_build/html').rglob('*.html'))
+ADMONITIONS = ['Note', 'Warning', 'Caution']
 for hf in html_files:
     # read the html files
     with open(hf, 'r') as input:
@@ -28,6 +29,11 @@ for hf in html_files:
 
     # add version number to navbar
     html = html[:idx] + f'<div class="version">v{fcp.__version__}</div>' + html[idx:]
+
+    # fix multi-line admonitions
+    for adm in ADMONITIONS:
+        html = html.replace(f'<div class="admonition {adm.lower()}"><p class="admonition-title"><p>{adm}</p>\n</p>',
+                            f'<div class="admonition {adm.lower()}"><p class="admonition-title">{adm}</p>')
 
     # write back the file
     with open(hf, 'w') as output:
