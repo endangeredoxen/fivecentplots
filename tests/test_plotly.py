@@ -335,7 +335,7 @@ def plt_bar_grouping(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('bar_grouping', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.bar(df_bar, x='Liquid', y='pH', tick_labels_major_x_rotation=90, col='Measurement', row='T [C]', ax_hlines=0,
+    fcp.bar(df_bar, x='Liquid', y='pH', tick_labels_major_x_rotation=90, ax_hlines=0, col='Measurement', row='T [C]',
             ax_size=[300, 300], filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
@@ -401,7 +401,7 @@ def plt_contour_basic(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('contour_basic', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.contour(df_contour, x='X', y='Y', z='Value', filled=False, cbar=False,
+    fcp.contour(df_contour, x='X', y='Y', z='Value', filled=False, cbar=False, label_y_edge_width=1, label_y_edge_color='#ff0000',
                 filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:

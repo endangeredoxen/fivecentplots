@@ -115,7 +115,7 @@ class Bar(data.Data):
         vmin, vmax = data.Data._get_data_range(self, ax, data_set, plot_num)
 
         # Set ymin = 0 unless data or user require a negative value
-        if ax == 'y' and vmin < 0 and data_set[self.y].values.min() >= 0 and self.ymin[plot_num] is None:
+        if ax == 'y' and data_set[self.y].values.min() >= 0 and self.ymin[plot_num] is None:
             vmin = 0
 
         return vmin, vmax

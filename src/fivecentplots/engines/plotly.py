@@ -66,7 +66,7 @@ def guess_tick_labels(min_val, max_val, axes_size_px, is_horizontal=True, font_s
 
     # Estimate average label width in pixels.
     avg_chars_per_label = 6
-    avg_label_width_px = avg_chars_per_label * font_size_pt * 0.6
+    avg_label_width_px = avg_chars_per_label * font_size_pt * 0.59
 
     # Adjust ideal pixels per tick based on label size.
     ideal_pixels_per_tick = 75 if is_horizontal else 50
@@ -137,14 +137,28 @@ def guess_tick_labels(min_val, max_val, axes_size_px, is_horizontal=True, font_s
             else:
                 labels.append(f"{tick:.1e}" if use_scientific_notation else f"{tick:.6f}")
 
-    # Adjust for the specific x-axis behavior in the test case
-    if is_horizontal and plot_width_px == 400 and min_val < 0 and max_val > 1:
-        labels = ['0', '0.5', '1', '1.5']
+    # # Adjust for the specific x-axis behavior in the test case
+    # if is_horizontal and plot_width_px == 400 and min_val < 0 and max_val > 1:
+    #     labels = ['0', '0.5', '1', '1.5']
 
-    # Adjust for the specific y-axis behavior in the test case
-    if not is_horizontal and plot_height_px == 225 and min_val == -0.25 and max_val == 5.25:
-        labels = ['0', '1', '2', '3', '4', '5']
+    # # Adjust for the specific y-axis behavior in the test case
+    # if not is_horizontal and plot_height_px == 225 and min_val == -0.25 and max_val == 5.25:
+    #     labels = ['0', '1', '2', '3', '4', '5']
     return labels
+
+
+def hex_to_rgba(h: str, alpha: float = 1) -> str:
+    """
+    Converts hex color to rgba format with alpha transparency
+
+    Args:
+        h: hex string
+        alpha: transparency value between 0 - 1
+
+    Returns:
+        rgba string formatted for plotly
+    """
+    return f'rgba{tuple([int(h.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4)] + [alpha])}'
 
 
 class Layout(BaseLayout):
@@ -214,12 +228,21 @@ class Layout(BaseLayout):
                                size=[25, 25],
                                visible=utl.kwget(kwargs, self.fcpp, 'modebar_visible', False)
                                )
+        self.tick_labels_major_x.xs = 0
+        self.tick_labels_major_y.xs = 0
         self.ws_leg_modebar = 5  # space between a legend and modebar
         self.ws_ax_leg = 10
 
+        if self.name in ['contour'] and self.contour.filled:
+            self.ticks_major_x.alpha = 0
+            self.ticks_major_y.alpha = 0
+        else:
+            self.ticks_major_x.alpha = 0.9
+            self.ticks_major_y.alpha = 0.9
+
         # Other
         self.axs_on = data.axs_on
-        self.box_group_label.heights = []
+        self.box_group_label.heights = self.obj_array
         self.wh_ratio = 1  # width to height ratio == 1 except for imshow where it scales to match image dimensions
 
         # Check for unsupported kwargs (add plot names and other features that don't work)
@@ -370,35 +393,6 @@ class Layout(BaseLayout):
         Returns:
             margin in pixels
         """
-        # val = self.modebar.size[0] if self.modebar.orientation == 'v' else 0
-        # val += self.ws_ax_fig if not self.legend._on or self.legend.location != 0 else self.ws_leg_fig
-        # val += self.axes.edge_width
-        # if self.axes.twin_x:
-        #     val += self._labtick_y2 + (self.ws_ax_leg if self.legend._on else 0)
-
-        # # if self.cbar.on:
-        # #     val = max(0, val - self.cbar.size[0] * 2 + self.ws_ax_cbar)
-
-        # # if self.legend._on:
-        # #     val = max(self.ws_leg_fig, val - self.legend.size[0])
-
-        # if self.box_group_title.on and (self.ws_ax_box_title + self.box_title) > \
-        #         self._legx + (self.fig_legend_border if self.legend._on else 0):
-        #     val += np.ceil(self.ws_ax_box_title) + np.ceil(self.box_title) \
-        #          + np.ceil((self.ws_ax_fig if not self.legend.on else 0))
-        # if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
-        #     val += np.ceil(self.box_title)
-
-        # axis to fig right side ws with or without legend
-        # if self.cbar.on:
-        #     return 0
-        # elif self.legend._on and self.legend.location == 0 and not self.box_group_title.on:
-        #     return self.ws_leg_fig
-        # elif self.box_group_title.on and not self.legend._on:
-        #     return self.ws_ax_box_title + self.box_title + self.ws_ax_fig
-        # else:
-        #     return self.ws_ax_fig
-
         if self.legend._on and self.legend.location == 0:
             return self.ws_leg_fig
         else:
@@ -412,59 +406,6 @@ class Layout(BaseLayout):
             margin in pixels
         """
         return self._ws_title + (self.modebar.size[0] if self.modebar.orientation == 'h' else 7)
-
-    @property
-    def _axes_dimensions(self):
-        """
-        Try to compute the width / height of the axis area.  This will depend on margins and elements
-        that are present outside the plotting area.  Not exact!
-        """
-        # xaxis width in pixels
-        ww = self.axes.size[0] + self.axes.edge_width + self._labtick_y2
-        if self.label_row.on:
-            ww += self._row_label_width
-        if self.cbar.on:
-            ww += self.ws_ax_fig
-
-        # yaxis
-        hh = self.fig.size[1] - self._top - self._bottom  # probably need to fix for secondary x
-
-        return ww, hh
-
-    def _axes_domain(self, ir, ic):
-        """
-        "Try" to compute the axis domain x0, x1, y0, and y1 values.  This depends on the content in the margins
-        and may not be exact.  Values must be between [0, 1]
-        """
-        ww, hh = self._axes_dimensions
-
-        # Base dimensions
-        ww = self.axes.size[0] + self.axes.edge_width + self._labtick_y2
-        hh = self.fig.size[1] - self._top - self._bottom
-
-        # Width with subplots: ww has two axes edges but first one isn't counted
-        w_total = ww * self.ncol + self.ws_col * (self.ncol - 1) + self.axes.edge_width
-        if self.label_row.on:
-            w_total += self._row_label_width
-        if self.cbar.on:
-            w_total += self.ws_ax_fig
-        if self.box_group_title.on:
-            w_total += self.box_group_title.size[0]
-
-        # left xaxis domain
-        x0 = (ww + self.axes.edge_width + self.ws_col) * ic / w_total
-
-        # right xaxis domain
-        x1 = x0 + (ww - self.axes.edge_width) / w_total
-
-        # bottom yaxis domain
-        y0 = 1 - ((self.ws_row + self.axes.size[1] + 2 * self.axes.edge_width) * ir + self.axes.size[1] +
-                  self.axes.edge_width) / hh
-
-        # top yaxis domain
-        y1 = 1 - ((self.ws_row + self.axes.size[1] + 2 * self.axes.edge_width) * ir + self.axes.edge_width) / hh
-
-        return x0, x1, y0, y1
 
     @property
     def _row_label_width(self) -> float:
@@ -504,7 +445,9 @@ class Layout(BaseLayout):
         # pie labels
         right += np.ceil(self.pie.xs_right)
 
-        return int(right)
+        right += self.tick_labels_major_x.xs
+
+        return np.ceil(right)
 
     @property
     def _tick_x(self) -> float:
@@ -593,6 +536,7 @@ class Layout(BaseLayout):
         num_cols = len(data.changes.columns)
         plot_num = utl.plot_num(ir, ic, self.ncol)
         box_lab = self.box_group_label
+        self.box_group_label.heights[ir, ic] = []
 
         # Set up the label/title arrays to reflect the groups
         max_labels = int(data.changes.sum().max())
@@ -630,14 +574,17 @@ class Layout(BaseLayout):
 
                         # auto height and width??
 
+                    # set the label position
                     left = left0
                     right = left + width
                     left0 = right
                     top = top0
                     bottom = top - box_lab.size[1] / self.axes.size[1]
                     box_lab.position = [left, right, top, bottom]
-                    label = data.indices.loc[sub.index[jj], num_cols - 1 - ii]
-                    self.add_label(ir, ic, str(label), element=box_lab)
+
+                    # add the label
+                    label_txt = data.indices.loc[sub.index[jj], num_cols - 1 - ii]
+                    self.add_label(ir, ic, str(label_txt), element=box_lab)
                     if plot_num > 1:
                         pn = str(plot_num)
                     else:
@@ -650,7 +597,7 @@ class Layout(BaseLayout):
                                         (top - bottom) * self.axes.size[1],
                                         left, right, bottom, top, box_lab.rotation)
 
-                box_lab.heights += [box_lab.size[1]]
+            box_lab.heights[ir, ic] += [box_lab.size[1]]
 
             # Group titles
             if self.box_group_title.on and ic == data.ncol - 1:
@@ -1016,9 +963,12 @@ class Layout(BaseLayout):
             temp: first fig size calc is a dummy calc to get a rough size; don't resize user parameters
             kwargs: user-defined keyword args
         """
-        self.box_labels = sum(self.box_group_label.heights)
-        self.box_labels -= self.box_group_label.edge_width * self.box_group_label.size_all['ii'].max() \
-            if len(self.box_group_label.size_all) > 0 else 0
+        self.box_labels = 0
+        if self.name == 'box':
+            for ir, ic in np.ndindex(self.axes.obj.shape):
+                self.box_labels = max(sum(self.box_group_label.heights[ir, ic]), self.box_labels)
+            self.box_labels -= self.box_group_label.edge_width * self.box_group_label.size_all['ii'].max() \
+                if len(self.box_group_label.size_all) > 0 else 0
         if self.axes.edge_width == self.box_group_label.edge_width \
                 and self.axes.edge_color[0] == self.box_group_label.edge_color[0] \
                 and self.box_group_label.on:
@@ -1098,8 +1048,14 @@ class Layout(BaseLayout):
             self.ws_row += self.label_wrap.size[1] + 2 * self.label_wrap.edge_width
 
         # Compute the sum of axes edge thicknesses
-        col_edge_width = 2 * self.axes.edge_width * self.ncol
-        row_edge_height = 2 * self.axes.edge_width * self.nrow
+        if self.ws_col == 0:
+            col_edge_width = self.axes.edge_width * (self.ncol + 1)
+        else:
+            col_edge_width = 2 * self.axes.edge_width * self.ncol
+        if self.ws_row == 0:
+            row_edge_height = self.axes.edge_width * (self.nrow + 1)
+        else:
+            row_edge_height = 2 * self.axes.edge_width * self.nrow
 
         # Set figure width
         self.fig.size[0] = \
@@ -1135,15 +1091,16 @@ class Layout(BaseLayout):
             ticklabs = getattr(self, f'tick_labels_major_{ax}')
             vmin = data.ranges[f'{ax}min'][data.ranges[f'{ax}min'] != None]  # noqa
             vmax = data.ranges[f'{ax}max'][data.ranges[f'{ax}max'] != None]  # noqa
-
             if self.name in ['heatmap'] and ax in ['x', 'y']:
                 if ax == 'y':
-                    labs = data.df_rc.columns.tolist()
+                    labs = data.df_all.columns.tolist()
                 else:
-                    labs = data.df_rc.index.tolist()
+                    labs = data.df_all[data.y[0]].values.tolist()
+            elif self.name in ['bar'] and ax == 'y' and self.bar.horizontal:
+                labs = data.df_all[data.x[0]].values.tolist()
             elif len(vmin) == 0 or len(vmax) == 0:
                 # Assume categorical
-                labs = data.df_rc[getattr(data, ax)].values.flatten()
+                labs = data.df_all[getattr(data, ax)].values.flatten()
             elif isinstance(vmin.min(), np.datetime64) or isinstance(vmax.max(), np.datetime64):
                 delta = vmax.max() - vmin.min()
                 if delta / np.timedelta64(365, 'D') > 1:
@@ -1173,12 +1130,23 @@ class Layout(BaseLayout):
             if len(labs) == 0:
                 # Something went wrong; just skip for now
                 continue
-
             longest = max([str(f) for f in labs], key=len)
             size = utl.get_text_dimensions(longest, ticklabs.font, ticklabs.font_size, ticklabs.font_style,
                                            ticklabs.font_weight, ticklabs.rotation, dpi=self.dpi)
             ticklabs.size[0] = scale_x * size[0]
             ticklabs.size[1] = scale_y * size[1]
+
+            # Check if last tick exceeds axes size
+            if ax == 'x' and str(labs[-1]).isnumeric():
+                last_tick = float(labs[-1])
+                if last_tick > max(vmax) or last_tick < min(vmin):
+                    # something failed, skip
+                    continue
+                tick_size = size[0] if ticklabs.rotation in [0, 360] else size[1]
+                ratio = (last_tick - min(vmin)) / (max(vmax) - min(vmin))
+                xs = (ratio * self.axes.size[0] + tick_size / 2) - self.axes.size[0]
+                if xs > 0:
+                    self.tick_labels_major_x.xs = np.floor(xs)
 
     def make_figure(self, data: 'data.Data', **kwargs):
         """Make the figure and axes objects.
@@ -1865,21 +1833,18 @@ class Layout(BaseLayout):
             mls = dict(marker_symbol=marker_symbol,
                        marker_size=self.markers.size[iline],
                        marker_color=self.markers.fill_color[iline],
-                       marker=dict(line=dict(color=self.markers.edge_color[iline],
-                                             width=self.markers.edge_width[iline])),
+                       marker=dict(
+                           line=dict(color=hex_to_rgba(self.markers.edge_color[iline],
+                                                       self.markers.edge_alpha),
+                                     width=self.markers.edge_width[iline])),
                        line=dict(width=self.lines.width[iline],
                                  color=self.lines.color[iline],
                                  dash=self.lines.style[iline]
                                  )
                        )
-        # elif self.lines.on:
-        #     mls = dict(line=dict(width=self.lines.width[iline],
-        #                          color=self.lines.color[iline],
-        #                          dash=self.lines.style[iline],
-        #                          ))
         elif line_type.on:
             mls = dict(line=dict(width=line_type.width[iline],
-                                 color=line_type.color[iline],
+                                 color=hex_to_rgba(line_type.color[iline], line_type.alpha),
                                  dash=line_type.style[iline],
                                  ))
         else:
@@ -1990,10 +1955,6 @@ class Layout(BaseLayout):
                 continue
             if type(label.text) not in [str, list]:
                 continue
-            # if isinstance(label.text, str):
-            #     labeltext = label.text
-            # if isinstance(label.text, list):
-            #     labeltext = label.text[ic + ir * self.ncol]
 
             # Set the font weight and style
             self._set_weight_and_style(f'label_{ax}')
@@ -2023,6 +1984,7 @@ class Layout(BaseLayout):
                                style=label.font_style,
                                weight=label.font_weight),
                      standoff=self.ws_label_tick)
+
             lab = getattr(self, f'label_{ax}')
             lab.size = utl.get_text_dimensions(lab.text, lab.font, lab.font_size, lab.font_style,
                                                lab.font_weight, lab.rotation, dpi=self.dpi)
@@ -2078,10 +2040,16 @@ class Layout(BaseLayout):
         # Wrap title
         if ir == 0 and ic == 0 and self.title_wrap.on:
             # Set the title position (left, right, top, bottom)
+            if self.ws_col == 0:
+                col_edge_width = self.axes.edge_width * (self.ncol + 1)
+            else:
+                col_edge_width = 2 * self.axes.edge_width * self.ncol
+            col_edge_width -= self.axes.edge_width
+
             self.title_wrap.position = [
                     -(self.axes.edge_width - self.title_wrap.edge_width / 2) / self.axes.size[0],
-                    self.ncol + ((2 * self.ncol - 1) * self.axes.edge_width - self.title_wrap.edge_width / 2) /
-                    self.axes.size[0],
+                    self.ncol + (col_edge_width - self.title_wrap.edge_width / 2 + (self.ws_col * (self.ncol - 1)))
+                    / self.axes.size[0],
                     1 + (self.axes.edge_width + self.label_wrap.size[1] + self.title_wrap.size[1] -
                          self.title_wrap.edge_width / 2) / (self.axes.size[1] / self.wh_ratio),
                     1 + (self.axes.edge_width + self.label_wrap.size[1] + self.title_wrap.edge_width / 2) /
@@ -2167,7 +2135,8 @@ class Layout(BaseLayout):
                 tickfont_family=getattr(self, f'tick_labels_major_{ax}').font,
                 tickfont_size=getattr(self, f'tick_labels_major_{ax}').font_size,
                 ticks=direction,
-                tickcolor=getattr(self, f'ticks_major_{ax}').color[0],
+                tickcolor=hex_to_rgba(getattr(self, f'ticks_major_{ax}').color[0],
+                                      getattr(self, f'ticks_major_{ax}').alpha),
                 ticklen=getattr(self, f'ticks_major_{ax}')._size[0],
                 tickwidth=getattr(self, f'ticks_major_{ax}')._size[1],
                 dtick=getattr(self, f'ticks_major_{ax}').increment,
@@ -2221,6 +2190,10 @@ class Layout(BaseLayout):
             self.fig.obj['layout']['yaxis2'].update(dict(tickprefix=" "))
         for ir, ic in np.ndindex(self.axes.obj.shape):
             for ax in self.axs_on:
+                if ir < self.nrow - 1 and not self.axes.visible[ir + 1, ic]:
+                    if ax == 'y' and self.nwrap > 0 and ic > 0 and self.axes.visible[ir, ic - 1]:
+                        self.fig.obj.update_yaxes(showticklabels=False, row=ir + 1, col=ic + 1)
+                    continue
                 if not self.separate_ticks and ax == 'x' and ir != self.nrow - 1 and data.share_y is True:
                     self.fig.obj.update_xaxes(showticklabels=False, row=ir + 1, col=ic + 1)
                 if not self.separate_ticks and ax == 'x2' and ir != 0:
@@ -2247,7 +2220,7 @@ class Layout(BaseLayout):
             axlines = ['ax_hlines', 'ax_vlines', 'ax2_hlines', 'ax2_vlines']
             for line in axlines:
                 func = self.fig.obj.add_vline if 'vline' in line else self.fig.obj.add_hline
-                if not getattr(self, line).on:
+                if not getattr(self, line).on or getattr(self, line).obj[ir, ic] is None:
                     continue
                 for vals in getattr(self, line).obj[ir, ic]:
                     func(**vals)
@@ -2290,10 +2263,7 @@ class Layout(BaseLayout):
                                    )
 
         # Set the axes positions
-        for ir, ic in np.ndindex(self.axes.obj.shape):
-            x0, x1, y0, y1 = self._axes_domain(ir, ic)
-            self.fig.obj.update_xaxes(row=ir + 1, col=ic + 1, domain=[x0, x1])
-            self.fig.obj.update_yaxes(row=ir + 1, col=ic + 1, domain=[y0, y1])
+        self._subplots_adjust()
 
         # Update the plot labels
         if self.axes.twin_x:
@@ -2419,7 +2389,67 @@ class Layout(BaseLayout):
                 pyo.init_notebook_mode(connected=True)
 
             config = {'scrollZoom': True}
-            config.update(self.modebar.obj)
+            if self.modebar.obj is not None:
+                config.update(self.modebar.obj)
 
             # pio.renderers.default = 'iframe'  # not sure about this
             self.fig.obj.show(config=config)
+
+    def _subplots_adjust(self):
+        """Calculate and apply the x,y domain parameters for the axes
+        self.axes.position --> [left, right, top, bottom]
+        """
+        # Size of subplot area only (may include some extra label stuff cause that makes it more fun)
+        h_total = self.fig.size[1] - self._top - self._bottom
+        w_total = self.fig.size[0] - self._left - self._right - 2 * self.axes.edge_width  # first/last ignored
+        if self.label_row.on:
+            w_total += self._row_label_width
+        if self.cbar.on:
+            w_total += self.ws_ax_fig
+        if self.box_group_title.on:
+            w_total += self.box_group_title.size[0] + self.box_group_title.padding
+
+        # Calculate the subplot extents (i.e., domains)
+        for ir, ic in np.ndindex(self.axes.obj.shape):
+            # skip disabled subplots
+            if not self.axes.visible[ir, ic]:
+                continue
+
+            # left xaxis domain
+            x0 = (self.axes.size[0] + 2 * self.axes.edge_width + self.ws_col) * ic / w_total
+            if self.ws_col == 0:
+                x0 = (self.axes.size[0] + self.axes.edge_width + self.ws_col) * ic / w_total
+            else:
+                x0 = (self.axes.size[0] + 2 * self.axes.edge_width + self.ws_col) * ic / w_total
+
+            # right xaxis domain
+            x1 = x0 + self.axes.size[0] / w_total
+
+            # bottom yaxis domain
+            y0 = 1 - ((self.ws_row + self.axes.size[1] + 2 * self.axes.edge_width) * ir + self.axes.size[1] +
+                      self.axes.edge_width) / h_total
+
+            # top yaxis domain
+            y1 = 1 - ((self.ws_row + self.axes.size[1] + 2 * self.axes.edge_width) * ir + self.axes.edge_width) \
+                / h_total
+
+            # error check
+            err = []
+            if x0 < 0:
+                x0 = 0
+                err.append('x0')
+            if x1 > 1:
+                x1 = 1
+                err.append('x1')
+            if y0 < 0:
+                y0 = 0
+                err.append('y0')
+            if y1 > 1:
+                err.append('y1')
+            if len(err) > 0:
+                warnings.warn(f'Something went wrong when calculating axes positions for {", ".join(err)}" '
+                              f' on subplot ({ir}, {ic}). Subplot sizes may not be as expected')
+
+            # Set the subplot domains
+            self.fig.obj.update_xaxes(row=ir + 1, col=ic + 1, domain=[x0, x1])
+            self.fig.obj.update_yaxes(row=ir + 1, col=ic + 1, domain=[y0, y1])

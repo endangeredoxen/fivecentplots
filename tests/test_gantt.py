@@ -247,7 +247,7 @@ def plt_today(bm=False, make_reference=False, show=False):
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_workstreams_date_type(bm=False, make_reference=False, show=False):
+def plt_workstreams_date_type(bm=False, make_reference=False, show=False, only_fails=False, plot_name=None):
 
     kw = {
           'clean': {},
@@ -279,12 +279,26 @@ def plt_workstreams_date_type(bm=False, make_reference=False, show=False):
     for plot in plots:
         for k, v in kw.items():
             name = utl.unit_test_get_img_name(f'workstreams_date_type_{"_".join(plot)}_{k}', make_reference, REFERENCE)
+            if plot_name is not None and name.stem != Path(plot_name).stem:
+                continue
+
             fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
                       date_type=plot, workstreams='Workstream', workstreams_label_font_size=12,
                       filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[1200, 400], **v)
             if bm:
                 return
-            utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+            if only_fails:
+                try:
+                    utl.unit_test_options(make_reference, False, name, REFERENCE)
+                except AssertionError:
+                    fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
+                              date_type=plot, workstreams='Workstream', workstreams_label_font_size=12,
+                              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[1200, 400], **v)
+                    utl.unit_test_options(make_reference, show, name, REFERENCE)
+                    db()
+            else:
+                utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # Bad date type errors ADD OTHERS
     name = Path('error')

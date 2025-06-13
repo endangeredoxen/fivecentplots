@@ -579,10 +579,14 @@ class Data:
                         if col not in data_set.columns or len(data_set) == 0:
                             continue
 
-                        if isinstance(user_limit, datetime.date) or isinstance(user_limit, datetime.datetime):
+                        cols = getattr(self, ax)
+                        if isinstance(user_limit, datetime.date) or \
+                                isinstance(user_limit, datetime.datetime) or \
+                                isinstance(user_limit, np.datetime64):
                             # Ensure dtypes are aligned for the filtering
                             try:
-                                data_set[col] = data_set[col].astype('datetime64[ns]')
+                                for col in cols:
+                                    data_set[col] = data_set[col].astype('datetime64[ns]')
                             except:  # noqa
                                 raise DataError(f'Column "{col}" could not be cast to datetime dtype')
                             try:
@@ -590,7 +594,6 @@ class Data:
                             except:  # noqa
                                 raise DataError(f'User limit "{user_limit}" could not be cast to datetime dtype')
 
-                        cols = getattr(self, ax)
                         if mm == 'min':
                             mask = (data_set[cols] >= user_limit)
                             if len(mask[mask.all(axis=1)]) < len(data_set):

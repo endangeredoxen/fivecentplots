@@ -1679,12 +1679,13 @@ def plotter(dobj, **kwargs):
             if len(df_rc) == 0:
                 if dd.wrap is None:
                     layout.set_axes_rc_labels(ir, ic)
-                layout.axes.obj[ir, ic].axis('off')
                 layout.axes.visible[ir, ic] = False
-                if layout.axes2.obj[ir, ic] is not None:
-                    layout.axes2.obj[ir, ic].axis('off')
+                if layout.engine == 'mpl':
+                    layout.axes.obj[ir, ic].axis('off')
+                    if layout.axes2.obj[ir, ic] is not None:
+                        layout.axes2.obj[ir, ic].axis('off')
                 continue
-                kwargs['timer'].get(f'ifig={ifig} | turn off empty subplots')
+            kwargs['timer'].get(f'ifig={ifig} | turn off empty subplots')
 
             # Set the axes colors
             layout.set_axes_colors(ir, ic)
