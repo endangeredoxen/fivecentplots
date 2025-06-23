@@ -295,12 +295,25 @@ def plt_kde(bm=False, make_reference=False, show=False):
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
+def plt_kde_bars(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('kde_bars', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.hist(df, x='Value', show=SHOW, legend='Region', kde=True, kde_width=2, bars=True,
+             inline=False, save=not bm, filename=name.with_suffix('.png'))
+
+    if bm:
+        return
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
 def plt_kde_horizontal(bm=False, make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('kde_horizontal', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.hist(df, x='Value', show=SHOW, legend='Region', kde=True, kde_width=2,
+    fcp.hist(df, x='Value', show=SHOW, legend='Region', kde=True, kde_width=2, bars=True,
              inline=False, save=not bm, filename=name.with_suffix('.png'), horizontal=True,)
 
     if bm:

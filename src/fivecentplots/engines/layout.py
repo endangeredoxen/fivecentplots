@@ -114,6 +114,8 @@ class BaseLayout:
         self.cmap = None  # color map to use in plot
         self.fig = None  # Element object for the figure
         self.fills = None  # Element object for rectangular fills
+        self.fill_under = False  # whether to color under the plot
+        self.fill_under_alpha = 0.2  # alpha value for fill under plot
         self.fit = None  # Element object for fit line
         self.gantt = None  # Element object for gannt chart
         self.gantt_scale = False  # auto-scale axes width for gantt plot
@@ -1560,6 +1562,23 @@ class BaseLayout:
         Returns:
             updated kwargs
         """
+        # kde element defined separately from self.hist to store unique parameters
+        self.kde = Element('kde', self.fcpp, kwargs,
+                           on=utl.kwget(kwargs, self.fcpp, ['hist_kde', 'kde'], kwargs.get('kde', False)),
+                           color=copy.copy(self.color_list),
+                           fill_alpha=utl.kwget(kwargs, self.fcpp, ['hist_kde_fill_alpha', 'kde_fill_alpha'], 0.2),
+                           fill_under=utl.kwget(kwargs, self.fcpp,
+                                                ['hist_kde_fill_under', 'kde_fill_under', 'fill_under'], True),
+                           markers=utl.kwget(kwargs, self.fcpp, ['hist_kde_markers', 'kde_markers'], False),
+                           width=utl.kwget(kwargs, self.fcpp, ['hist_kde_width', 'kde_width'], 2),
+                           zorder=5,
+                           )
+        if self.kde.on:
+            self.markers.on = self.kde.markers
+            self.lines.width = self.kde.width
+            self.fill_under = self.kde.fill_under
+            self.fill_under_alpha = self.kde.fill_alpha
+
         # If this plot type is disabled, create minimal set of element parameters
         if self.name != 'hist':
             self.hist = Element('hist', self.fcpp, kwargs,
@@ -1571,6 +1590,7 @@ class BaseLayout:
         self.hist = Element('hist', self.fcpp, kwargs,
                             on=True if 'hist' in self.name and kwargs.get('hist_on', True) else False,
                             align=utl.kwget(kwargs, self.fcpp, 'hist_align', 'mid'),
+                            bars=utl.kwget(kwargs, self.fcpp, 'bars', kwargs.get('bars', False)),
                             bins=utl.kwget(kwargs, self.fcpp, ['hist_bins', 'bins'], kwargs.get('bins', 20)),
                             edge_color=utl.kwget(kwargs, self.fcpp, ['hist_edge_color'], copy.copy(self.color_list)),
                             edge_width=utl.kwget(kwargs, self.fcpp, ['hist_edge_width'], 0),
@@ -1585,14 +1605,6 @@ class BaseLayout:
                             horizontal=utl.kwget(kwargs, self.fcpp, ['hist_horizontal', 'horizontal'],
                                                  kwargs.get('horizontal', False)),
                             )
-
-        # kde element defined separately from self.hist to store unique parameters
-        self.kde = Element('kde', self.fcpp, kwargs,
-                           on=utl.kwget(kwargs, self.fcpp, ['hist_kde', 'kde'], kwargs.get('kde', False)),
-                           color=copy.copy(self.color_list),
-                           width=utl.kwget(kwargs, self.fcpp, ['hist_kde_width', 'kde_width'], 2),
-                           zorder=5,
-                           )
         if self.kde.on:
             self.hist.normalize = True
 

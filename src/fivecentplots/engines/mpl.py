@@ -3098,7 +3098,7 @@ class Layout(BaseLayout):
                 x0 = kde(y0)
             kwargs = self.make_kw_dict(self.kde)
             kwargs['color'] = RepeatedList(kwargs['color'][iline], 'color')
-            kde = self.plot_line(ir, ic, x0, y0, **kwargs)
+            kde = self.plot_line(ir, ic, x0, y0, fill_under_alpha=self.kde.fill_alpha, **kwargs)
 
         return hist, data
 
@@ -3271,10 +3271,10 @@ class Layout(BaseLayout):
             y: y-axis column name
             leg_name: legend value name if legend enabled
             twin: denotes if twin axis is enabled or not
-            zorder (optional): z-height of the plot lines. Defaults to 1.
+            zorder (optional): z-height of the plot lines. Defaults to 1
             line_type (optional): set the line type to reference the correct Element.
-                Defaults to None.
-            marker_disable (optional): flag to disable markers. Defaults to False.
+                Defaults to None
+            marker_disable (optional): flag to disable markers. Defaults to False
         """
         def format_marker(marker):
             """Format the marker string to mathtext."""
@@ -3349,6 +3349,11 @@ class Layout(BaseLayout):
                             linestyle=line_type.style[iline],
                             linewidth=line_type.width[iline],
                             )
+
+        # Fill the area under the line
+        if self.fill_under:
+            self.axes.obj[ir, ic].fill_between(dfx, df[y].min(), df[y], color=line_type.color[(iline, leg_name)],
+                                               alpha=self.fill_under_alpha)
 
         # Add a reference to the line to self.lines
         if leg_name is not None:

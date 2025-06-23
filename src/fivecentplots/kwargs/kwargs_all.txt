@@ -228,6 +228,8 @@ fill_alpha
 fill_alpha_override
 fill_color
 fill_color_override
+fill_under
+fill_under_alpha
 filled
 fills
 filter
@@ -503,6 +505,8 @@ hist_fill_alpha
 hist_fill_color
 hist_horizontal
 hist_kde
+hist_kde_fill_alpha
+hist_kde_fill_under
 hist_normalize
 hist_on
 hist_rwidth
@@ -525,6 +529,8 @@ interval_zorder
 jitter
 kde
 kde_alpha
+kde_fill_alpha
+kde_fill_under
 kde_color
 kde_style
 kde_width
