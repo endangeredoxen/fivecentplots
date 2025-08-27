@@ -9,6 +9,8 @@ import matplotlib as mpl
 import fivecentplots.utilities as utl
 import pytest
 import imageio.v3 as imageio
+import requests
+from io import BytesIO
 osjoin = os.path.join
 db = pdb.set_trace
 
@@ -401,8 +403,8 @@ def plt_contour_basic(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('contour_basic', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.contour(df_contour, x='X', y='Y', z='Value', filled=False, cbar=False, label_y_edge_width=1, label_y_edge_color='#ff0000',
-                filename=name.with_suffix('.png'), save=not bm, inline=False)
+    fcp.contour(df_contour, x='X', y='Y', z='Value', filled=False, cbar=False, label_y_edge_width=1,
+                label_y_edge_color='#ff0000', filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
         return
@@ -470,7 +472,7 @@ def plt_hist_kde(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('hist_kde', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.hist(df_hist, x='Value', legend='Region', kde=True, kde_width=2,
+    fcp.hist(df_hist, x='Value', legend='Region', kde=True, kde_width=2, bars=True,
              filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
@@ -524,7 +526,9 @@ def plt_imshow_grid(bm=False, make_reference=False, show=False):
 
     # Make the plot
     url = 'https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg'
-    img_rgb_sp = imageio.imread(url)
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+    response = requests.get(url, headers=headers)
+    img_rgb_sp = imageio.imread(BytesIO(response.content))
     img_raw_sp = fcp.utilities.rgb2bayer(img_rgb_sp)
     fcp.imshow(img_raw_sp, cmap='inferno', ax_size=[300, 300], cfa='rggb', wrap='Plane', ax_edge_width=1,
                ax_edge_color='#555555', filename=name.with_suffix('.png'), save=not bm, inline=False)

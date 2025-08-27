@@ -752,6 +752,80 @@ class Layout(BaseLayout):
         return int(val)
 
     @property
+    def _ws_col(self) -> float:
+        """Get ws between columns including edge widths."""
+        if self.ncol == 1:
+            return 0
+
+        # cbar special
+        if self.cbar.on and utl.kwget(self.kwargs, self.fcpp, 'ws_col', -999) == -999 and not self.cbar.shared:
+            self.ws_col = 0
+
+        # ticks primary
+        if self.separate_ticks or \
+                not any([self.axes.share_y, self.axes.share_row, self.axes.share_col]) or \
+                self.axes.share_col:
+            if self.cbar.on and self.nwrap == 0:
+                self.ws_col += self._tick_y
+            else:
+                self.ws_col = max(self._tick_y, max(self.ws_col, self.ws_col_def))
+            if not self.separate_labels:
+                self.ws_col += self.ws_ticks_ax  # buffer the neighbor plots by the tick to axes distance
+        if self.axes2.on and (self.separate_ticks or self.axes.share_y2 is False):
+            if self.ws_col < self.ws_col + self._tick_y2:
+                self.ws_col += self._tick_y2
+
+        # labels
+        if self.separate_labels:
+            self.ws_col = max(self.ws_fig_label + self._labtick_y + self._labtick_y2, self.ws_col)
+            if not (self.separate_ticks or
+                    not any([self.axes.share_y, self.axes.share_row, self.axes.share_col]) or
+                    self.axes.share_col):
+                # if only separate_labels, subtract off the ticks
+                self.ws_col -= self._tick_y + self._tick_y2
+            if self.cbar.on:
+                self.ws_col += self.label_z.size[0] / 2
+            if self.axes2.on:
+                self.ws_col += self.ws_fig_label
+
+        return np.ceil(self.ws_col)
+
+    @property
+    def _ws_row(self) -> float:
+        """Get ws between rows including edge widths."""
+        if self.nrow == 1:
+            return 0
+
+        # ticks
+        if self.separate_ticks or \
+                not any([self.axes.share_x, self.axes.share_col, self.axes.share_row]) or \
+                self.axes.share_row:
+            self.ws_row = max(self._tick_x + self.ws_ticks_ax, max(self.ws_row, self.ws_row_def))
+        elif self.axes2.on \
+                and (self.separate_ticks or self.axes2.share_x is False) \
+                and self.box.on is False:
+            if self.ws_row < self.ws_row + self._tick_x2 + self.ws_fig_label:
+                self.ws_row += self._tick_x2 + self.ws_fig_label
+
+        if self.label_wrap.on and 'ws_row' not in self.kwargs.keys() and self.ws_row == self.ws_row_def:
+            self.ws_row += self.label_wrap.size[1] + 2 * self.label_wrap.edge_width - self.ws_row_def
+        elif self.label_wrap.on and 'ws_row' not in self.kwargs.keys():
+            self.ws_row += self.label_wrap.size[1] + 2 * self.label_wrap.edge_width
+        if self.box_group_label.on and 'ws_row' not in self.kwargs.keys():
+            self.ws_row += self.box_labels
+            if self.label_wrap.on:
+                self.ws_row += self.label_wrap.size[1] + 2 * self.label_wrap.edge_width - self.ws_row_def
+        elif self.name == 'box':
+            self.ws_row += self.box_labels - self.ws_row_def
+
+        # labels
+        if self.separate_labels:
+            self.ws_row = \
+                max(self._labtick_x - self._tick_x + self._labtick_x2 - self._tick_x2 + self.ws_row, self.ws_row)
+
+        return np.ceil(self.ws_row)
+
+    @property
     def _ws_title(self) -> float:
         """Get ws in the title region depending on title visibility."""
         if self.title.on:
@@ -1248,7 +1322,7 @@ class Layout(BaseLayout):
             # Set style attributes
             kw = {}
             attrs = ['rotation', 'font_color', 'font', 'fill_color', 'edge_color', 'font_style', 'font_weight',
-                     'font_size', 'padding']
+                     'font_size', 'padding', 'horizontalalignment', 'verticalalignment']
             for attr in attrs:
                 if attr in kwargs.keys():
                     kw[attr] = kwargs[attr]
@@ -1278,6 +1352,8 @@ class Layout(BaseLayout):
                                             edgecolor=kw['edge_color'],
                                             pad=kw['padding'],
                                             ),
+                                  horizontalalignment=kw.get('horizontalalignment', 'left'),
+                                  verticalalignment=kw.get('verticalalignment', 'baseline'),
                                   zorder=45)]
 
         # Handle result
@@ -1323,6 +1399,117 @@ class Layout(BaseLayout):
     def close(self):
         """Close an inline plot window."""
         mplp.close('all')
+
+    def _configure_x_axis_ticks(self, axes, ia, ir, ic, lab):
+        """Configure x-axis tick visibility based on sharing options."""
+
+        is_legacy_mpl = version.Version(mpl.__version__) < version.Version('2.2')
+        is_twin_y_axis = self.axes.twin_y and ia == 1
+
+        # Determine if ticks should be visible
+        if self.separate_ticks:
+            # Force all ticks visible
+            show_ticks = True
+        else:
+            # Apply sharing rules
+            if is_twin_y_axis:
+                # Secondary x-axis logic
+                show_ticks = True if not (self.axes.share_x2 and self.axes2.on) else ir == 0
+            else:
+                # Primary x-axis logic
+                if self.axes.share_x:
+                    show_ticks = ir == self.nrow - 1
+                elif self.axes.share_col:
+                    show_ticks = ir == self.nrow - 1
+                elif self.axes.share_row:
+                    show_ticks = True
+                else:
+                    show_ticks = True
+
+            # Override for special cases
+            wrap_condition = (self.nwrap > 0 and (ic + (ir + 1) * self.ncol + 1) > self.nwrap)
+            next_row_disabled = (ir < self.nrow - 1 and not self.axes.visible[ir + 1, ic])
+
+            if wrap_condition or next_row_disabled:
+                show_ticks = True
+
+            # Hide twinned y-axis ticks when sharing
+            if ir != 0 and is_twin_y_axis and self.axes2.share_x:
+                show_ticks = False
+
+        # Set tick visibility
+        if is_legacy_mpl:
+            if show_ticks:
+                mplp.setp(axes[ia].get_xticklabels(), visible=True)
+            else:
+                mplp.setp(axes[ia].get_xticklabels(), visible=False)
+        else:
+            if show_ticks:
+                if is_twin_y_axis:
+                    axes[ia].xaxis.set_tick_params(which='both', labeltop=True)
+                else:
+                    axes[ia].xaxis.set_tick_params(which='both', labelbottom=True)
+            else:
+                axes[ia].xaxis.set_tick_params(which='both', labelbottom=False, labeltop=False)
+
+    def _configure_y_axis_ticks(self, axes, ia, ir, ic, lab):
+        """Configure y-axis tick visibility based on sharing options."""
+
+        is_legacy_mpl = version.Version(mpl.__version__) < version.Version('2.2')
+        is_twin_x_axis = self.axes.twin_x and ia == 1
+        axes_obj = getattr(self, f'axes{lab}')
+
+        # Determine if ticks should be visible
+        if self.separate_ticks:
+            # Force all ticks visible
+            show_ticks = True
+        else:
+            # Apply sharing rules
+            if is_twin_x_axis:
+                # Secondary y-axis logic (right side)
+                show_ticks = True if not (hasattr(self.axes, 'share_y2') and self.axes.share_y2) \
+                             else ic == self.ncol - 1
+            else:
+                # Primary y-axis logic
+                if self.axes.share_y or axes_obj.share_y:
+                    show_ticks = ic == 0
+                elif self.axes.share_row:
+                    show_ticks = ic == 0
+                elif self.axes.share_col:
+                    show_ticks = True
+                else:
+                    show_ticks = True
+
+            # Override: Show y-ticks when left column is not visible
+            if not self.axes.visible[ir, ic - 1]:
+                show_ticks = True
+
+        # Set tick visibility
+        if is_legacy_mpl:
+            if show_ticks:
+                mplp.setp(axes[ia].get_yticklabels(), visible=True)
+            else:
+                mplp.setp(axes[ia].get_yticklabels(), visible=False)
+        else:
+            if show_ticks:
+                if is_twin_x_axis:
+                    axes[ia].yaxis.set_tick_params(which='both', labelright=True)
+                else:
+                    axes[ia].yaxis.set_tick_params(which='both', labelleft=True)
+            else:
+                axes[ia].yaxis.set_tick_params(which='both', labelleft=False, labelright=False)
+
+    def _configure_z_axis_ticks(self, axes, ia, ir, ic, lab):
+        if self.separate_ticks or getattr(self, f'axes{lab}').share_x is False:
+            if version.Version(mpl.__version__) < version.Version('2.2'):
+                mplp.setp(axes[ia].get_xticklabels(), visible=True)
+            else:
+                if self.axes.twin_x and ia == 1:
+                    axes[ia].xaxis.set_tick_params(which='both', labelbottom=True)
+                elif self.axes.twin_y and ia == 1:
+                    axes[ia].xaxis.set_tick_params(which='both', labeltop=True)
+                else:
+                    axes[ia].xaxis.set_tick_params(which='both', labelbottom=True)
 
     def fill_between_lines(self, ir: int, ic: int, iline: int, x: [np.ndarray, pd.Index],
                            lcl: [np.ndarray, pd.Series], ucl: [np.ndarray, pd.Series], element: str,
@@ -1733,55 +1920,12 @@ class Layout(BaseLayout):
                 self.box_group_title.size[0] > self.legend.size[0]:
             self.box_title = self.box_group_title.size[0] - self.legend.size[0]  # + self.ws_ax_box_title
 
-        # Adjust the column and row whitespace
-        if self.cbar.on and utl.kwget(kwargs, self.fcpp, 'ws_col', -999) == -999 and not self.cbar.shared:
-            self.ws_col = 0
+        # Add space for separate and non-shared ticks and labels
+        if not temp:
+            self.ws_col = self._ws_col
+            self.ws_row = self._ws_row
 
-        if self.nrow == 1:
-            self.ws_row = 0
-        if self.ncol == 1:
-            self.ws_col = 0
-
-        # separate ticks and labels
-        if (self.separate_ticks or self.axes.share_y is False) and not self.cbar.on:
-            self.ws_col = max(self._tick_y + self.ws_fig_label, max(self.ws_col, self.ws_col_def))
-        elif (self.separate_ticks or self.axes.share_y is False) and self.cbar.on and not temp:
-            self.ws_col += self._tick_y
-        if self.axes2.on and (self.separate_ticks or self.axes2.share_y is False):
-            if self.ws_col < self.ws_col + self._tick_y2 + self.ws_fig_label:
-                self.ws_col += self._tick_y2 + self.ws_fig_label
-
-        if self.separate_ticks or (self.axes.share_x is False and self.box.on is False) and not temp:
-            self.ws_row = max(self._tick_x + self.ws_fig_label, max(self.ws_row, self.ws_row_def))
-        elif self.axes2.on \
-                and (self.separate_ticks or self.axes2.share_x is False) \
-                and self.box.on is False \
-                and not temp:
-            if self.ws_row < self.ws_row + self._tick_x2 + self.ws_fig_label:
-                self.ws_row += self._tick_x2 + self.ws_fig_label
-
-        if self.separate_labels:
-            self.ws_col = \
-                max(self._labtick_y - self._tick_y + self._labtick_y2 - self._tick_y2 + self.ws_col, self.ws_col)
-            if self.cbar.on and not temp:
-                self.ws_col += self.label_z.size[0] / 2
-            self.ws_row = \
-                max(self._labtick_x - self._tick_x + self._labtick_x2 - self._tick_x2 + self.ws_row, self.ws_row)
-
-        if self.label_wrap.on and 'ws_row' not in kwargs.keys() and self.ws_row == self.ws_row_def:
-            self.ws_row += self.label_wrap.size[1] + 2 * self.label_wrap.edge_width - self.ws_row_def
-        elif self.label_wrap.on and 'ws_row' not in kwargs.keys():
-            self.ws_row += self.label_wrap.size[1] + 2 * self.label_wrap.edge_width
-        if self.box_group_label.on and 'ws_row' not in kwargs.keys():
-            self.ws_row += self.box_labels
-            if self.label_wrap.on:
-                self.ws_row += self.label_wrap.size[1] + 2 * self.label_wrap.edge_width - self.ws_row_def
-        elif not temp and self.name == 'box':
-            self.ws_row += self.box_labels - self.ws_row_def
-
-        self.ws_col = np.ceil(self.ws_col)  # round up to nearest whole pixel
-        self.ws_row = np.ceil(self.ws_row)  # round up to nearest whole pixel
-
+        # heatmap adjustments
         if self.name == 'heatmap' and self.heatmap.cell_size is not None and data.num_x is not None:
             self.axes.size = [self.heatmap.cell_size * data.num_x, self.heatmap.cell_size * data.num_y]
             self.label_col.size[0] = self.axes.size[0]
@@ -2128,7 +2272,24 @@ class Layout(BaseLayout):
                     if x1_right_edge > next_ax_left_edge:
                         xticks.obj[ir, ic][-1].set_visible(False)
 
-            # TODO: Shrink/remove overlapping ticks in grid plots at y-origin
+            # Shrink/remove overlapping ticks in grid plots at y-origin (only removes right now)
+            if ir > 0 and len(yticks_size_all) > 0 and len(xticks_size_all) > 0:
+                xxticks = xticks.size_all.set_index(['ir', 'ic', 'ii'])
+                yyticks = yticks.size_all.set_index(['ir', 'ic', 'ii'])
+                if (ir, ic) in yyticks.index and (ir - 1, ic) in xxticks.index:
+                    _, xwl, xhl, x0l, x1l, y0l, y1l, _ = yyticks.loc[ir, ic].iloc[-1].values
+                    xcl = (x0l + (x1l - x0l) / 2, y0l + (y0l - y1l) / 2)
+                    _, xwf, xhf, x0f, x1f, y0f, y1f, _ = xxticks.loc[ir - 1, ic].iloc[0].values
+                    xcf = (x0f + (x1f - x0f) / 2, y0f + (y0f - y1f) / 2)
+                    if xcl[0] == xcf[0]:
+                        # if ticks are on the identical x-axis location, force remove
+                        xticks.obj[ir, ic - 1][-1].set_visible(False)
+                    if utl.rectangle_overlap((xwl, xhl, xcl), (xwf, xhf, xcf)):  # shrink not working
+                        # if self.tick_cleanup == 'shrink' and \
+                        #         not utl.rectangle_overlap((xwl / sf, xhl, xcl), (xwf, xhf, xcf)):
+                        #     yticks.obj[ir, ic][-1].set_size(yticks.font_size / sf)
+                        # else:
+                        yticks.obj[ir, ic][-1].set_visible(False)
 
             # Remove overlapping ticks on same axis
             if len(xticks_size_all) > 0:
@@ -2204,6 +2365,10 @@ class Layout(BaseLayout):
                     and self.name not in ['box', 'bar', 'pie'] \
                     and (not self.axes.share_x or len(self.axes.obj.flatten()) == 1) \
                     and self.tick_labels_major_x.on:
+
+                if (self.axes.share_row or self.axes.share_col) and ir != self.nrow - 1 and not self.separate_ticks:
+                    continue  # skip if shared column and not last row
+
                 kw = {}
                 kw['rotation'] = xticks.rotation
                 kw['font_color'] = xticks.font_color
@@ -2241,6 +2406,10 @@ class Layout(BaseLayout):
                     and self.name not in ['box', 'bar', 'pie', 'gantt'] \
                     and (not self.axes.share_y or len(self.axes.obj.flatten()) == 1) \
                     and yticks.limits[ir, ic]:
+
+                if (self.axes.share_row or self.axes.share_col) and ic != 0 and not self.separate_ticks:
+                    continue  # skip if shared column and not last row
+
                 kw = {}
                 kw['rotation'] = yticks.rotation
                 kw['font_color'] = yticks.font_color
@@ -2347,9 +2516,8 @@ class Layout(BaseLayout):
 
         return data
 
-    def plot_bar(self, ir: int, ic: int, iline: int, df: pd.DataFrame,
-                 leg_name: str, data: 'Data', ngroups: int, stacked: bool,  # noqa: F821
-                 std: [None, float], xvals: np.ndarray, inst: pd.Series,
+    def plot_bar(self, ir: int, ic: int, iline: int, df: pd.DataFrame, leg_name: str, data: 'Data',  # noqa: F821
+                 ngroups: int, stacked: bool, std: [None, float], xvals: np.ndarray, inst: pd.Series,
                  total: pd.Series) -> 'Data':  # noqa: F821
         """Plot bar graph.
 
@@ -2357,17 +2525,14 @@ class Layout(BaseLayout):
             ir: subplot row index
             ic: subplot column index
             iline: data subset index (from Data.get_plot_data)
-            df: summed column "y" values grouped by x-column -->
-                df.groupby(x).sum()[y]
+            df: summed column "y" values grouped by x-column --> df.groupby(x).sum()[y]
             leg_name: legend value name if legend enabled
             data: Data object
-            ngroups: total number of groups in the full data set based on
-                data.get_plot_data
+            ngroups: total number of groups in the full data set based on data.get_plot_data
             stacked: enables stacked histograms if True
             std: std dev to create error bars if not None
             xvals: sorted array of x-column unique values
-            inst: instance value to get the correct alignment of a group
-                in the plot when legending
+            inst: instance value to get the correct alignment of a group in the plot when legending
             total: number of instances of x-column when grouped by the legend
 
         Returns:
@@ -3162,6 +3327,7 @@ class Layout(BaseLayout):
                                           linewidth=kwargs['width'][0],
                                           color=kwargs['color'][0],
                                           zorder=kwargs.get('zorder', 1))
+
         return line
 
     def plot_pie(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str, data: 'Data',  # noqa: F821
@@ -3256,9 +3422,8 @@ class Layout(BaseLayout):
 
         self.axes.obj[ir, ic].add_collection(p)
 
-    def plot_xy(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str, y: str,
-                leg_name: str, twin: bool, zorder: int = 1, line_type: [str, None] = None,
-                marker_disable: bool = False):
+    def plot_xy(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str, y: str, leg_name: str, twin: bool,
+                zorder: int = 1, line_type: [str, None] = None, marker_disable: bool = False, data=None):
         """ Plot xy data
 
         Args:
@@ -3305,11 +3470,20 @@ class Layout(BaseLayout):
             dfx = df[utl.df_int_cols(df)].values
         else:
             dfx = df[x]
+        dfy = df[y]
 
+        # Modify diagonal plots in a scatter plot matrix
+        if dfx.equals(dfy) and self.diagonal is not None:
+            if iline == 0:
+                self.diagonal_obj[ir, ic] = []
+            self.diagonal_obj[ir, ic] += [self._plot_xy_diagonal_format(ir, ic, ax, x, dfx, dfy, iline, data, y)]
+            return
+
+        # Plot points
         points = None
         if self.markers.on and not marker_disable:
             if self.markers.jitter:
-                dfx = np.random.normal(df[x], 0.03, size=len(df[y]))
+                dfx = np.random.normal(df[x], 0.03, size=len(dfy))
             marker = format_marker(self.markers.type[iline])
             if marker != 'None':
                 # use scatter plot for points
@@ -3317,7 +3491,7 @@ class Layout(BaseLayout):
                     c = self.markers.edge_color[(iline, leg_name)]
                 else:
                     c = self.markers.fill_color[(iline, leg_name)] if self.markers.filled else 'none'
-                points = ax.scatter(dfx, df[y],
+                points = ax.scatter(dfx, dfy,
                                     s=df[self.markers.size]**2 if isinstance(self.markers.size, str)
                                     else self.markers.size[iline]**2,
                                     marker=marker,
@@ -3327,7 +3501,7 @@ class Layout(BaseLayout):
                                     zorder=40
                                     )
             else:
-                points = ax.plot(dfx, df[y],
+                points = ax.plot(dfx, dfy,
                                  marker=marker,
                                  color=line_type.color[(iline, leg_name)],
                                  linestyle=line_type.style[iline],
@@ -3344,7 +3518,7 @@ class Layout(BaseLayout):
                 mask = dfx == dfx
 
             # Plot the line
-            lines = ax.plot(dfx[mask], df[y][mask],
+            lines = ax.plot(dfx[mask], dfy[mask],
                             color=line_type.color[(iline, leg_name)],
                             linestyle=line_type.style[iline],
                             linewidth=line_type.width[iline],
@@ -3352,13 +3526,102 @@ class Layout(BaseLayout):
 
         # Fill the area under the line
         if self.fill_under:
-            self.axes.obj[ir, ic].fill_between(dfx, df[y].min(), df[y], color=line_type.color[(iline, leg_name)],
+            self.axes.obj[ir, ic].fill_between(dfx, dfy.min(), dfy, color=line_type.color[(iline, leg_name)],
                                                alpha=self.fill_under_alpha)
 
         # Add a reference to the line to self.lines
         if leg_name is not None:
             if leg_name is not None and str(leg_name) not in list(self.legend.values['Key']):
                 self.legend.add_value(str(leg_name), points if points is not None else lines, line_type_name)
+
+    def _plot_xy_diagonal_format(self, ir: int, ic: int, ax: mplp.Axes, x: str, dfx: pd.Series, dfy: pd.Series,
+                                 iline: int, data: 'Data', y: str):  # noqa: F821
+        """
+        Format the diagonal plot in a scatter plot matrix.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            x: x-axis column name
+            dfx: x-axis data
+            dfy: y-axis data
+            iline: data subset index (from Data.get_plot_data)
+            data: data object
+            y: y label
+
+        Returns:
+            None
+        """
+        ymax = data.ranges['ymax'][ir, ic]
+        ymin = data.ranges['ymin'][ir, ic]
+
+        if self.diagonal == 'hist':
+            counts, vals = np.histogram(dfx, bins=self.hist.bins, density=self.hist.normalize)
+            if self.legend.column is None:
+                # for non-legend, scale before plotting
+                counts = counts * (ymax - ymin) / (counts.max() * 1.05) + ymin
+            bin_centers = (vals[:-1] + vals[1:]) / 2
+            dd = ax.bar(bin_centers, counts, align='center', linewidth=self.hist.edge_width,
+                        width=np.diff(bin_centers)[0], edgecolor=self.hist.edge_color[iline],
+                        color=self.hist.fill_color[iline])
+
+            # Scale data after plotting with legend
+            if self.legend.column is not None and iline == len(data.legend_vals) - 1:
+                max_count = 0
+                for bar in self.diagonal_obj[ir, ic] + [dd]:
+                    max_count = max(max_count, max([rect.get_height() for rect in bar]))
+                max_count *= 1.05
+                for bar in self.diagonal_obj[ir, ic] + [dd]:
+                    for rect in bar:
+                        rect.set_height(rect.get_height() * (ymax - ymin) / max_count + ymin)
+
+        elif self.diagonal == 'kde':
+            kde = utl.calc_kde(dfx)
+            if self.legend.column is None:
+                density = kde.Density * (ymax - ymin) / kde.Density.max() + ymin
+            else:
+                density = kde.Density
+            kwargs = self.make_kw_dict(self.kde)
+            kwargs['color'] = [self.lines.color[iline]]
+            dd = self.plot_line(ir, ic, kde[x], density, **kwargs)
+
+            # Scale data after plotting with legend
+            if self.legend.column is not None and iline == len(data.legend_vals) - 1:
+                max_val = 0
+                for line in self.diagonal_obj[ir, ic] + [dd]:
+                    max_val = max(max_val, line[0].get_ydata().max())
+                max_val *= 1.05
+                for ii, line in enumerate(self.diagonal_obj[ir, ic] + [dd]):
+                    new_y = line[0].get_ydata() * (ymax - ymin) / max_val + ymin
+                    line[0].set_ydata(new_y)
+
+                    # Fill under curve
+                    if self.kde.fill_under:
+                        self.axes.obj[ir, ic].fill_between(
+                            line[0].get_xdata(), min(new_y), new_y, color=self.lines.color[ii],
+                            alpha=self.kde.fill_alpha)
+
+            elif self.legend.column is None:
+                if self.kde.fill_under:
+                    self.axes.obj[ir, ic].fill_between(
+                            dd[0].get_xdata(), min(density), density, color=kwargs['color'][0],
+                            alpha=self.kde.fill_alpha)
+
+        else:  # 'label'
+            if isinstance(data.legend_vals, pd.DataFrame) and iline != 0:
+                return
+
+            # Disable gridlines
+            ax.grid(False)
+            dd = self.add_text(ir, ic, y, coord='axis', position=[self.axes.size[0] / 2, self.axes.size[1] / 2],
+                               horizontalalignment='center', verticalalignment='center')
+            self.label_x.on = False
+            self.label_x.text = ''
+            self.label_y.on = False
+            self.label_y.text = ''
+            self.ticks_major.subplot_disable[ir, ic] = True
+
+        return dd
 
     def save(self, filename: str, idx: int = 0):
         """Save a plot window.
@@ -3786,6 +4049,10 @@ class Layout(BaseLayout):
                                     direction=self.ticks_minor_y.direction,
                                     )
 
+                # used for diagonal plots in a subplot matrix
+                if self.ticks_major.subplot_disable[ir, ic]:
+                    axes[0].tick_params(which='major', length=0)
+
                 if self.name == 'gantt' and not self.gantt.labels_as_yticks:
                     axes[0].tick_params(left=False)
 
@@ -3849,55 +4116,10 @@ class Layout(BaseLayout):
             if redo:
                 tp = mpl_get_ticks(axes[ia], True, True, minor_on)
 
-            # Force ticks
-            if self.separate_ticks or getattr(self, f'axes{lab}').share_x is False:
-                if version.Version(mpl.__version__) < version.Version('2.2'):
-                    mplp.setp(axes[ia].get_xticklabels(), visible=True)
-                else:
-                    if self.axes.twin_x and ia == 1:
-                        axes[ia].xaxis.set_tick_params(which='both', labelbottom=True)
-                    elif self.axes.twin_y and ia == 1:
-                        axes[ia].xaxis.set_tick_params(which='both', labeltop=True)
-                    else:
-                        axes[ia].xaxis.set_tick_params(which='both', labelbottom=True)
-
-            if self.separate_ticks or getattr(self, f'axes{lab}').share_y is False:
-                if version.Version(mpl.__version__) < version.Version('2.2'):
-                    mplp.setp(axes[ia].get_yticklabels(), visible=True)
-                else:
-                    if self.axes.twin_x and ia == 1:
-                        axes[ia].yaxis.set_tick_params(which='both', labelright=True)
-                    elif self.axes.twin_y and ia == 1:
-                        axes[ia].yaxis.set_tick_params(which='both', labelleft=True)
-                    else:
-                        axes[ia].yaxis.set_tick_params(which='both', labelleft=True)
-
-            if self.nwrap > 0 and (ic + (ir + 1) * self.ncol + 1) > self.nwrap or \
-                    (ir < self.nrow - 1 and not self.axes.visible[ir + 1, ic]):
-                if version.Version(mpl.__version__) < version.Version('2.2'):
-                    mplp.setp(axes[ia].get_xticklabels()[1:], visible=True)
-                elif self.axes.twin_y and ia == 1:
-                    axes[ia].yaxis.set_tick_params(which='both', labeltop=True)
-                else:
-                    axes[ia].xaxis.set_tick_params(which='both', labelbottom=True)
-
-            if not self.separate_ticks and not self.axes.visible[ir, ic - 1]:
-                if version.Version(mpl.__version__) < version.Version('2.2'):
-                    mplp.setp(axes[ia].get_yticklabels(), visible=True)
-                elif self.axes.twin_x and ia == 1:
-                    axes[ia].yaxis.set_tick_params(which='both', labelright=True)
-                else:
-                    axes[ia].yaxis.set_tick_params(which='both', labelleft=True)
-            elif not self.separate_ticks \
-                    and (ic != self.ncol - 1
-                         and utl.plot_num(ir, ic, self.ncol) != self.nwrap) \
-                    and self.axes.twin_x and ia == 1 \
-                    and getattr(self, f'axes{lab}').share_y:
-                mplp.setp(axes[ia].get_yticklabels(), visible=False)
-
-            # Disable twinned ticks
-            if not self.separate_ticks and ir != 0 and self.axes.twin_y and ia == 1 and self.axes2.share_x:
-                mplp.setp(axes[ia].get_xticklabels(), visible=False)
+            # Configure tick visibility
+            self._configure_x_axis_ticks(axes, ia, ir, ic, lab)
+            self._configure_y_axis_ticks(axes, ia, ir, ic, lab)
+            # self._configure_z_axis_ticks(axes, ia, ir, ic, lab)
 
             # Major rotation
             axx = ['x', 'y']
@@ -4170,9 +4392,13 @@ class Layout(BaseLayout):
                         if self.gantt.on and self.gantt.workstreams.on:
                             xoffset += self.gantt.workstreams.size[0] / self.fig.size_int[0]
                             xoffset += self.gantt.workstreams_title.size[0] / self.fig.size_int[0]
+                        if self.separate_labels and not self.separate_ticks and ic != 0:
+                            xoffset -= self._tick_y / self.fig.size_int[0]
                         yoffset = self.axes.obj[0, 0].get_position().y0 - self.axes.obj[ir, ic].get_position().y0
                     elif label == 'x':
                         xoffset = self.axes.obj[0, 0].get_position().x0 - self.axes.obj[ir, ic].get_position().x0
+                        if self.separate_labels and not self.separate_ticks and ir != 0:
+                            xoffset -= self._tick_y / self.fig.size_int[0]
                         yoffset = self.axes.obj[-1, 0].get_position().y0 - self.axes.obj[ir, ic].get_position().y0
                     elif label == 'y2':
                         xoffset = self.axes.obj[0, -1].get_position().x0 - self.axes.obj[ir, ic].get_position().x0

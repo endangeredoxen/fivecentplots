@@ -263,7 +263,7 @@ class Gantt(data.Data):
             twin: denotes if twin axis is enabled or not
             len(vals) [ngroups]: total number of groups in the full data
         """
-        if not isinstance(self.legend_vals, pd.DataFrame):
+        if not isinstance(self._legend_vals, pd.DataFrame):
             xx = [self.x[0]]  # make sure we only get one group for self.x
             yy = [] if not self.y else self.y + self.y2
             lenx = 1 if not self.x else len(xx)
@@ -286,7 +286,7 @@ class Gantt(data.Data):
 
             else:
                 # No workstream defined OR workstream defined with no legend
-                for irow, row in self.legend_vals.iterrows():
+                for irow, row in self._legend_vals.iterrows():
                     # Subset by legend value
                     if row['Leg'] is not None:
                         df2 = df[df[self.legend] == row['Leg']].copy()
@@ -299,7 +299,7 @@ class Gantt(data.Data):
                     # Set twin ax status
                     yield irow, df2, row['x'], row['y'], \
                         None if self.z is None else self.z[0], row['names'], \
-                        False, len(self.legend_vals)
+                        False, len(self._legend_vals)
 
     def _populate_dates(self):
         """Fill in missing dates"""

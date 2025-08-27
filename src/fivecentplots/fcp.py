@@ -920,7 +920,7 @@ def plot_bar(data, layout, ir, ic, df_rc, kwargs):
             else:
                 legend_name = None
             layout.plot_xy(ir, ic, iline, dfrm, 'index', data.y[0], legend_name, False,
-                           line_type='rolling_mean')
+                           line_type='rolling_mean', data=data)
 
         if layout.bar.stacked:
             ss = stacked.groupby(stacked.index).sum(numeric_only=True)[stacked.columns[0]]
@@ -990,10 +990,10 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                         points = gg.loc[gg[dd.legend] == jrow['names']][dd.y].dropna()
                         points['x'] = irow + 1
                         if len(points) > 0:
-                            layout.plot_xy(ir, ic, jj, points, 'x', dd.y[0], jrow['names'], False, zorder=10)
+                            layout.plot_xy(ir, ic, jj, points, 'x', dd.y[0], jrow['names'], False, zorder=10, data=data)
                 else:
                     if len(temp) > 0:
-                        layout.plot_xy(ir, ic, irow, temp, 'x', dd.y[0], None, False, zorder=10)
+                        layout.plot_xy(ir, ic, irow, temp, 'x', dd.y[0], None, False, zorder=10, data=data)
 
             # plot mean diamonds
             if layout.box_mean_diamonds.on:
@@ -1016,9 +1016,9 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         if isinstance(dd.legend_vals, pd.DataFrame):
             for jj, jrow in dd.legend_vals.iterrows():
                 temp = data[0].loc[df_rc[dd.legend] == jrow['names']].index
-                layout.plot_xy(ir, ic, jj, data[0].loc[temp], 'x', dd.y[0], jrow['names'], False, zorder=10)
+                layout.plot_xy(ir, ic, jj, data[0].loc[temp], 'x', dd.y[0], jrow['names'], False, zorder=10, data=data)
         else:
-            layout.plot_xy(ir, ic, 0, data[0], 'x', dd.y[0], None, False, zorder=10)
+            layout.plot_xy(ir, ic, 0, data[0], 'x', dd.y[0], None, False, zorder=10, data=data)
 
     # Remove lowest divider
     dividers = [f for f in dividers if f > 0.5]
@@ -1183,7 +1183,8 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
             leg_name = 'Fit'
     else:
         leg_name = None
-    layout.plot_xy(ir, ic, iline, df, f'{x} Fit', f'{y} Fit', leg_name, twin, line_type='fit', marker_disable=True)
+    layout.plot_xy(ir, ic, iline, df, f'{x} Fit', f'{y} Fit', leg_name, twin, line_type='fit',
+                   marker_disable=True, data=data)
 
     if layout.fit.eqn:
         eqn = 'y='
@@ -1535,9 +1536,8 @@ def plot_ref(ir, ic, iline, data, layout, df, x, y):
         return
 
     for iref in range(0, len(layout.ref_line.column.values)):
-        layout.plot_xy(ir, ic, iref, df, x, layout.ref_line.column[iref],
-                       layout.ref_line.legend_text[iref], False,
-                       line_type='ref_line', marker_disable=True)
+        layout.plot_xy(ir, ic, iref, df, x, layout.ref_line.column[iref], layout.ref_line.legend_text[iref], False,
+                       line_type='ref_line', marker_disable=True, data=data)
         layout.legend.ordered_curves = layout.legend.ordered_curves[0:-1]
 
     return data
@@ -1554,7 +1554,7 @@ def plot_stat(ir, ic, iline, data, layout, df, x, y, leg_name=None, twin=False):
         return
 
     layout.lines.on = True
-    layout.plot_xy(ir, ic, iline, df_stat, x, y, leg_name, twin, marker_disable=True)
+    layout.plot_xy(ir, ic, iline, df_stat, x, y, leg_name, twin, marker_disable=True, data=data)
 
     return data
 
@@ -1580,11 +1580,11 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
             pass
         elif kwargs.get('groups', False):
             for nn, gg in df.groupby(utl.validate_list(kwargs['groups']), sort=data.sort):
-                layout.plot_xy(ir, ic, iline, gg, x, y, leg_name, twin)
+                layout.plot_xy(ir, ic, iline, gg, x, y, leg_name, twin, data=data)
                 plot_fit(data, layout, ir, ic, iline, gg,
                          x, y, twin, leg_name, ngroups)
         else:
-            layout.plot_xy(ir, ic, iline, df, x, y, leg_name, twin)
+            layout.plot_xy(ir, ic, iline, df, x, y, leg_name, twin, data=data)
             plot_fit(data, layout, ir, ic, iline, df,
                      x, y, twin, leg_name, ngroups)
 
@@ -1680,7 +1680,7 @@ def plotter(dobj, **kwargs):
                 if dd.wrap is None:
                     layout.set_axes_rc_labels(ir, ic)
                 layout.axes.visible[ir, ic] = False
-                if layout.engine == 'mpl':
+                if layout.engine == 'mpl':  # make a new base class funciton to handle this and just pass if not needed
                     layout.axes.obj[ir, ic].axis('off')
                     if layout.axes2.obj[ir, ic] is not None:
                         layout.axes2.obj[ir, ic].axis('off')

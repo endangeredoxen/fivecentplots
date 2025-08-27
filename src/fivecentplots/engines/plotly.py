@@ -1758,7 +1758,7 @@ class Layout(BaseLayout):
 
     def plot_xy(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str, y: str,
                 leg_name: str, twin: bool, zorder: int = 1, line_type: [str, None] = None,
-                marker_disable: bool = False):
+                marker_disable: bool = False, data=None):
         """ Plot xy data
 
         Args:

@@ -76,6 +76,7 @@ class Data:
         self.interval = utl.validate_list(kwargs.get('perc_int', kwargs.get('nq_int', kwargs.get('conf_int', False))))
         self.ignore_dates = kwargs.get('ignore_dates', False)
         self.legend = None
+        self._legend_vals = None  # master backup of legend vals
         self.legend_vals = None
         self.pivot = False
         self.ranges = None
@@ -226,7 +227,7 @@ class Data:
                 self.legend = False
             else:
                 self.legend = self._check_group_columns('legend', kwargs.get('legend', None))
-        elif not self.twin_x and self.y is not None and len(self.y) > 1:
+        elif not self.twin_x and self.y is not None and len(self.y) > 1 and self.wrap != 'y':
             self.legend = True
 
         # Define figure grouping column names
@@ -718,7 +719,7 @@ class Data:
             vmin -= self.ax_limit_padding * vmin
             vmax += self.ax_limit_padding * vmax
 
-        return vmin, vmax
+        return np.float64(vmin), np.float64(vmax)
 
     def get_data_ranges(self):
         """Calculate data range limits for a given figure."""
@@ -728,7 +729,7 @@ class Data:
 
         rr = self._range_dict()  # new range dict with updates based on subplot contents
         for ax in self.axs_on:
-            # Case 1: share_[ax] = True
+            # Case: share_[ax] = True
             if getattr(self, f'share_{ax}'):
                 mmin = self.ranges[f'{ax}min'][np.not_equal(self.ranges[f'{ax}min'], None)]
                 if len(mmin) > 0:
@@ -737,8 +738,21 @@ class Data:
                 if len(mmax) > 0:
                     rr[f'{ax}max'][np.equal(rr[f'{ax}max'], None)] = mmax.max()
 
-            # Case 2: share_row = True
-            elif self.share_row and self.row is not None:  # and self.row != 'y':
+            # Case: share_row = True and share_col = True
+            elif self.share_row and self.row is not None and self.share_col and self.col is not None:
+                for irow in range(0, self.nrow):
+                    for icol in range(0, self.ncol):
+                        mmin = \
+                            self.ranges[f'{ax}min'][irow, icol][np.not_equal(self.ranges[f'{ax}min'][irow, icol], None)]
+                        if len(mmin) > 0:
+                            rr[f'{ax}min'][irow, icol] = mmin.min()
+                        mmax = \
+                            self.ranges[f'{ax}max'][irow, icol][np.not_equal(self.ranges[f'{ax}max'][irow, icol], None)]
+                        if len(mmax) > 0:
+                            rr[f'{ax}max'][irow, icol] = mmax.max()
+
+            # Case: share_row = True
+            elif self.share_row and self.row is not None:
                 for irow in range(0, self.nrow):
                     mmin = self.ranges[f'{ax}min'][irow, :][np.not_equal(self.ranges[f'{ax}min'][irow, :], None)]
                     if len(mmin) > 0:
@@ -747,7 +761,7 @@ class Data:
                     if len(mmax) > 0:
                         rr[f'{ax}max'][irow, :] = mmax.max()
 
-            # Case 3: share_col
+            # Case: share_col
             elif self.share_col and self.col is not None:
                 for icol in range(0, self.ncol):
                     mmin = self.ranges[f'{ax}min'][:, icol][np.not_equal(self.ranges[f'{ax}min'][:, icol], None)]
@@ -757,7 +771,7 @@ class Data:
                     if len(mmax) > 0:
                         rr[f'{ax}max'][:, icol] = mmax.max()
 
-            # Case 4: no sharing
+            # Case: no sharing
             else:
                 rr[f'{ax}min'] = self.ranges[f'{ax}min']
                 rr[f'{ax}max'] = self.ranges[f'{ax}max']
@@ -992,15 +1006,15 @@ class Data:
         Args:
             df: data subset
         """
-        if self.legend_vals is not None:
+        if self._legend_vals is not None:
             # Only do this function once
             return
         if self.legend is True and self.twin_x or self.legend is True and len(self.y) > 1:
-            self.legend_vals = self.y + self.y2
+            self._legend_vals = self.y + self.y2
             self.nleg_vals = len(self.y + self.y2)
             return
-        elif self.legend is True and self.twin_y:
-            self.legend_vals = self.x + self.x2
+        elif self.legend is True and self.twin_y or self.legend is True and len(self.x) > 1:
+            self._legend_vals = self.x + self.x2
             self.nleg_vals = len(self.x + self.x2)
             return
 
@@ -1053,29 +1067,23 @@ class Data:
             leg_df['names'] = list(leg_df.Leg)
 
         # if more than one y axis and leg specified
-        if self.wrap == 'y' or self.wrap == 'x':
-            leg_df = leg_df.drop(self.wrap, axis=1).drop_duplicates()
-            leg_df[self.wrap] = self.wrap
-        elif self.row == 'y':
-            del leg_df['y']
-            leg_df = leg_df.drop_duplicates().reset_index(drop=True)
-        elif self.col == 'x':
-            del leg_df['x']
-            leg_df = leg_df.drop_duplicates().reset_index(drop=True)
-        elif len(leg_df.y.unique()) > 1 and not (leg_df.Leg.isnull()).all() \
-                and len(leg_df.x.unique()) == 1:
+        if self.row != 'y' and self.col != 'x' and len(leg_df.y.unique()) > 1 and not (leg_df.Leg.isnull()).all() \
+                and len(leg_df.x.unique()) == 1 and self.wrap != 'y':
             leg_df['names'] = leg_df.Leg.map(str) + ' | ' + leg_df.y.map(str)
 
         # if more than one x and leg specified
         if 'names' not in leg_df.columns:
             leg_df['names'] = leg_df.x
         elif 'x' in leg_df.columns and len(leg_df.x.unique()) > 1 \
-                and not self.twin_x:
+                and not self.twin_x and 'y' in leg_df.columns and self.col != 'x' and self.wrap != 'x':
             leg_df['names'] = \
                 leg_df['names'].map(str) + ' | ' + \
                 leg_df.y.map(str) + ' / ' + leg_df.x.map(str)
+        else:
+            leg_df = leg_df.drop_duplicates()
 
         leg_df = leg_df.set_index('names')
+        self._legend_vals = leg_df.reset_index()
         self.legend_vals = leg_df.reset_index()
 
     def get_plot_data(self, df: pd.DataFrame):
@@ -1094,7 +1102,11 @@ class Data:
             twin: denotes if twin axis is enabled or not
             len(vals) [ngroups]: total number of groups in the full data
         """
-        if not isinstance(self.legend_vals, pd.DataFrame):
+        if not isinstance(self._legend_vals, pd.DataFrame):
+            if self._legend_vals is None:
+                self.legend_vals = None
+            else:
+                self.legend_vals = self._legend_vals.copy()
             xx = [] if not self.x else self.x + self.x2
             yy = [] if not self.y else self.y + self.y2
             lenx = 1 if not self.x else len(xx)
@@ -1114,25 +1126,25 @@ class Data:
                     leg = row['y']
                 else:
                     leg = None
-                if self.wrap == 'y':
+                if self.wrap == 'y' and leg is not None:
                     iline = self.wrap_vals.index(leg)
 
                 yield iline, df, row['x'], row['y'], \
                     None if self.z is None else self.z[0], leg, twin, len(vals)
 
         else:
+            # Handle
+            if (self.ncol > 1 or self.nrow > 1) and not (self.twin_x or self.twin_y):
+                self.legend_vals = self._legend_vals.loc[(self._legend_vals.x == self.x[0]) &
+                                                         (self._legend_vals.y == self.y[0])].reset_index(drop=True)
+            else:
+                self.legend_vals = self._legend_vals.copy()
             for iline, row in self.legend_vals.iterrows():
                 # Fix unique wrap vals
                 if self.wrap == 'y' or self.wrap == 'x':
                     wrap_col = list(set(df.columns) & set(getattr(self, self.wrap)))[0]
                     df = df.rename(columns={self.wrap: wrap_col})
                     row[self.wrap] = wrap_col
-                if self.row == 'y':
-                    row['y'] = self.y[0]
-                    self.legend_vals['y'] = self.y[0]
-                if self.col == 'x':
-                    row['x'] = self.x[0]
-                    self.legend_vals['x'] = self.x[0]
 
                 # Subset by legend value
                 if row['Leg'] is not None:
@@ -1168,6 +1180,7 @@ class Data:
                 rcnum = int(np.ceil(np.sqrt(len(self.wrap_vals))))
             else:
                 rcnum = self.ncols if self.ncols <= len(self.wrap_vals) else len(self.wrap_vals)
+
             self.ncol = rcnum
             self.nrow = int(np.ceil(len(self.wrap_vals) / rcnum))
             self.nwrap = len(self.wrap_vals)
@@ -1402,17 +1415,15 @@ class Data:
             cols = (self.x if self.x is not None else []) \
                 + (self.y if self.y is not None else []) \
                 + (self.groups if self.groups is not None else []) \
-                + (utl.validate_list(self.legend)
-                   if self.legend not in [None, True, False] else [])
-            return self.df_fig[cols]
+                + (utl.validate_list(self.legend) if self.legend not in [None, True, False] else [])
+            return self.df_fig[list(set(cols))]
         elif self.wrap == 'x':
             self.x = utl.validate_list(self.wrap_vals[ic + ir * self.ncol])
-            cols = (self.x if self.x is not None else []) + \
-                   (self.y if self.y is not None else []) + \
-                   (self.groups if self.groups is not None else []) + \
-                   (utl.validate_list(self.legend)
-                    if self.legend is not None else [])
-            return self.df_fig[cols]
+            cols = (self.x if self.x is not None else []) \
+                + (self.y if self.y is not None else [])  \
+                + (self.groups if self.groups is not None else []) \
+                + (utl.validate_list(self.legend) if self.legend not in [None, True, False] else [])
+            return self.df_fig[list(set(cols))]
         else:
             wrap = dict(zip(self.wrap, utl.validate_list(self.wrap_vals[ir * self.ncol + ic])))
             mask = pd.concat([self.df_fig[x[0]].eq(x[1]) for x in wrap.items()], axis=1).all(axis=1)

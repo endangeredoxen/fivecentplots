@@ -201,6 +201,7 @@ date_location
 date_type
 dependencies
 df
+diagonal
 dpi
 duration
 edge_alpha
@@ -1542,6 +1543,7 @@ ws_label_row
 ws_label_tick
 ws_leg_fig
 ws_row
+ws_row_col
 ws_tick_minimum
 ws_ticks_ax
 ws_title_ax

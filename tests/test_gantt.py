@@ -113,7 +113,7 @@ def plt_rc_missing(bm=False, make_reference=False, show=False):
     # Make the plot
     df['Temp'] = 'Boom'
     df.loc[5:, 'Temp'] = 'Boom2'
-    fcp.gantt(df, x=['Start', 'Stop'], y='Task', row='Category', col='Temp', share_y=False,
+    fcp.gantt(df, x=['Start', 'Stop'], y='Task', row='Category', col='Temp', share_y=False, ws_col=100,
               filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
 
     if bm:

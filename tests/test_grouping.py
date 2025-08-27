@@ -222,9 +222,9 @@ def test_groups_wrap_unique(make_reference=False, remove=True, show=False):
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_groups_wrap_unique_seperate(make_reference=False, remove=True, show=False):
+def test_groups_wrap_unique_separate(make_reference=False, remove=True, show=False):
 
-    name = utl.unit_test_get_img_name('groups_wrap_unique_seperate', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('groups_wrap_unique_separate', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df1, x='Voltage', y='I [A]', legend='Die', wrap=['Temperature [C]', 'Boost Level'],
@@ -233,15 +233,15 @@ def test_groups_wrap_unique_seperate(make_reference=False, remove=True, show=Fal
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-# def test_groups_wrap_unique_seperate2(make_reference=False, remove=True, show=False):
+def test_groups_wrap_unique_separate2(make_reference=False, remove=True, show=False):
 
-#     name = utl.unit_test_get_img_name('groups_wrap_unique_seperate2', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('groups_wrap_unique_separate2', make_reference, REFERENCE)
 
-#     # Make the plot
-#     fcp.plot(df1, x='Voltage', y='I [A]', legend='Die', wrap=['Temperature [C]', 'Boost Level'],
-#              ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450',
-#              separate_labels=True, separate_ticks=False, save=True, inline=False, filename=name.with_suffix('.png'))
-#     return utl.unit_test_options(make_reference, show, name, REFERENCE)
+    # Make the plot
+    fcp.plot(df1, x='Voltage', y='I [A]', legend='Die', wrap=['Temperature [C]', 'Boost Level'],
+             ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450',
+             separate_labels=True, separate_ticks=False, save=True, inline=False, filename=name.with_suffix('.png'))
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_groups_wrap_xy(make_reference=False, remove=True, show=False):

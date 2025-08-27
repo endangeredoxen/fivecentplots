@@ -204,6 +204,49 @@ def arithmetic_eval(s):
     return _eval(node.body)
 
 
+def calc_distribution(counts: npt.NDArray, distribution_type: str = 'cdf') -> npt.NDArray:
+    """
+    Compute cdf or pdf calculations
+
+    Args:
+        array of bin counts
+        distribution_type: 'cdf' or 'pdf'
+
+    Returns:
+        cumsum of counts
+    """
+    distribution_type = distribution_type.lower()
+
+    if distribution_type == 'cdf':
+        pdf = counts / sum(counts)
+        counts = np.cumsum(pdf)
+    elif distribution_type == 'pdf':
+        counts = counts / sum(counts)
+    else:
+        raise ValueError(f'Unknown distribution type: {distribution_type}.  Use "cdf" or "pdf"')
+
+    return counts
+
+
+def calc_kde(x: pd.Series, num_vals: int = 1000) -> pd.DataFrame:
+    """
+    Calculate the kernel density estimate for the given data.  Set limits based on 1000x the max value
+
+    Args:
+        x: data to calculate the kde
+        num_vals (optional): number of values to return. Defaults to 1000.
+
+    Returns:
+        DataFrame with kde values
+    """
+    kde = ss.gaussian_kde(x)
+    x0 = np.linspace(x.min() * 0.5, x.max() * 1.5, num_vals)
+    y0 = kde(x0)
+    x0 = x0[y0 > y0.max() / 1000]
+    y0 = y0[y0 > y0.max() / 1000]
+    return pd.DataFrame({x.name: x0, 'Density': y0})
+
+
 def ci(data: pd.Series, coeff: float = 0.95) -> [float, float]:
     """Compute a confidence interval.
 

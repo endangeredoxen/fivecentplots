@@ -3,29 +3,10 @@ import pdb
 import pandas as pd
 import numpy as np
 import numpy.typing as npt
-import scipy.stats as stats
 from .. import utilities
 from typing import List, Union
 utl = utilities
 db = pdb.set_trace
-
-
-def _calc_kde(x: pd.Series) -> pd.DataFrame:
-    """
-    Calculate the kernel density estimate for the given data.  Set limits based on 1000x the max value
-
-    Args:
-        x: data to calculate the kde
-
-    Returns:
-        DataFrame with kde values
-    """
-    kde = stats.gaussian_kde(x)
-    x0 = np.linspace(x.min() * 0.5, x.max() * 1.5, 1000)
-    y0 = kde(x0)
-    x0 = x0[y0 > y0.max() / 1000]
-    y0 = y0[y0 > y0.max() / 1000]
-    return pd.DataFrame({x.name: x0, 'Density': y0})
 
 
 class Histogram(data.Data):
@@ -167,24 +148,6 @@ class Histogram(data.Data):
         if (self.kde and not self.bars) or not self.bars or self.cdf or self.pdf:
             self.switch_to_xy_plot(kwargs)
 
-    def _calc_distribution(self, counts: npt.NDArray[int]) -> npt.NDArray[int]:
-        """
-        Compute cdf or pdf calculations
-
-        Args:
-            array of bin counts
-
-        Return:
-            cumsum of counts
-        """
-        if self.cdf:
-            pdf = counts / sum(counts)
-            counts = np.cumsum(pdf)
-        elif self.pdf:
-            counts = counts / sum(counts)
-
-        return counts
-
     def _calc_histograms(self, ir: int, ic: int, data_set: Union[pd.DataFrame, npt.NDArray]) -> List[npt.NDArray]:
         """Calculate the histogram data for one data set.
 
@@ -207,7 +170,7 @@ class Histogram(data.Data):
 
         # Calculate the histogram counts
         if self.bins == 0 and data_set.dtype not in [float, np.float16, np.float32, np.float64]:
-            # If no bins defined, assume a bin size of 1 unit and use np.bincount for better speed
+            # If no bins defined, assume a bin size of 1 unit and use np.bincount for improved speed
             data_set = data_set.astype(int)
             offset = data_set.min() if data_set.min() < 0 else 0  # bincount requires positives only
             vals = np.arange(offset, data_set.max() + 1)
@@ -292,7 +255,7 @@ class Histogram(data.Data):
 
         # cdf or pdf
         if self.cdf:
-            counts = self._calc_distribution(counts)
+            counts = utl.calc_distribution(counts, 'cdf')
 
             # Fill to max x-range
             if self.imgs is None:
@@ -302,6 +265,10 @@ class Histogram(data.Data):
                 xmax = max([f.max() for f in self.imgs.values()])
             vals = np.append(vals, xmax)
             counts = np.append(counts, 1)
+
+        elif self.pdf:
+            # Think there was an error here... check the math
+            counts = utl.calc_distribution(counts, 'pdf')
 
         return counts, vals
 
@@ -376,7 +343,7 @@ class Histogram(data.Data):
                 else:
                     return pd.DataFrame()  # is this enough?
             elif self.kde:
-                return _calc_kde(df[self.x[0]])
+                return utl.calc_kde(df[self.x[0]])
             else:
                 counts, vals = self._calc_histograms(ir, ic, df[self.x[0]])
                 return pd.DataFrame({self.x[0]: vals, self.y[0]: counts})
@@ -398,7 +365,7 @@ class Histogram(data.Data):
             elif self.kde:
                 for iline, row in self.legend_vals.iterrows():
                     temp = df.loc[df[self.legend] == row.Leg]
-                    temp = _calc_kde(temp[self.x[0]])
+                    temp = utl.calc_kde(temp[self.x[0]])
                     temp[self.legend] = row.Leg
                     df_sub += [temp]
             else:
