@@ -757,6 +757,14 @@ class Layout(BaseLayout):
         if self.ncol == 1:
             return 0
 
+        # kwargs override everything
+        if 'ws_col' in self.kwargs.keys():
+            self.ws_col = self.kwargs['ws_col']
+            return self.kwargs['ws_col']
+        elif 'ws_row_col' in self.kwargs.keys():
+            self.ws_col = self.kwargs['ws_row_col']
+            return self.kwargs['ws_row_col']
+
         # cbar special
         if self.cbar.on and utl.kwget(self.kwargs, self.fcpp, 'ws_col', -999) == -999 and not self.cbar.shared:
             self.ws_col = 0
@@ -764,7 +772,7 @@ class Layout(BaseLayout):
         # ticks primary
         if self.separate_ticks or \
                 not any([self.axes.share_y, self.axes.share_row, self.axes.share_col]) or \
-                self.axes.share_col:
+                (self.axes.share_col and not self.axes.share_row):
             if self.cbar.on and self.nwrap == 0:
                 self.ws_col += self._tick_y
             else:
@@ -780,7 +788,7 @@ class Layout(BaseLayout):
             self.ws_col = max(self.ws_fig_label + self._labtick_y + self._labtick_y2, self.ws_col)
             if not (self.separate_ticks or
                     not any([self.axes.share_y, self.axes.share_row, self.axes.share_col]) or
-                    self.axes.share_col):
+                    (self.axes.share_col and not self.axes.share_row)):
                 # if only separate_labels, subtract off the ticks
                 self.ws_col -= self._tick_y + self._tick_y2
             if self.cbar.on:
@@ -796,10 +804,18 @@ class Layout(BaseLayout):
         if self.nrow == 1:
             return 0
 
+        # kwargs override everything
+        if 'ws_row' in self.kwargs.keys():
+            self.ws_row = self.kwargs['ws_row']
+            return self.kwargs['ws_row']
+        elif 'ws_row_col' in self.kwargs.keys():
+            self.ws_row = self.kwargs['ws_row_col']
+            return self.kwargs['ws_row_col']
+
         # ticks
         if self.separate_ticks or \
                 not any([self.axes.share_x, self.axes.share_col, self.axes.share_row]) or \
-                self.axes.share_row:
+                (self.axes.share_row and not self.axes.share_col):
             self.ws_row = max(self._tick_x + self.ws_ticks_ax, max(self.ws_row, self.ws_row_def))
         elif self.axes2.on \
                 and (self.separate_ticks or self.axes2.share_x is False) \
@@ -1417,7 +1433,9 @@ class Layout(BaseLayout):
                 show_ticks = True if not (self.axes.share_x2 and self.axes2.on) else ir == 0
             else:
                 # Primary x-axis logic
-                if self.axes.share_x:
+                if self.kwargs.get('separate_ticks', None) is False:
+                    show_ticks = ir == self.nrow - 1
+                elif self.axes.share_x:
                     show_ticks = ir == self.nrow - 1
                 elif self.axes.share_col:
                     show_ticks = ir == self.nrow - 1
@@ -1471,7 +1489,9 @@ class Layout(BaseLayout):
                              else ic == self.ncol - 1
             else:
                 # Primary y-axis logic
-                if self.axes.share_y or axes_obj.share_y:
+                if self.kwargs.get('separate_ticks', None) is False:
+                    show_ticks = ic == 0
+                elif self.axes.share_y or axes_obj.share_y:
                     show_ticks = ic == 0
                 elif self.axes.share_row:
                     show_ticks = ic == 0
@@ -2257,6 +2277,25 @@ class Layout(BaseLayout):
                             # If self.tick_cleanup == 'remove' and the resized tick label would still overlap, remove it
                             xticks.obj[ir, ic - 1][-1].set_visible(False)
 
+            # Shrink/remove overlapping ticks in column/wrap plots at y-origin
+            if ir > 0 and len(yticks_size_all) > 0:
+                yyticks = yticks.size_all.set_index(['ir', 'ic', 'ii'])
+                if (ir - 1, ic) in yyticks.index:
+                    _, ywl, yhl, y0l, y1l, y0l, y1l, _ = yyticks.loc[ir - 1, ic].iloc[0].values
+                    ycl = (y0l + (y1l - y0l) / 2, y0l + (y0l - y1l) / 2)
+                    _, ywf, yhf, y0f, y1f, y0f, y1f, _ = yyticks.loc[ir, ic].iloc[-1].values
+                    ycf = (y0f + (y1f - y0f) / 2, y0f + (y0f - y1f) / 2)
+                    if ycl[0] == ycf[0]:
+                        # if ticks are on the identical y-axis location, force remove
+                        yticks.obj[ir, ic - 1][-1].set_visible(False)
+                    if utl.rectangle_overlap((ywl, yhl, ycl), (ywf, yhf, ycf)):
+                        if self.tick_cleanup == 'shrink' and \
+                                not utl.rectangle_overlap((ywl / sf, yhl, ycl), (ywf, yhf, ycf)):
+                            yticks.obj[ir, ic][-1].set_size(yticks.font_size / sf)
+                        else:
+                            # If self.tick_cleanup == 'remove' and the resized tick label would still overlap, remove it
+                            yticks.obj[ir, ic][-1].set_visible(False)
+
             # First and last x ticks that may fall under a wrap label
             if len(xticks_size_all) > 0 and ir != self.nrow - 1:
                 xxticks = xticks.size_all.set_index(['ir', 'ic', 'ii'])
@@ -2364,7 +2403,8 @@ class Layout(BaseLayout):
             if len(xticks_size_all) <= 1 \
                     and self.name not in ['box', 'bar', 'pie'] \
                     and (not self.axes.share_x or len(self.axes.obj.flatten()) == 1) \
-                    and self.tick_labels_major_x.on:
+                    and self.tick_labels_major_x.on \
+                    and self.kwargs.get('separate_ticks', None) != False:  # noqa
 
                 if (self.axes.share_row or self.axes.share_col) and ir != self.nrow - 1 and not self.separate_ticks:
                     continue  # skip if shared column and not last row
@@ -2405,7 +2445,8 @@ class Layout(BaseLayout):
             if len(yticks_size_all) <= 1 \
                     and self.name not in ['box', 'bar', 'pie', 'gantt'] \
                     and (not self.axes.share_y or len(self.axes.obj.flatten()) == 1) \
-                    and yticks.limits[ir, ic]:
+                    and yticks.limits[ir, ic] \
+                    and self.kwargs.get('separate_ticks', None) != False:  # noqa
 
                 if (self.axes.share_row or self.axes.share_col) and ic != 0 and not self.separate_ticks:
                     continue  # skip if shared column and not last row
