@@ -507,7 +507,7 @@ hist_fill_color
 hist_horizontal
 hist_kde
 hist_kde_fill_alpha
-hist_kde_fill_under
+hist_kde_fill_under_alpha
 hist_normalize
 hist_on
 hist_rwidth
@@ -531,7 +531,7 @@ jitter
 kde
 kde_alpha
 kde_fill_alpha
-kde_fill_under
+kde_fill_under_alpha
 kde_color
 kde_style
 kde_width

@@ -3600,7 +3600,7 @@ class Layout(BaseLayout):
             counts, vals = np.histogram(dfx, bins=self.hist.bins, density=self.hist.normalize)
             if self.legend.column is None:
                 # for non-legend, scale before plotting
-                counts = counts * (ymax - ymin) / (counts.max() * 1.05) + ymin
+                counts = counts * (ymax - ymin) / (counts.max() * (1 + data.ax_limit_padding)) + ymin
             bin_centers = (vals[:-1] + vals[1:]) / 2
             dd = ax.bar(bin_centers, counts, align='center', linewidth=self.hist.edge_width,
                         width=np.diff(bin_centers)[0], edgecolor=self.hist.edge_color[iline],
@@ -3611,7 +3611,7 @@ class Layout(BaseLayout):
                 max_count = 0
                 for bar in self.diagonal_obj[ir, ic] + [dd]:
                     max_count = max(max_count, max([rect.get_height() for rect in bar]))
-                max_count *= 1.05
+                max_count *=  (1 + data.ax_limit_padding)
                 for bar in self.diagonal_obj[ir, ic] + [dd]:
                     for rect in bar:
                         rect.set_height(rect.get_height() * (ymax - ymin) / max_count + ymin)
@@ -3619,7 +3619,7 @@ class Layout(BaseLayout):
         elif self.diagonal == 'kde':
             kde = utl.calc_kde(dfx)
             if self.legend.column is None:
-                density = kde.Density * (ymax - ymin) / kde.Density.max() + ymin
+                density = kde.Density * (ymax - ymin) / (kde.Density.max() * (1 + data.ax_limit_padding)) + ymin
             else:
                 density = kde.Density
             kwargs = self.make_kw_dict(self.kde)
@@ -3631,7 +3631,7 @@ class Layout(BaseLayout):
                 max_val = 0
                 for line in self.diagonal_obj[ir, ic] + [dd]:
                     max_val = max(max_val, line[0].get_ydata().max())
-                max_val *= 1.05
+                max_val *= (1 + data.ax_limit_padding)
                 for ii, line in enumerate(self.diagonal_obj[ir, ic] + [dd]):
                     new_y = line[0].get_ydata() * (ymax - ymin) / max_val + ymin
                     line[0].set_ydata(new_y)

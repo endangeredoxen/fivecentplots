@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 import fivecentplots.utilities as utl
 import matplotlib as mpl
+import seaborn as sns
 osjoin = os.path.join
 db = pdb.set_trace
 mpl.use('agg')
@@ -29,6 +30,8 @@ else:
 # Sample data
 df1 = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data.csv')
 df2 = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+df_iris = sns.load_dataset('iris')
+SPM_COLS = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width']
 
 # Set theme
 fcp.set_theme('gray_original')
@@ -372,6 +375,79 @@ def test_legend_single(make_reference=False, remove=True, show=False):
     fcp.plot(df1, x='Voltage', y='I [A]', legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              save=True, inline=False, filename=name.with_suffix('.png'))
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_scatterplot_matrix(make_reference=False, remove=True, show=False):
+
+    name = utl.unit_test_get_img_name('scatterplot_matrix', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df_iris, x=SPM_COLS, y=SPM_COLS, row='y', col='x', lines=False, ax_size=[200, 200],
+             marker_size=1, share_x=False, share_y=False, ws_row_col=0, separate_ticks=False,
+             save=True, inline=False, filename=name.with_suffix('.png'))
+
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_scatterplot_matrix_label(make_reference=False, remove=True, show=False):
+
+    name = utl.unit_test_get_img_name('scatterplot_matrix_label', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df_iris, x=SPM_COLS, y=SPM_COLS, row='y', col='x', lines=False, ax_size=[200, 200],
+             marker_size=1, share_x=False, share_y=False, ws_row_col=0, separate_ticks=False,
+             diagonal='label', save=True, inline=False, filename=name.with_suffix('.png'))
+
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_scatterplot_matrix_hist(make_reference=False, remove=True, show=False):
+
+    name = utl.unit_test_get_img_name('scatterplot_matrix_hist', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df_iris, x=SPM_COLS, y=SPM_COLS, row='y', col='x', lines=False, ax_size=[200, 200],
+             marker_size=1, share_x=False, share_y=False, ws_row_col=0, separate_ticks=False,
+             diagonal='hist', save=True, inline=False, filename=name.with_suffix('.png'))
+
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_scatterplot_matrix_hist_legend(make_reference=False, remove=True, show=False):
+
+    name = utl.unit_test_get_img_name('scatterplot_matrix_hist_legend', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df_iris, x=SPM_COLS, y=SPM_COLS, row='y', col='x', lines=False, ax_size=[200, 200],
+             marker_size=1, share_x=False, share_y=False, ws_row_col=0, separate_ticks=False,
+             diagonal='hist', legend='species', save=True, inline=False, filename=name.with_suffix('.png'))
+
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_scatterplot_matrix_kde(make_reference=False, remove=True, show=False):
+
+    name = utl.unit_test_get_img_name('scatterplot_matrix_kde', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df_iris, x=SPM_COLS, y=SPM_COLS, row='y', col='x', lines=False, ax_size=[200, 200],
+             marker_size=1, share_x=False, share_y=False, ws_row_col=0, separate_ticks=False,
+             diagonal='kde', save=True, inline=False, filename=name.with_suffix('.png'))
+
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_scatterplot_matrix_kde_legend(make_reference=False, remove=True, show=False):
+
+    name = utl.unit_test_get_img_name('scatterplot_matrix_kde_legend', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df_iris, x=SPM_COLS, y=SPM_COLS, row='y', col='x', lines=False, ax_size=[200, 200],
+             marker_size=1, share_x=False, share_y=False, ws_row_col=0, separate_ticks=False,
+             diagonal='kde', legend='species', kde_fill_under_alpha=0.2, save=True, inline=False,
+             filename=name.with_suffix('.png'))
+
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
