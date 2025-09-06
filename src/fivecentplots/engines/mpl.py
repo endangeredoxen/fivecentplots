@@ -3611,7 +3611,7 @@ class Layout(BaseLayout):
                 max_count = 0
                 for bar in self.diagonal_obj[ir, ic] + [dd]:
                     max_count = max(max_count, max([rect.get_height() for rect in bar]))
-                max_count *=  (1 + data.ax_limit_padding)
+                max_count *= (1 + data.ax_limit_padding)
                 for bar in self.diagonal_obj[ir, ic] + [dd]:
                     for rect in bar:
                         rect.set_height(rect.get_height() * (ymax - ymin) / max_count + ymin)
