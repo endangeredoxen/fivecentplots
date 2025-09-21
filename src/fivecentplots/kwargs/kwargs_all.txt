@@ -281,6 +281,8 @@ gantt_font_weight
 gantt_height
 gantt_label_box_padding_x
 gantt_label_boxes
+gannt_label_boxes_x_fill_color
+gannt_label_boxes_y_fill_color
 gantt_label_coord
 gantt_label_coordinate
 gantt_label_edge_color
@@ -539,6 +541,8 @@ kde_zorder
 label_box_padding_x
 label_box_padding_y
 label_boxes
+label_boxes_x_fill_color
+label_boxes_y_fill_color
 label_col_edge_alpha
 label_col_edge_color
 label_col_edge_style

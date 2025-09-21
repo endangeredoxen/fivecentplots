@@ -1232,12 +1232,12 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
     elif layout.gantt.order_by_legend and data.legend is not None and \
             layout.gantt.workstreams.on and \
             layout.gantt.workstreams.location == 'inline':
-        df_rc = df_rc.sort_values([layout.gantt.workstreams.column, '_is_workstream', data.x[0]],
+        df_rc = df_rc.sort_values([layout.gantt.workstreams.column, '_is_workstream', data.x[0], data.y[0]],
                                   ascending=ascending)
     elif layout.gantt.order_by_legend and data.legend is not None and layout.gantt.workstreams.on:
-        df_rc = df_rc.sort_values([layout.gantt.workstreams.column, data.x[0]], ascending=ascending)
+        df_rc = df_rc.sort_values([layout.gantt.workstreams.column, data.x[0], data.y[0]], ascending=ascending)
     else:
-        df_rc = df_rc.sort_values(data.x[0], ascending=ascending)
+        df_rc = df_rc.sort_values([data.x[0], data.y[0]], ascending=ascending)
 
     # Update df and legend_vals with a custom order for workstreams
     if layout.gantt.workstreams.on:
@@ -1273,12 +1273,21 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
     if layout.gantt.bar_labels is not None:
         # Bar labels can have data from multiple columns; store as tuple with text string and boolean for
         # whether or not the entry has a dependency
-        if layout.gantt.milestone in df_rc.columns:
-            vals = df_rc.loc[df_rc[layout.gantt.milestone].isna(), layout.gantt.bar_labels.columns].values
-        else:
-            sub = df_rc[data.y + layout.gantt.bar_labels.columns].drop_duplicates(keep='first')
+        # Also, filter out workstream labels
+        if layout.gantt.milestone in df_rc.columns \
+                and layout.gantt.workstreams.on \
+                and layout.gantt.workstreams.location == 'inline':
+            sub = df_rc.loc[df_rc[layout.gantt.milestone].isna(), layout.gantt.bar_labels.columns + ['_is_workstream']]
+            sub = sub.astype(str)
+            sub = sub.loc[sub['_is_workstream'] == '1', layout.gantt.bar_labels.columns] = ''
             vals = sub[layout.gantt.bar_labels.columns].values
-        bar_labels = [' | '. join(f) for f in vals]
+        elif layout.gantt.milestone in df_rc.columns:
+            sub = df_rc.loc[df_rc[layout.gantt.milestone].isna(), layout.gantt.bar_labels.columns].astype(str)
+            vals = sub.values
+        else:
+            sub = df_rc[layout.gantt.bar_labels.columns].drop_duplicates(keep='first').astype(str)
+            vals = sub.values
+        bar_labels = [' | '. join(f) if all(f != '') else '' for f in vals]
 
     # Update the x-axis ranges (preserve user-defined xmax even if it cuts off labels)
     user_xmax = True if data.xmax[utl.plot_num(ir, ic, layout.ncol)] is not None else False

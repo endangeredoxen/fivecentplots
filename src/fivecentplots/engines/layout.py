@@ -1264,6 +1264,12 @@ class BaseLayout:
                     labels_as_yticks=utl.kwget(
                         kwargs, self.fcpp, ['gantt_labels_as_yticks', 'labels_as_yticks'], True),
                     label_boxes=utl.kwget(kwargs, self.fcpp, ['gantt_label_boxes', 'label_boxes'], False),
+                    label_boxes_x_fill_color=utl.kwget(kwargs, self.fcpp,
+                                                       ['gantt_label_boxes_x_fill_color', 'label_boxes_x_fill_color'],
+                                                       '#ffffff'),
+                    label_boxes_y_fill_color=utl.kwget(kwargs, self.fcpp,
+                                                       ['gantt_label_boxes_y_fill_color', 'label_boxes_y_fill_color'],
+                                                       '#ffffff'),
                     milestone=utl.kwget(kwargs, self.fcpp, ['gantt_milestones', 'milestones'], 'Milestone'),
                     milestone_marker=utl.kwget(kwargs, self.fcpp, ['gantt_milestone_marker', 'milestone_marker'], 'D'),
                     milestone_text=gantt_milestone_text,
