@@ -2938,7 +2938,9 @@ class Layout(BaseLayout):
                             new_xmax = max(new_xmax, xmax_xs)
 
             # Workstream bracket
-            elif self.gantt.workstreams.location == 'inline' and row[self.gantt.workstreams.column] == row[data.y[0]]:
+            elif self.gantt.workstreams.location == 'inline' \
+                    and self.gantt.workstreams.column is not None \
+                    and row[self.gantt.workstreams.column] == row[data.y[0]]:
                 xmin, xmax = ax.get_xlim()
 
                 # Highlight the workstream title row

@@ -99,7 +99,7 @@ class Gantt(data.Data):
         self._populate_dates()
 
         # Inline workstreams df adjustment
-        if self.workstreams_inline:
+        if self.workstreams is not None and self.workstreams_inline:
             df_inline = []
             for nn, gg in self.df_all.groupby(self.workstreams):
                 df_inline += [pd.DataFrame({self.workstreams: [nn],

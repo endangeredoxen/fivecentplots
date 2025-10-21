@@ -27,6 +27,7 @@ from . import engines
 from . import kwargs as kwg
 import fivecentplots as fcp
 from typing import Union
+import warnings
 try:
     # optional import - only used for paste_kwargs to use windows clipboard
     # to directly copy kwargs from ini file
@@ -952,36 +953,44 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         col = dd.changes.columns
 
         # Plot the groups
+        df_indexed = df_rc.sort_values(by=dd.groups).set_index(dd.groups)
         for irow, row in dd.indices.iterrows():
-            gg = df_rc.set_index(dd.groups).sort_index()
-            if len(gg) > 1:
-                gg = gg.loc[tuple(row)]
+            with warnings.catch_warnings():
+                warnings.filterwarnings('ignore', message='.*lexsort depth.*')
+
+                # Use the pre-indexed dataframe
+                if len(df_indexed) > 1:
+                    gg = df_indexed.loc[tuple(row)]
+                else:
+                    gg = df_indexed
+
             if isinstance(gg, pd.Series):
                 gg = pd.DataFrame(gg).T
             else:
                 gg = gg.reset_index()
+
             temp = gg[dd.y].dropna()
             temp['x'] = irow + 1
-            data += [temp]
+            data.append(temp)
             ss = str(layout.box_stat_line.stat).lower()
             if ss == 'median':
-                stats += [temp.median().iloc[0]]
+                stats.append(temp.median().iloc[0])
             elif ss == 'std':
                 stats += [temp.std().iloc[0]]
             elif 'q' in ss:
                 if float(ss.strip('q')) < 1:
-                    stats += [temp.quantile(float(ss.strip('q'))).iloc[0]]
+                    stats.append(temp.quantile(float(ss.strip('q'))).iloc[0])
                 else:
-                    stats += [temp.quantile(float(ss.strip('q')) / 100).iloc[0]]
+                    stats.append(temp.quantile(float(ss.strip('q')) / 100).iloc[0])
             else:
-                stats += [temp.mean().iloc[0]]
+                stats.append(temp.mean().iloc[0])
             row = [str(f) for f in row]
-            labels += ['']
+            labels.append('')
 
-            if len(dd.changes.columns) > 1 and \
-                    dd.changes[col[0]].iloc[irow] == 1 \
-                    and len(kwargs['groups']) > 1:
-                dividers += [irow + 0.5]
+            if (len(dd.changes.columns) > 1
+                    and dd.changes[col[0]].iloc[irow] == 1
+                    and len(kwargs['groups']) > 1):
+                dividers.append(irow + 0.5)
 
             # Plot points
             if not (layout.violin.on and not layout.violin.markers) and layout.markers.on:
