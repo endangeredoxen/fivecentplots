@@ -537,6 +537,7 @@ class Layout(BaseLayout):
         plot_num = utl.plot_num(ir, ic, self.ncol)
         box_lab = self.box_group_label
         self.box_group_label.heights[ir, ic] = []
+        is_rotated = False
 
         # Set up the label/title arrays to reflect the groups
         max_labels = int(data.changes.sum().max())
@@ -554,6 +555,7 @@ class Layout(BaseLayout):
                 sub = data.changes[num_cols - 1 - ii]
 
             # Group labels
+            bl_padding = 8  # 4 * 2 == padding
             if box_lab.on:
                 # This array structure just makes one big list of all the labels
                 # can we use it with multiple groups or do we need to reshape??
@@ -570,11 +572,12 @@ class Layout(BaseLayout):
                         size_label = \
                             utl.get_text_dimensions(longest, box_lab.font, box_lab.font_size, box_lab.font_style,
                                                     box_lab.font_weight, box_lab.rotation, dpi=self.dpi)
-                        box_lab.size = [np.ceil(width), max(box_lab.height, size_label[1] + 8)]  # 4 * 2 == padding
+                        box_lab.size = [np.ceil(width), max(box_lab.height, size_label[1] + bl_padding)]
+                        height = box_lab.size[1]
 
-                        # auto height and width??
+                    # TODO: auto height and width
 
-                    # set the label position
+                    # set the tentative label position
                     left = left0
                     right = left + width
                     left0 = right
@@ -582,9 +585,40 @@ class Layout(BaseLayout):
                     bottom = top - box_lab.size[1] / self.axes.size[1]
                     box_lab.position = [left, right, top, bottom]
 
-                    # add the label
+                    # get the label text
                     label_txt = data.indices.loc[sub.index[jj], num_cols - 1 - ii]
+
+                    # check if we need to auto rotate long labels
+                    if not (self.box_scale == 'auto') \
+                            and utl.kwget(self.kwargs, self.fcpp, 'box_group_label_rotation', None) is None:
+                        # retain original rotation and size
+                        orig_rotation = box_lab.rotation
+
+                        # get the current row and number of labels per row
+                        row = len(data.changes.columns) - ii - 1
+                        num_per_row = data.changes.sum()[row]
+
+                        # get the size of the longest label in this row
+                        if jj == 0:
+                            longest_rotated = max(data.indices.astype(str)[row], key=len)
+                            size_label_rotated = \
+                                utl.get_text_dimensions(longest_rotated, box_lab.font, box_lab.font_size,
+                                                        box_lab.font_style, box_lab.font_weight, box_lab.rotation,
+                                                        dpi=self.dpi)
+
+                        # if label too long, rotate it to 90 degrees
+                        if size_label_rotated[0] + bl_padding > self.axes.size[0] / num_per_row \
+                                and box_lab.rotation == 0:
+                            # update rotation, height and position
+                            is_rotated = True
+                            box_lab.rotation = 90
+                            height = size_label_rotated[0] + bl_padding
+                            bottom = top - (size_label_rotated[0] + bl_padding) / self.axes.size[1]
+                            box_lab.position = [left, right, top, bottom]
+
+                    # add the label
                     self.add_label(ir, ic, str(label_txt), element=box_lab)
+                    box_lab.rotation = orig_rotation  # reset if adjusted above
                     if plot_num > 1:
                         pn = str(plot_num)
                     else:
@@ -597,7 +631,8 @@ class Layout(BaseLayout):
                                         (top - bottom) * self.axes.size[1],
                                         left, right, bottom, top, box_lab.rotation)
 
-            box_lab.heights[ir, ic] += [box_lab.size[1]]
+            # record the row height for later figure spacing
+            box_lab.heights[ir, ic] += [height]
 
             # Group titles
             if self.box_group_title.on and ic == data.ncol - 1:
@@ -610,12 +645,16 @@ class Layout(BaseLayout):
                 left = 1 + (self.axes.edge_width + 2) / self.axes.size[0]
                 right = left + (self.box_group_title.size[0] + self.box_group_title.padding) / self.axes.size[0]
                 top = top0
-                bottom = top - self.box_group_label.height / self.axes.size[1]
+                if not is_rotated:
+                    bottom = top - self.box_group_label.height / self.axes.size[1]
+                else:
+                    bottom = top - height / self.axes.size[1]
                 self.box_group_title.position = [left, right, top, bottom]
                 self.box_group_title.xanchor = 'left'
                 self.add_label(ir, ic, data.groups[k], element=self.box_group_title)
 
             top0 = bottom
+            is_rotated = False  # reset for the next row
 
     def add_fills(self, ir: int, ic: int, df: pd.DataFrame, data: 'Data'):  # noqa: F821
         """Add rectangular fills to the plot.
