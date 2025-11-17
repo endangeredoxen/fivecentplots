@@ -345,6 +345,36 @@ def plt_bar_grouping(bm=False, make_reference=False, show=False):
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
+@pytest.mark.skip(reason="This feature is not yet implemented.")
+def plt_box_auto_size(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('box_auto_size', make_reference, REFERENCE)
+
+    # Make the plot
+    df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+    df2 = df.copy()
+    df2.Value *= 2
+    df2.loc[df2.Sample == 1, 'Sample'] = 4
+    df2.loc[df2.Sample == 2, 'Sample'] = 5
+    df2.loc[df2.Sample == 3, 'Sample'] = 6
+    df3 = df.copy()
+    df3.Value *= 3
+    df3.loc[df3.Sample == 1, 'Sample'] = 7
+    df3.loc[df3.Sample == 2, 'Sample'] = 8
+    df3.loc[df3.Sample == 3, 'Sample'] = 9
+    df4 = df.copy()
+    df4.Value *= 4
+    df4.loc[df4.Sample == 1, 'Sample'] = 10
+    df4.loc[df4.Sample == 2, 'Sample'] = 11
+    df4 = pd.concat([df4, df3, df2, df])
+    fcp.boxplot(df4, y='Value', groups=['Batch', 'ID', 'Sample'], ax_size='auto', label_y_fill_color='#ff0000',
+                show=SHOW, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
 def plt_box_basic(bm=False, make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('box_basic', make_reference, REFERENCE)

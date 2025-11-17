@@ -22,7 +22,6 @@ from matplotlib.ticker import AutoMinorLocator, MaxNLocator
 import matplotlib.transforms as mtransforms
 from matplotlib.patches import FancyBboxPatch
 from matplotlib.collections import PatchCollection
-from matplotlib.patches import ConnectionPatch
 import matplotlib.dates as mdates
 from itertools import groupby
 import calendar
@@ -493,6 +492,23 @@ class Layout(BaseLayout):
             val += np.ceil(self.gantt.today.size[1] + self.gantt.today.edge_width)
 
         return int(val)
+
+    @property
+    def _box_label_heights(self):
+        """Calculate the box label height."""
+        lab = self.box_group_label
+        labt = self.box_group_title
+        if len(lab.size_all) == 0:
+            return np.array(0)
+
+        # Determine the box group label row heights and account for edge overlaps
+        heights = lab.size_all_bg.groupby('ii').max()['height']  # contains edge width
+
+        # Determine the box group title heights
+        heightst = labt.size_all_bg.groupby('ii').max()['height']  # contains edge width
+
+        # Get the largest of labels and titles
+        return np.maximum(heights, heightst)
 
     @property
     def _cbar(self) -> float:
@@ -1646,23 +1662,6 @@ class Layout(BaseLayout):
                + (self.label_row.size[0] + self.ws_label_row) * self.label_row.on) \
             / self.fig.size[0]
         self.label_z.position[3] = self.axes.obj[0, 0].get_position().y0 + self.axes.size[1] / 2 / self.fig.size[1]
-
-    @property
-    def _box_label_heights(self):
-        """Calculate the box label height."""
-        lab = self.box_group_label
-        labt = self.box_group_title
-        if len(lab.size_all) == 0:
-            return np.array(0)
-
-        # Determine the box group label row heights and account for edge overlaps
-        heights = lab.size_all_bg.groupby('ii').max()['height']  # contains edge width
-
-        # Determine the box group title heights
-        heightst = labt.size_all_bg.groupby('ii').max()['height']  # contains edge width
-
-        # Get the largest of labels and titles
-        return np.maximum(heights, heightst)
 
     def _get_element_sizes(self, data: 'Data'):  # noqa: F821
         """Calculate the actual rendered size of select elements by pre-plotting
@@ -3098,10 +3097,10 @@ class Layout(BaseLayout):
         end_offset *= pixel_2_mdate  # units == mdates float
 
         # Convert dates to numbers for comparison
-        start_x = mdates.date2num(start_x)
-        end_x = mdates.date2num(end_x)
-        min_collision = mdates.date2num(min_collision)
-        max_collision = mdates.date2num(max_collision)
+        start_x = float(mdates.date2num(start_x))
+        end_x = float(mdates.date2num(end_x))
+        min_collision = float(mdates.date2num(min_collision))
+        max_collision = float(mdates.date2num(max_collision))
         x_distance = end_x - start_x  # units == mdates float
         sign = -1 if start_y < end_y else 1
 
@@ -3140,37 +3139,29 @@ class Layout(BaseLayout):
                     x_new += xs
                 self.gantt.bar_labels.obj[ir, ic][start_y].set_x(mdates.num2date(x_new))  # from plot_gantt
 
-        # Draw the lines
-        for i in range(len(points) - 1):
-            conn = ConnectionPatch(
-                xyA=points[i],
-                xyB=points[i + 1],
-                coordsA="data",
-                coordsB="data",
-                axesA=ax,
-                axesB=ax,
-                color=color,
-                linewidth=linewidth,
-                linestyle='-',
-                zorder=zorder
-            )
-            ax.add_artist(conn)
+        # Extract x and y coordinates
+        x_coords = [float(p[0]) for p in points]
+        y_coords = [float(p[1]) for p in points]
 
-        # Add arrow head at the end
-        arrow_head = ConnectionPatch(
-            xyA=points[-2],
-            xyB=points[-1],
-            coordsA="data",
-            coordsB="data",
-            axesA=ax,
-            axesB=ax,
-            color=color,
-            linewidth=linewidth,
-            linestyle='-',
-            zorder=zorder,
-            arrowstyle='-|>'
-        )
-        ax.add_artist(arrow_head)
+        # Draw the path without the final arrow segment
+        ax.plot(x_coords[:-1], y_coords[:-1],
+                color=color, linewidth=linewidth,
+                linestyle='-', zorder=zorder,
+                clip_on=False)
+
+        # Add the final segment with arrowhead using annotate
+        ax.annotate('',
+                    xy=(x_coords[-1], y_coords[-1]),  # Arrow tip (end point)
+                    xytext=(x_coords[-2], y_coords[-2]),  # Arrow tail (second-to-last point)
+                    arrowprops=dict(
+                        arrowstyle='-|>',
+                        color=color,
+                        linewidth=linewidth,
+                        shrinkA=0,
+                        shrinkB=0
+                    ),
+                    zorder=zorder,
+                    clip_on=False)
 
     def plot_gantt_today(self, ir, ic):
         """

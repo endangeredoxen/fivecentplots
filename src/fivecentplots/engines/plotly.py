@@ -575,8 +575,6 @@ class Layout(BaseLayout):
                         box_lab.size = [np.ceil(width), max(box_lab.height, size_label[1] + bl_padding)]
                         height = box_lab.size[1]
 
-                    # TODO: auto height and width
-
                     # set the tentative label position
                     left = left0
                     right = left + width
@@ -589,10 +587,9 @@ class Layout(BaseLayout):
                     label_txt = data.indices.loc[sub.index[jj], num_cols - 1 - ii]
 
                     # check if we need to auto rotate long labels
+                    orig_rotation = box_lab.rotation   # retain original rotation and size
                     if not (self.box_scale == 'auto') \
                             and utl.kwget(self.kwargs, self.fcpp, 'box_group_label_rotation', None) is None:
-                        # retain original rotation and size
-                        orig_rotation = box_lab.rotation
 
                         # get the current row and number of labels per row
                         row = len(data.changes.columns) - ii - 1
@@ -615,6 +612,10 @@ class Layout(BaseLayout):
                             height = size_label_rotated[0] + bl_padding
                             bottom = top - (size_label_rotated[0] + bl_padding) / self.axes.size[1]
                             box_lab.position = [left, right, top, bottom]
+
+                    # # TODO: auto height and width
+                    # if self.box_scale == 'auto':
+                    #     db()
 
                     # add the label
                     self.add_label(ir, ic, str(label_txt), element=box_lab)
@@ -2281,7 +2282,7 @@ class Layout(BaseLayout):
 
         # Update the figure layout
         self.fig.obj.update_layout(autosize=False,
-                                   height=self.fig.size[1],
+                                   height=int(self.fig.size[1]),
                                    legend_title_text=self.legend.text,
                                    margin=dict(l=self._margin_left,
                                                r=self._margin_right,
@@ -2297,7 +2298,7 @@ class Layout(BaseLayout):
                                    plot_bgcolor=self.ul['plot_bgcolor'],
                                    showlegend=self.legend.on,
                                    title=self.ul['title'],
-                                   width=self.fig.size[0],
+                                   width=int(self.fig.size[0]),
                                    **axis_labels,
                                    )
 
