@@ -17,7 +17,7 @@ from matplotlib.font_manager import FontProperties, findfont
 import matplotlib.dates as mdates
 from pathlib import Path
 from typing import Any, Union, Tuple, Dict, List
-from . import data
+from fivecentplots import data
 import numpy.typing as npt
 from PIL import ImageFont, Image, ImageDraw
 try:
@@ -34,7 +34,7 @@ if default_path.exists() and default_path not in sys.path:
     try:
         from defaults import *  # noqa
     except ModuleNotFoundError:
-        from . themes.gray import *  # noqa
+        from fivecentplots.themes.gray import *  # noqa
 
 # Read the package version file
 with open(Path(__file__).parent / 'version.txt', 'r') as fid:

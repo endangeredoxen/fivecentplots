@@ -1,15 +1,15 @@
 # only matplotlib is required; all other plotting libs are optional
-from . import mpl  # noqa
+from fivecentplots.engines import mpl  # noqa
 
 # bokeh
 try:  # noqa
-    from . import bokeh  # noqa
+    from fivecentplots.engines import bokeh  # noqa
 except:  # noqa
     pass  # noqa
 
 # plotly
 try:  # noqa
-    from . import plotly  # noqa
+    from fivecentplots.engines import plotly  # noqa
 except:  # noqa
     pass  # noqa
 

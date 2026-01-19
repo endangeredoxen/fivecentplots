@@ -1,8 +1,8 @@
-from . import data
+from fivecentplots import data
 import pdb
 import pandas as pd
 import numpy as np
-from .. import utilities
+from fivecentplots import utilities
 from natsort import natsorted
 import numpy.typing as npt
 from typing import Union

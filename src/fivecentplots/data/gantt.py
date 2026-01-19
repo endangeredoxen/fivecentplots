@@ -1,4 +1,4 @@
-from . import data
+from fivecentplots import data
 import pdb
 import pandas as pd
 import numpy as np
@@ -11,7 +11,7 @@ except ImportError:
     from pandas.tseries.offsets import DateOffset
     from pandas.tseries.offsets import CustomBusinessDay
 from pandas.tseries.holiday import USFederalHolidayCalendar
-from .. import utilities
+from fivecentplots import utilities
 utl = utilities
 db = pdb.set_trace
 NULLS = [None, np.nan, 'nan', pd.NaT, 'NaT', 'N/A', 'n/a', 'Nan', 'NAN', 'NaN', 'None', '']

@@ -1,6 +1,6 @@
-from . import data
+from fivecentplots import data
 import pdb
-from .. import utilities
+from fivecentplots import utilities
 utl = utilities
 db = pdb.set_trace
 

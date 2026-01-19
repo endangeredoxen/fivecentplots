@@ -1,7 +1,7 @@
-from . import data
+from fivecentplots import data
 import pdb
 import pandas as pd
-from .. import utilities
+from fivecentplots import utilities
 from natsort import natsorted
 utl = utilities
 db = pdb.set_trace

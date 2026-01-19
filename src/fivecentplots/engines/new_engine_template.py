@@ -1,9 +1,8 @@
 import pandas as pd
-import pdb
 import numpy as np
-from .. import utilities as utl
-from . layout import LOGX, LOGY, BaseLayout, RepeatedList, Element  # noqa
-from .. import data
+from fivecentplots import utilities as utl
+from fivcentplots.engines.layout import LOGX, LOGY, BaseLayout, RepeatedList, Element  # noqa
+from fivecentplots import data
 import warnings
 # import plot lib specific stuff here
 

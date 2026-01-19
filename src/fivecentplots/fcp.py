@@ -20,11 +20,11 @@ import pdb
 import shutil
 import sys
 from pathlib import Path
-from . import utilities
-from . import data
-from . colors import DEFAULT_COLORS, RGB, RGGB, RCCG  # noqa
-from . import engines
-from . import kwargs as kwg
+from fivecentplots import utilities
+from fivecentplots import data
+from fivecentplots.colors import DEFAULT_COLORS, RGB, RGGB, RCCG  # noqa
+from fivecentplots import engines
+from fivecentplots import kwargs as kwg
 import fivecentplots as fcp
 from typing import Union
 import warnings
@@ -56,7 +56,7 @@ if (user_dir / '.fivecentplots' / 'defaults.py').exists():
     sys.path = [str(user_dir / '.fivecentplots')] + sys.path
     from defaults import *  # noqa, use local file
 else:
-    from . themes.gray import *  # noqa
+    from fivecentplots.themes.gray import *  # noqa
 
 # install requirements for other packages beyond what is in setup.py
 global INSTALL

@@ -6,7 +6,7 @@ import numpy as np
 import numpy.typing as npt
 import datetime
 from typing import Union
-from .. import utilities
+from fivecentplots import utilities
 utl = utilities
 
 db = pdb.set_trace

@@ -1,2 +1,2 @@
-from .fcp import *  # noqa
-from .fcp import __version__  # noqa
+from fivecentplots.fcp import *  # noqa
+from fivecentplots.fcp import __version__  # noqa

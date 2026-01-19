@@ -11,7 +11,9 @@ import numpy.typing as npt
 from fivecentplots.utilities import RepeatedList
 import fivecentplots.utilities as utl
 from packaging import version
-from . layout import LOGX, LOGY, SYMLOGX, SYMLOGY, LOGITX, LOGITY, LOG_ALLX, LOG_ALLY, BaseLayout, Element  # noqa
+from fivecentplots.engines.layout import (
+    LOGX, LOGY, SYMLOGX, SYMLOGY, LOGITX, LOGITY, LOG_ALLX, LOG_ALLY, BaseLayout, Element
+)
 import warnings
 import matplotlib as mpl
 import matplotlib.pyplot as mplp

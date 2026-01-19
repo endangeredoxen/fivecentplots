@@ -18,7 +18,7 @@ sys.path = [str(cur_dir.parents[1])] + sys.path
 try:
     from colors import DEFAULT_COLORS
 except ModuleNotFoundError:
-    from .colors import DEFAULT_COLORS
+    from fivecentplots.colors import DEFAULT_COLORS
 
 
 def check_undefined_kwargs():

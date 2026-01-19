@@ -1,18 +1,18 @@
 import pandas as pd
-import pdb
 import numpy as np
 import copy
 import datetime
-from .. colors import DEFAULT_COLORS
-from .. utilities import RepeatedList
-from .. import utilities as utl
+from fivecentplots.colors import DEFAULT_COLORS
+from fivecentplots.utilities import RepeatedList
+from fivecentplots import utilities as utl
 from packaging import version
 from collections import defaultdict
 from typing import Callable, Dict
 import warnings
 import abc
-from .. import data
+from fivecentplots import data
 import matplotlib as mpl
+import pdb
 db = pdb.set_trace
 
 

@@ -1,12 +1,10 @@
 import pandas as pd
-import pdb
 import numpy as np
 import numpy.typing as npt
 import scipy.stats
-from .. import utilities as utl
-from . layout import LOGX, LOGY, BaseLayout, RepeatedList, Element
-# from . import layout
-from .. import data
+from fivecentplots import utilities as utl
+from fivecentplots.engines.layout import LOGX, LOGY, BaseLayout, RepeatedList, Element
+from fivecentplots import data
 import warnings
 import math
 import plotly.offline as pyo

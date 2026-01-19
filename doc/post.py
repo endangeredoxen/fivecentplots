@@ -11,7 +11,7 @@ sys.path = [str(cur_dir.parent / 'src' / 'fivecentplots')] + sys.path
 try:
     from colors import DEFAULT_COLORS
 except ModuleNotFoundError:
-    from .colors import DEFAULT_COLORS
+    from fivecentplots.colors import DEFAULT_COLORS
 
 
 # MANUAL FILE CHANGES

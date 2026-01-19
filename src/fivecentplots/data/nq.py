@@ -1,6 +1,6 @@
-from . import data
+from fivecentplots import data
 import pdb
-from .. import utilities
+from fivecentplots import utilities
 import pandas as pd
 import numpy as np
 utl = utilities

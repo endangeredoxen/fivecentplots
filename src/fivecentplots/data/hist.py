@@ -1,9 +1,9 @@
-from . import data
+from fivecentplots import data
 import pdb
 import pandas as pd
 import numpy as np
 import numpy.typing as npt
-from .. import utilities
+from fivecentplots import utilities
 from typing import List, Union
 utl = utilities
 db = pdb.set_trace
