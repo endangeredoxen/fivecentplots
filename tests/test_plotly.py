@@ -298,7 +298,7 @@ def plt_bar_simple(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('bar_simple', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.bar(df_bar, x='Liquid', y='pH', filter='Measurement=="A" & T [C]==25', horizontal=True,
+    fcp.bar(df_bar, y='Liquid', x='pH', filter='Measurement=="A" & T [C]==25', horizontal=True,
             filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
