@@ -31,6 +31,8 @@ class Bar(data.Data):
             if 'xmax' in kwargs:
                 kwargs['ymax'] = kwargs['xmax']
                 kwargs.pop('xmax')
+            x, y = kwargs.get('x'), kwargs.get('y')
+            kwargs['x'], kwargs['y'] = y, x
         else:
             if 'xmin' in kwargs or 'xmin' in kwargs:
                 raise data.RangeError('x-limits not allowed for bar plot!')

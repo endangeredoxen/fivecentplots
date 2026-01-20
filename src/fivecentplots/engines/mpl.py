@@ -1298,7 +1298,10 @@ class Layout(BaseLayout):
 
         # Set the coordinate transform
         if not coord:
-            coord = None if not hasattr(el, 'coordinate') else el.coordinate.lower()
+            if kwargs.get('coordinate', None) is not None:
+                coord = kwargs.get('coordinate').lower()
+            else:
+                coord = None if not hasattr(el, 'coordinate') else el.coordinate.lower()
         if coord == 'figure':
             transform = self.fig.obj.transFigure
         elif coord == 'data':
@@ -1360,8 +1363,10 @@ class Layout(BaseLayout):
             attrs = ['rotation', 'font_color', 'font', 'fill_color', 'edge_color', 'font_style', 'font_weight',
                      'font_size', 'padding', 'horizontalalignment', 'verticalalignment']
             for attr in attrs:
-                if attr in kwargs.keys():
+                if attr in kwargs.keys() and not str(type(kwargs[attr])) == str(RepeatedList):
                     kw[attr] = kwargs[attr]
+                elif attr in kwargs.keys() and str(type(kwargs[attr])) == str(RepeatedList):
+                    kw[attr] = kwargs[attr][itext]
                 elif hasattr(el, attr) and isinstance(getattr(el, attr), RepeatedList):
                     kw[attr] = getattr(el, attr)[itext]
                 elif hasattr(el, attr) and str(type(getattr(el, attr))) == str(RepeatedList):
@@ -2673,6 +2678,34 @@ class Layout(BaseLayout):
             handle = [patches.Rectangle((0, 0), 1, 1, color=self.bar.fill_color[(iline, leg_name)])]
             self.legend.add_value(leg_name, handle, 'lines')
 
+        # Bar data labels
+        if self.bar.bar_labels.on:
+            labels = []
+            for i, label in enumerate(df.values):
+                # TODO: what to do about decimal place formatting?  Need an option in layout probably
+                if self.bar.horizontal:
+                    self.bar.bar_labels.position = [label, idx[i]]
+                    horizontalalignment = 'left'
+                    verticalalignment = 'center'
+                    xmin, xmax = self.axes.obj[ir, ic].get_xlim()
+                    offsetx = (xmax - xmin) / self.axes.size[0] * 2  # 2 pixels
+                else:
+                    self.bar.bar_labels.position = [idx[i], label]
+                    horizontalalignment = 'center'
+                    verticalalignment = 'bottom'
+                    offsetx = 0
+                    # TODO: offsety?
+                labels += \
+                    [self.add_text(ir, ic, str(label),
+                                   element='text',
+                                   track_element=False,
+                                   horizontalalignment=horizontalalignment,
+                                   verticalalignment=verticalalignment,
+                                   offsetx=offsetx,
+                                   **self.bar.bar_labels.kwargs)]
+
+            self.bar.bar_labels.obj[ir, ic] = labels
+
         return data
 
     def plot_box(self, ir: int, ic: int, data: 'Data', **kwargs) -> 'MPL_Boxplot_Object':  # noqa: F821
@@ -3545,7 +3578,9 @@ class Layout(BaseLayout):
                                  color=line_type.color[(iline, leg_name)],
                                  linestyle=line_type.style[iline],
                                  linewidth=line_type.width[iline],
-                                 zorder=40)
+                                 zorder=40,
+                                 drawstyle=self.stepwise
+                                 )
 
         # Make the line
         lines = None
@@ -3561,6 +3596,7 @@ class Layout(BaseLayout):
                             color=line_type.color[(iline, leg_name)],
                             linestyle=line_type.style[iline],
                             linewidth=line_type.width[iline],
+                            drawstyle=self.stepwise
                             )
 
         # Fill the area under the line

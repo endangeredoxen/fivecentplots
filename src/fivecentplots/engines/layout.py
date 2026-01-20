@@ -244,6 +244,7 @@ class BaseLayout:
         self.separate_ticks = utl.kwget(kwargs, self.fcpp, 'separate_ticks', self.separate_labels)
         if self.separate_labels and utl.kwget(kwargs, self.fcpp, 'separate_ticks', None) is None:
             self.separate_ticks = True
+        self.stepwise = utl.kwget(kwargs, self.fcpp, 'stepwise', 'default')  # for step-wise plots, special mpl kwarg
         self.tick_cleanup = utl.kwget(kwargs, self.fcpp, 'tick_cleanup', 'shrink')
         if isinstance(self.tick_cleanup, str):
             self.tick_cleanup = self.tick_cleanup.lower()
@@ -529,6 +530,34 @@ class BaseLayout:
                                horizontal=False)
             return kwargs
 
+        data_labels = \
+            Element('bar_labels', self.fcpp, kwargs, on=utl.kwget(kwargs, self.fcpp, 'bar_labels', False),
+                    obj=self.obj_array,
+                    columns=None,
+                    edge_color=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'bar_labels_edge_color', 'none'), 'bar_labels_edge_color'),
+                    edge_width=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'bar_labels_edge_width', 0), 'bar_labels_edge_width'),
+                    fill_color=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'bar_labels_fill_color', 'none'), 'bar_labels_fill_color'),
+                    font=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'bar_labels_font', 'Arial'), 'bar_labels_font'),
+                    font_color=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'bar_labels_font_color', '#777777'), 'bar_labels_font_color'),
+                    font_size=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'bar_labels_font_size', 12), 'bar_labels_font_size'),
+                    font_style=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'bar_labels_font_style', 'normal'), 'bar_labels_font_style'),
+                    font_weight=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'bar_labels_font_weight', 'normal'), 'bar_labels_font_weight'),
+                    position=[0, 0, 0],
+                    coordinate=utl.kwget(kwargs, self.fcpp, 'bar_labels_coordinate', 'data'),
+                    rotation=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'bar_labels_rotation', 0), 'bar_labels_rotation'),
+                    units=utl.kwget(kwargs, self.fcpp, 'bar_labels_units', 'data'),
+                    text=[]
+                    )
+
         self.bar = Element('bar', self.fcpp, kwargs,
                            on=True,
                            width=utl.kwget(kwargs, self.fcpp, ['bar_width', 'width'],
@@ -552,6 +581,7 @@ class BaseLayout:
                            color_by=utl.kwget(kwargs, self.fcpp, ['bar_color_by', 'color_by'],
                                               kwargs.get('color_by', None)),
                            )
+        self.bar.bar_labels = copy.deepcopy(data_labels)
         if 'colors' in kwargs.keys():
             self.bar.color_by = 'bar'
 
@@ -1236,7 +1266,8 @@ class BaseLayout:
                                        ['gantt_workstreams_title_rotation', 'workstreams_title_rotation'], 90),
                     rows=[],
                     size=utl.kwget(kwargs, self.fcpp, ['gantt_workstreams_title_size', 'workstreams_title_size'], 30),
-                    text=utl.kwget(kwargs, self.fcpp, ['gantt_workstreams_title', 'workstreams_title'], 'Workstreams'),
+                    text=utl.kwget(kwargs, self.fcpp, ['gantt_workstreams_title', 'workstreams_title'],
+                                   gantt_workstreams.column),
                     )
 
         if not isinstance(gantt_workstreams_title.size, list):

@@ -881,7 +881,10 @@ def plot_bar(data, layout, ir, ic, df_rc, kwargs):
     if not kwargs.get('sort', True):
         xvals = df_rc[data.x[0]].unique()
     else:
-        xvals = np.sort(df_rc[data.x[0]].unique())
+        try:
+            xvals = np.sort(df_rc[data.x[0]].unique())
+        except TypeError:
+            xvals = np.sort(df_rc[data.x[0]].fillna('nan').unique())
 
     stacked = pd.DataFrame(index=xvals)
     ss = []
