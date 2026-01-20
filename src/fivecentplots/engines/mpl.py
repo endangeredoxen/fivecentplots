@@ -472,6 +472,7 @@ class Layout(BaseLayout):
 
         # Other
         self._set_colormap(data)
+        self.stepwise = utl.kwget(kwargs, self.fcpp, 'stepwise', 'default')  # for step-wise plots, special mpl kwarg
 
         # Update kwargs
         if not kwargs.get('save_ext'):

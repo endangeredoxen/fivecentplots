@@ -41,6 +41,17 @@ bar_fill_color
 bar_height
 bar_horizontal
 bar_labels
+bar_labels_coordinate
+bar_labels_edge_color
+bar_labels_edge_width
+bar_labels_fill_color
+bar_labels_font
+bar_labels_font_color
+bar_labels_font_size
+bar_labels_font_style
+bar_labels_font_weight
+bar_labels_rotation
+bar_labels_units
 bar_rolling
 bar_rolling_mean
 bar_stacked
@@ -890,6 +901,7 @@ stat
 stat_val
 step_inner
 step_tail
+stepwise
 sticky
 stretch
 style

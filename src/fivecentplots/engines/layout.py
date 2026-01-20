@@ -244,7 +244,6 @@ class BaseLayout:
         self.separate_ticks = utl.kwget(kwargs, self.fcpp, 'separate_ticks', self.separate_labels)
         if self.separate_labels and utl.kwget(kwargs, self.fcpp, 'separate_ticks', None) is None:
             self.separate_ticks = True
-        self.stepwise = utl.kwget(kwargs, self.fcpp, 'stepwise', 'default')  # for step-wise plots, special mpl kwarg
         self.tick_cleanup = utl.kwget(kwargs, self.fcpp, 'tick_cleanup', 'shrink')
         if isinstance(self.tick_cleanup, str):
             self.tick_cleanup = self.tick_cleanup.lower()
