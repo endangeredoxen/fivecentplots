@@ -122,7 +122,7 @@ class Bar(data.Data):
                 vmin = 0
         except KeyError:
             if self.horizontal:
-                raise(data.DataError('x and y columns should be swapped for horizontal bar plots'))
+                raise data.DataError('x and y columns should be swapped for horizontal bar plots')
             else:
                 data_set[self.y]
 
