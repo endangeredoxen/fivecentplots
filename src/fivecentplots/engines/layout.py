@@ -549,6 +549,8 @@ class BaseLayout:
                         utl.kwget(kwargs, self.fcpp, 'bar_labels_font_style', 'normal'), 'bar_labels_font_style'),
                     font_weight=RepeatedList(
                         utl.kwget(kwargs, self.fcpp, 'bar_labels_font_weight', 'normal'), 'bar_labels_font_weight'),
+                    format=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'bar_labels_format', 'none'), 'bar_labels_format'),
                     position=[0, 0, 0],
                     coordinate=utl.kwget(kwargs, self.fcpp, 'bar_labels_coordinate', 'data'),
                     rotation=RepeatedList(

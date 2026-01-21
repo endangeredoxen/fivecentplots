@@ -2682,20 +2682,47 @@ class Layout(BaseLayout):
         # Bar data labels
         if self.bar.bar_labels.on:
             labels = []
+            xmin, xmax = data.ranges['xmin'], data.ranges['xmax']
+            ymin, ymax = data.ranges['ymin'], data.ranges['ymax']
             for i, label in enumerate(df.values):
-                # TODO: what to do about decimal place formatting?  Need an option in layout probably
                 if self.bar.horizontal:
                     self.bar.bar_labels.position = [label, idx[i]]
                     horizontalalignment = 'left'
                     verticalalignment = 'center'
-                    xmin, xmax = self.axes.obj[ir, ic].get_xlim()
                     offsetx = (xmax - xmin) / self.axes.size[0] * 2  # 2 pixels
+                    offsety = 0
+                    if self.bar.stacked:
+                        if len(stacked) == 0:
+                            offsetx = -label / 2
+                        else:
+                            offsetx = -label / 2 + stacked[i]
                 else:
                     self.bar.bar_labels.position = [idx[i], label]
                     horizontalalignment = 'center'
                     verticalalignment = 'bottom'
                     offsetx = 0
-                    # TODO: offsety?
+                    offsety = 0
+                    if self.bar.stacked:
+                        if len(stacked) == 0:
+                            offsety = -label / 2
+                        else:
+                            offsety = -label / 2 + stacked[i]
+
+                if self.bar.bar_labels.format[i] != 'none':
+                    label = self.bar.bar_labels.format[i].format(float(label))
+
+                # Center labels for stacked bars
+                if self.bar.stacked:
+                    label_size = utl.get_text_dimensions(str(label),
+                                                         self.bar.bar_labels.font[i],
+                                                         self.bar.bar_labels.font_size[i],
+                                                         self.bar.bar_labels.font_weight[i],
+                                                         self.bar.bar_labels.rotation[i])
+                    if self.bar.horizontal:
+                        offsetx -= (label_size[0] / 2) * (xmax - xmin) / self.axes.size[0]
+                    else:
+                        offsety -= (label_size[1] / 2) * (ymax - ymin) / self.axes.size[1]
+
                 labels += \
                     [self.add_text(ir, ic, str(label),
                                    element='text',
@@ -2703,6 +2730,7 @@ class Layout(BaseLayout):
                                    horizontalalignment=horizontalalignment,
                                    verticalalignment=verticalalignment,
                                    offsetx=offsetx,
+                                   offsety=offsety,
                                    **self.bar.bar_labels.kwargs)]
 
             self.bar.bar_labels.obj[ir, ic] = labels

@@ -50,6 +50,7 @@ bar_labels_font_color
 bar_labels_font_size
 bar_labels_font_style
 bar_labels_font_weight
+bar_labels_format
 bar_labels_rotation
 bar_labels_units
 bar_rolling

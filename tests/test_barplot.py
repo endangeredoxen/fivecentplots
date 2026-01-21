@@ -110,7 +110,9 @@ def plt_legend(bm=False, make_reference=False, show=False):
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, legend='Measurement',
             filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False, label_edge_width=10,
-            label_edge_color='#000000', legend_font_size=6, legend_title_font_size=18, bar_labels=True)
+            label_edge_color='#000000', legend_font_size=6, legend_title_font_size=18, bar_labels=True,
+            bar_labels_format='{:.1f}', bar_labels_font_size=8, bar_labels_fill_color='#00ff00',
+            bar_labels_edge_color='#ff0000')
 
     if bm:
         return
@@ -180,7 +182,8 @@ def plt_stacked(bm=False, make_reference=False, show=False):
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, stacked=True, legend='Measurement',
-            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False,
+            bar_labels=True, bar_labels_format='none')
 
     if bm:
         return
@@ -193,7 +196,8 @@ def plt_stacked_horizontal(bm=False, make_reference=False, show=False):
 
     # Make the plot
     fcp.bar(df, y='Liquid', x='pH', show=SHOW, stacked=True, legend='Measurement', xmin=0, xmax=41,
-            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False, horizontal=True, width=0.3)
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False, horizontal=True,
+            width=0.3, bar_labels=True, bar_labels_format='{:.1f}')
 
     if bm:
         return
