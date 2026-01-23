@@ -342,6 +342,7 @@ gantt_milestone_text_units
 gantt_milestone_text_zorder
 gantt_milestones
 gantt_order_by_legend
+gantt_relative_dates
 gantt_rotation
 gantt_show_all
 gantt_style
@@ -849,6 +850,7 @@ ref_line_legend_text
 ref_line_style
 ref_line_width
 ref_line_zorder
+relative_dates
 render_corrections
 return_filename
 rolling

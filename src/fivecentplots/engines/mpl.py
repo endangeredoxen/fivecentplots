@@ -5477,10 +5477,34 @@ class Layout(BaseLayout):
 
                 # Set x-major ticks
                 ax.xaxis.set_major_locator(locator[primary])
-                ax.xaxis.set_major_formatter(fmt[primary])
+                if not self.gantt.relative_dates:
+                    ax.xaxis.set_major_formatter(fmt[primary])
 
                 # Update some tick labels
-                if primary in ['quarter', 'quarter-year']:
+                if self.gantt.relative_dates:
+                    labels = ax.get_xticklabels()
+                    if primary == 'year':
+                        labels = [f'Y{int(mdates.num2date(float(f.get_text())).year) - 1969}' for f in labels]
+                        ax.set_xticklabels(labels)
+                    elif primary == 'quarter':
+                        years = [int(mdates.num2date(float(f.get_text())).year) - 1970 for f in labels]
+                        labels = [f'Q{(mdates.num2date(float(f.get_text())).month - 1) // 3 + 1 + 4 * years[i]}'
+                                  for (i, f) in enumerate(labels)]
+                        ax.set_xticklabels(labels)
+                    elif primary == 'quarter-year':
+                        years = [int(mdates.num2date(float(f.get_text())).year) - 1969 for f in labels]
+                        labels = [f'Y{years[i]} | '
+                                  + f'Q{(mdates.num2date(float(f.get_text())).month - 1) // 3 + 1 + 4 * (years[i] - 1)}'
+                                  for (i, f) in enumerate(labels)]
+                        ax.set_xticklabels(labels)
+                    elif primary == 'month':
+                        years = [int(mdates.num2date(float(f.get_text())).year) - 1970 for f in labels]
+                        labels = [f'M{mdates.num2date(float(f.get_text())).month + 12 * years[i]}'
+                                  for (i, f) in enumerate(labels)]
+                        ax.set_xticklabels(labels)
+                    else:
+                        labels = [f'WW{i}' for (i, f) in enumerate(labels)]
+                elif primary in ['quarter', 'quarter-year']:
                     labels = [f.get_text().replace('04', '2').replace('07', '3').replace('10', '4').replace('01', '1')
                               for f in ax.get_xticklabels()]
                     ax.set_xticklabels(labels)
@@ -5712,22 +5736,38 @@ class Layout(BaseLayout):
                     else:
                         y_rects += [y_rects[ii - 1] + heights[ii - 1]]
                     y_texts += [y_rects[ii] + heights[ii] / 2]
+
                 for ii, secondary in enumerate(secondary_dates):
                     # Get the secondary date values
                     dates = []
                     for ixt, xt in enumerate(xticks):
                         if secondary == 'year':
-                            dates += [str(mdates.num2date(xt).year)]
+                            if self.gantt.relative_dates:
+                                dates += [f'Y{int(mdates.num2date(xt).year) - 1969}']
+                            else:
+                                dates += [str(mdates.num2date(xt).year)]
                             attr = 'year'
                         elif secondary == 'quarter':
-                            dates += [f'Q{(mdates.num2date(xt).month - 1) // 3 + 1}']
+                            if self.gantt.relative_dates:
+                                year = int(mdates.num2date(xt).year) - 1970
+                                dates += [f'Q{(mdates.num2date(xt).month - 1) // 3 + 1 + 4 * year}']
+                            else:
+                                dates += [f'Q{(mdates.num2date(xt).month - 1) // 3 + 1}']
                             attr = 'month'
                         elif secondary == 'quarter-year':
-                            dates += \
-                                [f'{str(mdates.num2date(xt).year)[-2:]}Q{(mdates.num2date(xt).month - 1) // 3 + 1}']
+                            if self.gantt.relative_dates:
+                                year = int(mdates.num2date(xt).year) - 1970
+                                dates += [f'Y{year + 1} | Q{(mdates.num2date(xt).month - 1) // 3 + 1 + 4 * year}']
+                            else:
+                                dates += \
+                                    [f'{str(mdates.num2date(xt).year)[-2:]}Q{(mdates.num2date(xt).month - 1) // 3 + 1}']
                             attr = 'month'
                         else:
-                            dates += [mdates.num2date(xt).strftime(fmt[secondary].fmt)]
+                            if self.gantt.relative_dates:
+                                year = int(mdates.num2date(xt).year) - 1970
+                                dates += [f'M{mdates.num2date(xt).month + 12 * year}']
+                            else:
+                                dates += [mdates.num2date(xt).strftime(fmt[secondary].fmt)]
                             attr = 'month'
 
                     # Create text boxes for the dates

@@ -16,6 +16,7 @@ import os
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
+import datetime
 import pdb
 import shutil
 import sys
@@ -1310,7 +1311,9 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
         new_xmax = layout.plot_gantt(ir, ic, iline, df, data.x, y, leg_name, xvals, yvals, bar_labels, ngroups, data)
 
         # If xmax not explicitly set by user, update the xmax range to accomodate size of long labels
-        if not user_xmax and np.datetime64(new_xmax) > np.datetime64(data.ranges['xmax'][ir, ic]):
+        # TODO: fix this for relative dates
+        if not layout.gantt.relative_dates and not user_xmax \
+                and np.datetime64(new_xmax) > np.datetime64(data.ranges['xmax'][ir, ic]):
             data.ranges['xmax'][ir, ic] = np.datetime64(new_xmax)
             layout.set_axes_ranges(ir, ic, {k: data.ranges[k] for k in ['xmin' 'xmax'] if k in data.ranges})
 
@@ -1406,6 +1409,8 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
 
     # Add today line
     if layout.gantt.today.on:
+        if layout.gantt.relative_dates:
+            layout.gantt.today.date = (layout.gantt.today.date - data.time0) / datetime.timedelta(days=1)
         layout.plot_gantt_today(ir, ic)
 
     return data

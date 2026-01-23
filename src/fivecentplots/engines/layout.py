@@ -1309,6 +1309,7 @@ class BaseLayout:
                     order_by_legend=utl.kwget(kwargs, self.fcpp, ['gantt_order_by_legend', 'order_by_legend'],
                                               kwargs.get('order_by_legend', False)),
                     quarters=copy.copy(self.obj_array),
+                    relative_dates=utl.kwget(kwargs, self.fcpp, ['gantt_relative_dates', 'relative_dates'], False),
                     show_all=utl.kwget(kwargs, self.fcpp, ['gantt_show_all', 'show_all'], False),
                     sort=utl.kwget(kwargs, self.fcpp, 'sort', 'descending'),
                     tick_labels_x_rotation=utl.kwget(kwargs, self.fcpp, 'gantt_tick_labels_x_rotation',

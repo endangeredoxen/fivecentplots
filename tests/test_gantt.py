@@ -180,7 +180,7 @@ def plt_bar_labels(bm=False, make_reference=False, show=False):
     # Make the plots
     name = utl.unit_test_get_img_name('bar_labels_user_xmax', make_reference, REFERENCE)
     fcp.gantt(df2, x=['Start date', 'End date'], y='Description', bar_labels='Description',
-              xmax=datetime.datetime(2025, 6, 15),
+              xmax=datetime.datetime(2025, 6, 15), duration='Duration',
               workstreams='Workstream', workstreams_label_font_size=12,
               filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
     if bm:
@@ -190,13 +190,13 @@ def plt_bar_labels(bm=False, make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('bar_labels_auto_expand', make_reference, REFERENCE)
     fcp.gantt(df2, x=['Start date', 'End date'], y='Description', bar_labels='Description',
-              workstreams='Workstream', workstreams_label_font_size=12,
+              workstreams='Workstream', workstreams_label_font_size=12, duration='Duration',
               filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     name = utl.unit_test_get_img_name('bar_labels_no_expand_no_xmax', make_reference, REFERENCE)
     fcp.gantt(df2, x=['Start date', 'End date'], y='Description', bar_labels='Description',
-              auto_expand=False, workstreams='Workstream', workstreams_label_font_size=12,
+              auto_expand=False, workstreams='Workstream', workstreams_label_font_size=12, duration='Duration',
               filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
@@ -211,7 +211,7 @@ def plt_milestones_location(bm=False, make_reference=False, show=False):
     # Make the plot
     for loc in locs:
         name = utl.unit_test_get_img_name(f'milestones_location_{loc}_no_expand', make_reference, REFERENCE)
-        fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
+        fcp.gantt(df2, x=['Start date', 'End date'], y='Description', duration='Duration',
                   xmax=datetime.datetime(2025, 6, 15), milestone_text_location=loc, auto_expand=False,
                   workstreams='Workstream', workstreams_label_font_size=10,
                   workstreams_title_font_size=13, filename=name.with_suffix('.png'), save=not bm, inline=False,
@@ -223,12 +223,32 @@ def plt_milestones_location(bm=False, make_reference=False, show=False):
 
         name = utl.unit_test_get_img_name(f'milestones_location_{loc}_expand', make_reference, REFERENCE)
         fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
-                  milestone_text_location=loc, auto_expand=True,
+                  milestone_text_location=loc, auto_expand=True, duration='Duration',
                   workstreams='Workstream', workstreams_label_font_size=10,
                   workstreams_title_font_size=13, filename=name.with_suffix('.png'), save=not bm, inline=False,
                   ax_size=[900, 400])
 
         utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_relative_dates(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('relative_dates', make_reference, REFERENCE)
+
+    # Make the plot
+    df2['Start Date'] = ['0d', '0d', '1m', '2m', '2m', '3m', '4m', '5m', '5m', '5m', '5m', '6m',
+                         '7m', '9m', '14m', '11m', '11m']
+    df2['Duration'] = '3w'
+    df2.loc[3:5, 'Duration'] = '2m'
+    fcp.gantt(df2, x=['Start Date'], y='Description', today=datetime.datetime(2026, 3, 6),
+              today_text='Giddie up', today_color='#ff0000', today_style='--', today_fill_color='#00ff00',
+              workstreams='Workstream', workstreams_label_font_size=12, dependencies=False,
+              milestone_text=False, relative_dates=True, date_type=['month', 'quarter', 'year'],
+              duration='Duration', filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
+
+    if bm:
+        return
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_today(bm=False, make_reference=False, show=False):
@@ -239,7 +259,7 @@ def plt_today(bm=False, make_reference=False, show=False):
     fcp.gantt(df2, x=['Start date', 'End date'], y='Description', today=datetime.datetime(2026, 3, 6),
               today_text='Giddie up', today_color='#ff0000', today_style='--', today_fill_color='#00ff00',
               workstreams='Workstream', workstreams_label_font_size=12, dependencies=False,
-              milestone_text=False,
+              milestone_text=False, duration='Duration',
               filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
 
     if bm:
@@ -283,7 +303,7 @@ def plt_workstreams_date_type(bm=False, make_reference=False, show=False, only_f
                 continue
 
             fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
-                      date_type=plot, workstreams='Workstream', workstreams_label_font_size=12,
+                      date_type=plot, workstreams='Workstream', workstreams_label_font_size=12, duration='Duration',
                       filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[1200, 400], **v)
             if bm:
                 return
@@ -292,7 +312,7 @@ def plt_workstreams_date_type(bm=False, make_reference=False, show=False, only_f
                 try:
                     utl.unit_test_options(make_reference, False, name, REFERENCE)
                 except AssertionError:
-                    fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
+                    fcp.gantt(df2, x=['Start date', 'End date'], y='Description', duration='Duration',
                               date_type=plot, workstreams='Workstream', workstreams_label_font_size=12,
                               filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[1200, 400], **v)
                     utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -303,17 +323,17 @@ def plt_workstreams_date_type(bm=False, make_reference=False, show=False, only_f
     # Bad date type errors ADD OTHERS
     name = Path('error')
     with pytest.raises(data.DataError):
-        fcp.gantt(df2, x=['Start date', 'End date'], y='Description', bar_labels='Owner',
+        fcp.gantt(df2, x=['Start date', 'End date'], y='Description', bar_labels='Owner', duration='Duration',
                   date_type='dance', workstreams='Workstream', workstreams_label_font_size=12,
                   filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
 
     with pytest.raises(data.DataError):
-        fcp.gantt(df2, x=['Start date', 'End date'], y='Description', bar_labels='Owner',
+        fcp.gantt(df2, x=['Start date', 'End date'], y='Description', bar_labels='Owner', duration='Duration',
                   date_type=['quarter-year', 'year'], workstreams='Workstream', workstreams_label_font_size=12,
                   filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
 
     with pytest.raises(data.DataError):
-        fcp.gantt(df2, x=['Start date', 'End date'], y='Description', bar_labels='Owner',
+        fcp.gantt(df2, x=['Start date', 'End date'], y='Description', bar_labels='Owner', duration='Duration',
                   date_type=['month-year', 'quarter-year'], workstreams='Workstream', workstreams_label_font_size=12,
                   filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
 
@@ -332,7 +352,7 @@ def plt_workstreams_location(bm=False, make_reference=False, show=False):
         fcp.gantt(df2, x=['Start date', 'End date'], y='Description', gantt_date_type=['quarter-year', 'month'],
                   workstreams='Workstream', workstreams_location=loc, workstreams_label_font_size=10,
                   workstreams_title_font_size=13, filename=name.with_suffix('.png'), save=not bm, inline=False,
-                  ax_size=[900, 400], match_bar_color=True if loc == 'right' else False)
+                  ax_size=[900, 400], match_bar_color=True if loc == 'right' else False, duration='Duration')
 
         if bm:
             return

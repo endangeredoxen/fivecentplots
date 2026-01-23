@@ -2,6 +2,7 @@ from fivecentplots import data
 import pdb
 import pandas as pd
 import numpy as np
+import datetime
 try:
     from pandas.tseries.offset import BusinessDay
     from pandas.tseries.offset import DateOffset
@@ -48,7 +49,7 @@ class Gantt(data.Data):
         else:
             self.workstreams_inline = False
         self.show_all = utl.kwget(kwargs, self.fcpp, ['gantt_show_all', 'show_all'], False)
-        self.duration = utl.kwget(kwargs, self.fcpp, ['gantt_duration', 'duration'], 'Duration')
+        self.duration = utl.kwget(kwargs, self.fcpp, ['gantt_duration', 'duration'], None)
         if self.duration in self.df_all.columns:
             self.cols_all.append(self.duration)
         self.dependencies = utl.kwget(kwargs, self.fcpp, ['gantt_dependencies', 'dependencies'], 'Dependency')
@@ -58,23 +59,54 @@ class Gantt(data.Data):
         if self.milestone in self.df_all.columns:
             self.cols_all.append(self.milestone)
         self.bar_labels = utl.validate_list(utl.kwget(kwargs, self.fcpp, ['bar_labels', 'gantt_bar_labels'], []))
+        self.relative_dates = utl.kwget(kwargs, self.fcpp, ['gantt_relative_dates', 'relative_dates'], False)
+        if self.relative_dates and not kwargs.get('ax_limit_padding_xmin'):
+            self.ax_limit_padding_xmin = 0
+        if self.relative_dates and not kwargs.get('ax_limit_padding_xmax'):
+            self.ax_limit_padding_xmax = 0
+        self.time0 = None
 
         # error checks
         if self.workstreams not in [None, False] and self.workstreams not in self.df_all.columns:
             raise data.DataError(f'Workstreams column "{self.workstreams}" is not in DataFrame')
-        if len(self.x) != 2:
+        if not self.relative_dates and len(self.x) != 2:
             raise data.DataError('Gantt charts require both a start and a stop column')
-        if self.df_all[self.x[0]].dtype != 'datetime64[ns]':
+        if len(self.x) == 2 and self.df_all[self.x[0]].dtype != 'datetime64[ns]':
             try:
                 # check to see if 'O' type is still a valid datetime
                 self.df_all[self.x[0]].astype('datetime64[ns]')
             except:  # noqa
                 raise data.DataError('Start column in gantt chart must be of type datetime')
-        if self.df_all[self.x[1]].dtype != 'datetime64[ns]':
+        if len(self.x) == 2 and self.df_all[self.x[1]].dtype != 'datetime64[ns]':
             try:
                 self.df_all[self.x[1]].astype('datetime64[ns]')
             except:  # noqa
                 raise data.DataError('Stop column in gantt chart must be of type datetime')
+        if self.relative_dates and len(self.x) == 1:
+            # Case: option to use relative dates, must specify a start date column with string times relative to 0
+            # and a duration column
+            if not self.duration:
+                raise data.DataError('When using relative dates with only a start date column, a duration column '
+                                     'must be specified')
+
+            # When no end date column is specified, the start date column must be time strings like '3w'
+            if not self.df_all[self.x[0]].apply(lambda x: isinstance(x, str)).all():
+                raise data.DataError('When using relative dates and duration, the start date column must contain '
+                                     'only strings (ex. "0", "3d", "2m")')
+            if not self.df_all[self.duration].apply(lambda x: isinstance(x, str)).all():
+                raise data.DataError('When using relative dates and duration, the duration column must contain '
+                                     'only time strings (ex. "3d", "2m")')
+            pattern = r'[\dwmdWMD]$'
+            is_valid = self.df_all[self.x[0]].str.contains(pattern, regex=True).all()
+            if not is_valid:
+                raise data.DataError('When using relative dates and a duration column, values must contain only '
+                                     'valid duration strings ["d", "w", "m"]')
+            for irow, row in self.df_all.iterrows():
+                self.df_all.loc[irow, self.x[0]] = self._calc_durations(row, self.x[0], datetime.datetime(1970, 1, 1))
+
+            self.df_all['__end'] = np.nan
+            self.x.append('__end')
+
         for col in self.bar_labels:
             if col not in self.df_all.columns:
                 raise data.DataError(f'Bar label column "{col}" is not in DataFrame')
@@ -177,7 +209,8 @@ class Gantt(data.Data):
                 raise data.DataError(f'Cannot find dependency date for "{row[self.y[0]]}"')
 
         for irow, row in self.df_all.iterrows():
-            if str(row[self.dependencies]) in NULLS or (row[self.x[0]] not in NULLS and row[self.x[1]] not in NULLS):
+            if str(row[self.dependencies]) in NULLS \
+                    or (str(row[self.x[0]])) not in NULLS and str(row[self.x[1]]) not in NULLS:
                 continue
             self.df_all.loc[irow, self.x[0]] = resolve_dep(row)
 
@@ -185,18 +218,24 @@ class Gantt(data.Data):
             if str(row[self.x[1]]) in NULLS and self.duration in row and row[self.duration] not in NULLS:
                 self.df_all.loc[irow, self.x[1]] = self._calc_durations(self.df_all.loc[irow])
 
-    def _calc_durations(self, row):
+    def _calc_durations(self, row, duration_col=None, start_date=None):
         """Calculate durations for a given row in the DataFrame"""
-        if str(row[self.x[1]]) not in NULLS:
+        if not duration_col:
+            duration_col = self.duration
+        if not start_date:
+            start_date = row[self.x[0]]
+
+        if len(self.x) == 2 and str(row[self.x[1]]) not in NULLS:
             # Don't calculate if there is already an end date
             return row[self.x[1]]
-        if isinstance(row[self.duration], int):
+
+        if isinstance(row[duration_col], int):
             # Default is days
-            duration = int(row[self.duration])
-        elif isinstance(row[self.duration], str):
-            date_type = row[self.duration][-1:]
+            duration = int(row[duration_col])
+        elif isinstance(row[duration_col], str):
+            date_type = row[duration_col][-1:]
             try:
-                duration = float(row[self.duration][:-1])
+                duration = float(row[duration_col][:-1])
                 full, partial = divmod(duration, 1)
             except ValueError:
                 raise data.DataError(f'Invalid duration "{date_type}" defined for row index {row.name}')
@@ -205,22 +244,22 @@ class Gantt(data.Data):
                     partial = DateOffset(days=int(7 * partial))
                 else:
                     partial = DateOffset(days=0)
-                return row[self.x[0]] + DateOffset(weeks=int(full)) + partial
+                return start_date + DateOffset(weeks=int(full)) + partial
             elif date_type.lower() == 'm':
                 if partial > 0:
                     partial = DateOffset(days=int(30 * partial))
                 else:
                     partial = DateOffset(days=0)
-                return row[self.x[0]] + DateOffset(months=int(full))
+                return start_date + DateOffset(months=int(full))
             elif date_type.lower() == 'd':
                 if partial > 0:
                     raise data.DataError('Partial days not allowed for duration; use only integers to specify days')
                 if self.business_days and self.us_holidays:
-                    return row[self.x[0]] + CustomBusinessDay(calendar=USFederalHolidayCalendar()) * int(full)
+                    return start_date + CustomBusinessDay(calendar=USFederalHolidayCalendar()) * int(full)
                 elif self.business_days:
-                    return row[self.x[0]] + BusinessDay() * int(full)
+                    return start_date + BusinessDay() * int(full)
                 else:
-                    return row[self.x[0]] + pd.Timedelta(days=int(full))
+                    return start_date + pd.Timedelta(days=int(full))
             else:
                 raise data.DataError(f'Unknown duration date type "{date_type}" defined for row index {row.name}')
 
@@ -392,5 +431,14 @@ class Gantt(data.Data):
         if len(self.bar_labels) > 0 and not all(col in df_.columns for col in utl.validate_list(self.bar_labels)):
             df_ = pd.merge(df_, df, how='left', indicator='Exist')
             del df_['Exist']
+
+        # Apply relative dates
+        if self.relative_dates:
+            self.time0 = df_[self.x[0]].min()
+            df_[self.x[1]] -= df_[self.x[0]].min()
+            df_[self.x[1]] = df_[self.x[1]].dt.total_seconds() / (24 * 3600)
+
+            df_[self.x[0]] -= df_[self.x[0]].min()
+            df_[self.x[0]] = df_[self.x[0]].dt.total_seconds() / (24 * 3600)
 
         return df_
