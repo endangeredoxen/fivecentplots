@@ -59,6 +59,7 @@ class Gantt(data.Data):
         if self.milestone in self.df_all.columns:
             self.cols_all.append(self.milestone)
         self.bar_labels = utl.validate_list(utl.kwget(kwargs, self.fcpp, ['bar_labels', 'gantt_bar_labels'], []))
+        self.today = utl.kwget(kwargs, self.fcpp, ['gantt_today', 'today'], False)
         self.relative_dates = utl.kwget(kwargs, self.fcpp, ['gantt_relative_dates', 'relative_dates'], False)
         if self.relative_dates and not kwargs.get('ax_limit_padding_xmin'):
             self.ax_limit_padding_xmin = 0
@@ -126,6 +127,10 @@ class Gantt(data.Data):
             allowed_combos = ['quarter', 'week', 'month-year']
             if any([f for f in self.date_type if f not in allowed_combos]):
                 raise data.DataError('Date type "month-year" can only be combined with "quarter" or "week"')
+
+        # Today and relative dates
+        if self.today is not False and self.relative_dates:
+            raise data.DataError('Gantt "today" label cannot be used with relative dates')
 
         # Attempt to populate missing dates
         self._populate_dates()

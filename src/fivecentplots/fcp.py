@@ -1311,11 +1311,14 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
         new_xmax = layout.plot_gantt(ir, ic, iline, df, data.x, y, leg_name, xvals, yvals, bar_labels, ngroups, data)
 
         # If xmax not explicitly set by user, update the xmax range to accomodate size of long labels
-        # TODO: fix this for relative dates
-        if not layout.gantt.relative_dates and not user_xmax \
-                and np.datetime64(new_xmax) > np.datetime64(data.ranges['xmax'][ir, ic]):
-            data.ranges['xmax'][ir, ic] = np.datetime64(new_xmax)
-            layout.set_axes_ranges(ir, ic, {k: data.ranges[k] for k in ['xmin' 'xmax'] if k in data.ranges})
+        if layout.gantt.relative_dates:
+            if not user_xmax and new_xmax > data.ranges['xmax'][ir, ic]:
+                data.ranges['xmax'][ir, ic] = new_xmax
+                layout.set_axes_ranges(ir, ic, {k: data.ranges[k] for k in ['xmin', 'xmax'] if k in data.ranges})
+        else:
+            if not user_xmax and np.datetime64(new_xmax) > np.datetime64(data.ranges['xmax'][ir, ic]):
+                data.ranges['xmax'][ir, ic] = np.datetime64(new_xmax)
+                layout.set_axes_ranges(ir, ic, {k: data.ranges[k] for k in ['xmin', 'xmax'] if k in data.ranges})
 
     # Connect dependencies with arrows
     if layout.gantt.dependencies in df_rc.columns:

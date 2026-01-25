@@ -2909,7 +2909,10 @@ class Layout(BaseLayout):
         """
         ax = self.axes.obj[ir, ic]
         bar = ax.broken_barh
-        new_xmax = mdates.date2num(data.ranges['xmax'][ir, ic])  # current xmax axes range in matplotlib date float
+        if self.gantt.relative_dates:
+            new_xmax = data.ranges['xmax'][ir, ic]  # current xmax axes range in matplotlib date float
+        else:
+            new_xmax = mdates.date2num(data.ranges['xmax'][ir, ic])  # current xmax axes range in matplotlib date float
 
         # Set the color values
         if self.gantt.color_by == 'bar':
@@ -2955,7 +2958,11 @@ class Layout(BaseLayout):
                     xmin, xmax = ax.get_xlim()
                     w_px = self.gantt.milestone_marker_size
                     w_mdate = self._pixel_to_mdate(self.axes.size[0], xmin, xmax, w_px)
-                    new_xmax = max(new_xmax, mdates.date2num(row[x[1]]) + w_mdate)
+                    if self.gantt.relative_dates:
+                        vmax = row[x[1]]
+                    else:
+                        vmax = mdates.date2num(row[x[1]])
+                    new_xmax = max(new_xmax, vmax + w_mdate)
 
                 # Add milestone text
                 if self.gantt.milestone in row and str(row[self.gantt.milestone]) not in \
@@ -2986,19 +2993,33 @@ class Layout(BaseLayout):
                             w_px = self.gantt.milestone_marker_size  # units == pixels
                         if not self.gantt.auto_expand:
                             txt_xs = self._pixel_to_mdate(self.axes.size[0], xmin, xmax, txt_xs_px + w_px)
-                            if (mdates.date2num(row[x[1]]) + txt_xs) > xmax:
-                                xmax_xs = (mdates.date2num(row[x[1]]) + txt_xs)
+                            if self.gantt.relative_dates:
+                                end = row[x[1]]
+                            else:
+                                end = mdates.date2num(row[x[1]])
+                            if (end + txt_xs) > xmax:
+                                xmax_xs = end + txt_xs
                             else:
                                 xmax_xs = 0
                             new_xmax = max(new_xmax, xmax_xs)
                         elif self.gantt.auto_expand and data.xmax[utl.plot_num(ir, ic, self.ncol)] is None:
                             self.axes.size[0] += txt_xs_px
-                            txt_xs = self._pixel_to_mdate(self.axes.size[0], xmin, xmax, txt_xs_px)
-                            if (mdates.date2num(row[x[0]]) + txt_xs) > xmax:
-                                xmax_xs = (mdates.date2num(row[x[1]]) + txt_xs)
+                            if self.gantt.relative_dates:
+                                end = row[x[1]]
+                                xmax = data.ranges['xmax'][ir, ic]
+                                txt_xs = self._pixel_to_mdate(self.axes.size[0], xmin, xmax, txt_xs_px)
+                                if (end + txt_xs) > xmax:
+                                    xmax_xs = (end + txt_xs)
+                                else:
+                                    xmax_xs = 0
+                                new_xmax = max(new_xmax, xmax_xs)
                             else:
-                                xmax_xs = 0
-                            new_xmax = max(new_xmax, xmax_xs)
+                                txt_xs = self._pixel_to_mdate(self.axes.size[0], xmin, xmax, txt_xs_px)
+                                if (mdates.date2num(row[x[0]]) + txt_xs) > xmax:
+                                    xmax_xs = (mdates.date2num(row[x[1]]) + txt_xs)
+                                else:
+                                    xmax_xs = 0
+                                new_xmax = max(new_xmax, xmax_xs)
 
             # Workstream bracket
             elif self.gantt.workstreams.location == 'inline' \
@@ -3094,6 +3115,8 @@ class Layout(BaseLayout):
                 x = mdates.date2num(x)
                 loc = ax.transData.transform((x, y))
                 txt_xs_px = max(txt_xs_px, loc[0] + txt_size[0] - self.axes.obj[ir, ic].get_window_extent().width)
+                if not self.gantt.auto_expand:
+                    txt_xs_px += + xoffset
 
             # Adjust ranges to avoid cutting off labels
             if txt_xs_px > 0 and data.xmax[utl.plot_num(ir, ic, self.ncol)] is None:
@@ -3110,8 +3133,12 @@ class Layout(BaseLayout):
         if iline + 1 == ngroups and self.gantt.milestone_text.on and len(self.gantt.milestone_text.text) > 0:
             # Add the labels
             self.gantt.milestone_text.obj[ir, ic] = []
+            if self.gantt.relative_dates:
+                offsetx = 0
+            else:
+                offsetx = np.timedelta64(datetime.timedelta(days=1), 'D')
             self.add_text(ir, ic, element=self.gantt.milestone_text, position=self.gantt.milestone_text.position,
-                          offsetx=np.timedelta64(datetime.timedelta(days=1), 'D'), offsety=0)
+                          offsetx=offsetx, offsety=0)
 
         # Legend
         if leg_name is not None:
@@ -3126,7 +3153,10 @@ class Layout(BaseLayout):
         if self.gantt.label_boxes:
             mplp.setp(self.axes.obj[ir, ic].get_yticklabels(), ha='left')
 
-        return mdates.num2date(new_xmax)
+        if self.gantt.relative_dates:
+            return new_xmax
+        else:
+            return mdates.num2date(new_xmax)
 
     def plot_gantt_dependencies(self, ir, ic, start, end, min_collision, max_collision,
                                 color='gray', linewidth=1, zorder=1,
@@ -5010,7 +5040,10 @@ class Layout(BaseLayout):
             for itxt, txt in enumerate(self.gantt.milestone_text.obj[ir, ic]):
                 ax = self.axes.obj[ir, ic]
                 x, y = txt.get_position()
-                x0 = mdates.date2num(x)
+                if not self.gantt.relative_dates:
+                    x0 = mdates.date2num(x)
+                else:
+                    x0 = x
                 w = txt.get_window_extent().width
                 h = txt.get_window_extent().height
                 transform = (ax.transData + ax.transAxes.inverted())
