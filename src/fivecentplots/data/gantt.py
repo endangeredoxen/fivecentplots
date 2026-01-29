@@ -91,20 +91,24 @@ class Gantt(data.Data):
                                      'must be specified')
 
             # When no end date column is specified, the start date column must be time strings like '3w'
-            if not self.df_all[self.x[0]].apply(lambda x: isinstance(x, str)).all():
-                raise data.DataError('When using relative dates and duration, the start date column must contain '
-                                     'only strings (ex. "0", "3d", "2m")')
-            if not self.df_all[self.duration].apply(lambda x: isinstance(x, str)).all():
-                raise data.DataError('When using relative dates and duration, the duration column must contain '
-                                     'only time strings (ex. "3d", "2m")')
-            pattern = r'[\dwmdWMD]$'
-            is_valid = self.df_all[self.x[0]].str.contains(pattern, regex=True).all()
+            # if not self.df_all[self.x[0]].apply(lambda x: isinstance(x, str)).all():
+            #     raise data.DataError('When using relative dates and duration, the start date column must contain '
+            #                          'only strings (ex. "0", "3d", "2m")')
+            # if not self.df_all[self.duration].apply(lambda x: isinstance(x, str)).all():
+            #     raise data.DataError('When using relative dates and duration, the duration column must contain '
+            #                          'only time strings (ex. "3d", "2m")')
+            pattern = r'^\d+[wmdWMD]?$'
+            try:
+                is_valid = self.df_all[self.x[0]].str.contains(pattern, regex=True).all()
+            except AttributeError:
+                # Check for integers mixed with NaN
+                self.df_all[self.x[0]] = self.df_all[self.x[0]].astype('Int64').astype('O')
+                is_valid = self.df_all[self.x[0]].dropna().astype(str).str.contains(pattern, regex=True).all()
             if not is_valid:
-                raise data.DataError('When using relative dates and a duration column, values must contain only '
-                                     'valid duration strings ["d", "w", "m"]')
+                raise data.DataError('When using relative dates with a duration column, duration values must contain '
+                                     'only valid duration strings ["d", "w", "m", or a string integer]')
             for irow, row in self.df_all.iterrows():
                 self.df_all.loc[irow, self.x[0]] = self._calc_durations(row, self.x[0], datetime.datetime(1970, 1, 1))
-
             self.df_all['__end'] = np.nan
             self.x.append('__end')
 
@@ -131,6 +135,16 @@ class Gantt(data.Data):
         # Today and relative dates
         if self.today is not False and self.relative_dates:
             raise data.DataError('Gantt "today" label cannot be used with relative dates')
+
+        # Format dependencies
+        def to_dep_string(val):
+            if pd.isna(val):
+                return np.nan
+            if isinstance(val, str):
+                return val
+            return str(int(float(val)))
+        if self.dependencies in self.df_all.columns:
+            self.df_all[self.dependencies] = self.df_all[self.dependencies].apply(to_dep_string)
 
         # Attempt to populate missing dates
         self._populate_dates()
@@ -187,24 +201,34 @@ class Gantt(data.Data):
         def resolve_dep(row):
             """Resolve nested dependencies"""
             parent = self.df_all.loc[self.df_all[self.y[0]].isin(row[self.dependencies])]
+            if self.milestone in self.df_all.columns:
+                parent = parent.loc[parent[self.milestone].isin(NULLS)]
             if len(parent.loc[parent[self.x[1]].isin(NULLS)]) == 0:
                 # If start date already exists, use it
                 if row[self.x[0]] not in NULLS:
                     return row[self.x[0]]
 
-                # If not, find all rows in the main dataframe that contain the depedency strings
-                dep = self.df_all.loc[self.df_all[self.y[0]].isin(row[self.dependencies])]
+                # Line number deps (note these start at index = 0)
+                line_deps = [int(f) for f in row[self.dependencies] if f.isdigit()]
+
+                # String deps (match with values in self.df_all[self.y[0]])
+                str_deps = self.df_all.loc[self.df_all[self.y[0]].isin(row[self.dependencies])]
+                if self.milestone in self.df_all.columns:
+                    str_deps = str_deps.loc[str_deps[self.milestone].isin(NULLS)]
+                str_deps = str_deps.index.tolist()
 
                 # Nothing found in dependency column but milestone column exists
-                if len(dep) == 0 and self.milestone in row:
-                    date = self.df_all.loc[self.df_all[self.milestone].isin(row[self.dependencies]), self.x[0]]
-                # One or more dependencies found; use latest date as new start date
-                elif len(dep) > 0:
-                    date = dep[self.x[1]]
-                # Nothing found, raise error
-                else:
+                if len(str_deps) == 0 and self.milestone in row:
+                    str_deps = self.df_all.loc[self.df_all[self.milestone].isin(row[self.dependencies])].index.tolist()
+
+                # Merge deps
+                deps = str_deps + line_deps
+
+                # No deps found error
+                if len(deps) == 0:
                     raise data.DataError(f'Cannot find dependency date for "{row[self.y[0]]}"')
-                return date.max()
+
+                return self.df_all.loc[deps, self.x[1]].max()
             elif len(parent.loc[~parent[self.dependencies].isin(NULLS)]) > 0:
                 deps = parent.loc[~parent[self.dependencies].isin(NULLS)]
                 for irow, row_ in deps.iterrows():
@@ -234,9 +258,22 @@ class Gantt(data.Data):
             # Don't calculate if there is already an end date
             return row[self.x[1]]
 
-        if isinstance(row[duration_col], int):
+        def calc_days(full, partial):
+            if partial > 0:
+                raise data.DataError('Partial days not allowed for duration; use only integers to specify days')
+            if self.business_days and self.us_holidays:
+                return start_date + CustomBusinessDay(calendar=USFederalHolidayCalendar()) * int(full)
+            elif self.business_days:
+                return start_date + BusinessDay() * int(full)
+            else:
+                return start_date + pd.Timedelta(days=int(full))
+
+        if isinstance(row[duration_col], int) or \
+                (str(row[duration_col]) in ['nan', 'NaT'] and row[duration_col].isdigit()):
             # Default is days
             duration = int(row[duration_col])
+            full, partial = divmod(duration, 1)
+            return calc_days(full, partial)
         elif isinstance(row[duration_col], str):
             date_type = row[duration_col][-1:]
             try:
@@ -244,7 +281,9 @@ class Gantt(data.Data):
                 full, partial = divmod(duration, 1)
             except ValueError:
                 raise data.DataError(f'Invalid duration "{date_type}" defined for row index {row.name}')
-            if date_type.lower() == 'w':
+            if start_date is None:
+                return None
+            elif date_type.lower() == 'w':
                 if partial > 0:
                     partial = DateOffset(days=int(7 * partial))
                 else:
@@ -257,14 +296,7 @@ class Gantt(data.Data):
                     partial = DateOffset(days=0)
                 return start_date + DateOffset(months=int(full))
             elif date_type.lower() == 'd':
-                if partial > 0:
-                    raise data.DataError('Partial days not allowed for duration; use only integers to specify days')
-                if self.business_days and self.us_holidays:
-                    return start_date + CustomBusinessDay(calendar=USFederalHolidayCalendar()) * int(full)
-                elif self.business_days:
-                    return start_date + BusinessDay() * int(full)
-                else:
-                    return start_date + pd.Timedelta(days=int(full))
+                return calc_days(full, partial)
             else:
                 raise data.DataError(f'Unknown duration date type "{date_type}" defined for row index {row.name}')
 
@@ -291,7 +323,13 @@ class Gantt(data.Data):
                 if self.legend is not None and self.workstreams != self.legend:
                     self._add_range(ir, ic, 'y', 'max', len(df_fig[self.y[0]]) - 0.5)
                 else:
-                    self._add_range(ir, ic, 'y', 'max', len(df_fig[self.y[0]].unique()) - 0.5)
+                    # Exclude milestone rows
+                    if self.milestone in df_fig.columns:
+                        df_fig = df_fig[df_fig[self.milestone].isna() | df_fig[self.milestone].isin(NULLS)]
+                        # Not sure this will work
+                        self._add_range(ir, ic, 'y', 'max', len(df_fig[self.y[0]]) - 0.5)
+                    else:
+                        self._add_range(ir, ic, 'y', 'max', len(df_fig[self.y[0]].unique()) - 0.5)
 
             # non-shared axes
             if not self.share_x:

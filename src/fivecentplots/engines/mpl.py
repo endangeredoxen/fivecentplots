@@ -3072,6 +3072,7 @@ class Layout(BaseLayout):
 
         # Add bar labels strings to the right of the bars
         if iline + 1 == ngroups and self.gantt.bar_labels is not None:
+            bar_labels = [f if f != 'nan' else '' for f in bar_labels]
             self.gantt.bar_labels.text = bar_labels
             for i in range(len(yvals)):
                 position = [(xvals[i][1], i) for i in range(len(yvals))]
@@ -3090,8 +3091,12 @@ class Layout(BaseLayout):
 
             # Update xmax range value for labels that go beyond the axes range
             txt_xs_px = 0  # units == pixel
-            xmin = mdates.date2num(data.ranges['xmin'][ir, ic])
-            xmax = mdates.date2num(data.ranges['xmax'][ir, ic])
+            if not self.gantt.relative_dates:
+                xmin = mdates.date2num(data.ranges['xmin'][ir, ic])
+                xmax = mdates.date2num(data.ranges['xmax'][ir, ic])
+            else:
+                xmin = data.ranges['xmin'][ir, ic]
+                xmax = data.ranges['xmax'][ir, ic]
             for itxt, txt in enumerate(self.gantt.bar_labels.obj[ir, ic]):
                 txt_size = [self.gantt.bar_labels.obj[ir, ic][itxt].get_window_extent().width,
                             self.gantt.bar_labels.obj[ir, ic][itxt].get_window_extent().height]
@@ -3108,15 +3113,21 @@ class Layout(BaseLayout):
                         len(data.df_rc.loc[data.df_rc[data.y[0]] == yvals[itxt][0], self.gantt.milestone].dropna()) > 0:
                     # Milestone on a bar
                     xoffset += self.gantt.milestone_marker_size * pixel_2_mdate
-                txt.set_position((mdates.num2date(mdates.date2num(pos[0]) + xoffset), pos[1] - yoffset))
+                if self.gantt.relative_dates:
+                    txt.set_position((pos[0] + xoffset, pos[1] - yoffset))
+                else:
+                    txt.set_position((mdates.num2date(mdates.date2num(pos[0]) + xoffset), pos[1] - yoffset))
 
                 # Compute how much label exceeds the axes range
                 x, y = txt.get_position()
-                x = mdates.date2num(x)
-                loc = ax.transData.transform((x, y))
-                txt_xs_px = max(txt_xs_px, loc[0] + txt_size[0] - self.axes.obj[ir, ic].get_window_extent().width)
+                if self.gantt.relative_dates:
+                    txt_xs_px = max(txt_xs_px, x + txt_size[0] - xmax)
+                else:
+                    x = mdates.date2num(x)
+                    loc = ax.transData.transform((x, y))
+                    txt_xs_px = max(txt_xs_px, loc[0] + txt_size[0] - self.axes.obj[ir, ic].get_window_extent().width)
                 if not self.gantt.auto_expand:
-                    txt_xs_px += + xoffset
+                    txt_xs_px += xoffset
 
             # Adjust ranges to avoid cutting off labels
             if txt_xs_px > 0 and data.xmax[utl.plot_num(ir, ic, self.ncol)] is None:
@@ -3126,15 +3137,20 @@ class Layout(BaseLayout):
                     new_xmax = max(new_xmax, xmax + txt_xs)
                 elif self.gantt.auto_expand and data.xmax[utl.plot_num(ir, ic, self.ncol)] is None:
                     self.axes.size[0] += txt_xs_px
+                    txt_xs_px += xoffset / pixel_2_mdate
                     txt_xs = self._pixel_to_mdate(self.axes.size[0], xmin, xmax, txt_xs_px)
-                    new_xmax = max(new_xmax, xmax + txt_xs)
+                    if new_xmax + txt_xs < xmax:
+                        new_xmax += txt_xs
+                    else:
+                        # this seems wrong
+                        new_xmax = max(new_xmax, xmax + txt_xs)
 
         # Add the milestone labels
         if iline + 1 == ngroups and self.gantt.milestone_text.on and len(self.gantt.milestone_text.text) > 0:
             # Add the labels
             self.gantt.milestone_text.obj[ir, ic] = []
             if self.gantt.relative_dates:
-                offsetx = 0
+                offsetx = 2
             else:
                 offsetx = np.timedelta64(datetime.timedelta(days=1), 'D')
             self.add_text(ir, ic, element=self.gantt.milestone_text, position=self.gantt.milestone_text.position,
@@ -3191,8 +3207,9 @@ class Layout(BaseLayout):
         end_offset *= pixel_2_mdate  # units == mdates float
 
         # Convert dates to numbers for comparison
-        start_x = float(mdates.date2num(start_x))
-        end_x = float(mdates.date2num(end_x))
+        if not self.gantt.relative_dates:
+            start_x = float(mdates.date2num(start_x))
+            end_x = float(mdates.date2num(end_x))
         min_collision = float(mdates.date2num(min_collision))
         max_collision = float(mdates.date2num(max_collision))
         x_distance = end_x - start_x  # units == mdates float
@@ -3228,7 +3245,10 @@ class Layout(BaseLayout):
             # Check for bar labels and move them if needed to avoid overlapping the arrow
             if self.gantt.bar_labels is not None and not repeat_dep:
                 x, y = self.gantt.bar_labels.obj[ir, ic][start_y].get_position()
-                x_new = mdates.date2num(x) + x_distance + start_offset
+                if not self.gantt.relative_dates:
+                    x_new = mdates.date2num(x) + x_distance + start_offset
+                else:
+                    x_new = x + x_distance + start_offset
                 if is_milestone_start:
                     x_new += xs
                 self.gantt.bar_labels.obj[ir, ic][start_y].set_x(mdates.num2date(x_new))  # from plot_gantt

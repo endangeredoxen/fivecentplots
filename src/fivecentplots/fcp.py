@@ -1334,9 +1334,12 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
             if not isinstance(row[layout.gantt.dependencies], list):
                 continue
             for dep in row[layout.gantt.dependencies]:
+                # If dep is a row number, get the corresponding value from the y column
+                if dep.isdigit():
+                    dep = df_deps.loc[int(dep), data.y[0]]
                 # Try dependency column first, then milestone column
                 sub = df_deps.loc[(df_deps[data.y[0]] == dep)]
-                if len(sub) == 0:
+                if len(sub) == 0 and data.milestone in df_deps.columns:
                     sub = df_deps.loc[(df_deps[data.milestone] == dep)]
                 if len(sub) == 0:
                     continue
