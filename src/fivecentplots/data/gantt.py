@@ -320,16 +320,16 @@ class Gantt(data.Data):
                 self._add_range(ir, ic, 'x', 'min', self.ranges['xmin'][self.ranges['xmin'] != None].min())  # noqa
                 self._add_range(ir, ic, 'x', 'max', self.ranges['xmax'][self.ranges['xmax'] != None].max())  # noqa
             if self.share_y or (self.nrow == 1 and self.ncol == 1):
-                if self.legend is not None and self.workstreams != self.legend:
-                    self._add_range(ir, ic, 'y', 'max', len(df_fig[self.y[0]]) - 0.5)
+                # Handle duplicate self.y[0] values if they exist
+                if self.legend is None \
+                        and self.milestone not in df_fig.columns \
+                        and self.workstreams not in df_fig.columns:
+                    self._add_range(ir, ic, 'y', 'max', len(df_fig[self.y[0]].unique()) - 0.5)
                 else:
                     # Exclude milestone rows
                     if self.milestone in df_fig.columns:
                         df_fig = df_fig[df_fig[self.milestone].isna() | df_fig[self.milestone].isin(NULLS)]
-                        # Not sure this will work
-                        self._add_range(ir, ic, 'y', 'max', len(df_fig[self.y[0]]) - 0.5)
-                    else:
-                        self._add_range(ir, ic, 'y', 'max', len(df_fig[self.y[0]].unique()) - 0.5)
+                    self._add_range(ir, ic, 'y', 'max', len(df_fig[self.y[0]]) - 0.5)
 
             # non-shared axes
             if not self.share_x:
