@@ -1,5 +1,4 @@
 import fivecentplots as fcp
-import pandas as pd
 import os
 import sys
 import pdb
@@ -28,8 +27,8 @@ else:
     REFERENCE = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 
 # Sample data
-df1 = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data.csv')
-df2 = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+df1 = fcp.get_test_data('fake_data.csv')
+df2 = fcp.get_test_data('fake_data_box.csv')
 df_iris = sns.load_dataset('iris')
 SPM_COLS = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width']
 
@@ -96,7 +95,7 @@ def test_groups_boxplot(make_reference=False, remove=True, show=False):
     name = utl.unit_test_get_img_name('groups_boxplot', make_reference, REFERENCE)
 
     # Make the plot
-    df_box = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+    df_box = fcp.get_test_data('fake_data_box.csv')
     fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], legend='Region',
                 save=True, inline=False, filename=name.with_suffix('.png'), jitter=False)
     return utl.unit_test_options(make_reference, show, name, REFERENCE)

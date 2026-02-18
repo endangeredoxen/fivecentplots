@@ -9,6 +9,8 @@ ax2_hlines_zorder
 ax2_scale
 ax2_vlines_by_plot
 ax2_vlines_zorder
+ax_background
+ax_background_alpha
 ax_edge_alpha
 ax_edge_bottom
 ax_edge_color
@@ -30,6 +32,8 @@ ax_vlines_by_plot
 ax_vlines_label
 ax_vlines_zorder
 ax_zorder
+background
+background_alpha
 bar
 bar_align
 bar_edge_alpha
@@ -744,6 +748,7 @@ marker_edge_alpha
 marker_edge_color
 marker_edge_width
 marker_fill
+marker_filled
 marker_fill_alpha
 marker_fill_color
 marker_jitter
@@ -755,6 +760,7 @@ markers_edge_alpha
 markers_edge_color
 markers_edge_width
 markers_fill
+markers_filled
 markers_fill_alpha
 markers_fill_color
 markers_size

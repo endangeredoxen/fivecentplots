@@ -318,6 +318,12 @@ class BaseLayout:
         self.axes = Element('ax', self.fcpp, kwargs,
                             obj=self.obj_array,
                             size=utl.validate_list(utl.kwget(kwargs, self.fcpp, 'ax_size', [400, 400])),
+                            background=RepeatedList(
+                                utl.kwget(kwargs, self.fcpp, ['ax_background', 'background'], None), 'ax_background'),
+                            background_alpha=RepeatedList(
+                                utl.kwget(kwargs, self.fcpp, ['ax_background_alpha', 'background_alpha'], 1.0),
+                                'ax_background_alpha'),
+                            background_obj=self.obj_array,
                             edge_color=utl.kwget(kwargs, self.fcpp, 'ax_edge_color', '#aaaaaa'),
                             fill_color=utl.kwget(kwargs, self.fcpp, 'ax_fill_color', '#eaeaea'),
                             primary=True,
@@ -1498,6 +1504,7 @@ class BaseLayout:
             setattr(self, f'grid_major_{ax}',
                     Element(f'grid_major_{ax}', self.fcpp, kwargs,
                             on=kwargs.get(f'grid_major_{ax}', self.grid_major.on),
+                            alpha=utl.kwget(kwargs, self.fcpp, f'grid_major_{ax}_alpha', self.grid_major.alpha),
                             color=utl.kwget(kwargs, self.fcpp, f'grid_major_{ax}_color', self.grid_major.color),
                             style=utl.kwget(kwargs, self.fcpp, f'grid_major_{ax}_style', self.grid_major.style),
                             width=utl.kwget(kwargs, self.fcpp, f'grid_major_{ax}_width', self.grid_major.width),
@@ -1523,7 +1530,8 @@ class BaseLayout:
             setattr(self, f'grid_minor_{ax}',
                     Element(f'grid_minor_{ax}', self.fcpp, kwargs,
                             on=kwargs.get(f'grid_minor_{ax}', self.grid_minor.on),
-                            color=utl.kwget(kwargs, self.fcpp, f'grid_minor_color_{ax}', self.grid_minor.color),
+                            alpha=utl.kwget(kwargs, self.fcpp, f'grid_minor_{ax}_alpha', self.grid_minor.alpha),
+                            color=utl.kwget(kwargs, self.fcpp, f'grid_minor_{ax}_color', self.grid_minor.color),
                             style=utl.kwget(kwargs, self.fcpp, f'grid_minor_{ax}_style', self.grid_minor.style),
                             width=utl.kwget(kwargs, self.fcpp, f'grid_minor_{ax}_width', self.grid_minor.width),
                             zorder=utl.kwget(kwargs, self.fcpp, f'grid_minor_{ax}_zorder', self.grid_minor.zorder),
@@ -1842,6 +1850,10 @@ class BaseLayout:
                                     font_size=utl.kwget(kwargs, self.fcpp, 'legend_title_font_size', 12),
                                     )
 
+        # Special case: if markers are set to a specific size, use that size for legend markers instead of default
+        if isinstance(self.markers.size, str):
+            self.legend.marker_size = self.markers.size
+
         # For pie plot user must force legend enabled
         if self.legend._on and self.name == 'pie':
             self.legend.on = True
@@ -1932,9 +1944,16 @@ class BaseLayout:
             kwargs['marker_fill'] = True
         self.markers = Element('markers', self.fcpp, kwargs,
                                on=utl.kwget(kwargs, self.fcpp, 'markers', True),
-                               filled=utl.kwget(kwargs, self.fcpp, ['marker_fill', 'markers_fill'], False),
+                               color_list_order=None,
+                               fill_color_from_column=set(utl.validate_list(marker_fill_color))
+                               .issubset(data.df_all.columns),
+                               filled=utl.kwget(kwargs, self.fcpp,
+                                                ['marker_fill', 'markers_fill', 'marker_filled', 'markers_filled'],
+                                                False),
                                edge_alpha=utl.kwget(kwargs, self.fcpp, ['marker_edge_alpha', 'markers_edge_alpha'], 1),
                                edge_color=copy.copy(marker_edge_color),
+                               edge_color_from_column=set(utl.validate_list(marker_edge_color))
+                               .issubset(data.df_all.columns),
                                edge_width=utl.kwget(kwargs, self.fcpp,
                                                     ['marker_edge_width', 'markers_edge_width'], 1.5),
                                fill_color=copy.copy(marker_fill_color),
@@ -1951,6 +1970,26 @@ class BaseLayout:
             self.markers.size = RepeatedList(self.markers.size, 'marker_size')
         if not isinstance(self.markers.edge_width, RepeatedList):
             self.markers.edge_width = RepeatedList(self.markers.edge_width, 'marker_edge_width')
+
+        # Color column - set color list based on a color column
+        for kw in ['fill_color', 'edge_color']:
+            val = utl.kwget(kwargs, self.fcpp, [f'marker_{kw}', f'markers_{kw}'], None)
+            if not isinstance(val, str):
+                continue
+
+            if val in data.df_all.columns:
+                col_data = data.df_all[val]
+                unique_vals = sorted(col_data.unique())
+                val_to_idx = {v: i for i, v in enumerate(unique_vals)}
+                indices = col_data.map(val_to_idx)
+
+                # Map indices to the current theme's color cycle
+                theme_colors = self.color_list  # The base colors (e.g., ['#1f77b4', ...])
+                setattr(self.markers, kw, RepeatedList([theme_colors[i % len(theme_colors)] for i in indices], kw))
+                self.markers.color_list_order = [int(f) for f in indices.values]
+        if self.markers.edge_color_from_column and self.markers.filled and not self.markers.fill_color_from_column:
+            self.markers.fill_color_from_column = True
+            self.markers.fill_color = self.markers.edge_color
 
         return kwargs
 

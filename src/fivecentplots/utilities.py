@@ -47,7 +47,7 @@ NQ = {'markers': False, 'line_width': 2, 'preset': 'NQ'}
 
 
 class RepeatedList:
-    def __init__(self, values: list, name: str, override: dict = {}):
+    def __init__(self, values: Any, name: str, override: dict = {}):
         """Set a default list of items and loop through it beyond the maximum
         index value.
 
@@ -56,7 +56,10 @@ class RepeatedList:
             name: label to describe contents of class
             override: override the RepeatedList value based on the legend value for this item
         """
-        self.values = validate_list(values)
+        if values is None:
+            self.values = [None]
+        else:
+            self.values = validate_list(values)
         self.shift = 0
         self.override = override
 
@@ -80,6 +83,11 @@ class RepeatedList:
             return val
         else:
             return self.override[key]
+
+    @property
+    def is_empty(self):
+        """Return True if the RepeatedList is empty."""
+        return len(self.values) == 0
 
     def max(self):
         """Return the maximum value of the RepeatedList."""
@@ -1249,6 +1257,24 @@ def img_grayscale_deprecated(img: np.ndarray, as_array: bool = False) -> Union[p
 
     else:
         return 0.2989 * r + 0.5870 * g + 0.1140 * b
+
+
+def get_test_data(name: str):
+    """
+    Read an fcp sample dataset into a DataFrame
+
+    Args:
+        name: the name of the file, with or without ".csv"
+
+    Returns:
+        DataFrame with sample data
+    """
+    if Path(name).suffix == '':
+        name += ".csv"
+    fullpath = Path(__file__).parent / 'test_data' / f'{name}'
+    if not fullpath.exists():
+        raise FileNotFoundError(f"Sample data file not found: {fullpath}")
+    return pd.read_csv(fullpath, comment='#')
 
 
 def img_rgb_to_df(data):

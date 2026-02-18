@@ -33,15 +33,20 @@ else:
 
 
 # Dataframes
-df_xy = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data.csv')
-ts = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_ts.csv')
-df_interval = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_interval.csv')
-df_bar = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_bar.csv')
-df_box = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
-df_contour = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_contour.csv')
-df_heatmap = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_heatmap.csv')
-df_hist = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+df_xy = fcp.get_test_data('fake_data.csv')
+ts = fcp.get_test_data('fake_ts.csv')
+df_interval = fcp.get_test_data('fake_data_interval.csv')
+df_bar = fcp.get_test_data('fake_data_bar.csv')
+df_box = fcp.get_test_data('fake_data_box.csv')
+df_contour = fcp.get_test_data('fake_data_contour.csv')
+df_heatmap = fcp.get_test_data('fake_data_heatmap.csv')
+df_hist = fcp.get_test_data('fake_data_box.csv')
 img_rgb = imageio.imread(str(Path(fcp.__file__).parent / 'test_data/imshow_cat_pirate.png'))
+
+url = 'https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg'
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+response = requests.get(url, headers=headers)
+img_rgb_sp = imageio.imread(BytesIO(response.content), extension='.jpg')
 
 
 # Set theme
@@ -351,7 +356,7 @@ def plt_box_auto_size(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('box_auto_size', make_reference, REFERENCE)
 
     # Make the plot
-    df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+    df = fcp.get_test_data('fake_data_box.csv')
     df2 = df.copy()
     df2.Value *= 2
     df2.loc[df2.Sample == 1, 'Sample'] = 4
@@ -555,16 +560,13 @@ def plt_imshow_grid(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('imshow_grid', make_reference, REFERENCE)
 
     # Make the plot
-    url = 'https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg'
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
-    response = requests.get(url, headers=headers)
-    img_rgb_sp = imageio.imread(BytesIO(response.content))
     img_raw_sp = fcp.utilities.rgb2bayer(img_rgb_sp)
     fcp.imshow(img_raw_sp, cmap='inferno', ax_size=[300, 300], cfa='rggb', wrap='Plane', ax_edge_width=1,
                ax_edge_color='#555555', filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
         return
+
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 

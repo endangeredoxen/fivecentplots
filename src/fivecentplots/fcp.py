@@ -116,7 +116,7 @@ def bar(df, **kwargs):
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_bar.csv')
+        >>> df = fcp.get_test_data('fake_data_bar.csv')
         >>> fcp.bar(df, x='Liquid', y='pH', filter='Measurement=="A" & T [C]==25',
                     tick_labels_major_x_rotation=90)
 
@@ -252,7 +252,7 @@ def boxplot(df, **kwargs):
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+        >>> df = fcp.get_test_data('fake_data_box.csv')
         >>> fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'])
 
             .. figure:: ../_static/images/example_boxplot.png
@@ -294,7 +294,7 @@ def contour(df, **kwargs):
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_contour.csv')
+        >>> df = fcp.get_test_data('fake_data_contour.csv')
         >>> fcp.contour(cc, x='X', y='Y', z='Value', cbar=True, cbar_size=40, xmin=-4, xmax=2, ymin=-4, ymax=2)
 
             .. figure:: ../_static/images/example_contour.png
@@ -348,7 +348,7 @@ def gantt(df, **kwargs):
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_gantt.csv')
+        >>> df = fcp.get_test_data('fake_data_gantt.csv')
         >>> fcp.gantt(df, x=['Start', 'Stop'], y='Task', ax_size=[600, 400])
 
             .. figure:: ../_static/images/example_gantt.png
@@ -393,7 +393,7 @@ def heatmap(df, **kwargs):
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_heatmap.csv')
+        >>> df = fcp.get_test_data('fake_data_heatmap.csv')
         >>> fcp.heatmap(df, x='Category', y='Player', z='Average')
 
             .. figure:: ../_static/images/example_heatmap1.png
@@ -403,7 +403,7 @@ def heatmap(df, **kwargs):
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_contour.csv')
+        >>> df = fcp.get_test_data('fake_data_contour.csv')
         >>> fcp.heatmap(df, x='X', y='Y', z='Value', row='Batch', col='Experiment',
                         cbar=True, share_z=True, ax_size=[400, 400], data_labels=False,
                         label_rc_font_size=12, filter='Batch==103', cmap='viridis')
@@ -470,7 +470,7 @@ def hist(df, **kwargs):
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+        >>> df = fcp.get_test_data('fake_data_box.csv')
         >>> fcp.hist(df, x='Value')
 
             .. figure:: ../_static/images/example_hist1.png
@@ -708,7 +708,7 @@ def pie(df, **kwargs):
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_bar.csv')
+        >>> df = fcp.get_test_data('fake_data_bar.csv')
         >>> df.loc[df.pH < 0, 'pH'] = -df.pH
         >>> fcp.pie(df, x='Liquid', y='pH', filter='Measurement=="A" & T [C]==25')
 
@@ -1991,7 +1991,7 @@ def cbar():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_contour.csv')
+        >>> df = fcp.get_test_data('fake_data_contour.csv')
         >>> fcp.contour(cc, x='X', y='Y', z='Value', cbar=True, cbar_size=20, xmin=-4, xmax=2, ymin=-4, ymax=2)
 
             .. figure:: ../_static/images/example_cbar.png

@@ -22,7 +22,7 @@ def img_cat():
 
 @pytest.fixture
 def df(scope='session'):
-    return pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data.csv')
+    return fcp.get_test_data('fake_data.csv')
 
 
 def test_ci(df):
@@ -257,8 +257,8 @@ def test_reload_defaults():
 def test_repeated_list():
     with pytest.raises(ValueError):
         test = utl.RepeatedList([], 'fake_plastic_trees')
-    with pytest.raises(ValueError):
-        test = utl.RepeatedList(None, 'fake_plastic_trees')
+    # with pytest.raises(ValueError):
+    #     test = utl.RepeatedList(None, 'fake_plastic_trees')
 
     test = utl.RepeatedList([1, 2, 3], 'street_spirit', override={1: -1})
     assert test[0] == 1

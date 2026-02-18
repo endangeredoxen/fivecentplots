@@ -1,6 +1,5 @@
 
 import fivecentplots as fcp
-import pandas as pd
 import os
 import sys
 import pdb
@@ -28,8 +27,8 @@ else:
     REFERENCE = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 
 # Sample data
-df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data.csv')
-df_box = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+df = fcp.get_test_data('fake_data.csv')
+df_box = fcp.get_test_data('fake_data_box.csv')
 
 
 # Set theme

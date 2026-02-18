@@ -3,16 +3,15 @@ import fivecentplots as fcp
 import pandas as pd
 import os
 import pdb
-from pathlib import Path
 import fivecentplots.data.data as data
 import numpy as np
 osjoin = os.path.join
 db = pdb.set_trace
 
 
-df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data.csv')
-df_box = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
-df_gantt = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_gantt.csv')
+df = fcp.get_test_data('fake_data.csv')
+df_box = fcp.get_test_data('fake_data_box.csv')
+df_gantt = fcp.get_test_data('fake_data_gantt.csv')
 
 
 def test_AxisError():

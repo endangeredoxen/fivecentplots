@@ -1158,8 +1158,9 @@ class Layout(BaseLayout):
                     if isinstance(leg_handle, mpl.patches.Rectangle):
                         continue
                     # Set legend point color and alpha
-                    leg_handle._sizes = \
-                        np.ones(len(self.legend.values) + 1) * self.legend.marker_size**2
+                    if not isinstance(self.legend.marker_size, str):
+                        leg_handle._sizes = \
+                            np.ones(len(self.legend.values) + 1) * self.legend.marker_size**2
                     if not self.markers.on and self.legend.marker_alpha is not None:
                         if hasattr(leg_handle, '_legmarker'):
                             leg_handle._legmarker.set_alpha(self.legend.marker_alpha)
@@ -2564,6 +2565,20 @@ class Layout(BaseLayout):
             for ir, ic in np.ndindex(self.axes2.obj.shape):
                 self.axes2.obj[ir, ic] = self.axes.obj[ir, ic].twiny()
 
+        # Add background image
+        if not self.axes.background.is_empty:
+            for ir, ic in np.ndindex(self.axes.obj.shape):
+                plot_num = utl.plot_num(ir, ic, data.ncol)
+                bkg = self.axes.background[plot_num]
+                if bkg is not None:
+                    img = mplp.imread(bkg)
+                    # Add the background
+                    self.axes.background_obj[ir, ic] = \
+                        self.axes.obj[ir, ic].imshow(img, aspect='auto', zorder=0, extent=[-1, 1, -1, 1],
+                                                     alpha=self.axes.background_alpha[plot_num])
+                    # Make fill transparent
+                    self.axes.obj[ir, ic].patch.set_alpha(0.0)
+
         return data
 
     def plot_bar(self, ir: int, ic: int, iline: int, df: pd.DataFrame, leg_name: str, data: 'Data',  # noqa: F821
@@ -3638,16 +3653,23 @@ class Layout(BaseLayout):
             marker = format_marker(self.markers.type[iline])
             if marker != 'None':
                 # use scatter plot for points
-                if marker in ['+', 'x']:
-                    c = self.markers.edge_color[(iline, leg_name)]
+                if self.markers.fill_color_from_column:
+                    c = self.markers.fill_color.values
                 else:
-                    c = self.markers.fill_color[(iline, leg_name)] if self.markers.filled else 'none'
+                    if marker in ['+', 'x']:
+                        c = self.markers.edge_color[(iline, leg_name)]
+                    else:
+                        c = self.markers.fill_color[(iline, leg_name)] if self.markers.filled else 'none'
+                if self.markers.edge_color_from_column:
+                    edge_color = self.markers.edge_color.values
+                else:
+                    edge_color = self.markers.edge_color[(iline, leg_name)]
                 points = ax.scatter(dfx, dfy,
                                     s=df[self.markers.size]**2 if isinstance(self.markers.size, str)
                                     else self.markers.size[iline]**2,
                                     marker=marker,
                                     c=c,
-                                    edgecolors=self.markers.edge_color[(iline, leg_name)],
+                                    edgecolors=edge_color,
                                     linewidth=self.markers.edge_width[(iline, leg_name)],
                                     zorder=40
                                     )
@@ -4450,7 +4472,9 @@ class Layout(BaseLayout):
             # Conver the color map into discrete colors
             cmap = mplp.get_cmap(self.cmap[0])
             color_list = []
-            if data.legend_vals is None or len(data.legend_vals) == 0:
+            if self.markers.edge_color_from_column or self.markers.fill_color_from_column:
+                maxx = len(data.df_all)
+            elif data.legend_vals is None or len(data.legend_vals) == 0:
                 if self.axes.twin_x or self.axes.twin_y:
                     maxx = 2
                 else:
@@ -4461,17 +4485,8 @@ class Layout(BaseLayout):
                 color_list += \
                     [mplc_to_hex(cmap((i + 1) / (maxx + 1)), False)]
 
-            # Reset colors
-            # if self.legend.column is None:
-            #     # NO IDEA HOW THIS CASE COULD BE, CONSIDER REMOVING
-            #     if self.axes.twin_x and 'label_y_font_color' not in kwargs.keys():
-            #         self.label_y.font_color = color_list[0]
-            #     if self.axes.twin_x and 'label_y2_font_color' not in kwargs.keys():
-            #         self.label_y2.font_color = color_list[1]
-            #     if self.axes.twin_y and 'label_x_font_color' not in kwargs.keys():
-            #         self.label_x.font_color = color_list[0]
-            #     if self.axes.twin_y and 'label_x_font_color' not in kwargs.keys():
-            #         self.label_x2.font_color = color_list[1]
+            if self.markers.color_list_order is not None:
+                color_list = [color_list[i] for i in self.markers.color_list_order]
 
             self.lines.color.values = copy.copy(color_list)
             self.lines.color_alpha('color', 'alpha')
@@ -4561,6 +4576,15 @@ class Layout(BaseLayout):
                         xoffset = self.axes.obj[0, 0].get_position().x0 - self.axes.obj[ir, ic].get_position().x0
                         yoffset = self.axes.obj[0, 0].get_position().y1 - self.axes.obj[ir, ic].get_position().y1
                     lab.obj[ir, ic].set_position((x - xoffset, y - yoffset))
+
+        # axes background image set extent to data ranges
+        if not self.axes.background.is_empty:
+            for ir, ic in np.ndindex(self.axes.obj.shape):
+                if self.axes.background[ir, ic]:
+                    self.axes.background_obj[ir, ic].set_extent([data.ranges['xmin'][ir, ic],
+                                                                 data.ranges['xmax'][ir, ic],
+                                                                 data.ranges['ymin'][ir, ic],
+                                                                 data.ranges['ymax'][ir, ic]])
 
         # Update the rc label positions
         # row
