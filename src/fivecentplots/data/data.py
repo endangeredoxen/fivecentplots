@@ -798,16 +798,35 @@ class Data:
         stat['count'] = df[[x, y]].groupby(x).count().reset_index()[y]
         stat['std'] = df[[x, y]].groupby(x).std().reset_index()[y]
         stat['sderr'] = stat['std'] / np.sqrt(stat['count'])
-        stat['ucl'] = np.nan
-        stat['lcl'] = np.nan
-        for irow, row in stat.iterrows():
-            if row['std'] == 0:
-                conf = [row['mean'], row['mean']]
-            else:
-                conf = ss.t.interval(self.interval[0], int(row['count']) - 1,
-                                     loc=row['mean'], scale=row['sderr'])
-            stat.loc[irow, 'ucl'] = conf[1]
-            stat.loc[irow, 'lcl'] = conf[0]
+
+        means = stat['mean'].values
+        counts = stat['count'].values
+        stds = stat['std'].values
+        serr = stat['sderr'].values
+        interval_alpha = self.interval[0]
+
+        ucl = np.full(len(stat), np.nan)
+        lcl = np.full(len(stat), np.nan)
+
+        mask_zero_std = stds == 0
+        mask_nonzero = ~mask_zero_std
+
+        if mask_nonzero.any():
+            nonzero_counts = counts[mask_nonzero]
+            nonzero_means = means[mask_nonzero]
+            nonzero_serr = serr[mask_nonzero]
+            nonzero_confs = ss.t.interval(interval_alpha,
+                                           nonzero_counts - 1,
+                                           loc=nonzero_means,
+                                           scale=nonzero_serr)
+            lcl[mask_nonzero] = nonzero_confs[0]
+            ucl[mask_nonzero] = nonzero_confs[1]
+
+        lcl[mask_zero_std] = means[mask_zero_std]
+        ucl[mask_zero_std] = means[mask_zero_std]
+
+        stat['ucl'] = ucl
+        stat['lcl'] = lcl
 
         self.stat_idx = df.groupby(x).mean().index
         self.lcl = stat['lcl']
