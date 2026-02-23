@@ -2348,8 +2348,8 @@ class Layout(BaseLayout):
                 xbboxm = df_tick_update(df_tick(xticksm, xticksm_size_all, 'x'))
                 xbboxm['visible'] = False
                 xbboxm = select_minor_ticks(xbbox, xbboxm)
-                for irow, row, in xbboxm.iterrows():
-                    xticksm.obj[ir, ic][irow].set_visible(row.visible)
+                for row in xbboxm.itertuples(index=True):
+                    xticksm.obj[ir, ic][row.Index].set_visible(row.visible)
 
             # Leave overlappint yticks for gantt workstreams
             if len(yticks_size_all) > 0 and \
@@ -2360,8 +2360,8 @@ class Layout(BaseLayout):
                 ybboxm = df_tick_update(df_tick(yticksm, yticksm_size_all, 'y'))
                 ybboxm['visible'] = False
                 ybboxm = select_minor_ticks(ybbox, ybboxm)
-                for irow, row, in ybboxm.iterrows():
-                    yticksm.obj[ir, ic][irow].set_visible(row.visible)
+                for row in ybboxm.itertuples(index=True):
+                    yticksm.obj[ir, ic][row.Index].set_visible(row.visible)
 
     def _get_tick_xs(self):
         """Calculate extra whitespace at the edge of the plot for the last tick."""
@@ -2938,18 +2938,20 @@ class Layout(BaseLayout):
             # Workstreams define the bar positioning but the legend grouping defines the color
             edgecolor = []
             fillcolor = []
-            for irow, row in df.iterrows():
-                leg_val = row[self.legend.column]
-                lookup = data.legend_vals[data.legend_vals.Leg == leg_val]
+            legend_col = self.legend.column
+            legend_vals_df = data.legend_vals
+            for row in df.itertuples(index=False):
+                leg_val = getattr(row, legend_col)
+                lookup = legend_vals_df[legend_vals_df.Leg == leg_val]
                 if len(lookup) > 0:
                     idx = int(lookup.index[0])
-                    edgecolor += [self.gantt.edge_color[idx]]
-                    fillcolor += [self.gantt.fill_color[idx]]
+                    edgecolor.append(self.gantt.edge_color[idx])
+                    fillcolor.append(self.gantt.fill_color[idx])
                     handle = [patches.Rectangle((0, 0), 1, 1, color=self.gantt.fill_color[idx])]
                     self.legend.add_value(leg_val, handle, 'lines')
                 else:
-                    edgecolor += ['#555555']  # TODO: make this programmable
-                    fillcolor += ['#555555']  # TODO: make this programmable
+                    edgecolor.append('#555555')  # TODO: make this programmable
+                    fillcolor.append('#555555')  # TODO: make this programmable
         else:
             # Use grouping scheme
             edgecolor = [self.gantt.edge_color[(iline, leg_name)] for i, f in enumerate(df.index)]
