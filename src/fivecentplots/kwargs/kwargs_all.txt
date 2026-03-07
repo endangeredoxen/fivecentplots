@@ -36,10 +36,12 @@ background
 background_alpha
 bar
 bar_align
+bar_color_by
 bar_edge_alpha
 bar_edge_color
 bar_edge_width
 bar_error_bars
+bar_error_color
 bar_fill_alpha
 bar_fill_color
 bar_height
@@ -270,6 +272,10 @@ fit_width
 fit_xanchor
 fit_yanchor
 fit_zorder
+flip_x
+flip_x2
+flip_y
+flip_y2
 font
 font_color
 font_size
@@ -555,6 +561,10 @@ kde_color
 kde_style
 kde_width
 kde_zorder
+label_font
+label_font_color
+label_font_style
+label_font_weight
 label_box_padding_x
 label_box_padding_y
 label_boxes
@@ -731,7 +741,9 @@ legend_marker_size
 legend_on
 legend_points
 legend_title
+legend_title_font_color
 legend_title_font_size
+legend_title_font_weight
 levels
 line_alpha
 line_color
@@ -838,9 +850,11 @@ pie_explode
 pie_fill_alpha
 pie_fill_color
 pie_inner_radius
+pie_label_distance
 pie_percents
 pie_percents_distance
 pie_radius
+pie_rotate_labels
 pie_shadow
 pie_start_angle
 pie_width
@@ -1224,6 +1238,7 @@ ticks_direction
 ticks_increment
 ticks_length
 ticks_major
+ticks_major_color
 ticks_major_direction
 ticks_major_increment
 ticks_major_length
@@ -1289,6 +1304,7 @@ ticks_major_z_length
 ticks_major_z_rotation
 ticks_major_z_zorder
 ticks_minor
+ticks_minor_color
 ticks_minor_direction
 ticks_minor_length
 ticks_minor_number
@@ -1513,6 +1529,8 @@ violin_median_color
 violin_median_marker
 violin_median_size
 violin_whisker_color
+violin_whisker_style
+violin_whisker_width
 violin_zorder
 violins
 wh_ratio

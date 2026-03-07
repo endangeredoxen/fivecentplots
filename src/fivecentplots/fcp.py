@@ -207,9 +207,9 @@ def boxplot(df, **kwargs):
         box_group_mean (bool): Toggle visibility of a line showing the mean of each data group on the plot. Defaults to
           False. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/boxplot.html#Group-Means
         box_group_mean_color|group_mean_color (str): Hex color string for the group mean line. Defaults to #555555.
-        box_group_mean_style|group_mean_style (str): Line style for the box group mean lines {‘-’, ‘--’, ‘-.’, ‘:’}.
+        box_group_means_style|group_mean_style (str): Line style for the box group mean lines {‘-’, ‘--’, ‘-.’, ‘:’}.
           Defaults to '-’.
-        box_group_mean_width|group_mean_width (float): Width of the group mean line in pixels. Defaults to 1.
+        box_group_means_width|group_mean_width (float): Width of the group mean line in pixels. Defaults to 1.
         box_stat_line (str): Set the statistic for the connecting line {‘mean’, ‘median’, ‘std’, ‘qXX’ [qunatile where
           XX is a number between 0-100]}. Defaults to mean. Example:
           https://endangeredoxen.github.io/fivecentplots/0.6.0/boxplot.html#Stat-line
