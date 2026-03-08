@@ -484,17 +484,6 @@ class Data:
 
         return vals
 
-    def _filter_data(self, kwargs):
-        """Apply an optional filter to the data.
-
-        Args:
-            kwargs: user-defined keyword args
-        """
-        if self.filter:
-            self.df_all = utl.df_filter(self.df_all, self.filter)
-            if len(self.df_all) == 0:
-                raise DataError('DataFrame is empty after applying filter')
-
     def _convert_q_range_limits(self, ax: str, key: str, data_set: Union[np.ndarray, pd.DataFrame],
                                 plot_num: int, mm: str):
         """
@@ -546,6 +535,26 @@ class Data:
             else:
                 xq = float(str(user_limit).lower().replace('q', '')) / 100
             getattr(self, key).values[plot_num] = np.quantile(data_set, xq)
+
+    def _filter_data(self, kwargs):
+        """Apply an optional filter to the data.
+
+        Args:
+            kwargs: user-defined keyword args
+        """
+        if self.filter:
+            self.df_all = utl.df_filter(self.df_all, self.filter)
+            if len(self.df_all) == 0:
+                raise DataError('DataFrame is empty after applying filter')
+
+    def _flip_range_limits(self):
+        """Flip axis range limits."""
+        for ax in self.axs_on:
+            if not getattr(self, f'trans_{ax}') == 'flip':
+                continue
+            temp = self.ranges[f'{ax}min']
+            self.ranges[f'{ax}min'] = self.ranges[f'{ax}max']
+            self.ranges[f'{ax}max'] = temp
 
     def _get_auto_scale(self,
                         data_set: Union[pd.DataFrame, npt.NDArray],
@@ -725,6 +734,7 @@ class Data:
         """Calculate data range limits for a given figure."""
         # For only 1 subplot, ranges are already set
         if self.ncol == 1 and self.nrow == 1:
+            self._flip_range_limits()
             return
 
         rr = self._range_dict()  # new range dict with updates based on subplot contents
@@ -777,6 +787,7 @@ class Data:
                 rr[f'{ax}max'] = self.ranges[f'{ax}max']
 
         # Overwrite previous ranges
+        self._flip_range_limits()  # flip limits if needed
         self.ranges = rr
 
     def get_interval_confidence(self, df: pd.DataFrame, x: str, y: str, **kwargs) -> None:
@@ -1486,11 +1497,19 @@ class Data:
             self.ranges['y2max'][ir, ic] = x2max
 
     def transform(self):
-        """Transform x, y, or z data by unique group."""
+        """Transform x, y, or z data by unique group. Note that 'flip_{x|x2|y|y2}' is defered until get_axes_ranges."""
         # Possible tranformations
         transform = any([self.trans_x, self.trans_x2, self.trans_y, self.trans_y2, self.trans_z])
         if not transform:
             return
+
+        def _check_val():
+            s = getattr(self, f'trans_{ax}')[1]
+            try:
+                float(s)
+                return s
+            except ValueError:
+                raise DataError(f'Invalid transformation value: {s} is not a number')
 
         # Container for transformed data
         df = pd.DataFrame()
@@ -1519,20 +1538,34 @@ class Data:
                     elif getattr(self, f'trans_{ax}') == 'negative' or getattr(self, f'trans_{ax}') == 'neg':
                         gg.loc[:, val] = -gg[val]
                     elif getattr(self, f'trans_{ax}') == 'nq':
+                        # Does this actually work?  What about the other axis?
                         if self.imgs is None:
                             gg = utl.nq(gg[val], val, **self.kwargs)
+                            self.x, self.y = [gg.columns[0]], [gg.columns[1]]
                         else:
                             gg = utl.nq(self.imgs[gg.index[0]][val], val, **self.kwargs)
                     elif getattr(self, f'trans_{ax}') == 'inverse' or getattr(self, f'trans_{ax}') == 'inv':
                         gg.loc[:, val] = 1 / gg[val]
                     elif (isinstance(getattr(self, f'trans_{ax}'), tuple)
                             or isinstance(getattr(self, f'trans_{ax}'), list)) \
-                            and getattr(self, f'trans_{ax}')[0] == 'pow':
-                        gg.loc[:, val] = gg[val]**getattr(self, f'trans_{ax}')[1]
-                    elif getattr(self, f'trans_{ax}') == 'flip':
-                        maxx = gg.loc[:, val].max()
-                        gg.loc[:, val] -= maxx
-                        gg.loc[:, val] = abs(gg[val])
+                            and getattr(self, f'trans_{ax}')[0] in ['power', 'pow']:
+                        gg.loc[:, val] = gg[val]**_check_val()
+                    elif (isinstance(getattr(self, f'trans_{ax}'), tuple)
+                            or isinstance(getattr(self, f'trans_{ax}'), list)) \
+                            and getattr(self, f'trans_{ax}')[0] in ['addition', 'add']:
+                        gg.loc[:, val] = gg[val] + _check_val()
+                    elif (isinstance(getattr(self, f'trans_{ax}'), tuple)
+                            or isinstance(getattr(self, f'trans_{ax}'), list)) \
+                            and getattr(self, f'trans_{ax}')[0] in ['subtract', 'sub']:
+                        gg.loc[:, val] = gg[val] - _check_val()
+                    elif (isinstance(getattr(self, f'trans_{ax}'), tuple)
+                            or isinstance(getattr(self, f'trans_{ax}'), list)) \
+                            and getattr(self, f'trans_{ax}')[0] in ['multiply', 'mult']:
+                        gg.loc[:, val] = gg[val] * _check_val()
+                    elif (isinstance(getattr(self, f'trans_{ax}'), tuple)
+                            or isinstance(getattr(self, f'trans_{ax}'), list)) \
+                            and getattr(self, f'trans_{ax}')[0] in ['divide', 'div']:
+                        gg.loc[:, val] = gg[val] / _check_val()
 
             if isinstance(group, tuple):
                 vals = group[0] if isinstance(group[0], tuple) else [group[0]]

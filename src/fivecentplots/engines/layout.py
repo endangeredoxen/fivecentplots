@@ -1919,6 +1919,10 @@ class BaseLayout:
                              values=[],
                              )
 
+        # Shading under xy lines
+        self.fill_under = utl.kwget(kwargs, self.fcpp, ['fill_under'], False)
+        self.fill_under_alpha = utl.kwget(kwargs, self.fcpp, ['fill_under_alpha'], 0.2)
+
         return kwargs
 
     def _init_markers(self, kwargs: dict, data: 'data.Data') -> dict:

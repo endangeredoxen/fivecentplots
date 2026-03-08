@@ -3704,7 +3704,11 @@ class Layout(BaseLayout):
 
         # Fill the area under the line
         if self.fill_under:
-            self.axes.obj[ir, ic].fill_between(dfx, dfy.min(), dfy, color=line_type.color[(iline, leg_name)],
+            if data.trans_y == 'flip':
+                y0 = max(dfy.max(), data.ranges['ymax'][ir, ic])
+            else:
+                y0 = dfy.min()
+            self.axes.obj[ir, ic].fill_between(dfx, y0, dfy, color=line_type.color[(iline, leg_name)],
                                                alpha=self.fill_under_alpha)
 
         # Add a reference to the line to self.lines
