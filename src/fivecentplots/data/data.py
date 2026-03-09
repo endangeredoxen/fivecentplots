@@ -827,9 +827,9 @@ class Data:
             nonzero_means = means[mask_nonzero]
             nonzero_serr = serr[mask_nonzero]
             nonzero_confs = ss.t.interval(interval_alpha,
-                                           nonzero_counts - 1,
-                                           loc=nonzero_means,
-                                           scale=nonzero_serr)
+                                          nonzero_counts - 1,
+                                          loc=nonzero_means,
+                                          scale=nonzero_serr)
             lcl[mask_nonzero] = nonzero_confs[0]
             ucl[mask_nonzero] = nonzero_confs[1]
 
