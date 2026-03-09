@@ -852,7 +852,7 @@ def plot(df, **kwargs):
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2')
 
@@ -1962,7 +1962,7 @@ def axes():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], legend=['Die', 'Substrate'],
                      col='Boost Level', twin_x=True,
                      share_y=False, share_y2=False, share_x=True,
@@ -2018,7 +2018,7 @@ def figure():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      fig_edge_color='#000000', fig_edge_width=3, fig_edge_alpha=0.5,
@@ -2125,7 +2125,7 @@ def gridlines():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', lines=False, ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      grid_major_x_style='--', grid_major_y_color='#00EE00',
@@ -2160,7 +2160,7 @@ def grouping():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', col='Die', row='Substrate',
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost  Level==0.2', ax_size=[300, 250])
 
@@ -2172,7 +2172,7 @@ def grouping():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', wrap=['Die', 'Substrate'],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost  Level==0.2', ax_size=[300, 250])
 
@@ -2184,7 +2184,7 @@ def grouping():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, y='Value', groups=['Batch', 'Sample'])
 
             .. figure:: ../_static/images/example_grouping3.png
@@ -2276,7 +2276,7 @@ def labels():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', col='Die', row='Substrate',
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2', ax_size=[300, 250],
                      label_rc_edge_color='#000000', label_rc_edge_width=2,
@@ -2315,7 +2315,7 @@ def legend():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2', ax_size=[400, 300],
                      legend_edge_color='#555555', legend_edge_width=2, legend_font_size=10,
@@ -2349,7 +2349,7 @@ def lines():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      line_color='#000000', line_width=2)
@@ -2361,7 +2361,7 @@ def lines():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      line_color=['#AA00AA', '#00AA00', '#0000AA'],  line_width=2, line_style=['-', '--'])
@@ -2373,7 +2373,7 @@ def lines():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      cmap='viridis', lines_alpha=0.7)
@@ -2385,7 +2385,7 @@ def lines():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      lines=False)
@@ -2419,7 +2419,7 @@ def markers():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      markers=False)
@@ -2431,7 +2431,7 @@ def markers():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      marker_size=10, marker_edge_width=2, marker_fill=True)
@@ -2443,7 +2443,7 @@ def markers():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      markers=['o', None, '+', '*', 'B', None], marker_edge_color=[3, 0, 6, 1, '#FF0000'])
@@ -2594,7 +2594,7 @@ def tick_labels():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      tick_labels_major_x_font_color='#FF0000', tick_labels_major_x_font_style='italic',
@@ -2716,7 +2716,7 @@ def ticks():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2')
 
@@ -2727,7 +2727,7 @@ def ticks():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      ticks_major_increment=0.1,
@@ -2765,7 +2765,7 @@ def titles():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      title='Vaxis III', title_edge_alpha=0.5, title_edge_color='#333333',
@@ -2808,7 +2808,7 @@ def ws():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', row='Die', col='Substrate', ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2', save=True,
                      fig_edge_color='#000000',
