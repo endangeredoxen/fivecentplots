@@ -4493,7 +4493,10 @@ class Layout(BaseLayout):
                         if idiv >= len(changes.index):
                             continue
                         div_at = changes.index[idiv]
-                        loc = lab_bg_size.loc[ir, ic, idx].iloc[div_at - 1].x1
+                        _slice = lab_bg_size.loc[ir, ic, idx]
+                        if div_at - 1 >= len(_slice):
+                            continue
+                        loc = _slice.iloc[div_at - 1].x1
                         div.set_xdata([loc / self.fig.size_int[0], loc / self.fig.size_int[0]])
 
                 # group title
