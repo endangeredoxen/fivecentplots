@@ -361,11 +361,23 @@ class Data:
             if val not in self.df_all.columns:
                 raise GroupingError(f'Grouping column "{val}" is not in the DataFrame!')
 
-        # Check for no groups
-        if len(list(self.df_all.groupby(values).groups.keys())) == 0:
+        # # Check for no groups
+        # if len(list(self.df_all.groupby(values, dropna=False).groups.keys())) == 0:
+        #     raise GroupingError(f'There are no unique groups in the data for the {group_type}=[{", ".join(values)}]')
+
+        # # Check for wrap with twinning
+        # if group_type == 'wrap' and col_names is not None and self.twin_y:
+        #     raise GroupingError('Wrap plots do not support twinning of the y-axis. '
+        #                         'Please consider a row vs column plot instead.')
+        # if group_type == 'wrap' and col_names is not None and self.twin_x:
+        #     raise GroupingError('Wrap plots do not support twinning of the x-axis. '
+        #                         'Please consider a row vs column plot instead.')
+        # For 'groups' (e.g. boxplot groups), treat an all-NaN column as a valid group.
+        # For wrap/row/col/leg, an all-NaN column means there's nothing meaningful to facet by.
+        dropna = group_type != 'groups'
+        if len(list(self.df_all.groupby(values, dropna=dropna).groups.keys())) == 0:
             raise GroupingError(f'There are no unique groups in the data for the {group_type}=[{", ".join(values)}]')
 
-        # Check for wrap with twinning
         if group_type == 'wrap' and col_names is not None and self.twin_y:
             raise GroupingError('Wrap plots do not support twinning of the y-axis. '
                                 'Please consider a row vs column plot instead.')
@@ -647,19 +659,23 @@ class Data:
             if len([f for f in getattr(self, ax) if f not in data_set.columns]) > 0:
                 return None, None
             vals = data_set[getattr(self, ax)].stack().values  # convert to numpy array
+            vals = vals[~pd.isna(vals)]  # pandas 3.0's stack() no longer drops NaT/NaN by default
             dtypes = data_set[getattr(self, ax)].dtypes.unique()
 
             # Check dtypes
             if 'datetime64[ns]' in dtypes or all([isinstance(f, datetime.date) for f in vals]):
                 vmin, vmax = None, None
+                valid_vals = pd.Series(vals).dropna().values  # drop NaT before reducing
+                if len(valid_vals) == 0:
+                    return None, None
                 if getattr(self, f'{ax}min')[plot_num] is not None:
                     vmin = getattr(self, f'{ax}min')[plot_num]
                 else:
-                    vmin = np.min(vals)
+                    vmin = np.min(valid_vals)
                 if getattr(self, f'{ax}max')[plot_num] is not None:
                     vmax = getattr(self, f'{ax}max')[plot_num]
                 else:
-                    vmax = np.max(vals)
+                    vmax = np.max(valid_vals)
                 return np.datetime64(vmin), np.datetime64(vmax)
 
             elif 'str' in dtypes or 'object' in dtypes:
@@ -691,8 +707,11 @@ class Data:
             return None, None
         else:
             # anything else
-            axmin = np.min(vals)
-            axmax = np.max(vals)
+            valid_vals = vals[~np.isnan(vals)] if np.issubdtype(vals.dtype, np.floating) else vals
+            if len(valid_vals) == 0:
+                return None, None
+            axmin = np.min(valid_vals)
+            axmax = np.max(valid_vals)
             axdelta = axmax - axmin
         if axdelta is not None and axdelta <= 0:
             axmin -= self.ax_limit_padding * axmin
@@ -728,10 +747,30 @@ class Data:
             vmin -= self.ax_limit_padding * vmin
             vmax += self.ax_limit_padding * vmax
 
-        return np.float64(vmin), np.float64(vmax)
+        if not isinstance(vmin, np.datetime64):
+            vmin = np.float64(vmin)
+        if not isinstance(vmax, np.datetime64):
+            vmax = np.float64(vmax)
+
+        return vmin, vmax
 
     def get_data_ranges(self):
         """Calculate data range limits for a given figure."""
+        def _valid(arr):
+            def _is_valid(x):
+                if x is None:
+                    return False
+                try:
+                    result = pd.isna(x)
+                    if isinstance(result, (np.ndarray, list, tuple)):
+                        return not np.any(result)
+                    return not result
+                except (TypeError, ValueError):
+                    return True
+            flat = arr.ravel()  # flatten to 1D so we check every element individually
+            mask = np.array([_is_valid(x) for x in flat], dtype=bool)
+            return flat[mask]
+
         # For only 1 subplot, ranges are already set
         if self.ncol == 1 and self.nrow == 1:
             self._flip_range_limits()
@@ -741,10 +780,10 @@ class Data:
         for ax in self.axs_on:
             # Case: share_[ax] = True
             if getattr(self, f'share_{ax}'):
-                mmin = self.ranges[f'{ax}min'][np.not_equal(self.ranges[f'{ax}min'], None)]
+                mmin = _valid(self.ranges[f'{ax}min'])
                 if len(mmin) > 0:
                     rr[f'{ax}min'][np.equal(rr[f'{ax}min'], None)] = mmin.min()
-                mmax = self.ranges[f'{ax}max'][np.not_equal(self.ranges[f'{ax}max'], None)]
+                mmax = _valid(self.ranges[f'{ax}max'])
                 if len(mmax) > 0:
                     rr[f'{ax}max'][np.equal(rr[f'{ax}max'], None)] = mmax.max()
 
@@ -752,32 +791,30 @@ class Data:
             elif self.share_row and self.row is not None and self.share_col and self.col is not None:
                 for irow in range(0, self.nrow):
                     for icol in range(0, self.ncol):
-                        mmin = \
-                            self.ranges[f'{ax}min'][irow, icol][np.not_equal(self.ranges[f'{ax}min'][irow, icol], None)]
+                        mmin = _valid(self.ranges[f'{ax}min'][irow, icol])
                         if len(mmin) > 0:
                             rr[f'{ax}min'][irow, icol] = mmin.min()
-                        mmax = \
-                            self.ranges[f'{ax}max'][irow, icol][np.not_equal(self.ranges[f'{ax}max'][irow, icol], None)]
+                        mmax = _valid(self.ranges[f'{ax}max'][irow, icol])
                         if len(mmax) > 0:
                             rr[f'{ax}max'][irow, icol] = mmax.max()
 
             # Case: share_row = True
             elif self.share_row and self.row is not None:
                 for irow in range(0, self.nrow):
-                    mmin = self.ranges[f'{ax}min'][irow, :][np.not_equal(self.ranges[f'{ax}min'][irow, :], None)]
+                    mmin = _valid(self.ranges[f'{ax}min'][irow, :])
                     if len(mmin) > 0:
                         rr[f'{ax}min'][irow, :] = mmin.min()
-                    mmax = self.ranges[f'{ax}max'][irow, :][np.not_equal(self.ranges[f'{ax}max'][irow, :], None)]
+                    mmax = _valid(self.ranges[f'{ax}max'][irow, :])
                     if len(mmax) > 0:
                         rr[f'{ax}max'][irow, :] = mmax.max()
 
             # Case: share_col
             elif self.share_col and self.col is not None:
                 for icol in range(0, self.ncol):
-                    mmin = self.ranges[f'{ax}min'][:, icol][np.not_equal(self.ranges[f'{ax}min'][:, icol], None)]
+                    mmin = _valid(self.ranges[f'{ax}min'][:, icol])
                     if len(mmin) > 0:
                         rr[f'{ax}min'][:, icol] = mmin.min()
-                    mmax = self.ranges[f'{ax}max'][:, icol][np.not_equal(self.ranges[f'{ax}min'][:, icol], None)]
+                    mmax = _valid(self.ranges[f'{ax}max'][:, icol])  # fixed: was using ax}min mask
                     if len(mmax) > 0:
                         rr[f'{ax}max'][:, icol] = mmax.max()
 
@@ -1206,13 +1243,17 @@ class Data:
                     self.wrap_vals = natsorted(list(df.groupby(self.wrap).groups.keys()))
                 else:
                     self.wrap_vals = [f[0] for f in df.groupby(self.wrap, sort=False)]
+
             if self.ncols == 0:
                 rcnum = int(np.ceil(np.sqrt(len(self.wrap_vals))))
             else:
                 rcnum = self.ncols if self.ncols <= len(self.wrap_vals) else len(self.wrap_vals)
 
             self.ncol = rcnum
-            self.nrow = int(np.ceil(len(self.wrap_vals) / rcnum))
+            if rcnum > 0:
+                self.nrow = int(np.ceil(len(self.wrap_vals) / rcnum))
+            else:
+                self.nrow = 0
             self.nwrap = len(self.wrap_vals)
 
         # Non-wrapping option

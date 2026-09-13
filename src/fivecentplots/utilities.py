@@ -12,7 +12,6 @@ import re
 import shlex
 import inspect
 import ast
-import operator
 from matplotlib.font_manager import FontProperties, findfont
 import matplotlib.dates as mdates
 from pathlib import Path
@@ -184,30 +183,50 @@ class CustomWarning(Warning):
 
 
 def arithmetic_eval(s):
-    s = s.replace(' ', '')
-    s = s.replace('--', '+')
-    s = s.replace('++', '+')
+    """Safely evaluate a basic mathematical string expression."""
     node = ast.parse(s, mode='eval')
 
     def _eval(node):
-        binOps = {
-            ast.Add: operator.add,
-            ast.Sub: operator.sub,
-            ast.Mult: operator.mul,
-            ast.Div: operator.truediv,
-            ast.Mod: operator.mod
-        }
-
         if isinstance(node, ast.Expression):
             return _eval(node.body)
-        elif isinstance(node, ast.Str):
+
+        # Python 3.8+ unified AST literal node
+        elif isinstance(node, ast.Constant):
+            return node.value
+
+        # Legacy Python < 3.8 fallbacks (if ast.Str / ast.Num still exist)
+        elif hasattr(ast, 'Str') and isinstance(node, ast.Str):
             return node.s
-        elif isinstance(node, ast.Num):
+        elif hasattr(ast, 'Num') and isinstance(node, ast.Num):
             return node.n
+
         elif isinstance(node, ast.BinOp):
-            return binOps[type(node.op)](_eval(node.left), _eval(node.right))
+            left = _eval(node.left)
+            right = _eval(node.right)
+            if isinstance(node.op, ast.Add):
+                return left + right
+            elif isinstance(node.op, ast.Sub):
+                return left - right
+            elif isinstance(node.op, ast.Mult):
+                return left * right
+            elif isinstance(node.op, ast.Div):
+                return left / right
+            elif isinstance(node.op, ast.Pow):
+                return left ** right
+            elif isinstance(node.op, ast.Mod):
+                return left % right
+            else:
+                raise TypeError(f"Unsupported binary operator: {type(node.op)}")
+        elif isinstance(node, ast.UnaryOp):
+            operand = _eval(node.operand)
+            if isinstance(node.op, ast.UAdd):
+                return +operand
+            elif isinstance(node.op, ast.USub):
+                return -operand
+            else:
+                raise TypeError(f"Unsupported unary operator: {type(node.op)}")
         else:
-            raise Exception('Unsupported type {}'.format(node))
+            raise TypeError(f"Unsupported AST node: {type(node)}")
 
     return _eval(node.body)
 

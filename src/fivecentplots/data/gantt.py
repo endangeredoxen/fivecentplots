@@ -61,9 +61,9 @@ class Gantt(data.Data):
         self.bar_labels = utl.validate_list(utl.kwget(kwargs, self.fcpp, ['bar_labels', 'gantt_bar_labels'], []))
         self.today = utl.kwget(kwargs, self.fcpp, ['gantt_today', 'today'], False)
         self.relative_dates = utl.kwget(kwargs, self.fcpp, ['gantt_relative_dates', 'relative_dates'], False)
-        if self.relative_dates and not kwargs.get('ax_limit_padding_xmin'):
+        if not kwargs.get('ax_limit_padding_xmin'):
             self.ax_limit_padding_xmin = 0
-        if self.relative_dates and not kwargs.get('ax_limit_padding_xmax'):
+        if not kwargs.get('ax_limit_padding_xmax'):
             self.ax_limit_padding_xmax = 0
         self.time0 = None
 
@@ -192,6 +192,10 @@ class Gantt(data.Data):
 
         # Multiple dependencies can be specified for a single row, separated by a semicolon
         children_idx = ~self.df_all[self.dependencies].isin(NULLS)
+
+        # Convert to object dtype first since we're about to store lists, not strings
+        self.df_all[self.dependencies] = self.df_all[self.dependencies].astype(object)
+
         self.df_all.loc[children_idx, self.dependencies] = \
             self.df_all.loc[children_idx, self.dependencies].str.split(';')
         self.df_all.loc[children_idx, self.dependencies] = \

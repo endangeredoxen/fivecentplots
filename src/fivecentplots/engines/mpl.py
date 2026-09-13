@@ -2620,7 +2620,7 @@ class Layout(BaseLayout):
                     kwargs['left'] = stacked
             else:
                 kwargs['height'] = self.bar.width / ngroups
-                idx = [f + inst[i] * kwargs['height'] for i, f in enumerate(idx)]
+                idx = [f + inst.iloc[i] * kwargs['height'] for i, f in enumerate(idx)]
                 init_off = (total - 1) / 2 * kwargs['height']
                 idx = list((idx - init_off).values)
         else:
@@ -2634,7 +2634,7 @@ class Layout(BaseLayout):
                     kwargs['bottom'] = stacked
             else:
                 kwargs['width'] = self.bar.width / ngroups
-                idx = [f + inst[i] * kwargs['width'] for i, f in enumerate(idx)]
+                idx = [f + inst.iloc[i] * kwargs['width'] for i, f in enumerate(idx)]
                 init_off = (total - 1) / 2 * kwargs['width']
                 idx = list((idx - init_off).values)
 
@@ -2697,8 +2697,8 @@ class Layout(BaseLayout):
         # Bar data labels
         if self.bar.bar_labels.on:
             labels = []
-            xmin, xmax = data.ranges['xmin'], data.ranges['xmax']
-            ymin, ymax = data.ranges['ymin'], data.ranges['ymax']
+            xmin, xmax = data.ranges['xmin'][ir, ic], data.ranges['xmax'][ir, ic]
+            ymin, ymax = data.ranges['ymin'][ir, ic], data.ranges['ymax'][ir, ic]
             for i, label in enumerate(df.values):
                 if self.bar.horizontal:
                     self.bar.bar_labels.position = [label, idx[i]]
@@ -2928,7 +2928,6 @@ class Layout(BaseLayout):
             new_xmax = data.ranges['xmax'][ir, ic]  # current xmax axes range in matplotlib date float
         else:
             new_xmax = mdates.date2num(data.ranges['xmax'][ir, ic])  # current xmax axes range in matplotlib date float
-
         # Set the color values
         if self.gantt.color_by == 'bar':
             # Every bar gets a different color

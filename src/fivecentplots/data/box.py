@@ -70,6 +70,7 @@ class Box(data.Data):
             gidx = natsorted(gidx)
         self.indices = pd.DataFrame(gidx)
         self.changes = self.indices.copy()
+        self.changes = self.changes.astype(object)  # needed for pandas 3.0.5 to avoid dtype warning
 
         # Set initial level to 1
         for col in self.indices.columns:

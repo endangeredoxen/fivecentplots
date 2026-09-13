@@ -1973,9 +1973,11 @@ class Layout(BaseLayout):
             for ax in ['x', 'y']:
                 grid = getattr(self, f'grid_major_{ax}{ss}')
                 if grid is not None:
-                    self.ul[f'{ax}{ss}grid'] = dict(gridcolor=grid.color[0],
+                    self.ul[f'{ax}{ss}grid'] = dict(showgrid=grid.on,
+                                                    gridcolor=grid.color[0],
                                                     gridwidth=grid.width[0],
                                                     griddash=grid.style[0],
+                                                    tickmode='auto' if ss == '2' else None,
                                                     )
 
     def set_axes_labels(self, ir: int, ic: int, data: 'Data'):  # noqa: F821

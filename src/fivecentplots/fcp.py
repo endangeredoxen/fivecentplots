@@ -964,7 +964,10 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
 
                 # Use the pre-indexed dataframe
                 if len(df_indexed) > 1:
-                    gg = df_indexed.loc[tuple(row)]
+                    key = tuple(row)
+                    if len(key) == 1:
+                        key = key[0]  # avoid ambiguous 1-tuple lookup on a single-level index
+                    gg = df_indexed.loc[key]
                 else:
                     gg = df_indexed
 
@@ -1316,7 +1319,7 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
                 data.ranges['xmax'][ir, ic] = new_xmax
                 layout.set_axes_ranges(ir, ic, {k: data.ranges[k] for k in ['xmin', 'xmax'] if k in data.ranges})
         else:
-            if not user_xmax and np.datetime64(new_xmax) > np.datetime64(data.ranges['xmax'][ir, ic]):
+            if not user_xmax and np.datetime64(new_xmax) > np.datetime64(pd.to_datetime(data.ranges['xmax'][ir, ic])):
                 data.ranges['xmax'][ir, ic] = np.datetime64(new_xmax)
                 layout.set_axes_ranges(ir, ic, {k: data.ranges[k] for k in ['xmin', 'xmax'] if k in data.ranges})
 
