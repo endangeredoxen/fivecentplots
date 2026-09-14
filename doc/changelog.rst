@@ -1,6 +1,14 @@
 Changelog
 *********
 
+0.6.1
+=====
+* Many bug fixes for gantt, bar, and hist plots
+* Enable bar labels for bar plots (vertical, horizontal, stacked, non-stacked)
+* Enable auto-rotation of long labels on plotly boxplots
+* Replace relative imports with absolute imports to improve compatibility with various packaging and installation methods
+* New vscode dark theme for jupyter notebooks within VS Code
+
 0.6.0
 =====
 * plotly support added (including boxplots!)

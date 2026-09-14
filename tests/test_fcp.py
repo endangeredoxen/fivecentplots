@@ -8,7 +8,7 @@ osjoin = os.path.join
 db = pdb.set_trace
 
 
-df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_interval.csv')
+df = fcp.get_test_data('fake_data_interval.csv')
 
 
 def test_paste_kwargs():

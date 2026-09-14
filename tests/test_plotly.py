@@ -9,6 +9,8 @@ import matplotlib as mpl
 import fivecentplots.utilities as utl
 import pytest
 import imageio.v3 as imageio
+import requests
+from io import BytesIO
 osjoin = os.path.join
 db = pdb.set_trace
 
@@ -31,15 +33,20 @@ else:
 
 
 # Dataframes
-df_xy = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data.csv')
-ts = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_ts.csv')
-df_interval = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_interval.csv')
-df_bar = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_bar.csv')
-df_box = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
-df_contour = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_contour.csv')
-df_heatmap = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_heatmap.csv')
-df_hist = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+df_xy = fcp.get_test_data('fake_data.csv')
+ts = fcp.get_test_data('fake_ts.csv')
+df_interval = fcp.get_test_data('fake_data_interval.csv')
+df_bar = fcp.get_test_data('fake_data_bar.csv')
+df_box = fcp.get_test_data('fake_data_box.csv')
+df_contour = fcp.get_test_data('fake_data_contour.csv')
+df_heatmap = fcp.get_test_data('fake_data_heatmap.csv')
+df_hist = fcp.get_test_data('fake_data_box.csv')
 img_rgb = imageio.imread(str(Path(fcp.__file__).parent / 'test_data/imshow_cat_pirate.png'))
+
+url = 'https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg'
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+response = requests.get(url, headers=headers)
+img_rgb_sp = imageio.imread(BytesIO(response.content), extension='.jpg')
 
 
 # Set theme
@@ -296,7 +303,7 @@ def plt_bar_simple(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('bar_simple', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.bar(df_bar, x='Liquid', y='pH', filter='Measurement=="A" & T [C]==25', horizontal=True,
+    fcp.bar(df_bar, y='Liquid', x='pH', filter='Measurement=="A" & T [C]==25', horizontal=True,
             filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
@@ -335,8 +342,38 @@ def plt_bar_grouping(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('bar_grouping', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.bar(df_bar, x='Liquid', y='pH', tick_labels_major_x_rotation=90, col='Measurement', row='T [C]', ax_hlines=0,
+    fcp.bar(df_bar, x='Liquid', y='pH', tick_labels_major_x_rotation=90, ax_hlines=0, col='Measurement', row='T [C]',
             ax_size=[300, 300], filename=name.with_suffix('.png'), save=not bm, inline=False)
+
+    if bm:
+        return
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+@pytest.mark.skip(reason="This feature is not yet implemented.")
+def plt_box_auto_size(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('box_auto_size', make_reference, REFERENCE)
+
+    # Make the plot
+    df = fcp.get_test_data('fake_data_box.csv')
+    df2 = df.copy()
+    df2.Value *= 2
+    df2.loc[df2.Sample == 1, 'Sample'] = 4
+    df2.loc[df2.Sample == 2, 'Sample'] = 5
+    df2.loc[df2.Sample == 3, 'Sample'] = 6
+    df3 = df.copy()
+    df3.Value *= 3
+    df3.loc[df3.Sample == 1, 'Sample'] = 7
+    df3.loc[df3.Sample == 2, 'Sample'] = 8
+    df3.loc[df3.Sample == 3, 'Sample'] = 9
+    df4 = df.copy()
+    df4.Value *= 4
+    df4.loc[df4.Sample == 1, 'Sample'] = 10
+    df4.loc[df4.Sample == 2, 'Sample'] = 11
+    df4 = pd.concat([df4, df3, df2, df])
+    fcp.boxplot(df4, y='Value', groups=['Batch', 'ID', 'Sample'], ax_size='auto', label_y_fill_color='#ff0000',
+                show=SHOW, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
@@ -401,8 +438,8 @@ def plt_contour_basic(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('contour_basic', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.contour(df_contour, x='X', y='Y', z='Value', filled=False, cbar=False,
-                filename=name.with_suffix('.png'), save=not bm, inline=False)
+    fcp.contour(df_contour, x='X', y='Y', z='Value', filled=False, cbar=False, label_y_edge_width=1,
+                label_y_edge_color='#ff0000', filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
         return
@@ -470,7 +507,7 @@ def plt_hist_kde(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('hist_kde', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.hist(df_hist, x='Value', legend='Region', kde=True, kde_width=2,
+    fcp.hist(df_hist, x='Value', legend='Region', kde=True, kde_width=2, bars=True,
              filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
@@ -523,14 +560,13 @@ def plt_imshow_grid(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('imshow_grid', make_reference, REFERENCE)
 
     # Make the plot
-    url = 'https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg'
-    img_rgb_sp = imageio.imread(url)
     img_raw_sp = fcp.utilities.rgb2bayer(img_rgb_sp)
     fcp.imshow(img_raw_sp, cmap='inferno', ax_size=[300, 300], cfa='rggb', wrap='Plane', ax_edge_width=1,
                ax_edge_color='#555555', filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
         return
+
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 

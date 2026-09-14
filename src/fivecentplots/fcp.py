@@ -16,17 +16,19 @@ import os
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
+import datetime
 import pdb
 import shutil
 import sys
 from pathlib import Path
-from . import utilities
-from . import data
-from . colors import DEFAULT_COLORS, RGB, RGGB, RCCG  # noqa
-from . import engines
-from . import kwargs as kwg
+from fivecentplots import utilities
+from fivecentplots import data
+from fivecentplots.colors import DEFAULT_COLORS, RGB, RGGB, RCCG  # noqa
+from fivecentplots import engines
+from fivecentplots import kwargs as kwg
 import fivecentplots as fcp
 from typing import Union
+import warnings
 try:
     # optional import - only used for paste_kwargs to use windows clipboard
     # to directly copy kwargs from ini file
@@ -55,7 +57,7 @@ if (user_dir / '.fivecentplots' / 'defaults.py').exists():
     sys.path = [str(user_dir / '.fivecentplots')] + sys.path
     from defaults import *  # noqa, use local file
 else:
-    from . themes.gray import *  # noqa
+    from fivecentplots.themes.gray import *  # noqa
 
 # install requirements for other packages beyond what is in setup.py
 global INSTALL
@@ -81,8 +83,9 @@ def bar(df, **kwargs):
         df (pandas.DataFrame): DataFrame containing data to plot
 
     Keyword Args:
-        x (str): x-axis column name [REQUIRED]
-        y (str): y-axis column name [REQUIRED]
+        REQUIRED:
+        x (str): x-axis column name
+        y (str): y-axis column name
         bar_align (str): If ‘center’ aligns center of bar to x-axis value; if ‘edge’ aligns the left edge of the bar to
           the x-axis value. Defaults to ‘center’ .
         bar_color_by|color_by (None, str): Color each bar differently based on a grouping criterion.
@@ -113,7 +116,7 @@ def bar(df, **kwargs):
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_bar.csv')
+        >>> df = fcp.get_test_data('fake_data_bar.csv')
         >>> fcp.bar(df, x='Liquid', y='pH', filter='Measurement=="A" & T [C]==25',
                     tick_labels_major_x_rotation=90)
 
@@ -130,7 +133,8 @@ def boxplot(df, **kwargs):
         df (pandas.DataFrame): DataFrame containing data to plot
 
     Keyword Args:
-        y (str): y-axis column name contining the box plot data [REQUIRED]
+        REQUIRED:
+        y (str): y-axis column name contining the box plot data
         BASIC:
         box_divider (bool): Toggle box divider visibility. Defaults to True. Example:
           https://endangeredoxen.github.io/fivecentplots/0.6.0/boxplot.html#Dividers
@@ -203,9 +207,9 @@ def boxplot(df, **kwargs):
         box_group_mean (bool): Toggle visibility of a line showing the mean of each data group on the plot. Defaults to
           False. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/boxplot.html#Group-Means
         box_group_mean_color|group_mean_color (str): Hex color string for the group mean line. Defaults to #555555.
-        box_group_mean_style|group_mean_style (str): Line style for the box group mean lines {‘-’, ‘--’, ‘-.’, ‘:’}.
+        box_group_means_style|group_mean_style (str): Line style for the box group mean lines {‘-’, ‘--’, ‘-.’, ‘:’}.
           Defaults to '-’.
-        box_group_mean_width|group_mean_width (float): Width of the group mean line in pixels. Defaults to 1.
+        box_group_means_width|group_mean_width (float): Width of the group mean line in pixels. Defaults to 1.
         box_stat_line (str): Set the statistic for the connecting line {‘mean’, ‘median’, ‘std’, ‘qXX’ [qunatile where
           XX is a number between 0-100]}. Defaults to mean. Example:
           https://endangeredoxen.github.io/fivecentplots/0.6.0/boxplot.html#Stat-line
@@ -248,7 +252,7 @@ def boxplot(df, **kwargs):
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+        >>> df = fcp.get_test_data('fake_data_box.csv')
         >>> fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'])
 
             .. figure:: ../_static/images/example_boxplot.png
@@ -263,9 +267,10 @@ def contour(df, **kwargs):
         df (DataFrame): DataFrame containing data to plot
 
     Keyword Args:
-        x (str): x-axis column name [REQUIRED]
-        y (str): y-axis column name [REQUIRED]
-        z (str): z-axis column name [REQUIRED]
+        REQUIRED:
+        x (str): x-axis column name
+        y (str): y-axis column name
+        z (str): z-axis column name
         BASIC:
         cmap (str): Name of a color map . Defaults to inferno. Example:
           https://endangeredoxen.github.io/fivecentplots/0.6.0/contour.html#Filled-contour
@@ -289,7 +294,7 @@ def contour(df, **kwargs):
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_contour.csv')
+        >>> df = fcp.get_test_data('fake_data_contour.csv')
         >>> fcp.contour(cc, x='X', y='Y', z='Value', cbar=True, cbar_size=40, xmin=-4, xmax=2, ymin=-4, ymax=2)
 
             .. figure:: ../_static/images/example_contour.png
@@ -311,10 +316,12 @@ def gantt(df, **kwargs):
         df (DataFrame): DataFrame containing data to plot
 
     Keyword Args:
-        x (list): two x-axis column names containing Datetime values [REQUIRED]
+        REQUIRED:
+        x (list): two x-axis column names containing Datetime values
             - 1) the start time for each item in the Gantt chart
             - 2) the stop time for each item in the Gantt chart
-        y (str): y-axis column name [REQUIRED]
+        y (str): y-axis column name
+        BASIC:
         gantt_color_by|color_by (None, str): Color grouping column. Defaults to 'bar'. Example:
           https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Styling
         gantt_edge_color (str): Hex color string for the edge of the Gantt bars. Defaults to fcp.DEFAULT_COLORS.
@@ -341,7 +348,7 @@ def gantt(df, **kwargs):
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_gantt.csv')
+        >>> df = fcp.get_test_data('fake_data_gantt.csv')
         >>> fcp.gantt(df, x=['Start', 'Stop'], y='Task', ax_size=[600, 400])
 
             .. figure:: ../_static/images/example_gantt.png
@@ -357,9 +364,10 @@ def heatmap(df, **kwargs):
         df (DataFrame): DataFrame containing data to plot
 
     Keyword Args:
-        x (str): x-axis column name [REQUIRED]
-        y (str): y-axis column name [REQUIRED]
-        z (str): z-axis column name [REQUIRED]
+        REQUIRED:
+        x (str): x-axis column name
+        y (str): y-axis column name
+        z (str): z-axis column name
         BASIC:
         cell_size (int): Width of a heatmap cell in pixels. Defaults to 60. Example:
           https://endangeredoxen.github.io/fivecentplots/0.6.0/heatmap.html#Cell-size
@@ -385,7 +393,7 @@ def heatmap(df, **kwargs):
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_heatmap.csv')
+        >>> df = fcp.get_test_data('fake_data_heatmap.csv')
         >>> fcp.heatmap(df, x='Category', y='Player', z='Average')
 
             .. figure:: ../_static/images/example_heatmap1.png
@@ -395,7 +403,7 @@ def heatmap(df, **kwargs):
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_contour.csv')
+        >>> df = fcp.get_test_data('fake_data_contour.csv')
         >>> fcp.heatmap(df, x='X', y='Y', z='Value', row='Batch', col='Experiment',
                         cbar=True, share_z=True, ax_size=[400, 400], data_labels=False,
                         label_rc_font_size=12, filter='Batch==103', cmap='viridis')
@@ -414,7 +422,9 @@ def hist(df, **kwargs):
             [when passing a numpy array it is automatically converted to a DataFrame]
 
     Keyword Args:
-        x (str): x-axis column name (i.e., the "value" column from which "counts" are calculated) [REQUIRED]
+        REQUIRED:
+        x (str): x-axis column name (i.e., the "value" column from which "counts" are calculated)
+        BASIC:
         bars (bool): Toggle between bars or a line plot for the counts (True=bars enabled, False=use line).  Defaults
           to True unless 2D image then False
         cdf (bool): Convert the histogram into a cumulative distribution plot. Defaults to False. Example:
@@ -460,7 +470,7 @@ def hist(df, **kwargs):
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+        >>> df = fcp.get_test_data('fake_data_box.csv')
         >>> fcp.hist(df, x='Value')
 
             .. figure:: ../_static/images/example_hist1.png
@@ -643,8 +653,10 @@ def pie(df, **kwargs):
         df (DataFrame): DataFrame containing data to plot
 
     Keyword Args:
-        x (str): x-axis column name with categorical data [REQUIRED]
-        y (str): y-axis column name with values [REQUIRED]
+        REQUIRED:
+        x (str): x-axis column name with categorical data
+        y (str): y-axis column name with values
+        BASIC:
         pie_colors|colors (str|list): Wedge fill colors. Defaults to fcp.DEFAULT_COLORS. Example:
           https://endangeredoxen.github.io/fivecentplots/0.6.0/pie.html#colors
         pie_counter_clock|counter_clock (bool): Places wedges in a counter-clockwise fashion. Defaults to False.
@@ -696,7 +708,7 @@ def pie(df, **kwargs):
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_bar.csv')
+        >>> df = fcp.get_test_data('fake_data_bar.csv')
         >>> df.loc[df.pH < 0, 'pH'] = -df.pH
         >>> fcp.pie(df, x='Liquid', y='pH', filter='Measurement=="A" & T [C]==25')
 
@@ -840,7 +852,7 @@ def plot(df, **kwargs):
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2')
 
@@ -870,7 +882,10 @@ def plot_bar(data, layout, ir, ic, df_rc, kwargs):
     if not kwargs.get('sort', True):
         xvals = df_rc[data.x[0]].unique()
     else:
-        xvals = np.sort(df_rc[data.x[0]].unique())
+        try:
+            xvals = np.sort(df_rc[data.x[0]].unique())
+        except TypeError:
+            xvals = np.sort(df_rc[data.x[0]].fillna('nan').unique())
 
     stacked = pd.DataFrame(index=xvals)
     ss = []
@@ -910,7 +925,7 @@ def plot_bar(data, layout, ir, ic, df_rc, kwargs):
             else:
                 legend_name = None
             layout.plot_xy(ir, ic, iline, dfrm, 'index', data.y[0], legend_name, False,
-                           line_type='rolling_mean')
+                           line_type='rolling_mean', data=data)
 
         if layout.bar.stacked:
             ss = stacked.groupby(stacked.index).sum(numeric_only=True)[stacked.columns[0]]
@@ -942,36 +957,47 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         col = dd.changes.columns
 
         # Plot the groups
+        df_indexed = df_rc.sort_values(by=dd.groups).set_index(dd.groups)
         for irow, row in dd.indices.iterrows():
-            gg = df_rc.set_index(dd.groups).sort_index()
-            if len(gg) > 1:
-                gg = gg.loc[tuple(row)]
+            with warnings.catch_warnings():
+                warnings.filterwarnings('ignore', message='.*lexsort depth.*')
+
+                # Use the pre-indexed dataframe
+                if len(df_indexed) > 1:
+                    key = tuple(row)
+                    if len(key) == 1:
+                        key = key[0]  # avoid ambiguous 1-tuple lookup on a single-level index
+                    gg = df_indexed.loc[key]
+                else:
+                    gg = df_indexed
+
             if isinstance(gg, pd.Series):
                 gg = pd.DataFrame(gg).T
             else:
                 gg = gg.reset_index()
+
             temp = gg[dd.y].dropna()
             temp['x'] = irow + 1
-            data += [temp]
+            data.append(temp)
             ss = str(layout.box_stat_line.stat).lower()
             if ss == 'median':
-                stats += [temp.median().iloc[0]]
+                stats.append(temp.median().iloc[0])
             elif ss == 'std':
                 stats += [temp.std().iloc[0]]
             elif 'q' in ss:
                 if float(ss.strip('q')) < 1:
-                    stats += [temp.quantile(float(ss.strip('q'))).iloc[0]]
+                    stats.append(temp.quantile(float(ss.strip('q'))).iloc[0])
                 else:
-                    stats += [temp.quantile(float(ss.strip('q')) / 100).iloc[0]]
+                    stats.append(temp.quantile(float(ss.strip('q')) / 100).iloc[0])
             else:
-                stats += [temp.mean().iloc[0]]
+                stats.append(temp.mean().iloc[0])
             row = [str(f) for f in row]
-            labels += ['']
+            labels.append('')
 
-            if len(dd.changes.columns) > 1 and \
-                    dd.changes[col[0]].iloc[irow] == 1 \
-                    and len(kwargs['groups']) > 1:
-                dividers += [irow + 0.5]
+            if (len(dd.changes.columns) > 1
+                    and dd.changes[col[0]].iloc[irow] == 1
+                    and len(kwargs['groups']) > 1):
+                dividers.append(irow + 0.5)
 
             # Plot points
             if not (layout.violin.on and not layout.violin.markers) and layout.markers.on:
@@ -980,10 +1006,10 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                         points = gg.loc[gg[dd.legend] == jrow['names']][dd.y].dropna()
                         points['x'] = irow + 1
                         if len(points) > 0:
-                            layout.plot_xy(ir, ic, jj, points, 'x', dd.y[0], jrow['names'], False, zorder=10)
+                            layout.plot_xy(ir, ic, jj, points, 'x', dd.y[0], jrow['names'], False, zorder=10, data=data)
                 else:
                     if len(temp) > 0:
-                        layout.plot_xy(ir, ic, irow, temp, 'x', dd.y[0], None, False, zorder=10)
+                        layout.plot_xy(ir, ic, irow, temp, 'x', dd.y[0], None, False, zorder=10, data=data)
 
             # plot mean diamonds
             if layout.box_mean_diamonds.on:
@@ -1006,9 +1032,9 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         if isinstance(dd.legend_vals, pd.DataFrame):
             for jj, jrow in dd.legend_vals.iterrows():
                 temp = data[0].loc[df_rc[dd.legend] == jrow['names']].index
-                layout.plot_xy(ir, ic, jj, data[0].loc[temp], 'x', dd.y[0], jrow['names'], False, zorder=10)
+                layout.plot_xy(ir, ic, jj, data[0].loc[temp], 'x', dd.y[0], jrow['names'], False, zorder=10, data=data)
         else:
-            layout.plot_xy(ir, ic, 0, data[0], 'x', dd.y[0], None, False, zorder=10)
+            layout.plot_xy(ir, ic, 0, data[0], 'x', dd.y[0], None, False, zorder=10, data=data)
 
     # Remove lowest divider
     dividers = [f for f in dividers if f > 0.5]
@@ -1173,7 +1199,8 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
             leg_name = 'Fit'
     else:
         leg_name = None
-    layout.plot_xy(ir, ic, iline, df, f'{x} Fit', f'{y} Fit', leg_name, twin, line_type='fit', marker_disable=True)
+    layout.plot_xy(ir, ic, iline, df, f'{x} Fit', f'{y} Fit', leg_name, twin, line_type='fit',
+                   marker_disable=True, data=data)
 
     if layout.fit.eqn:
         eqn = 'y='
@@ -1221,12 +1248,12 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
     elif layout.gantt.order_by_legend and data.legend is not None and \
             layout.gantt.workstreams.on and \
             layout.gantt.workstreams.location == 'inline':
-        df_rc = df_rc.sort_values([layout.gantt.workstreams.column, '_is_workstream', data.x[0]],
+        df_rc = df_rc.sort_values([layout.gantt.workstreams.column, '_is_workstream', data.x[0], data.y[0]],
                                   ascending=ascending)
     elif layout.gantt.order_by_legend and data.legend is not None and layout.gantt.workstreams.on:
-        df_rc = df_rc.sort_values([layout.gantt.workstreams.column, data.x[0]], ascending=ascending)
+        df_rc = df_rc.sort_values([layout.gantt.workstreams.column, data.x[0], data.y[0]], ascending=ascending)
     else:
-        df_rc = df_rc.sort_values(data.x[0], ascending=ascending)
+        df_rc = df_rc.sort_values([data.x[0], data.y[0]], ascending=ascending)
 
     # Update df and legend_vals with a custom order for workstreams
     if layout.gantt.workstreams.on:
@@ -1262,12 +1289,21 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
     if layout.gantt.bar_labels is not None:
         # Bar labels can have data from multiple columns; store as tuple with text string and boolean for
         # whether or not the entry has a dependency
-        if layout.gantt.milestone in df_rc.columns:
-            vals = df_rc.loc[df_rc[layout.gantt.milestone].isna(), layout.gantt.bar_labels.columns].values
-        else:
-            sub = df_rc[data.y + layout.gantt.bar_labels.columns].drop_duplicates(keep='first')
+        # Also, filter out workstream labels
+        if layout.gantt.milestone in df_rc.columns \
+                and layout.gantt.workstreams.on \
+                and layout.gantt.workstreams.location == 'inline':
+            sub = df_rc.loc[df_rc[layout.gantt.milestone].isna(), layout.gantt.bar_labels.columns + ['_is_workstream']]
+            sub = sub.astype(str)
+            sub = sub.loc[sub['_is_workstream'] == '1', layout.gantt.bar_labels.columns] = ''
             vals = sub[layout.gantt.bar_labels.columns].values
-        bar_labels = [' | '. join(f) for f in vals]
+        elif layout.gantt.milestone in df_rc.columns:
+            sub = df_rc.loc[df_rc[layout.gantt.milestone].isna(), layout.gantt.bar_labels.columns].astype(str)
+            vals = sub.values
+        else:
+            sub = df_rc[layout.gantt.bar_labels.columns].drop_duplicates(keep='first').astype(str)
+            vals = sub.values
+        bar_labels = [' | '. join(f) if all(f != '') else '' for f in vals]
 
     # Update the x-axis ranges (preserve user-defined xmax even if it cuts off labels)
     user_xmax = True if data.xmax[utl.plot_num(ir, ic, layout.ncol)] is not None else False
@@ -1278,9 +1314,14 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
         new_xmax = layout.plot_gantt(ir, ic, iline, df, data.x, y, leg_name, xvals, yvals, bar_labels, ngroups, data)
 
         # If xmax not explicitly set by user, update the xmax range to accomodate size of long labels
-        if not user_xmax and np.datetime64(new_xmax) > np.datetime64(data.ranges['xmax'][ir, ic]):
-            data.ranges['xmax'][ir, ic] = np.datetime64(new_xmax)
-            layout.set_axes_ranges(ir, ic, {k: data.ranges[k] for k in ['xmin' 'xmax'] if k in data.ranges})
+        if layout.gantt.relative_dates:
+            if not user_xmax and new_xmax > data.ranges['xmax'][ir, ic]:
+                data.ranges['xmax'][ir, ic] = new_xmax
+                layout.set_axes_ranges(ir, ic, {k: data.ranges[k] for k in ['xmin', 'xmax'] if k in data.ranges})
+        else:
+            if not user_xmax and np.datetime64(new_xmax) > np.datetime64(pd.to_datetime(data.ranges['xmax'][ir, ic])):
+                data.ranges['xmax'][ir, ic] = np.datetime64(new_xmax)
+                layout.set_axes_ranges(ir, ic, {k: data.ranges[k] for k in ['xmin', 'xmax'] if k in data.ranges})
 
     # Connect dependencies with arrows
     if layout.gantt.dependencies in df_rc.columns:
@@ -1296,9 +1337,12 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
             if not isinstance(row[layout.gantt.dependencies], list):
                 continue
             for dep in row[layout.gantt.dependencies]:
+                # If dep is a row number, get the corresponding value from the y column
+                if dep.isdigit():
+                    dep = df_deps.loc[int(dep), data.y[0]]
                 # Try dependency column first, then milestone column
                 sub = df_deps.loc[(df_deps[data.y[0]] == dep)]
-                if len(sub) == 0:
+                if len(sub) == 0 and data.milestone in df_deps.columns:
                     sub = df_deps.loc[(df_deps[data.milestone] == dep)]
                 if len(sub) == 0:
                     continue
@@ -1374,6 +1418,8 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
 
     # Add today line
     if layout.gantt.today.on:
+        if layout.gantt.relative_dates:
+            layout.gantt.today.date = (layout.gantt.today.date - data.time0) / datetime.timedelta(days=1)
         layout.plot_gantt_today(ir, ic)
 
     return data
@@ -1525,9 +1571,8 @@ def plot_ref(ir, ic, iline, data, layout, df, x, y):
         return
 
     for iref in range(0, len(layout.ref_line.column.values)):
-        layout.plot_xy(ir, ic, iref, df, x, layout.ref_line.column[iref],
-                       layout.ref_line.legend_text[iref], False,
-                       line_type='ref_line', marker_disable=True)
+        layout.plot_xy(ir, ic, iref, df, x, layout.ref_line.column[iref], layout.ref_line.legend_text[iref], False,
+                       line_type='ref_line', marker_disable=True, data=data)
         layout.legend.ordered_curves = layout.legend.ordered_curves[0:-1]
 
     return data
@@ -1544,7 +1589,7 @@ def plot_stat(ir, ic, iline, data, layout, df, x, y, leg_name=None, twin=False):
         return
 
     layout.lines.on = True
-    layout.plot_xy(ir, ic, iline, df_stat, x, y, leg_name, twin, marker_disable=True)
+    layout.plot_xy(ir, ic, iline, df_stat, x, y, leg_name, twin, marker_disable=True, data=data)
 
     return data
 
@@ -1570,11 +1615,11 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
             pass
         elif kwargs.get('groups', False):
             for nn, gg in df.groupby(utl.validate_list(kwargs['groups']), sort=data.sort):
-                layout.plot_xy(ir, ic, iline, gg, x, y, leg_name, twin)
+                layout.plot_xy(ir, ic, iline, gg, x, y, leg_name, twin, data=data)
                 plot_fit(data, layout, ir, ic, iline, gg,
                          x, y, twin, leg_name, ngroups)
         else:
-            layout.plot_xy(ir, ic, iline, df, x, y, leg_name, twin)
+            layout.plot_xy(ir, ic, iline, df, x, y, leg_name, twin, data=data)
             plot_fit(data, layout, ir, ic, iline, df,
                      x, y, twin, leg_name, ngroups)
 
@@ -1669,12 +1714,13 @@ def plotter(dobj, **kwargs):
             if len(df_rc) == 0:
                 if dd.wrap is None:
                     layout.set_axes_rc_labels(ir, ic)
-                layout.axes.obj[ir, ic].axis('off')
                 layout.axes.visible[ir, ic] = False
-                if layout.axes2.obj[ir, ic] is not None:
-                    layout.axes2.obj[ir, ic].axis('off')
+                if layout.engine == 'mpl':  # make a new base class funciton to handle this and just pass if not needed
+                    layout.axes.obj[ir, ic].axis('off')
+                    if layout.axes2.obj[ir, ic] is not None:
+                        layout.axes2.obj[ir, ic].axis('off')
                 continue
-                kwargs['timer'].get(f'ifig={ifig} | turn off empty subplots')
+            kwargs['timer'].get(f'ifig={ifig} | turn off empty subplots')
 
             # Set the axes colors
             layout.set_axes_colors(ir, ic)
@@ -1919,7 +1965,7 @@ def axes():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], legend=['Die', 'Substrate'],
                      col='Boost Level', twin_x=True,
                      share_y=False, share_y2=False, share_x=True,
@@ -1948,7 +1994,7 @@ def cbar():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_contour.csv')
+        >>> df = fcp.get_test_data('fake_data_contour.csv')
         >>> fcp.contour(cc, x='X', y='Y', z='Value', cbar=True, cbar_size=20, xmin=-4, xmax=2, ymin=-4, ymax=2)
 
             .. figure:: ../_static/images/example_cbar.png
@@ -1975,7 +2021,7 @@ def figure():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      fig_edge_color='#000000', fig_edge_width=3, fig_edge_alpha=0.5,
@@ -2082,7 +2128,7 @@ def gridlines():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', lines=False, ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      grid_major_x_style='--', grid_major_y_color='#00EE00',
@@ -2117,7 +2163,7 @@ def grouping():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', col='Die', row='Substrate',
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost  Level==0.2', ax_size=[300, 250])
 
@@ -2129,7 +2175,7 @@ def grouping():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', wrap=['Die', 'Substrate'],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost  Level==0.2', ax_size=[300, 250])
 
@@ -2141,7 +2187,7 @@ def grouping():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, y='Value', groups=['Batch', 'Sample'])
 
             .. figure:: ../_static/images/example_grouping3.png
@@ -2233,7 +2279,7 @@ def labels():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', col='Die', row='Substrate',
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2', ax_size=[300, 250],
                      label_rc_edge_color='#000000', label_rc_edge_width=2,
@@ -2272,7 +2318,7 @@ def legend():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2', ax_size=[400, 300],
                      legend_edge_color='#555555', legend_edge_width=2, legend_font_size=10,
@@ -2306,7 +2352,7 @@ def lines():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      line_color='#000000', line_width=2)
@@ -2318,7 +2364,7 @@ def lines():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      line_color=['#AA00AA', '#00AA00', '#0000AA'],  line_width=2, line_style=['-', '--'])
@@ -2330,7 +2376,7 @@ def lines():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      cmap='viridis', lines_alpha=0.7)
@@ -2342,7 +2388,7 @@ def lines():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      lines=False)
@@ -2376,7 +2422,7 @@ def markers():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      markers=False)
@@ -2388,7 +2434,7 @@ def markers():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      marker_size=10, marker_edge_width=2, marker_fill=True)
@@ -2400,7 +2446,7 @@ def markers():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      markers=['o', None, '+', '*', 'B', None], marker_edge_color=[3, 0, 6, 1, '#FF0000'])
@@ -2551,7 +2597,7 @@ def tick_labels():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      tick_labels_major_x_font_color='#FF0000', tick_labels_major_x_font_style='italic',
@@ -2673,7 +2719,7 @@ def ticks():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2')
 
@@ -2684,7 +2730,7 @@ def ticks():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      ticks_major_increment=0.1,
@@ -2722,7 +2768,7 @@ def titles():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
                      title='Vaxis III', title_edge_alpha=0.5, title_edge_color='#333333',
@@ -2765,7 +2811,7 @@ def ws():
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'test_data' / 'fake_data.csv')
+        >>> df = fcp.get_test_data('fake_data.csv')
         >>> fcp.plot(df, x='Voltage', y='I [A]', row='Die', col='Substrate', ax_size=[400, 300],
                      filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2', save=True,
                      fig_edge_color='#000000',

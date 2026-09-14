@@ -31,7 +31,7 @@ else:
     REFERENCE = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 
 # Sample data
-df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+df = fcp.get_test_data('fake_data_box.csv')
 img_patch = imageio.imread(Path(fcp.__file__).parent / 'test_data/hist_patch.png')
 raw = imageio.imread(Path(fcp.__file__).parent / 'test_data/RAW.png')
 img_cat_orig = imageio.imread(Path(fcp.__file__).parent / 'test_data/imshow_cat_pirate.png')
@@ -295,12 +295,25 @@ def plt_kde(bm=False, make_reference=False, show=False):
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
+def plt_kde_bars(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('kde_bars', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.hist(df, x='Value', show=SHOW, legend='Region', kde=True, kde_width=2, bars=True,
+             inline=False, save=not bm, filename=name.with_suffix('.png'))
+
+    if bm:
+        return
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
 def plt_kde_horizontal(bm=False, make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('kde_horizontal', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.hist(df, x='Value', show=SHOW, legend='Region', kde=True, kde_width=2,
+    fcp.hist(df, x='Value', show=SHOW, legend='Region', kde=True, kde_width=2, bars=True,
              inline=False, save=not bm, filename=name.with_suffix('.png'), horizontal=True,)
 
     if bm:

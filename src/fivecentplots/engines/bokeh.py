@@ -1,14 +1,14 @@
 import pandas as pd
-import pdb
 import numpy as np
-from .. import utilities as utl
-from . layout import LOGX, LOGY, BaseLayout, RepeatedList, Element
-from .. import data
+from fivecentplots import utilities as utl
+from fivecentplots.engines.layout import LOGX, LOGY, BaseLayout, RepeatedList, Element
+from fivecentplots import data
 import warnings
 import bokeh.plotting as bp
 import bokeh.layouts as bl
 import bokeh.models as bm
 import bokeh.io.state as bs
+import pdb
 
 
 def custom_formatwarning(msg, *args, **kwargs):

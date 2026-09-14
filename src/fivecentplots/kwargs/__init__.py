@@ -1,1 +1,1 @@
-from . import keywords  # noqa
+from fivecentplots.kwargs import keywords  # noqa

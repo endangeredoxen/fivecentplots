@@ -176,3 +176,32 @@ div.version {
     border-radius: 3px;
     font-family: arial;
 }
+.sig-object{
+   display: table;
+   margin: 6px 0;
+   font-family: 'Lato', sans-serif;
+   font-size: 15px;
+   font-style: italic;
+   line-height: normal;
+   background: #2a313d;
+   color: #eeeeee;
+   border-top: 3px solid #9ca4af;
+   padding: 6px;
+   position: relative;
+   width: 100%;
+}
+.sig-name{
+   font-size: 1em;
+}
+.hr_api{
+   border: 0;
+   border-top: 2px solid #48566b;
+}
+dt.field-even{
+   margin-top: 10px !important;
+}
+p.rubric {
+   background-color: var(--pst-color-surface);
+   padding-left: 0.5em;
+   border: 0px;
+}

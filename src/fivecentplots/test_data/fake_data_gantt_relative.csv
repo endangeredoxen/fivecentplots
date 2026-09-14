@@ -1,0 +1,7 @@
+Task,Assigned,Start,Category,Duration,Dependency
+Record drums,Taylor,0,Recording,3w,
+Record bass,Nate,,Recording,2w,
+Record rhythm guitar,Pat,,Recording,2w,1
+Record rhythm guitar,Dave,,Recording,3w,
+Record lead guitar,Chris,,Recording,1w,3
+Production,Butch,,Post,4w,

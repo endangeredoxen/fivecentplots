@@ -46,10 +46,11 @@ extensions = [
     'sphinx_copybutton',
     'sphinx_design',
     'nbsphinx',
+    'sphinx.ext.napoleon'
     # 'sphinxcontrib.spelling'
 ]
 
-#napoleon_custom_sections = [('Required', 'params_style')]#[('Required Keyword Args', 'params_style'), ('Optional Keyword Args', 'params_style')]
+# napoleon_custom_sections = [('Required', 'params_style'), ('Examples', 'returns_style')]#[('Required Keyword Args', 'params_style'), ('Optional Keyword Args', 'params_style')]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

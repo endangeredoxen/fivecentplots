@@ -1,7 +1,6 @@
 import pytest
 import imageio.v3 as imageio
 import fivecentplots as fcp
-import pandas as pd
 import os
 import sys
 import pdb
@@ -29,7 +28,7 @@ else:
     REFERENCE = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 
 # Sample data
-df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_heatmap.csv')
+df = fcp.get_test_data('fake_data_heatmap.csv')
 img_cat = utl.img_grayscale_deprecated(imageio.imread(Path(fcp.__file__).parent / 'test_data/imshow_cat_pirate.png'))
 
 # Set theme
@@ -100,7 +99,7 @@ def plt_cat_non_uniform(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('cat_non-uniform', make_reference, REFERENCE)
 
     # Make the plot
-    df2 = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_contour.csv')
+    df2 = fcp.get_test_data('fake_data_contour.csv')
     fcp.heatmap(df2, x='X', y='Y', z='Value', row='Batch', col='Experiment',
                 cbar=True, show=SHOW, share_z=True, ax_size=[400, 400],
                 data_labels=False, label_rc_font_size=12, filter='Batch==103', cmap='viridis',

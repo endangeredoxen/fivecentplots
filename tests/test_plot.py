@@ -27,9 +27,11 @@ else:
     REFERENCE = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 
 # Sample data
-df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data.csv')
-df_interval = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_interval.csv')
-ts = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_ts.csv')
+df = fcp.get_test_data('fake_data.csv')
+df_interval = fcp.get_test_data('fake_data_interval.csv')
+ts = fcp.get_test_data('fake_ts.csv')
+city = fcp.get_test_data('real_data_population')
+
 
 # Set theme
 fcp.set_theme('gray_original')
@@ -766,6 +768,21 @@ def plt_row_x_column_sep_labels(bm=False, make_reference=False, show=False):
 
     if not show:
         utl.unit_test_measure_axes_cols(name, 375, 227, 3)
+
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_scatter_background_image(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('scatter_background_image', make_reference, REFERENCE)
+    fcp.plot(city, x='Longitude', y='Latitude', marker_size='Size', lines=False, show=SHOW, legend='City',
+             marker_type='o', marker_edge_width=2, ax_background=str(Path(fcp.__file__).parent / 'test_data/map.png'),
+             xmin=-180, xmax=180, ymin=-90, ymax=90, ax_size=[1600, 800], grid_minor=True, grid_major_alpha=0.5,
+             grid_minor_alpha=0.4, background_alpha=0.8, title='World City Population Bubble Chart',
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
+
+    if bm:
+        return
 
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 

@@ -1,7 +1,7 @@
-from . import data
+from fivecentplots import data
 import pdb
 import pandas as pd
-from .. import utilities
+from fivecentplots import utilities
 import numpy.typing as npt
 from typing import Union
 utl = utilities
@@ -31,6 +31,8 @@ class Bar(data.Data):
             if 'xmax' in kwargs:
                 kwargs['ymax'] = kwargs['xmax']
                 kwargs.pop('xmax')
+            x, y = kwargs.get('x'), kwargs.get('y')
+            kwargs['x'], kwargs['y'] = y, x
         else:
             if 'xmin' in kwargs or 'xmin' in kwargs:
                 raise data.RangeError('x-limits not allowed for bar plot!')
@@ -115,7 +117,13 @@ class Bar(data.Data):
         vmin, vmax = data.Data._get_data_range(self, ax, data_set, plot_num)
 
         # Set ymin = 0 unless data or user require a negative value
-        if ax == 'y' and vmin < 0 and data_set[self.y].values.min() >= 0 and self.ymin[plot_num] is None:
-            vmin = 0
+        try:
+            if ax == 'y' and data_set[self.y].values.min() >= 0 and self.ymin[plot_num] is None:
+                vmin = 0
+        except KeyError:
+            if self.horizontal:
+                raise data.DataError('x and y columns should be swapped for horizontal bar plots')
+            else:
+                data_set[self.y]
 
         return vmin, vmax

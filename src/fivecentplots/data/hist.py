@@ -1,9 +1,9 @@
-from . import data
+from fivecentplots import data
 import pdb
 import pandas as pd
 import numpy as np
 import numpy.typing as npt
-from .. import utilities
+from fivecentplots import utilities
 from typing import List, Union
 utl = utilities
 db = pdb.set_trace
@@ -128,36 +128,25 @@ class Histogram(data.Data):
                                     kwargs.get('horizontal', False))
         self.warning_speed = False
 
-        # cdf/pdf option (if conflict, prefer cdf)
+        # other options
+        opts = ['cdf', 'pdf', 'kde']
+        if sum(name in kwargs for name in opts) > 1:
+            if 'cdf' in kwargs and 'pdf' in kwargs:
+                raise data.DataError('Cannot use both cdf and pdf options at the same time')
+            elif 'kde' in kwargs:
+                raise data.DataError('Cannot use kde with cdf or pdf plots')
         self.cdf = utl.kwget(kwargs, self.fcpp, ['cdf'], kwargs.get('cdf', False))
-        if not self.cdf:
-            self.pdf = utl.kwget(kwargs, self.fcpp, ['pdf'], kwargs.get('pdf', False))
-        else:
-            self.pdf = False
+        self.kde = utl.kwget(kwargs, self.fcpp, ['kde', 'hist_kde'], kwargs.get('kde', False))
+        if self.kde:
+            # update the default
+            self.bars = utl.kwget(kwargs, self.fcpp, 'bars', kwargs.get('bars', False))
+        self.pdf = utl.kwget(kwargs, self.fcpp, ['pdf'], kwargs.get('pdf', False))
         if (self.cdf or self.pdf) and kwargs.get('preset') == 'HIST':
             self.ax_scale = 'lin'
 
         # Toggle bars vs lines
-        if not self.bars or self.cdf or self.pdf:
+        if (self.kde and not self.bars) or not self.bars or self.cdf or self.pdf:
             self.switch_to_xy_plot(kwargs)
-
-    def _calc_distribution(self, counts: npt.NDArray[int]) -> npt.NDArray[int]:
-        """
-        Compute cdf or pdf calculations
-
-        Args:
-            array of bin counts
-
-        Return:
-            cumsum of counts
-        """
-        if self.cdf:
-            pdf = counts / sum(counts)
-            counts = np.cumsum(pdf)
-        elif self.pdf:
-            counts = counts / sum(counts)
-
-        return counts
 
     def _calc_histograms(self, ir: int, ic: int, data_set: Union[pd.DataFrame, npt.NDArray]) -> List[npt.NDArray]:
         """Calculate the histogram data for one data set.
@@ -181,7 +170,7 @@ class Histogram(data.Data):
 
         # Calculate the histogram counts
         if self.bins == 0 and data_set.dtype not in [float, np.float16, np.float32, np.float64]:
-            # If no bins defined, assume a bin size of 1 unit and use np.bincount for better speed
+            # If no bins defined, assume a bin size of 1 unit and use np.bincount for improved speed
             data_set = data_set.astype(int)
             offset = data_set.min() if data_set.min() < 0 else 0  # bincount requires positives only
             vals = np.arange(offset, data_set.max() + 1)
@@ -266,7 +255,7 @@ class Histogram(data.Data):
 
         # cdf or pdf
         if self.cdf:
-            counts = self._calc_distribution(counts)
+            counts = utl.calc_distribution(counts, 'cdf')
 
             # Fill to max x-range
             if self.imgs is None:
@@ -276,6 +265,10 @@ class Histogram(data.Data):
                 xmax = max([f.max() for f in self.imgs.values()])
             vals = np.append(vals, xmax)
             counts = np.append(counts, 1)
+
+        elif self.pdf:
+            # Think there was an error here... check the math
+            counts = utl.calc_distribution(counts, 'pdf')
 
         return counts, vals
 
@@ -335,19 +328,13 @@ class Histogram(data.Data):
         if len(df) == 0:
             return df
 
-        if self.imgs is None and self.name == 'xy':
-            counts, vals = self._calc_histograms(ir, ic, df[self.x[0]])
-            df_sub = pd.DataFrame({self.x[0]: vals, self.y[0]: counts})
-            for group in self._groupers:
-                df_sub[group] = df[group].iloc[0]
-
-            return df_sub
-
-        elif self.imgs is None:
+        # Non-image histograms with bars
+        if self.imgs is None and self.name == 'hist':
             return data.Data._subset_modify(self, ir, ic, df)
 
-        else:
-            if self.legend is None:
+        # No legends
+        if self.legend is None:
+            if self.imgs is not None:
                 subset_dict = {key: value for key, value in self.imgs.items() if key in list(df.index)}
                 if len(subset_dict) > 0:
                     counts, vals = self._calc_histograms(ir, ic, np.concatenate(list(subset_dict.values()), 1))
@@ -355,9 +342,16 @@ class Histogram(data.Data):
                     return df_sub
                 else:
                     return pd.DataFrame()  # is this enough?
-
+            elif self.kde:
+                return utl.calc_kde(df[self.x[0]])
             else:
-                df_sub = []
+                counts, vals = self._calc_histograms(ir, ic, df[self.x[0]])
+                return pd.DataFrame({self.x[0]: vals, self.y[0]: counts})
+
+        # With legends
+        else:
+            df_sub = []
+            if self.imgs is not None:
                 for iline, row in self.legend_vals.iterrows():
                     idx = list(df.loc[df[self.legend] == row.Leg].index)
                     subset_dict = {key: value for key, value in self.imgs.items() if key in idx}
@@ -368,7 +362,19 @@ class Histogram(data.Data):
                     temp = pd.DataFrame({self.x[0]: vals, self.y[0]: counts})
                     temp[self.legend] = row.Leg
                     df_sub += [temp]
-                return pd.concat(df_sub)
+            elif self.kde:
+                for iline, row in self.legend_vals.iterrows():
+                    temp = df.loc[df[self.legend] == row.Leg]
+                    temp = utl.calc_kde(temp[self.x[0]])
+                    temp[self.legend] = row.Leg
+                    df_sub += [temp]
+            else:
+                for iline, row in self.legend_vals.iterrows():
+                    temp = df.loc[df[self.legend] == row.Leg]
+                    counts, vals = self._calc_histograms(ir, ic, temp[self.x[0]])
+                    temp = pd.DataFrame({self.x[0]: vals, self.y[0]: counts, self.legend: row.Leg})
+                    df_sub += [temp]
+            return pd.concat(df_sub)
 
     def _subset_wrap(self, ir: int, ic: int) -> pd.DataFrame:
         """For wrap plots, select the revelant subset from self.df_fig.  Subclassed to deal with missing hist column
@@ -411,6 +417,8 @@ class Histogram(data.Data):
             kwargs: user-defined keyword args
         """
         self.name = 'xy'
+        if self.kde:
+            self.y = ['Density']
         if self.cdf:
             self.y = ['Cumulative Probability']
         if self.pdf:

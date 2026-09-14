@@ -1,5 +1,4 @@
 import fivecentplots as fcp
-import pandas as pd
 import os
 import sys
 import pdb
@@ -26,7 +25,8 @@ elif Path('tests/test_images').exists():
 else:
     REFERENCE = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 
-df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data.csv')
+df = fcp.get_test_data('fake_data.csv')
+city = fcp.get_test_data('real_data_population')
 
 
 # Set theme
@@ -136,7 +136,7 @@ def test_hist(make_reference=False, show=False):
     name = utl.unit_test_get_img_name('hist', make_reference, REFERENCE)
 
     # Make the plot
-    df_hist = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+    df_hist = fcp.get_test_data('fake_data_box.csv')
     fcp.hist(df_hist, x='Value', show=SHOW, legend='Region', hist_fill_alpha=1, filename=name.with_suffix('.png'))
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
@@ -146,7 +146,7 @@ def test_hist_color(make_reference=False, show=False):
     name = utl.unit_test_get_img_name('hist_color', make_reference, REFERENCE)
 
     # Make the plot
-    df_hist = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+    df_hist = fcp.get_test_data('fake_data_box.csv')
     fcp.hist(df_hist, x='Value', show=SHOW, legend='Region', hist_fill_alpha=1,
              colors=['#FF0000', '#00FF11'],
              filename=name.with_suffix('.png'))
@@ -244,7 +244,7 @@ def test_marker_boxplot(make_reference=False, show=False):
     name = utl.unit_test_get_img_name('boxplot', make_reference, REFERENCE)
 
     # Make the plot
-    df_box = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+    df_box = fcp.get_test_data('fake_data_box.csv')
     fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], show=SHOW,
                 box_fill_color=[0, 0, 1, 1, 2, 2], box_fill_alpha=0.3, box_edge_width=0,
                 marker_edge_color=[0, 0, 1, 1, 2, 2], marker_type=['o', '+'],
@@ -258,7 +258,7 @@ def test_marker_boxplot2(make_reference=False, show=False):
     name = utl.unit_test_get_img_name('boxplot2', make_reference, REFERENCE)
 
     # Make the plot
-    df_box = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+    df_box = fcp.get_test_data('fake_data_box.csv')
     fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], show=SHOW,
                 box_marker_edge_color=[0, 0, 1, 1, 2, 2], marker_size=10,
                 box_whisker_color=[0, 0, 1, 1, 2, 2], box_whisker_width=1, jitter=False,
@@ -274,12 +274,44 @@ def test_marker_boxplot3(make_reference=False, show=False):
 
     # Make the plot
     fcp.set_theme('_test', verbose=True)
-    df_box = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+    df_box = fcp.get_test_data('fake_data_box.csv')
     fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], show=SHOW,
                 marker_size=10, box_whisker_color=[0, 0, 1, 1, 2, 2], box_whisker_width=1, jitter=False,
                 box_marker_edge_alpha=0.6, box_marker_fill_alpha=1, box_marker_type=['+'], verbose=True,
                 filename=name.with_suffix('.png'))
     fcp.set_theme('gray_original', verbose=True)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_marker_color_by_column(make_reference=False, show=False):
+
+    # Make a size column in the data set for marker size and also use for marker color
+    city = fcp.get_test_data('real_data_population')
+    city['Size'] = \
+        2 + (city.Population - city.Population.min()) / (city.Population.max() - city.Population.min()) * (25 - 2)
+
+    # Shuffle the dataset so it is not ordered
+    city_shuffled_index = \
+        [25, 13, 21, 18, 22, 17, 19, 10, 7, 8, 12, 4, 5, 9, 16, 0, 3, 23, 14, 6, 24, 11, 2, 26, 15, 20, 1]
+    city_shuffled = city.reindex(city_shuffled_index).reset_index()
+
+    # Case 1:  no fill, default color list
+    name = utl.unit_test_get_img_name('marker_color_by_column_no_fill_default_colors', make_reference, REFERENCE)
+    fcp.plot(city_shuffled, x='Latitude', y='Longitude', marker_size='Size', lines=False, show=SHOW,
+             marker_edge_color='Size', filename=name.with_suffix('.png'), inline=False)
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+    # Case 2:  filled, default color list
+    name = utl.unit_test_get_img_name('marker_color_by_column_filled_default_colors', make_reference, REFERENCE)
+    fcp.plot(city_shuffled, x='Latitude', y='Longitude', marker_size='Size', lines=False, show=SHOW,
+             marker_edge_color='Size', marker_filled=True, filename=name.with_suffix('.png'), inline=False)
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+    # Case 3:  filled with colormap
+    name = utl.unit_test_get_img_name('marker_color_by_column_filled_colormap', make_reference, REFERENCE)
+    fcp.plot(city_shuffled, x='Latitude', y='Longitude', marker_size='Size', lines=False, show=SHOW, cmap='Blues',
+             marker_edge_color='Size', marker_filled=True, filename=name.with_suffix('.png'), inline=False)
+
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
@@ -364,6 +396,23 @@ def test_marker_size(make_reference=False, show=False):
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              marker_size=2,
              filename=name.with_suffix('.png'))
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_marker_size_by_column(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('marker_size_by_column', make_reference, REFERENCE)
+
+    # Make a size column in the data set for marker size
+    city['Size'] = \
+        2 + (city.Population - city.Population.min()) / (city.Population.max() - city.Population.min()) * (25 - 2)
+
+    fcp.plot(city, x='Latitude', y='Longitude', marker_size='Size', lines=False, show=SHOW, legend='City',
+             marker_type='o', filename=name.with_suffix('.png'), inline=False)
+
+    if not show:
+        utl.unit_test_measure_margin(name, 150, 400, bottom=268, alias=True)
+
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 

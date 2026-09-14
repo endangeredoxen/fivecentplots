@@ -1,7 +1,8 @@
-from . import data
+from fivecentplots import data
 import pdb
 import pandas as pd
 import numpy as np
+import datetime
 try:
     from pandas.tseries.offset import BusinessDay
     from pandas.tseries.offset import DateOffset
@@ -11,7 +12,7 @@ except ImportError:
     from pandas.tseries.offsets import DateOffset
     from pandas.tseries.offsets import CustomBusinessDay
 from pandas.tseries.holiday import USFederalHolidayCalendar
-from .. import utilities
+from fivecentplots import utilities
 utl = utilities
 db = pdb.set_trace
 NULLS = [None, np.nan, 'nan', pd.NaT, 'NaT', 'N/A', 'n/a', 'Nan', 'NAN', 'NaN', 'None', '']
@@ -40,35 +41,82 @@ class Gantt(data.Data):
         self.workstreams = utl.kwget(kwargs, self.fcpp, ['gantt_workstreams', 'workstreams'], None)
         if self.workstreams is not None and 'legend' not in kwargs:
             self.legend = self.workstreams
+        elif self.workstreams is not None:
+            self.cols_all += [self.workstreams]
         inline = utl.kwget(kwargs, self.fcpp, ['gantt_workstreams_location', 'workstreams_location'], 'left')
         if inline == 'inline':
             self.workstreams_inline = True
         else:
             self.workstreams_inline = False
         self.show_all = utl.kwget(kwargs, self.fcpp, ['gantt_show_all', 'show_all'], False)
-        self.duration = utl.kwget(kwargs, self.fcpp, ['gantt_duration', 'duration'], 'Duration')
+        self.duration = utl.kwget(kwargs, self.fcpp, ['gantt_duration', 'duration'], None)
+        if self.duration in self.df_all.columns:
+            self.cols_all.append(self.duration)
         self.dependencies = utl.kwget(kwargs, self.fcpp, ['gantt_dependencies', 'dependencies'], 'Dependency')
+        if self.dependencies in self.df_all.columns:
+            self.cols_all.append(self.dependencies)
         self.milestone = utl.kwget(kwargs, self.fcpp, ['gantt_milestones', 'milestones'], 'Milestone')
+        if self.milestone in self.df_all.columns:
+            self.cols_all.append(self.milestone)
+        self.bar_labels = utl.validate_list(utl.kwget(kwargs, self.fcpp, ['bar_labels', 'gantt_bar_labels'], []))
+        self.today = utl.kwget(kwargs, self.fcpp, ['gantt_today', 'today'], False)
+        self.relative_dates = utl.kwget(kwargs, self.fcpp, ['gantt_relative_dates', 'relative_dates'], False)
+        if not kwargs.get('ax_limit_padding_xmin'):
+            self.ax_limit_padding_xmin = 0
+        if not kwargs.get('ax_limit_padding_xmax'):
+            self.ax_limit_padding_xmax = 0
+        self.time0 = None
 
         # error checks
         if self.workstreams not in [None, False] and self.workstreams not in self.df_all.columns:
             raise data.DataError(f'Workstreams column "{self.workstreams}" is not in DataFrame')
-        if len(self.x) != 2:
+        if not self.relative_dates and len(self.x) != 2:
             raise data.DataError('Gantt charts require both a start and a stop column')
-        if self.df_all[self.x[0]].dtype != 'datetime64[ns]':
+        if len(self.x) == 2 and self.df_all[self.x[0]].dtype != 'datetime64[ns]':
             try:
                 # check to see if 'O' type is still a valid datetime
                 self.df_all[self.x[0]].astype('datetime64[ns]')
             except:  # noqa
                 raise data.DataError('Start column in gantt chart must be of type datetime')
-        if self.df_all[self.x[1]].dtype != 'datetime64[ns]':
+        if len(self.x) == 2 and self.df_all[self.x[1]].dtype != 'datetime64[ns]':
             try:
                 self.df_all[self.x[1]].astype('datetime64[ns]')
             except:  # noqa
                 raise data.DataError('Stop column in gantt chart must be of type datetime')
-        for col in utl.validate_list(utl.kwget(kwargs, self.fcpp, ['bar_labels', 'gantt_bar_labels'], [])):
+        if self.relative_dates and len(self.x) == 1:
+            # Case: option to use relative dates, must specify a start date column with string times relative to 0
+            # and a duration column
+            if not self.duration:
+                raise data.DataError('When using relative dates with only a start date column, a duration column '
+                                     'must be specified')
+
+            # When no end date column is specified, the start date column must be time strings like '3w'
+            # if not self.df_all[self.x[0]].apply(lambda x: isinstance(x, str)).all():
+            #     raise data.DataError('When using relative dates and duration, the start date column must contain '
+            #                          'only strings (ex. "0", "3d", "2m")')
+            # if not self.df_all[self.duration].apply(lambda x: isinstance(x, str)).all():
+            #     raise data.DataError('When using relative dates and duration, the duration column must contain '
+            #                          'only time strings (ex. "3d", "2m")')
+            pattern = r'^\d+[wmdWMD]?$'
+            try:
+                is_valid = self.df_all[self.x[0]].str.contains(pattern, regex=True).all()
+            except AttributeError:
+                # Check for integers mixed with NaN
+                self.df_all[self.x[0]] = self.df_all[self.x[0]].astype('Int64').astype('O')
+                is_valid = self.df_all[self.x[0]].dropna().astype(str).str.contains(pattern, regex=True).all()
+            if not is_valid:
+                raise data.DataError('When using relative dates with a duration column, duration values must contain '
+                                     'only valid duration strings ["d", "w", "m", or a string integer]')
+            for irow, row in self.df_all.iterrows():
+                self.df_all.loc[irow, self.x[0]] = self._calc_durations(row, self.x[0], datetime.datetime(1970, 1, 1))
+            self.df_all['__end'] = np.nan
+            self.x.append('__end')
+
+        for col in self.bar_labels:
             if col not in self.df_all.columns:
                 raise data.DataError(f'Bar label column "{col}" is not in DataFrame')
+            else:
+                self.cols_all.append(col)
 
         # Date type restrictions
         invalid_date_types = [f for f in self.date_type if f not in self.DATE_TYPES]
@@ -84,11 +132,25 @@ class Gantt(data.Data):
             if any([f for f in self.date_type if f not in allowed_combos]):
                 raise data.DataError('Date type "month-year" can only be combined with "quarter" or "week"')
 
+        # Today and relative dates
+        if self.today is not False and self.relative_dates:
+            raise data.DataError('Gantt "today" label cannot be used with relative dates')
+
+        # Format dependencies
+        def to_dep_string(val):
+            if pd.isna(val):
+                return np.nan
+            if isinstance(val, str):
+                return val
+            return str(int(float(val)))
+        if self.dependencies in self.df_all.columns:
+            self.df_all[self.dependencies] = self.df_all[self.dependencies].apply(to_dep_string)
+
         # Attempt to populate missing dates
         self._populate_dates()
 
         # Inline workstreams df adjustment
-        if self.workstreams_inline:
+        if self.workstreams is not None and self.workstreams_inline:
             df_inline = []
             for nn, gg in self.df_all.groupby(self.workstreams):
                 df_inline += [pd.DataFrame({self.workstreams: [nn],
@@ -106,8 +168,8 @@ class Gantt(data.Data):
                                             (self.df_all[self.x[1]].isin(NULLS)))]
 
         # Update date times to np.datetime64
-        # self.df_all[self.x[0]] = pd.to_datetime(self.df_all[self.x[0]])  # maybe automatic?
-        # self.df_all[self.x[1]] = pd.to_datetime(self.df_all[self.x[1]])
+        self.df_all[self.x[0]] = pd.to_datetime(self.df_all[self.x[0]])  # maybe automatic? no it isn't
+        self.df_all[self.x[1]] = pd.to_datetime(self.df_all[self.x[1]])
         for vv in ['min', 'max']:
             if getattr(self, f'x{vv}').values != [None]:
                 getattr(self, f'x{vv}').values = [np.datetime64(f) for f in getattr(self, f'x{vv}').values]
@@ -130,6 +192,10 @@ class Gantt(data.Data):
 
         # Multiple dependencies can be specified for a single row, separated by a semicolon
         children_idx = ~self.df_all[self.dependencies].isin(NULLS)
+
+        # Convert to object dtype first since we're about to store lists, not strings
+        self.df_all[self.dependencies] = self.df_all[self.dependencies].astype(object)
+
         self.df_all.loc[children_idx, self.dependencies] = \
             self.df_all.loc[children_idx, self.dependencies].str.split(';')
         self.df_all.loc[children_idx, self.dependencies] = \
@@ -139,24 +205,34 @@ class Gantt(data.Data):
         def resolve_dep(row):
             """Resolve nested dependencies"""
             parent = self.df_all.loc[self.df_all[self.y[0]].isin(row[self.dependencies])]
+            if self.milestone in self.df_all.columns:
+                parent = parent.loc[parent[self.milestone].isin(NULLS)]
             if len(parent.loc[parent[self.x[1]].isin(NULLS)]) == 0:
                 # If start date already exists, use it
                 if row[self.x[0]] not in NULLS:
                     return row[self.x[0]]
 
-                # If not, find all rows in the main dataframe that contain the depedency strings
-                dep = self.df_all.loc[self.df_all[self.y[0]].isin(row[self.dependencies])]
+                # Line number deps (note these start at index = 0)
+                line_deps = [int(f) for f in row[self.dependencies] if f.isdigit()]
+
+                # String deps (match with values in self.df_all[self.y[0]])
+                str_deps = self.df_all.loc[self.df_all[self.y[0]].isin(row[self.dependencies])]
+                if self.milestone in self.df_all.columns:
+                    str_deps = str_deps.loc[str_deps[self.milestone].isin(NULLS)]
+                str_deps = str_deps.index.tolist()
 
                 # Nothing found in dependency column but milestone column exists
-                if len(dep) == 0 and self.milestone in row:
-                    date = self.df_all.loc[self.df_all[self.milestone].isin(row[self.dependencies]), self.x[0]]
-                # One or more dependencies found; use latest date as new start date
-                elif len(dep) > 0:
-                    date = dep[self.x[1]]
-                # Nothing found, raise error
-                else:
+                if len(str_deps) == 0 and self.milestone in row:
+                    str_deps = self.df_all.loc[self.df_all[self.milestone].isin(row[self.dependencies])].index.tolist()
+
+                # Merge deps
+                deps = str_deps + line_deps
+
+                # No deps found error
+                if len(deps) == 0:
                     raise data.DataError(f'Cannot find dependency date for "{row[self.y[0]]}"')
-                return date.max()
+
+                return self.df_all.loc[deps, self.x[1]].max()
             elif len(parent.loc[~parent[self.dependencies].isin(NULLS)]) > 0:
                 deps = parent.loc[~parent[self.dependencies].isin(NULLS)]
                 for irow, row_ in deps.iterrows():
@@ -166,50 +242,65 @@ class Gantt(data.Data):
                 raise data.DataError(f'Cannot find dependency date for "{row[self.y[0]]}"')
 
         for irow, row in self.df_all.iterrows():
-            if row[self.dependencies] in NULLS or (row[self.x[0]] not in NULLS and row[self.x[1]] not in NULLS):
+            if str(row[self.dependencies]) in NULLS \
+                    or (str(row[self.x[0]])) not in NULLS and str(row[self.x[1]]) not in NULLS:
                 continue
             self.df_all.loc[irow, self.x[0]] = resolve_dep(row)
 
             # Update duration
-            if row[self.x[1]] in NULLS and self.duration in row and row[self.duration] not in NULLS:
+            if str(row[self.x[1]]) in NULLS and self.duration in row and row[self.duration] not in NULLS:
                 self.df_all.loc[irow, self.x[1]] = self._calc_durations(self.df_all.loc[irow])
 
-    def _calc_durations(self, row):
+    def _calc_durations(self, row, duration_col=None, start_date=None):
         """Calculate durations for a given row in the DataFrame"""
-        if row[self.x[1]] not in NULLS:
+        if not duration_col:
+            duration_col = self.duration
+        if not start_date:
+            start_date = row[self.x[0]]
+
+        if len(self.x) == 2 and str(row[self.x[1]]) not in NULLS:
             # Don't calculate if there is already an end date
             return row[self.x[1]]
-        if isinstance(row[self.duration], int):
+
+        def calc_days(full, partial):
+            if partial > 0:
+                raise data.DataError('Partial days not allowed for duration; use only integers to specify days')
+            if self.business_days and self.us_holidays:
+                return start_date + CustomBusinessDay(calendar=USFederalHolidayCalendar()) * int(full)
+            elif self.business_days:
+                return start_date + BusinessDay() * int(full)
+            else:
+                return start_date + pd.Timedelta(days=int(full))
+
+        if isinstance(row[duration_col], int) or \
+                (str(row[duration_col]) in ['nan', 'NaT'] and row[duration_col].isdigit()):
             # Default is days
-            duration = int(row[self.duration])
-        elif isinstance(row[self.duration], str):
-            date_type = row[self.duration][-1:]
+            duration = int(row[duration_col])
+            full, partial = divmod(duration, 1)
+            return calc_days(full, partial)
+        elif isinstance(row[duration_col], str):
+            date_type = row[duration_col][-1:]
             try:
-                duration = float(row[self.duration][:-1])
+                duration = float(row[duration_col][:-1])
                 full, partial = divmod(duration, 1)
             except ValueError:
                 raise data.DataError(f'Invalid duration "{date_type}" defined for row index {row.name}')
-            if date_type.lower() == 'w':
+            if start_date is None:
+                return None
+            elif date_type.lower() == 'w':
                 if partial > 0:
                     partial = DateOffset(days=int(7 * partial))
                 else:
                     partial = DateOffset(days=0)
-                return row[self.x[0]] + DateOffset(weeks=int(full)) + partial
+                return start_date + DateOffset(weeks=int(full)) + partial
             elif date_type.lower() == 'm':
                 if partial > 0:
                     partial = DateOffset(days=int(30 * partial))
                 else:
                     partial = DateOffset(days=0)
-                return row[self.x[0]] + DateOffset(months=int(full))
+                return start_date + DateOffset(months=int(full))
             elif date_type.lower() == 'd':
-                if partial > 0:
-                    raise data.DataError('Partial days not allowed for duration; use only integers to specify days')
-                if self.business_days and self.us_holidays:
-                    return row[self.x[0]] + CustomBusinessDay(calendar=USFederalHolidayCalendar()) * int(full)
-                elif self.business_days:
-                    return row[self.x[0]] + BusinessDay() * int(full)
-                else:
-                    return row[self.x[0]] + pd.Timedelta(days=int(full))
+                return calc_days(full, partial)
             else:
                 raise data.DataError(f'Unknown duration date type "{date_type}" defined for row index {row.name}')
 
@@ -233,10 +324,16 @@ class Gantt(data.Data):
                 self._add_range(ir, ic, 'x', 'min', self.ranges['xmin'][self.ranges['xmin'] != None].min())  # noqa
                 self._add_range(ir, ic, 'x', 'max', self.ranges['xmax'][self.ranges['xmax'] != None].max())  # noqa
             if self.share_y or (self.nrow == 1 and self.ncol == 1):
-                if self.legend is not None and self.workstreams != self.legend:
-                    self._add_range(ir, ic, 'y', 'max', len(df_fig[self.y[0]]) - 0.5)
-                else:
+                # Handle duplicate self.y[0] values if they exist
+                if self.legend is None \
+                        and self.milestone not in df_fig.columns \
+                        and self.workstreams not in df_fig.columns:
                     self._add_range(ir, ic, 'y', 'max', len(df_fig[self.y[0]].unique()) - 0.5)
+                else:
+                    # Exclude milestone rows
+                    if self.milestone in df_fig.columns:
+                        df_fig = df_fig[df_fig[self.milestone].isna() | df_fig[self.milestone].isin(NULLS)]
+                    self._add_range(ir, ic, 'y', 'max', len(df_fig[self.y[0]]) - 0.5)
 
             # non-shared axes
             if not self.share_x:
@@ -263,7 +360,7 @@ class Gantt(data.Data):
             twin: denotes if twin axis is enabled or not
             len(vals) [ngroups]: total number of groups in the full data
         """
-        if not isinstance(self.legend_vals, pd.DataFrame):
+        if not isinstance(self._legend_vals, pd.DataFrame):
             xx = [self.x[0]]  # make sure we only get one group for self.x
             yy = [] if not self.y else self.y + self.y2
             lenx = 1 if not self.x else len(xx)
@@ -286,7 +383,7 @@ class Gantt(data.Data):
 
             else:
                 # No workstream defined OR workstream defined with no legend
-                for irow, row in self.legend_vals.iterrows():
+                for irow, row in self._legend_vals.iterrows():
                     # Subset by legend value
                     if row['Leg'] is not None:
                         df2 = df[df[self.legend] == row['Leg']].copy()
@@ -299,7 +396,7 @@ class Gantt(data.Data):
                     # Set twin ax status
                     yield irow, df2, row['x'], row['y'], \
                         None if self.z is None else self.z[0], row['names'], \
-                        False, len(self.legend_vals)
+                        False, len(self._legend_vals)
 
     def _populate_dates(self):
         """Fill in missing dates"""
@@ -313,12 +410,12 @@ class Gantt(data.Data):
         # Calculate start dates based on dependencies
         self._calc_dependent_start_dates()
 
-        # # Check duration again since some start dates were filled in by dependencies (DO I NEED THIS??)
-        # if self.duration in self.df_all.columns:
-        #     sub = self.df_all.loc[~(self.df_all[self.x[0]].isin(NULLS)) & \
-        #                           ~(self.df_all[self.duration].isin(NULLS))]
-        #     for irow, row in sub.iterrows():
-        #         self.df_all.loc[irow, self.x[1]] = self._calc_durations(row)
+        # Check duration again since some start dates were filled in by dependencies (DO I NEED THIS?? seems yes)
+        if self.duration in self.df_all.columns:
+            sub = self.df_all.loc[~(self.df_all[self.x[0]].isin(NULLS)) &
+                                  ~(self.df_all[self.duration].isin(NULLS))]
+            for irow, row in sub.iterrows():
+                self.df_all.loc[irow, self.x[1]] = self._calc_durations(row)
 
         # Assume that rows with a start date but no end date are milestones and set end date = start date
         self.df_all.loc[(~self.df_all[self.x[0]].isin(NULLS)) & (self.df_all[self.x[1]].isin(NULLS)), self.x[1]] = \
@@ -336,31 +433,31 @@ class Gantt(data.Data):
             modified DataFrame subset
         """
         # Deal with missing dates
-        df = df.copy()
-        earliest_start = df[self.x[0]].min()
-        latest_end = df[self.x[1]].max()
+        df_ = df.copy()
+        earliest_start = df_[self.x[0]].min()
+        latest_end = df_[self.x[1]].max()
 
         # Missing dates case 1:  no start or end date --> set duration as 1 day at earliest start date
-        no_start_end = df.loc[(df[self.x[0]].isnull()) & (df[self.x[1]].isnull())].index
-        df.loc[no_start_end, self.x[0]] = earliest_start
-        df.loc[no_start_end, self.x[1]] = earliest_start + pd.Timedelta(days=1)
+        no_start_end = df_.loc[(df_[self.x[0]].isnull()) & (df_[self.x[1]].isnull())].index
+        df_.loc[no_start_end, self.x[0]] = earliest_start
+        df_.loc[no_start_end, self.x[1]] = earliest_start + pd.Timedelta(days=1)
 
         # Missing dates case 2:  start date but no end data --> set as latest date
-        no_end = df.loc[df[self.x[1]].isnull()].index
-        df.loc[no_end, self.x[1]] = latest_end
+        no_end = df_.loc[df_[self.x[1]].isnull()].index
+        df_.loc[no_end, self.x[1]] = latest_end
 
         # Missing dates case 3: end date but no start date --> set start as one before end date
-        no_start = df.loc[df[self.x[0]].isnull()].index
-        df.loc[no_start, self.x[0]] = latest_end - pd.Timedelta(days=1)
+        no_start = df_.loc[df_[self.x[0]].isnull()].index
+        df_.loc[no_start, self.x[0]] = latest_end - pd.Timedelta(days=1)
 
         # Remove duplicates with legend
-        if self.legend is None and len(df) > 0:
+        if self.legend is None and len(df_) > 0:
             idx = []
-            [idx.append(x) for x in df.set_index(self.y).index if x not in idx]
-            df_start = df.groupby(self.y)[self.x].min()
-            df_stop = df.groupby(self.y)[self.x].max()
+            [idx.append(x) for x in df_.set_index(self.y).index if x not in idx]
+            df_start = df_.groupby(self.y)[self.x].min()
+            df_stop = df_.groupby(self.y)[self.x].max()
             df_start[self.x[1]] = df_stop.loc[df_start.index, self.x[1]]
-            df = df_start.reindex(idx).reset_index()
+            df_ = df_start.reindex(idx).reset_index()
 
         # Account for rc plots with shared y-axis
         if (self.wrap is not None or self.col is not None or self.row is not None) \
@@ -373,8 +470,22 @@ class Gantt(data.Data):
             df_all = df_all.reindex(idx).reset_index()
 
             # check for matches in the subset
-            df = pd.merge(df_all, df, how='left', indicator='Exist')
-            df.loc[df.Exist != 'both', self.x[1]] = np.datetime64('NaT')  # set to NaT for sorting
-            del df['Exist']
+            df_ = pd.merge(df_all, df_, how='left', indicator='Exist')
+            df_.loc[df_.Exist != 'both', self.x[1]] = np.datetime64('NaT')  # set to NaT for sorting
+            del df_['Exist']
 
-        return df
+        # Account for any bar labels that may have been dropped earlier
+        if len(self.bar_labels) > 0 and not all(col in df_.columns for col in utl.validate_list(self.bar_labels)):
+            df_ = pd.merge(df_, df, how='left', indicator='Exist')
+            del df_['Exist']
+
+        # Apply relative dates
+        if self.relative_dates:
+            self.time0 = df_[self.x[0]].min()
+            df_[self.x[1]] -= df_[self.x[0]].min()
+            df_[self.x[1]] = df_[self.x[1]].dt.total_seconds() / (24 * 3600)
+
+            df_[self.x[0]] -= df_[self.x[0]].min()
+            df_[self.x[0]] = df_[self.x[0]].dt.total_seconds() / (24 * 3600)
+
+        return df_

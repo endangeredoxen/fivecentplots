@@ -28,7 +28,7 @@ else:
     REFERENCE = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 
 # Sample data
-df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data.csv')
+df = fcp.get_test_data('fake_data.csv')
 
 # Set theme
 fcp.set_theme('gray_original')
@@ -207,7 +207,7 @@ def test_sciz(make_reference=False, show=False):
     name = utl.unit_test_get_img_name('sciz', make_reference, REFERENCE)
 
     # Make the plot
-    df2 = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_contour.csv')
+    df2 = fcp.get_test_data('fake_data_contour.csv')
     fcp.contour(df2, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
                 cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250, 250], show=SHOW,
                 label_rc_font_size=12, levels=40, sci_z=True,
@@ -220,7 +220,7 @@ def test_sciz(make_reference=False, show=False):
 #     name = utl.unit_test_get_img_name('sciz_remove', make_reference, REFERENCE)
 
 #     # Make the plot
-#     df2 = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_contour.csv')
+#     df2 = fcp.get_test_data('fake_data_contour.csv')
 #     fcp.contour(df2, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
 #                 cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250, 250], show=SHOW,
 #                 label_rc_font_size=12, levels=40, sci_z=True, tick_cleanup='remove',

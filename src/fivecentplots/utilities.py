@@ -12,12 +12,11 @@ import re
 import shlex
 import inspect
 import ast
-import operator
 from matplotlib.font_manager import FontProperties, findfont
 import matplotlib.dates as mdates
 from pathlib import Path
 from typing import Any, Union, Tuple, Dict, List
-from . import data
+from fivecentplots import data
 import numpy.typing as npt
 from PIL import ImageFont, Image, ImageDraw
 try:
@@ -34,7 +33,7 @@ if default_path.exists() and default_path not in sys.path:
     try:
         from defaults import *  # noqa
     except ModuleNotFoundError:
-        from . themes.gray import *  # noqa
+        from fivecentplots.themes.gray import *  # noqa
 
 # Read the package version file
 with open(Path(__file__).parent / 'version.txt', 'r') as fid:
@@ -47,7 +46,7 @@ NQ = {'markers': False, 'line_width': 2, 'preset': 'NQ'}
 
 
 class RepeatedList:
-    def __init__(self, values: list, name: str, override: dict = {}):
+    def __init__(self, values: Any, name: str, override: dict = {}):
         """Set a default list of items and loop through it beyond the maximum
         index value.
 
@@ -56,7 +55,10 @@ class RepeatedList:
             name: label to describe contents of class
             override: override the RepeatedList value based on the legend value for this item
         """
-        self.values = validate_list(values)
+        if values is None:
+            self.values = [None]
+        else:
+            self.values = validate_list(values)
         self.shift = 0
         self.override = override
 
@@ -80,6 +82,11 @@ class RepeatedList:
             return val
         else:
             return self.override[key]
+
+    @property
+    def is_empty(self):
+        """Return True if the RepeatedList is empty."""
+        return len(self.values) == 0
 
     def max(self):
         """Return the maximum value of the RepeatedList."""
@@ -176,32 +183,95 @@ class CustomWarning(Warning):
 
 
 def arithmetic_eval(s):
-    s = s.replace(' ', '')
-    s = s.replace('--', '+')
-    s = s.replace('++', '+')
+    """Safely evaluate a basic mathematical string expression."""
     node = ast.parse(s, mode='eval')
 
     def _eval(node):
-        binOps = {
-            ast.Add: operator.add,
-            ast.Sub: operator.sub,
-            ast.Mult: operator.mul,
-            ast.Div: operator.truediv,
-            ast.Mod: operator.mod
-        }
-
         if isinstance(node, ast.Expression):
             return _eval(node.body)
-        elif isinstance(node, ast.Str):
+
+        # Python 3.8+ unified AST literal node
+        elif isinstance(node, ast.Constant):
+            return node.value
+
+        # Legacy Python < 3.8 fallbacks (if ast.Str / ast.Num still exist)
+        elif hasattr(ast, 'Str') and isinstance(node, ast.Str):
             return node.s
-        elif isinstance(node, ast.Num):
+        elif hasattr(ast, 'Num') and isinstance(node, ast.Num):
             return node.n
+
         elif isinstance(node, ast.BinOp):
-            return binOps[type(node.op)](_eval(node.left), _eval(node.right))
+            left = _eval(node.left)
+            right = _eval(node.right)
+            if isinstance(node.op, ast.Add):
+                return left + right
+            elif isinstance(node.op, ast.Sub):
+                return left - right
+            elif isinstance(node.op, ast.Mult):
+                return left * right
+            elif isinstance(node.op, ast.Div):
+                return left / right
+            elif isinstance(node.op, ast.Pow):
+                return left ** right
+            elif isinstance(node.op, ast.Mod):
+                return left % right
+            else:
+                raise TypeError(f"Unsupported binary operator: {type(node.op)}")
+        elif isinstance(node, ast.UnaryOp):
+            operand = _eval(node.operand)
+            if isinstance(node.op, ast.UAdd):
+                return +operand
+            elif isinstance(node.op, ast.USub):
+                return -operand
+            else:
+                raise TypeError(f"Unsupported unary operator: {type(node.op)}")
         else:
-            raise Exception('Unsupported type {}'.format(node))
+            raise TypeError(f"Unsupported AST node: {type(node)}")
 
     return _eval(node.body)
+
+
+def calc_distribution(counts: npt.NDArray, distribution_type: str = 'cdf') -> npt.NDArray:
+    """
+    Compute cdf or pdf calculations
+
+    Args:
+        array of bin counts
+        distribution_type: 'cdf' or 'pdf'
+
+    Returns:
+        cumsum of counts
+    """
+    distribution_type = distribution_type.lower()
+
+    if distribution_type == 'cdf':
+        pdf = counts / sum(counts)
+        counts = np.cumsum(pdf)
+    elif distribution_type == 'pdf':
+        counts = counts / sum(counts)
+    else:
+        raise ValueError(f'Unknown distribution type: {distribution_type}.  Use "cdf" or "pdf"')
+
+    return counts
+
+
+def calc_kde(x: pd.Series, num_vals: int = 1000) -> pd.DataFrame:
+    """
+    Calculate the kernel density estimate for the given data.  Set limits based on 1000x the max value
+
+    Args:
+        x: data to calculate the kde
+        num_vals (optional): number of values to return. Defaults to 1000.
+
+    Returns:
+        DataFrame with kde values
+    """
+    kde = ss.gaussian_kde(x)
+    x0 = np.linspace(x.min() * 0.5, x.max() * 1.5, num_vals)
+    y0 = kde(x0)
+    x0 = x0[y0 > y0.max() / 1000]
+    y0 = y0[y0 > y0.max() / 1000]
+    return pd.DataFrame({x.name: x0, 'Density': y0})
 
 
 def ci(data: pd.Series, coeff: float = 0.95) -> [float, float]:
@@ -1206,6 +1276,24 @@ def img_grayscale_deprecated(img: np.ndarray, as_array: bool = False) -> Union[p
 
     else:
         return 0.2989 * r + 0.5870 * g + 0.1140 * b
+
+
+def get_test_data(name: str):
+    """
+    Read an fcp sample dataset into a DataFrame
+
+    Args:
+        name: the name of the file, with or without ".csv"
+
+    Returns:
+        DataFrame with sample data
+    """
+    if Path(name).suffix == '':
+        name += ".csv"
+    fullpath = Path(__file__).parent / 'test_data' / f'{name}'
+    if not fullpath.exists():
+        raise FileNotFoundError(f"Sample data file not found: {fullpath}")
+    return pd.read_csv(fullpath, comment='#')
 
 
 def img_rgb_to_df(data):

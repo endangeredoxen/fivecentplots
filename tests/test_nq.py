@@ -29,7 +29,7 @@ else:
     REFERENCE = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 
 # Sample data
-df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_heatmap.csv')
+df = fcp.get_test_data('fake_data_heatmap.csv')
 img_cat_orig = imageio.imread(Path(fcp.__file__).parent / 'test_data/imshow_cat_pirate.png')
 img_cat = utl.img_grayscale_deprecated(img_cat_orig)
 

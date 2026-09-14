@@ -1,7 +1,7 @@
-from . import data
+from fivecentplots import data
 import pdb
 import pandas as pd
-from .. import utilities
+from fivecentplots import utilities
 from natsort import natsorted
 utl = utilities
 db = pdb.set_trace
@@ -70,6 +70,7 @@ class Box(data.Data):
             gidx = natsorted(gidx)
         self.indices = pd.DataFrame(gidx)
         self.changes = self.indices.copy()
+        self.changes = self.changes.astype(object)  # needed for pandas 3.0.5 to avoid dtype warning
 
         # Set initial level to 1
         for col in self.indices.columns:

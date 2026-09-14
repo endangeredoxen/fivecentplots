@@ -18,7 +18,7 @@ sys.path = [str(cur_dir.parents[1])] + sys.path
 try:
     from colors import DEFAULT_COLORS
 except ModuleNotFoundError:
-    from .colors import DEFAULT_COLORS
+    from fivecentplots.colors import DEFAULT_COLORS
 
 
 def check_undefined_kwargs():
@@ -439,7 +439,7 @@ def kw_print(kw, width=120):
                 str(row['Description']) + default + '. Example: %s' % row['Example']
 
         kwstr += textwrap.fill(line, width, initial_indent=indent,
-                               subsequent_indent=indent + '  ')
+                               subsequent_indent=indent + '    ')
         kwstr += '\n'
 
     kwstr = kwstr.replace('`', '')
@@ -642,7 +642,11 @@ if __name__ == '__main__':
 
     kw = make_docstrings()
 
-    bar = kw_print(kw['bar'])
+    bar = \
+        kw_header('BASIC',  indent=' ' * 8) + \
+        kw_print(kw['bar']) + \
+        kw_header('ROLLING MEAN') + \
+        kw_print(kw['bar_rolling'])
 
     boxplot = \
         kw_header('BASIC',  indent=' ' * 8) + \
