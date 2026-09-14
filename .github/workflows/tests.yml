@@ -28,7 +28,7 @@ jobs:
         python -m pytest tests -s
 
   test:
-    runs-on: macos-14
+    runs-on: macos-26
     strategy:
       matrix:
         python-version: ['3.14']
