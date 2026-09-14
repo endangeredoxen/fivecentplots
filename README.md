@@ -150,3 +150,7 @@ fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', ax_size=[2
 ```
 
 ![bokeh](https://endangeredoxen.github.io/fivecentplots/0.6.0/_static/images/syntax_bokeh.png)
+
+---
+
+If you'd like to show support for this project, consider throwing me some fractional pennies by streaming my music [here](https://li.sten.to/0u1xu43c)
