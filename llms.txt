@@ -1,0 +1,10 @@
+# fivecentplots
+
+> Wrapper for matplotlib, plotly, and bokeh that simplifies generating complex,
+> publication-quality plots directly from pandas DataFrames using a single consistent
+> keyword-argument API across all three backends.
+
+- [Agent reference](https://raw.githubusercontent.com/endangeredoxen/fivecentplots/main/AGENTS.md): Complete per-function and universal kwarg tables, naming conventions for unlisted kwargs, and known gotchas. Start here for any code-generation task involving this library.
+- [README](https://github.com/endangeredoxen/fivecentplots/blob/main/README.md): Human-facing overview, install instructions, and design philosophy.
+- [Full documentation](https://endangeredoxen.github.io/fivecentplots/): Sphinx docs with rendered example plots for every feature.
+- [Valid kwargs list](https://raw.githubusercontent.com/endangeredoxen/fivecentplots/main/src/fivecentplots/kwargs/kwargs_all.txt): Flat text file of every kwarg name the library will accept without a warning — useful for a quick membership check before calling.
