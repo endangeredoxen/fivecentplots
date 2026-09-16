@@ -2516,7 +2516,7 @@ def options():
         theme (str): Select a theme file for the current plot only. Defaults to None. Example:
             https://endangeredoxen.github.io/fivecentplots/0.6.2/styles.html#On-the-fly
         timer (boolean): Debug feature to get a time log for each step in the plotting process. Defaults to False.
-    """
+"""
 
 
 def tick_labels():
