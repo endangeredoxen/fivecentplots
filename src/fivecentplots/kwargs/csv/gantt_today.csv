@@ -1,0 +1,22 @@
+Keyword,Data Type,Description,Default,Example
+gantt_today|today,bool|datetime,"If True, use current date for the marker else if value is datetime use that date for the marker",False,gantt.html#Today
+gantt_today_alpha|today_alpha,str,Alpha of the today marker line,1,gantt.html#Today
+gantt_today_color|today_color,str,Color of the today marker line,#555555,gantt.html#Today
+gantt_today_coordinate|today_coordinate,float,Coordinate of the today marker on the x-axis (matplotlib specific),data,None
+gantt_today_edge_alpha|today_edge_alpha,float,Transparency value for the today marker edge between 0-1,1,None
+gantt_today_edge_color|today_edge_color,str,Color of the today marker edge,#555555,gantt.html#Today
+gantt_today_edge_width|today_edge_width,float,Width of the today label marker edge,0,None
+gantt_today_fill_alpha|today_fill_alpha,float,Transparency value for the today marker fill between 0-1,1,None
+gantt_today_fill_color|today_fill_color,str,Color of the today marker fill,#555555,gantt.html#Today
+gantt_today_font|today_font,str,Font of the today marker text,Arial,gantt.html#Today
+gantt_today_font_color|today_font_color,str,Color of the today marker text,#ffffff,None
+gantt_today_font_size|today_font_size,float,Size of the today marker text,13,gantt.html#Today
+gantt_today_font_style|today_font_style,str,Style of the today marker text,normal,None
+gantt_today_font_weight|today_font_weight,str,Weight of the today marker text,normal,gantt.html#Today
+gantt_today_padding|today_padding,float,Padding of the today marker text,3,None
+gantt_today_rotation|today_rotation,float,Rotation of the today marker text,0,None
+gantt_today_style|today_style,str,Style of the today marker text,-,gantt.html#Today
+gantt_today_text|today_text,str,Custom text to use for the today marker,Today,gantt.html#Today
+gantt_today_units|today_units,str,Units for the today marker coordinate (matplotlib specific),pixel,None
+gantt_today_width|today_width,float,Width of the today marker line,1,None
+gantt_today_zorder|today_zorder,int,Z-order of the today marker,1,None

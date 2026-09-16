@@ -6,15 +6,3 @@ Keyword,Data Type,Description,Default,Example
 [ax|ax2]_[h|v]lines_style,
 [ax|ax2]_[h|v]lines_width,
 [ax|ax2]_[h|v]lines_zorder,
-
-
-_names_list = ["f'{name}_zorder'", "f'{name}_fill_alpha'", "f'{name}_fill_color'",
-"f'{name}_edge_width'", "f'{name}_edge_alpha'", "f'{name}_edge_color'",
-"f'{name}_alpha'", "f'{name}_color'", "f'{name}_width'", "f'{name}_style'"]
-
-db()
-    no_fonts = []
-    no_edges = []
-    no_fills = []
-
-
