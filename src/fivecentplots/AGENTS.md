@@ -113,7 +113,7 @@ filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2')
 ```
 
 <details>
-<summary>Plot-specific kwarg reference (17 kwargs, click to expand)</summary>
+<summary>Plot-specific kwarg reference (52 kwargs, click to expand)</summary>
 
 #### LINES
 
@@ -146,6 +146,66 @@ filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2')
 | `[ax|ax2]_[h|v]lines_alpha` | float\|list of floats | 1 | Transparency value for the lines between 0-1; use a list to use different values for each subplot |
 | `[ax|ax2]_[h|v]lines_by_plot` | bool | None | Add a line with a different value to each subplot when using row/col/wrap grouping |
 | `[ax|ax2]_[h|v]lines_color` | str\|list of str | 1 | Transparency value for the lines between 0-1; use a list to use different values for each subplot |
+
+#### CONTROL_LIMITS
+
+| kwarg | type | default | description |
+|---|---|---|---|
+| `lcl` | float | None | Float value to start the lower control limit shading region |
+| `ucl` | float | None | Float value to start the upper control limit shading region |
+| `control_limit_side` | str | outside | Determines if shaded region is <= `lcl` and >= `ucl` {"outside"} or between the lcl and ucl {"inside"} |
+| `lcl` / `ucl_edge_alpha` | float | 0.25 | Transparency value for the line starting the control limit shaded region between 0-1 |
+| `lcl` / `ucl_edge_color` | str | fcp.DEFAULT_COLORS | Hex color string for the the line starting the control limit shaded region |
+| `lcl` / `ucl_edge_style` | str | '-' | Line style for the line starting the control limit shaded region {‘-’, ‘--’, ‘-.’, ‘:’} |
+| `lcl` / `ucl_edge_width` | float | 1 | Width of the line starting the control limit shaded region in pixels |
+| `lcl` / `ucl_fill_alpha` | float | 0.20 | Transparency value for the control limit shaded region fill between 0-1 |
+| `lcl` / `ucl_fill_color` | str | fcp.DEFAULT_COLORS | Hex color string for the control limit shaded region fill |
+
+#### CONFIDENCE_INTERVALS
+
+| kwarg | type | default | description |
+|---|---|---|---|
+| `conf_int` | float | None | Interval with upper and lower bounds based on a single confidence value between 0-1 (typical=0.95) |
+| `perc_int` | list of float | None | Interval with upper and lower bounds based on percentiles between 0-1 |
+| `nq_int` | list of float | None | Interval with upper and lower bounds based on values of sigma (where the mean of a distribution is sigma=0) |
+| `conf_int_` / `perc_int_` / `nq_int_edge_alpha` | float | 0.25 | Transparency value for the lines bounding the interval shaded region between 0-1 |
+| `conf_int_` / `perc_int_` / `nq_int_edge_color` | str | fcp.DEFAULT_COLORS | Hex color string for the the lines bounding the interval shaded region |
+| `conf_int_` / `perc_int_` / `nq_int_edge_style` | str | '-' | Line style for the lines bounding the interval shaded region {‘-’, ‘--’, ‘-.’, ‘:’} |
+| `conf_int_` / `perc_int_` / `nq_int_edge_width` | float | 1 | Width of the lines bounding the interval shaded region in pixels |
+| `conf_int_` / `perc_int_` / `nq_int_fill_alpha` | float | 0.20 | Transparency value for the interval shaded region fill between 0-1 |
+| `conf_int_` / `perc_int_` / `nq_int_fill_color` | str | fcp.DEFAULT_COLORS | Hex color string for the interval shaded region fill |
+
+#### FIT
+
+| kwarg | type | default | description |
+|---|---|---|---|
+| `fit` | int | None | Polynomial degree for the fit |
+| `fit_color` | str | #000000 | Hex color string for the fit line |
+| `fit_eqn` | boolean | False | Display the fit equation on the plot |
+| `fit_font_size` | float | 12 | Font size of the fit eqn and rsq value |
+| `fit_padding` | int | 10 | Padding in pixels from the top of the plot to the location of the fit eqn |
+| `fit_range_x` | list | None | Compute the fit only over a given range of x-values |
+| `fit_range_y` | list | None | Compute the fit only over a given range of y-values |
+| `fit_rsq` | boolean | False | Display the rsq of the fit on the plot |
+
+#### REFERENCE_LINES
+
+| kwarg | type | default | description |
+|---|---|---|---|
+| `ref_line` | list\|pd.Series | None | The name of one or more columns in the DataFrame or a pandas Series with the same number of rows as the x column |
+| `ref_line_alpha` | str\|list | 1 | Transparency value for the reference line(s) between 0-1 (use list if more than one ref_line plotted) |
+| `ref_line_color` | str\|list | #000000 | Hex color string or list of hex color strings for the reference line (use list if more than one ref_line plotted) |
+| `ref_line_legend_text` | str\|list | None | Custom string label(s) to add to a legend for the reference line data (use list if more than one ref_line plotted) |
+| `ref_line_style` | str\|list | '-' | Matplotlib string character for reference line style {'-'; '--'; '-.' ':'} (use list if more than one ref_line plotted) |
+| `ref_line_width` | int\|list | 1 | Reference line width in pixels (use list if more than one ref_line plotted) |
+
+#### STAT_LINES
+
+| kwarg | type | default | description |
+|---|---|---|---|
+| `stat` | str | None | Calculate a statistic on a data set (any stat value supported by `pandas.groupby` is valid {'mean', 'std', etc} |
+| `stat_val` | str | None | Alternate column name used as a pseudo x-axis for the stat calculation for cases in which the plotted x-column values are not perfectly aligned |
+| `stat_line_xxx` | various | None | Stat-line styling is controlled by the regular `line_xxx` values |
 
 </details>
 
