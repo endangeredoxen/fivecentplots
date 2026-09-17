@@ -477,13 +477,13 @@ fcp.gantt(df, x=['Start', 'Stop'], y='Task', ax_size=[600, 400])
 ```
 
 <details>
-<summary>Plot-specific kwarg reference (12 kwargs, click to expand)</summary>
+<summary>Plot-specific kwarg reference (69 kwargs, click to expand)</summary>
 
 #### BASIC
 
 | kwarg | type | default | description |
 |---|---|---|---|
-| `auto_expand` | bool | True | Auto-expand the horizontal axes size to fit the Gantt bar labels |
+| `gantt_auto_expand` / `auto_expand` | bool | True | Auto-expand the horizontal axes size to fit the Gantt bar labels |
 | `gantt_bar_labels` / `bar_labels` | bool | False | Display data column labels to the right of Gantt bars |
 | `gantt_color_by` / `color_by` | str\|None | 'bar' | Color each bar differently based on a grouping criterion |
 | `gantt_height` / `bar_height` | float | 0.9 | Set the fractional height of the Gantt bars between 0-1 |
@@ -495,6 +495,73 @@ fcp.gantt(df, x=['Start', 'Stop'], y='Task', ax_size=[600, 400])
 | `gantt_tick_labels_x_rotation` / `tick_labels_x_rotation` | int | 90 | Gantt-specific version of the this kwarg to ensure rotations are not applied globably to all plots from a theme file |
 | `sort` | str | 'descending’ | Sort order for the Gantt bars {‘ascending’, ‘descending’} |
 | `us_holidays` | bool | True | Skip US holidays based on the Federal calendar |
+
+#### TODAY_MARKER
+
+| kwarg | type | default | description |
+|---|---|---|---|
+| `gantt_today` / `today` | bool\|datetime | False | If True, use current date for the marker else if value is datetime use that date for the marker |
+| `gantt_today_alpha` / `today_alpha` | str | 1 | Alpha of the today marker line |
+| `gantt_today_color` / `today_color` | str | #555555 | Color of the today marker line |
+| `gantt_today_coordinate` / `today_coordinate` | float | data | Coordinate of the today marker on the x-axis (matplotlib specific) |
+| `gantt_today_edge_alpha` / `today_edge_alpha` | float | 1 | Transparency value for the today marker edge between 0-1 |
+| `gantt_today_edge_color` / `today_edge_color` | str | #555555 | Color of the today marker edge |
+| `gantt_today_edge_width` / `today_edge_width` | float | 0 | Width of the today label marker edge |
+| `gantt_today_fill_alpha` / `today_fill_alpha` | float | 1 | Transparency value for the today marker fill between 0-1 |
+| `gantt_today_fill_color` / `today_fill_color` | str | #555555 | Color of the today marker fill |
+| `gantt_today_font` / `today_font` | str | Arial | Font of the today marker text |
+| `gantt_today_font_color` / `today_font_color` | str | #ffffff | Color of the today marker text |
+| `gantt_today_font_size` / `today_font_size` | float | 13 | Size of the today marker text |
+| `gantt_today_font_style` / `today_font_style` | str | normal | Style of the today marker text |
+| `gantt_today_font_weight` / `today_font_weight` | str | normal | Weight of the today marker text |
+| `gantt_today_padding` / `today_padding` | float | 3 | Padding of the today marker text |
+| `gantt_today_rotation` / `today_rotation` | float | 0 | Rotation of the today marker text |
+| `gantt_today_style` / `today_style` | str | - | Style of the today marker text |
+| `gantt_today_text` / `today_text` | str | Today | Custom text to use for the today marker |
+| `gantt_today_units` / `today_units` | str | pixel | Units for the today marker coordinate (matplotlib specific) |
+| `gantt_today_width` / `today_width` | float | 1 | Width of the today marker line |
+| `gantt_today_zorder` / `today_zorder` | int | 1 | Z-order of the today marker |
+
+#### WORKSTREAMS
+
+| kwarg | type | default | description |
+|---|---|---|---|
+| `gantt_workstreams` / `workstreams` | str | None | Name of column to use as workstream labels |
+| `gantt_workstreams_label_alpha` / `workstreams_label_alpha` | float | 1 | Transparency value for the workstream labels fill between 0-1 |
+| `gantt_workstreams_brackets` | bool | False | Toggle visibility of horizontal brackets that span the date range of the workstream item |
+| `gantt_workstreams_highlight_row` / `workstreams_highlight_row` | bool | False | Color the workstream title row (automatic if workstreams_location="inline" |
+| `gantt_workstreams_label_align` / `workstreams_label_align` | str | center | Alignment of the workstreams label text |
+| `gantt_workstreams_label_edge_alpha` / `workstreams_label_edge_alpha` | float | 1 | Transparency value for the workstream label edges between 0-1 |
+| `gantt_workstreams_label_edge_color` / `workstreams_label_edge_color` | str | default axes edge color | Color of the workstream label edges |
+| `gantt_workstreams_label_edge_style` / `workstreams_label_edge_style` | str | None | Style of the workstream label edges |
+| `gantt_workstreams_label_edge_width` / `workstreams_label_edge_width` | float | 1 | Width of the workstream label edges |
+| `gantt_workstreams_label_fill_alpha` / `workstreams_label_fill_alpha` | float | 1 | Transparency value for the workstream labels fill between 0-1 |
+| `gantt_workstreams_label_fill_color` / `workstreams_label_fill_color` | str | #8c8c8c | Color of the workstream label fill |
+| `gantt_workstreams_label_font` / `workstreams_label_font` | str | Arial | Font of the workstream label text |
+| `gantt_workstreams_label_font_color` / `workstreams_label_font_color` | str | #000000 | Color of the workstream label text |
+| `gantt_workstreams_label_font_size` / `workstreams_label_font_size` | float | 11 if location=="inline" else 13 | Size of the workstream label text |
+| `gantt_workstreams_label_font_style` / `workstreams_label_font_style` | str | normal | Style of the workstream label text |
+| `gantt_workstreams_label_font_weight` / `workstreams_label_font_weight` | str | normal if location=="inline" else bold | Weight of the workstream label text |
+| `gantt_workstreams_label_padding` / `workstreams_label_padding` | float | 0.3 | Padding of the workstream label text |
+| `gantt_workstreams_label_rotation` / `workstreams_label_rotation` | float | 90 | Rotation of the workstream label text |
+| `gantt_workstreams_label_size` / `workstreams_label_size` | float | 30 | Horizontal width in pixels of the workstream labels |
+| `gantt_workstreams_location` / `workstreams_location` | str | None | Sets the position of the workstream labels (left, right, or inline) |
+| `gantt_workstreams_order` / `workstreams_order` | list | [] | Ordered list of workstream names to override the default order |
+| `gantt_workstreams_title` / `workstreams_title` | bool | True if gantt_workstreams else False | Toggle visibility of the workstreams title |
+| `gantt_workstreams_title_align` / `workstreams_title_align` | str | center | Alignment of the workstream title text (not yet functional) |
+| `gantt_workstreams_title_edge_color` / `workstreams_title_edge_color` | str | 'none' if location else default axes edge color | Color of the workstream title edges |
+| `gantt_workstreams_title_edge_style` / `workstreams_title_edge_style` | str | None | Style of the workstream title edges |
+| `gantt_workstreams_title_edge_width` / `workstreams_title_edge_width` | float | 1 | Width of the workstream title edges |
+| `gantt_workstreams_title_fill_alpha` / `workstreams_title_fill_alpha` | float | 0.2 if location=="inline" else 1 | Transparency value for the workstream title fill between 0-1 |
+| `gantt_workstreams_title_fill_color` / `workstreams_title_fill_color` | str | '#888888' if location=="inline" else '#5f5f5f' | Color of the workstream title fill |
+| `gantt_workstreams_title_font_color` / `workstreams_title_font_color` | str | '#ffffff' | Color of the workstream title text |
+| `gantt_workstreams_title_font_size` / `workstreams_title_font_size` | float | 12 if location=="inline" else 16 | Size of the workstream title text |
+| `gantt_workstreams_title_font_style` / `workstreams_title_font_style` | str | normal | Style of the workstream title text |
+| `gantt_workstreams_title_font_weight` / `workstreams_title_font_weight` | str | bold | Weight of the workstream title text |
+| `gantt_workstreams_title_padding` / `workstreams_title_padding` | float | 0.3 | Padding of the workstream title text |
+| `gantt_workstreams_title_rotation` / `workstreams_title_rotation` | float | 90 | Rotation of the workstream title text |
+| `gantt_workstreams_title_size` / `workstreams_title_size` | float | 30 | Horizontal width in pixels of the workstream titles |
+| `gantt_workstreams_title_text` / `workstreams_title_text` | str | workstreams column name | Custom text to use for the workstream title |
 
 </details>
 
@@ -1061,12 +1128,3 @@ These are **not** repeated in each function-specific docstring above, but they w
 # Known-valid but undocumented kwarg families
 
 These kwarg names appear in the library's own validation list (`fivecentplots/kwargs/kwargs_all.txt`, used to warn on typos) but have **no description, type, or default recorded anywhere** in the source docs. They are real and will not raise "unsupported kwarg" warnings, but their exact behavior must be inferred from naming convention or confirmed by testing / reading `engines/mpl.py` source directly:
-
-- **gantt() — "today marker" line on Gantt charts (`gantt_today`, `gantt_today_color`, `gantt_today_style`, ...)**
-  - `gantt_today`, `gantt_today_alpha`, `gantt_today_color`, `gantt_today_coordinate`, `gantt_today_edge_alpha`, `gantt_today_edge_color`, `gantt_today_edge_width`, `gantt_today_fill_alpha`, `gantt_today_fill_color`, `gantt_today_font`, `gantt_today_font_color`, `gantt_today_font_size`, `gantt_today_font_style`, `gantt_today_font_weight`, `gantt_today_padding`, `gantt_today_rotation`, `gantt_today_style`, `gantt_today_text`, `gantt_today_units`, `gantt_today_zorder`
-
-- **gantt() — workstream grouping brackets on Gantt charts (`gantt_workstreams`, `gantt_workstreams_title`, `gantt_workstreams_label_*`, ...)**
-  - `gantt_workstreams`, `gantt_workstreams_alpha`, `gantt_workstreams_brackets`, `gantt_workstreams_color`, `gantt_workstreams_edge_alpha`, `gantt_workstreams_edge_color`, `gantt_workstreams_edge_width`, `gantt_workstreams_fill_alpha`, `gantt_workstreams_fill_color`, `gantt_workstreams_font`, `gantt_workstreams_font_color`, `gantt_workstreams_font_size`, `gantt_workstreams_font_style`, `gantt_workstreams_font_weight`, `gantt_workstreams_highlight_row`, `gantt_workstreams_label_align`, `gantt_workstreams_label_edge_style`, `gantt_workstreams_label_font_size`, `gantt_workstreams_label_font_style`, `gantt_workstreams_label_font_weight`, `gantt_workstreams_label_padding`, `gantt_workstreams_label_size`, `gantt_workstreams_location`, `gantt_workstreams_order`, `gantt_workstreams_rotation`, `gantt_workstreams_style`, `gantt_workstreams_title`, `gantt_workstreams_title_align`, `gantt_workstreams_title_edge_color`, `gantt_workstreams_title_edge_style`, `gantt_workstreams_title_edge_width`, `gantt_workstreams_title_fill_alpha`, `gantt_workstreams_title_fill_color`, `gantt_workstreams_title_font_color`, `gantt_workstreams_title_font_size`, `gantt_workstreams_title_font_style`, `gantt_workstreams_title_font_weight`, `gantt_workstreams_title_padding`, `gantt_workstreams_title_rotation`, `gantt_workstreams_title_size`, `gantt_workstreams_width`, `gantt_workstreams_zorder`
-
-- **Plotly engine only — toolbar visibility/position (`toolbar_location`, `toolbar_active_zoom`, ...)**
-  - `toolbar`, `toolbar_active_zoom`, `toolbar_edge_width`, `toolbar_location`, `toolbar_rotation`, `toolbar_sticky`, `toolbar_style`, `toolbar_tools`, `toolbar_width`
