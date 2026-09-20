@@ -223,7 +223,7 @@ class Layout(BaseLayout):
                                logo=utl.kwget(kwargs, self.fcpp, 'modebar_logo', False),
                                remove_buttons=utl.kwget(kwargs, self.fcpp, 'modebar_remove_buttons', []),
                                orientation=utl.kwget(kwargs, self.fcpp, 'modebar_orientation', 'h'),
-                               # vertical orientation is not rendering in jupyter notebook correctly
+                               # TODO: vertical orientation is not rendering in jupyter notebook correctly
                                size=[25, 25],
                                visible=utl.kwget(kwargs, self.fcpp, 'modebar_visible', False)
                                )
