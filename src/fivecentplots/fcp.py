@@ -728,6 +728,10 @@ def plot(df, **kwargs):
         LINES:
         cmap (str): Color map name (overrides all other color parameters). Defaults to None. Example:
             https://endangeredoxen.github.io/fivecentplots/0.6.2/styles.html#Colormap
+        fill_under (bool): Enable/disable filling under the line. Defaults to False. Example:
+            https://endangeredoxen.github.io/fivecentplots/0.6.2/plot.html#Scatter
+        fill_under_alpha (float): Transparency value for the filled area under the line between 0-1. Defaults to 0.5.
+            Example: https://endangeredoxen.github.io/fivecentplots/0.6.2/plot.html#Scatter
         line_alpha (str|list): Transparency value for the line(s) between 0-1. Defaults to 1. Example:
             https://endangeredoxen.github.io/fivecentplots/0.6.2/styles.html#Line-styling
         line_color (str|list): Hex color string or list of hex color strings for the plot lines. Defaults to
@@ -766,6 +770,9 @@ def plot(df, **kwargs):
             https://endangeredoxen.github.io/fivecentplots/0.6.2/plot.html#Horizontal-&-vertical-lines
         [ax|ax2]_[h|v]lines_color (str|list of str): Transparency value for the lines between 0-1; use a list to use
             different values for each subplot. Defaults to 1.
+        [ax|ax2]_[h|v]lines_style (str): Line style. Defaults to '-'.
+        [ax|ax2]_[h|v]lines_width (float|int): Width of the lines in pixels. Defaults to 1.
+        [ax|ax2]_[h|v]lines_zorder (int): Order of the lines in the plot. Defaults to 1.
         CONTROL_LIMITS:
         control_limit_side (str): Determines if shaded region is <= lcl and >= ucl {"outside"} or between the lcl and
             ucl {"inside"}. Defaults to outside. Example:
@@ -2001,6 +2008,50 @@ def cbar():
     """
 
 
+def toolbar():
+    """Dummy function to return the bokeh toolbar API with `help()` (not used directly for plotting).
+
+    Keyword Args:
+        toolbar (bool): Toggle the visibility of the toolbar. Defaults to True.
+        toolbar_active_zoom (None): Not currently implemented. Defaults to None.
+        toolbar_location (str): Toolbar location. Defaults to 'below'.
+        toolbar_sticky|sticky (bool): Determines whether the plot's toolbar overlaps with the plot area or sits outside
+            it. Defaults to True.
+        toolbar_tools|tools (str): Define the widgets contained in the toolbar. Defaults to
+            pan,wheel_zoom,box_zoom,reset.
+    Examples
+    --------
+        >>> import fivecentplots as fcp
+        >>> import pandas as pd
+        >>> df = fcp.get_test_data('fake_data_box.csv')
+        >>> fcp.plot(df, x='Value', y='Value', engine='bokeh', toolbar_location='right', toolbar_tools='pan,reset')
+
+    """
+
+
+def modebar():
+    """Dummy function to return the plotly modebar API with `help()` (not used directly for plotting).
+
+    Keyword Args:
+        modebar_button_active_color (str): Sets the hover color of buttons in plotly modebar. Defaults to None.
+        modebar_button_color (str): Sets the default color of buttons in the plotly modebar. Defaults to None.
+        modebar_fill_color|modebar_bg_color (str): Sets the color of the plotly modebar. Defaults to #ffffff.
+        modebar_logo (bool): Toggle visibility of plotly logo. Defaults to False.
+        modebar_orientation (str): Set a horizontal or vertical orientation of the modebar (veritical orientation is not
+            rendering correctly in jupyter notebooks). Defaults to h.
+        modebar_remove_buttons (list of str): List of names of buttons to remove from the modebar. Defaults to [].
+        modebar_visible (bool): Force the modebar to always be visible or appear on hover. Defaults to False.
+        modebar|modebar_on (bool): Toggle the visibility of the modebar. Defaults to True.
+    Examples
+    --------
+        >>> import fivecentplots as fcp
+        >>> import pandas as pd
+        >>> df = fcp.get_test_data('fake_data_box.csv')
+        >>> fcp.plot(df, x='Value', y='Value', engine='plotly', modebar_visible=True, modebar_fill_color='#000000')
+
+    """
+
+
 def figure():
     """Dummy function to return the figure API with `help()` (not used directly for plotting).
 
@@ -2356,6 +2407,10 @@ def lines():
     Keyword Args:
         cmap (str): Color map name (overrides all other color parameters). Defaults to None. Example:
             https://endangeredoxen.github.io/fivecentplots/0.6.2/styles.html#Colormap
+        fill_under (bool): Enable/disable filling under the line. Defaults to False. Example:
+            https://endangeredoxen.github.io/fivecentplots/0.6.2/plot.html#Scatter
+        fill_under_alpha (float): Transparency value for the filled area under the line between 0-1. Defaults to 0.5.
+            Example: https://endangeredoxen.github.io/fivecentplots/0.6.2/plot.html#Scatter
         line_alpha (str|list): Transparency value for the line(s) between 0-1. Defaults to 1. Example:
             https://endangeredoxen.github.io/fivecentplots/0.6.2/styles.html#Line-styling
         line_color (str|list): Hex color string or list of hex color strings for the plot lines. Defaults to

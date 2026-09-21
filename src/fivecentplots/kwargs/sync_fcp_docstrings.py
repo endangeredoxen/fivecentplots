@@ -80,6 +80,10 @@ FUNC_SECTIONS = {
     'ticks':       [(None, 'ticks')],
     'titles':      [(None, 'titles')],
     'ws':          [(None, 'ws')],
+    # Engine-specific toolbar/modebar controls -- added alongside bokeh_toolbar.csv
+    # and plotly_modebar.csv.
+    'toolbar':     [(None, 'bokeh_toolbar')],
+    'modebar':     [(None, 'plotly_modebar')],
 }
 
 INDENT = ' ' * 8  # matches the existing docstring body indent in fcp.py
@@ -113,7 +117,7 @@ def find_docstring_span(source: str, func_name: str):
 def first_kwarg_name(generated_body: str) -> str:
     """Extract the literal kwarg name token from the first line of generated
     kw_print() output, e.g. 'bar_align|align (str): ...' -> 'bar_align|align'."""
-    first_line = next(line for line in generated_body.split('\n') if line.strip())
+    first_line = next(l for l in generated_body.split('\n') if l.strip())
     return first_line.strip().split(' (')[0]
 
 
