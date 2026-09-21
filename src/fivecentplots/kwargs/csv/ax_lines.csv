@@ -3,18 +3,6 @@ Keyword,Data Type,Description,Default,Example
 [ax|ax2]_[h|v]lines_alpha,float|list of floats,Transparency value for the lines between 0-1; use a list to use different values for each subplot,1,None
 [ax|ax2]_[h|v]lines_by_plot,bool,Add a line with a different value to each subplot when using row/col/wrap grouping,None,"plot.html#Horizontal-&-vertical-lines"
 [ax|ax2]_[h|v]lines_color,str|list of str,Transparency value for the lines between 0-1; use a list to use different values for each subplot,1,None
-[ax|ax2]_[h|v]lines_style,
-[ax|ax2]_[h|v]lines_width,
-[ax|ax2]_[h|v]lines_zorder,
-
-
-_names_list = ["f'{name}_zorder'", "f'{name}_fill_alpha'", "f'{name}_fill_color'",
-"f'{name}_edge_width'", "f'{name}_edge_alpha'", "f'{name}_edge_color'",
-"f'{name}_alpha'", "f'{name}_color'", "f'{name}_width'", "f'{name}_style'"]
-
-db()
-    no_fonts = []
-    no_edges = []
-    no_fills = []
-
-
+[ax|ax2]_[h|v]lines_style,str,Line style,'-',None
+[ax|ax2]_[h|v]lines_width,float|int,Width of the lines in pixels,1,None
+[ax|ax2]_[h|v]lines_zorder,int,Order of the lines in the plot,1,None

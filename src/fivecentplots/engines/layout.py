@@ -1191,7 +1191,7 @@ class BaseLayout:
                                          ['gantt_workstreams', 'workstreams'], False) is not False else False,
                     obj=copy.copy(self.obj_array),
                     align=utl.kwget(kwargs, self.fcpp, 'gantt_workstreams_label_align', 'center'),
-                    brackets=utl.kwget(kwargs, self.fcpp, ['gantt_workstreams_brackets', 'workstream_brackets'], True),
+                    brackets=utl.kwget(kwargs, self.fcpp, ['gantt_workstreams_brackets', 'workstreams_brackets'], True),
                     column=utl.kwget(kwargs, self.fcpp, ['gantt_workstreams', 'workstreams'], None),
                     edge_color=utl.kwget(kwargs, self.fcpp,
                                          ['gantt_workstreams_label_edge_color', 'workstreams_label_edge_color'],
@@ -1201,6 +1201,8 @@ class BaseLayout:
                     fill_color=utl.kwget(kwargs, self.fcpp,
                                          ['gantt_workstreams_label_fill_color', 'workstreams_label_fill_color'],
                                          '#8c8c8c'),
+                    font=utl.kwget(kwargs, self.fcpp,
+                                   ['gantt_workstreams_label_font', 'workstreams_label_font'], 'Arial'),
                     font_color=utl.kwget(kwargs, self.fcpp,
                                          ['gantt_workstreams_label_font_color', 'workstreams_label_font_color'],
                                          '#ffffff'),
@@ -1384,6 +1386,7 @@ class BaseLayout:
                     units=utl.kwget(kwargs, self.fcpp, ['gantt_today_units', 'today_units'], 'pixel'),
                     width=utl.kwget(kwargs, self.fcpp, ['gantt_today_width', 'today_width'], 1.5),
                     )
+
         if self.gantt.today.date is True:
             self.gantt.today.date = now
         self.gantt.today.position[0] = self.gantt.today.date

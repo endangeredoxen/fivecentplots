@@ -20,6 +20,15 @@ try:
 except ModuleNotFoundError:
     from fivecentplots.colors import DEFAULT_COLORS
 
+# A valid kwarg row's Keyword cell only ever contains letters, digits,
+# underscores, pipes (alias separators), or bracket-notation placeholders
+# (e.g. '[ax|ax2]_[h|v]lines_style'). Some CSVs (ax_lines.csv, at least) have
+# had stray Python debugging code accidentally pasted into extra rows at some
+# point -- this filters those out before they reach kw_print/make_docstrings
+# instead of silently turning them into garbage "name (nan): nan." docstring
+# lines. The CSV files themselves should still be cleaned up separately.
+VALID_KEYWORD_RE = re.compile(r"^[A-Za-z0-9_\[\]\|/]+$")
+
 
 def check_undefined_kwargs():
     """
@@ -382,11 +391,19 @@ def make_docstrings():
     for ff in files:
         k = ff.split('.')[0]
         try:
-            kw[k] = pd.read_csv(path / ff)
+            kw[k] = pd.read_csv(path / ff, keep_default_na=False, na_values=[''])
         except pd.errors.ParserError as e:
             print(e)
             print(f'fivecentplots could not read {path / ff}; import failed')
             raise SystemExit()
+        kw[k] = kw[k][kw[k]['Keyword'].astype(str).str.match(VALID_KEYWORD_RE)].reset_index(drop=True)
+        # Rows with a real keyword name but no Description yet (Type/Description/
+        # Default all blank -- see kwargs_needing_documentation.md) would otherwise
+        # render as garbage "name (nan): nan." docstring lines. Skip them until
+        # someone fills in the CSV row; they'll start appearing automatically once
+        # documented.
+        kw[k] = kw[k][kw[k]['Description'].notna() & (kw[k]['Description'].astype(str).str.strip() != '')]
+        kw[k] = kw[k].reset_index(drop=True)
         kw[k] = kw[k].replace('`', '', regex=True)
         kw[k] = kw[k].sort_values(by='Keyword')
         kw[k]['Keyword'] = kw[k]['Keyword'].apply(lambda x: str(x).split(':')[-1])
@@ -394,6 +411,7 @@ def make_docstrings():
             kw[k]['Example'] = kw[k]['Example'].apply(lambda x: f'{url}{x.split("<")[-1].split(">")[0]}'
                                                       if '.html' in str(x) else x)
             kw[k]['Example'] = kw[k]['Example'].replace('None', '')
+            kw[k]['Example'] = kw[k]['Example'].fillna('')
         else:
             kw[k]['Example'] = ''
         nans = kw[k][kw[k]['Keyword'] == 'nan']
@@ -429,9 +447,13 @@ def kw_print(kw, width=120):
         kw = row['Keyword'].split(':')[-1]
         if 'No default' in str(row['Default']):
             default = '. No default'
+        elif pd.isna(row['Default']) or str(row['Default']).strip() == '':
+            # Blank cell in the CSV -- omit the "Defaults to" clause entirely
+            # rather than stringify pandas' NaN into the docstring.
+            default = ''
         else:
             default = '. Defaults to %s' % row['Default']
-        if row['Example'] == '':
+        if row['Example'] == '' or pd.isna(row['Example']):
             line = kw + ' (%s)' % row['Data Type'] + ': ' + \
                 str(row['Description']) + default + '.'
         else:

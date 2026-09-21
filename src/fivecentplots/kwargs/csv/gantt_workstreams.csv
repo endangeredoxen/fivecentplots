@@ -1,43 +1,37 @@
 Keyword,Data Type,Description,Default,Example
-gantt_workstreams,,,,
-gantt_workstreams_alpha,,,,
-gantt_workstreams_brackets,,,,
-gantt_workstreams_color,,,,
-gantt_workstreams_edge_alpha,,,,
-gantt_workstreams_edge_color,,,,
-gantt_workstreams_edge_width,,,,
-gantt_workstreams_fill_alpha,,,,
-gantt_workstreams_fill_color,,,,
-gantt_workstreams_font,,,,
-gantt_workstreams_font_color,,,,
-gantt_workstreams_font_size,,,,
-gantt_workstreams_font_style,,,,
-gantt_workstreams_font_weight,,,,
-gantt_workstreams_highlight_row,,,,
-gantt_workstreams_label_align,,,,
-gantt_workstreams_label_edge_style,,,,
-gantt_workstreams_label_font_size,,,,
-gantt_workstreams_label_font_style,,,,
-gantt_workstreams_label_font_weight,,,,
-gantt_workstreams_label_padding,,,,
-gantt_workstreams_label_size,,,,
-gantt_workstreams_location,,,,
-gantt_workstreams_order,,,,
-gantt_workstreams_rotation,,,,
-gantt_workstreams_style,,,,
-gantt_workstreams_title,,,,
-gantt_workstreams_title_align,,,,
-gantt_workstreams_title_edge_color,,,,
-gantt_workstreams_title_edge_style,,,,
-gantt_workstreams_title_edge_width,,,,
-gantt_workstreams_title_fill_alpha,,,,
-gantt_workstreams_title_fill_color,,,,
-gantt_workstreams_title_font_color,,,,
-gantt_workstreams_title_font_size,,,,
-gantt_workstreams_title_font_style,,,,
-gantt_workstreams_title_font_weight,,,,
-gantt_workstreams_title_padding,,,,
-gantt_workstreams_title_rotation,,,,
-gantt_workstreams_title_size,,,,
-gantt_workstreams_width,,,,
-gantt_workstreams_zorder,,,,
+gantt_workstreams|workstreams,str,Name of column to use as workstream labels,None,gantt.html#Workstreams
+gantt_workstreams_label_alpha|workstreams_label_alpha,float,Transparency value for the workstream labels fill between 0-1,1,None
+gantt_workstreams_brackets,bool,Toggle visibility of horizontal brackets that span the date range of the workstream item,False,gantt.html#Workstreams
+gantt_workstreams_highlight_row|workstreams_highlight_row,bool,Color the workstream title row (automatic if workstreams_location="inline",False,gantt.html#Workstreams
+gantt_workstreams_label_align|workstreams_label_align,str,Alignment of the workstreams label text,center,None
+gantt_workstreams_label_edge_alpha|workstreams_label_edge_alpha,float,Transparency value for the workstream label edges between 0-1,1,None
+gantt_workstreams_label_edge_color|workstreams_label_edge_color,str,Color of the workstream label edges,default axes edge color,None
+gantt_workstreams_label_edge_style|workstreams_label_edge_style,str,Style of the workstream label edges,None,None
+gantt_workstreams_label_edge_width|workstreams_label_edge_width,float,Width of the workstream label edges,1,None
+gantt_workstreams_label_fill_alpha|workstreams_label_fill_alpha,float,Transparency value for the workstream labels fill between 0-1,1,None
+gantt_workstreams_label_fill_color|workstreams_label_fill_color,str,Color of the workstream label fill,#8c8c8c,None
+gantt_workstreams_label_font|workstreams_label_font,str,Font of the workstream label text,Arial,None
+gantt_workstreams_label_font_color|workstreams_label_font_color,str,Color of the workstream label text,#000000,None
+gantt_workstreams_label_font_size|workstreams_label_font_size,float,Size of the workstream label text,11 if location=="inline" else 13,gantt.html#Workstreams
+gantt_workstreams_label_font_style|workstreams_label_font_style,str,Style of the workstream label text,normal,gantt.html#Workstreams
+gantt_workstreams_label_font_weight|workstreams_label_font_weight,str,Weight of the workstream label text,normal if location=="inline" else bold,gantt.html#Workstreams
+gantt_workstreams_label_padding|workstreams_label_padding,float,Padding of the workstream label text,0.3,None
+gantt_workstreams_label_rotation|workstreams_label_rotation,float,Rotation of the workstream label text,90,None
+gantt_workstreams_label_size|workstreams_label_size,float,Horizontal width in pixels of the workstream labels,30,None
+gantt_workstreams_location|workstreams_location,str,"Sets the position of the workstream labels (left, right, or inline)",None,gantt.html#Workstreams
+gantt_workstreams_order|workstreams_order,list,Ordered list of workstream names to override the default order,[],None
+gantt_workstreams_title|workstreams_title,bool,Toggle visibility of the workstreams title,True if gantt_workstreams else False,None
+gantt_workstreams_title_align|workstreams_title_align,str,Alignment of the workstream title text (not yet functional),center,None
+gantt_workstreams_title_edge_color|workstreams_title_edge_color,str,Color of the workstream title edges,'none' if location else default axes edge color,None
+gantt_workstreams_title_edge_style|workstreams_title_edge_style,str,Style of the workstream title edges,None,None
+gantt_workstreams_title_edge_width|workstreams_title_edge_width,float,Width of the workstream title edges,1,None
+gantt_workstreams_title_fill_alpha|workstreams_title_fill_alpha,float,Transparency value for the workstream title fill between 0-1,0.2 if location=="inline" else 1,None
+gantt_workstreams_title_fill_color|workstreams_title_fill_color,str,Color of the workstream title fill,'#888888' if location=="inline" else '#5f5f5f',None
+gantt_workstreams_title_font_color|workstreams_title_font_color,str,Color of the workstream title text,'#ffffff',None
+gantt_workstreams_title_font_size|workstreams_title_font_size,float,Size of the workstream title text,12 if location=="inline" else 16,gantt.html#Workstreams
+gantt_workstreams_title_font_style|workstreams_title_font_style,str,Style of the workstream title text,normal,None
+gantt_workstreams_title_font_weight|workstreams_title_font_weight,str,Weight of the workstream title text,bold,gantt.html#Workstreams
+gantt_workstreams_title_padding|workstreams_title_padding,float,Padding of the workstream title text,0.3,None
+gantt_workstreams_title_rotation|workstreams_title_rotation,float,Rotation of the workstream title text,90,None
+gantt_workstreams_title_size|workstreams_title_size,float,Horizontal width in pixels of the workstream titles,30,None
+gantt_workstreams_title_text|workstreams_title_text,str,Custom text to use for the workstream title,workstreams column name,None

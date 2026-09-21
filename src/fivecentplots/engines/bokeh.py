@@ -79,7 +79,7 @@ class Layout(BaseLayout):
         # Engine-specific kwargs
         location = utl.kwget(kwargs, self.fcpp, 'toolbar_location', 'below')
         self.toolbar = Element('toolbar', self.fcpp, kwargs,
-                               on=True if location else None,
+                               on=utl.kwget(kwargs, self.fcpp, ['toolbar', 'toolbar_on'], True),
                                location=location,
                                sticky=utl.kwget(kwargs, self.fcpp, ['toolbar_sticky', 'sticky'], True),
                                tools=utl.kwget(kwargs, self.fcpp, ['toolbar_tools', 'tools'],

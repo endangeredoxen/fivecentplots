@@ -1,0 +1,6 @@
+Keyword,Data Type,Description,Default,Example
+toolbar,bool,Toggle the visibility of the toolbar,True,None
+toolbar_active_zoom,None,Not currently implemented,None,None
+toolbar_location,str,Toolbar location,'below',None
+toolbar_sticky|sticky,bool,Determines whether the plot's toolbar overlaps with the plot area or sits outside it,True,None
+toolbar_tools|tools,str,Define the widgets contained in the toolbar,"pan,wheel_zoom,box_zoom,reset",None

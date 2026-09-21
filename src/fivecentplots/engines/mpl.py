@@ -1088,7 +1088,7 @@ class Layout(BaseLayout):
             self.axes.obj[ir, ic].add_patch(rect)
 
         # Create the label text
-        if not text_str:
+        if text_str is None:
             text_str = label.text
         self._check_font(label.font)
         text = self.axes.obj[ir, ic].text(0, 0, text_str, bbox=boxstyle, transform=self.fig.obj.transFigure,
