@@ -1,6 +1,12 @@
 Changelog
 *********
 
+0.6.2
+=====
+* Fix add_label bug for bar plots with multiple data sets
+* Add more kwarg documentation and automation for fcp.py docstrings
+* Add AGENTS.md file to improve AI usage of fcp
+
 0.6.1
 =====
 * Many bug fixes for gantt, bar, and hist plots
