@@ -117,7 +117,7 @@ def find_docstring_span(source: str, func_name: str):
 def first_kwarg_name(generated_body: str) -> str:
     """Extract the literal kwarg name token from the first line of generated
     kw_print() output, e.g. 'bar_align|align (str): ...' -> 'bar_align|align'."""
-    first_line = next(l for l in generated_body.split('\n') if l.strip())
+    first_line = next(line for line in generated_body.split('\n') if line.strip())
     return first_line.strip().split(' (')[0]
 
 
