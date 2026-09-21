@@ -1,9 +1,9 @@
 Keyword,Data Type,Description,Default,Example
 modebar|modebar_on,bool,Toggle the visibility of the modebar,True,None
 modebar_button_active_color,str,Sets the hover color of buttons in plotly modebar,None,None
-modebar_button_color,bool,Sets the default color of buttons in the plotly modebar,None,None
-modebar_fill_color|modebar_bg_color,None,Sets the color of the plotly modebar,#ffffff,None
-modebar_logo,None,Toggle visibility of plotly logo,False,None
-modebar_orientation,None,Set a horizontal or vertical orientation of the modebar (veritical orientation is not rendering correctly in jupyter notebooks),"h",None
+modebar_button_color,str,Sets the default color of buttons in the plotly modebar,None,None
+modebar_fill_color|modebar_bg_color,str,Sets the color of the plotly modebar,#ffffff,None
+modebar_logo,bool,Toggle visibility of plotly logo,False,None
+modebar_orientation,str,Set a horizontal or vertical orientation of the modebar (veritical orientation is not rendering correctly in jupyter notebooks),"h",None
 modebar_remove_buttons,list of str,List of names of buttons to remove from the modebar,[],None
 modebar_visible,bool,Force the modebar to always be visible or appear on hover,False,None
